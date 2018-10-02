@@ -5,16 +5,31 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Current TS File",
       "type": "node",
       "request": "launch",
-      "name": "Debug TypeScript in Node.js",
-      "preLaunchTask": "typescript",
-      "program": "${workspaceFolder}/src/main.ts",
-      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/nodemon.cmd",
+      "runtimeArgs": [
+
+ 
+      ],
+      "args":[
+        "--watch",
+        "src/**/*.ts",
+        "--ignore",
+        "public",
+        "--exec",
+        "node",
+        "-r",
+        "ts-node/register",
+        "src/main.ts",
+      ],
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "sourceMaps": true,
+      "cwd": "${workspaceRoot}",
       "protocol": "inspector",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ]
     }
   ]
 }

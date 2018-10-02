@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize'
+import { SequelizeAttributes } from '../../types/SequelizeAttributes'
 import { IUserClients } from './IUserClients'
 
 export type UserClientsInstance = Sequelize.Instance<IUserClients> & IUserClients

@@ -1,7 +1,7 @@
 import Promise from 'bluebird'
 import db from '../../data'
-import { ClientInstance } from '../../data/models/Client'
 import { IClient } from '../../data/models/IClient'
+import { ClientInstance } from '../../data/models/Client'
 
 export default class ClientServiceBase {
     public createClient(data: IClient): Promise<ClientInstance> {
