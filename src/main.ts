@@ -37,16 +37,6 @@ app.prepare().then(() => {
     return app.render(req, res, '/login', req.query)
   })
 
-  server.get('/artist/:id', (req, res) => {
-    const params = route('/artist/:id')(parse(req.url).pathname)
-    return app.render(req, res, '/artist', params)
-  })
-
-  server.get('/album/:id', (req, res) => {
-    const params = route('/album/:id')(parse(req.url).pathname)
-    return app.render(req, res, '/album', params)
-  })
-
   server.get('*', (req, res) => {
     return handle(req, res)
   })
