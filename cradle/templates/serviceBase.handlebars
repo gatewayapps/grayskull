@@ -1,0 +1,25 @@
+import {{Name}}ServiceBase from './{{Name}}ServiceBase'
+import { {{Name}}Model } from '../models/{{Name}}'
+import mongoose from 'mongoose'
+
+export default class {{Name}}Service extends {{Name}}ServiceBase {
+    public create{{Name}}(data: any): Promise<mongoose.Document> {
+        return super.create{{Name}}(data)
+    }
+
+    public delete{{Name}}(id: string): Promise<mongoose.Document> {
+        return super.delete{{Name}}(id)
+    }
+
+    public get{{Name}}(): Promise<mongoose.Document[]> {
+        return super.get{{Name}}()
+    }
+
+    public get{{Name}}ById(id: string): Promise<mongoose.Document> {
+        return super.get{{Name}}ById(id)
+    }
+
+    public update{{Name}}(id: string, data: any): Promise<mongoose.Document> {
+        return super.update{{Name}}(id, data)
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "Security": {
+    "maxLoginAttemptsPerMinute": 10,
+    "passwordExpiresDays": 0,
+    "passwordRequireLowercase": false,
+    "passwordRequireUppercase": false,
+    "passwordRequireNumber": false,
+    "passwordRequireSymbol": false,
+    "passwordMinimumLength": 8,
+    "multifactorRequired": false
+  },
+  "Database": {
+    "connection": "postgres://root:pass@127.0.0.1:5432/grayskull"
+  }
+}

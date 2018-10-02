@@ -1,0 +1,67 @@
+import Sequelize from 'sequelize'
+import { I{{Name}} } from './I{{Name}}'
+{{#each (getDistinctObjects Properties) as |p|}}
+{{#isArray p.TypeName}}
+{{#if p.MemberType.ModelName}}
+import { I{{p.MemberType.ModelName}}, {{p.MemberType.ModelName}} } from './{{p.MemberType.ModelName}}'
+{{/if}}
+{{/isArray}}
+{{#isObject p}}
+import { I{{p.ModelName}}, {{p.ModelName}} } from './{{p.ModelName}}'
+{{/isObject}}
+{{/each}}
+
+type {{Name}}Instance = Sequelize.Instance<I{{Name}}> & I{{Name}}
+
+function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
+  const attributes: SequelizeAttributes<I{{Name}}> = {
+    {{#each Properties as |prop|}}
+    {{#if prop.AllowNull }}
+    {{#isArray TypeName}}
+    {{!-- {{#if prop.MemberType.ModelName}}
+    {{prop.Name}}?: List<{{prop.MemberType.ModelName}}>,
+    {{else}}
+    {{prop.Name}}?: List<Sequelize.{{prop.MemberType.TypeName}}>,
+    {{/if}} --}}
+    {{/isArray}}
+    {{#isObject prop}}
+     {{!-- {{prop.Name}}?: {{prop.ModelName}}, --}}
+    {{/isObject}}
+    {{#isBaseDataType prop}}
+     {{prop.Name}}: {
+      allowNull: true,
+      type: Sequelize.{{prop.TypeName}}
+     },
+    {{/isBaseDataType}}
+    {{else}}
+    {{#isArray TypeName}}
+    {{!-- {{#if prop.MemberType.ModelName}}
+     {{prop.Name}}: List<{{prop.MemberType.ModelName}}>,
+    {{else}}
+     {{prop.Name}}: List<Sequelize.{{prop.MemberType.TypeName}}>,
+    {{/if}} --}}
+    {{/isArray}}
+    {{#isObject prop}}
+     {{!-- {{prop.Name}}: {{prop.ModelName}}, --}}
+    {{/isObject}}
+    {{#isBaseDataType prop}}
+     {{prop.Name}}: {
+       {{#if prop.IsPrimaryKey}}
+       primaryKey: true,
+       {{/if}}
+       {{#if prop.Autogenerate}}
+       autoIncrement: true,
+       {{/if}}
+       {{#if prop.DefaultValue}}
+          defaultValue: {{{prop.DefaultValue}}},
+       {{/if}}
+       type: Sequelize.{{prop.TypeName}}
+     },
+    {{/isBaseDataType}}
+    {{/if}}
+    {{/each}}
+  }
+  return sequelize.define<{{Name}}Instance, I{{Name}}>('{{Name}}', attributes)
+}
+
+export default {{Name}}Factory

@@ -1,0 +1,5 @@
+{
+  "Security": {
+    "maxLoginAttemptsPerMinute": "MAX_LOGIN_ATTEMPTS_PER_MINUTE"
+  }
+}

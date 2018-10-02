@@ -1,26 +1,29 @@
 UserAccount:
   properties:
-    userAccountId: integer primary auto(1,1)
-    emailAddress: string
-    password_hash: string
-    firstName: string(30)
-    lastName: string(30)
-    profileImageUrl: string
     dateCreated: datetime default(NOW)
-    lastActive: datetime default(NOW)
+    emailAddress: string
     emailVerified: boolean default(0)
+    firstName: string(30)
+    lastActive: datetime default(NOW)
+    lastName: string(30)
+    lastPasswordChange: datetime
+    password_hash: string
+    phoneNumber: string
+    profileImageUrl: string
+    userAccountId: integer primary auto(1,1)
 Client:
   properties:
     clientId: integer primary auto(1,1)
     name: string(50)
+    logoImageUrl: string?
     description: string(500)?
-    url: string
-    secret: string
+    url: string?
+    secret: string?
 UserClients:
   properties:
     userAccountId: integer
     clientId: integer
-    dateCreated: datetime default(NOW)
+    dateCreated: datetime default(1990-01-01)
     dateRevoked: datetime?
     createdBy: integer
     revokedBy: integer?

@@ -1,0 +1,25 @@
+import Sequelize from 'sequelize'
+import config from 'config'
+{{#each Models as |model|}}
+import {{model.Name}}Factory from './models/{{model.Name}}'
+{{/each}}
+
+
+const databaseConfig = config.get('Database')
+const sequelize = new Sequelize(databaseConfig.connection)
+
+const db = {
+  sequelize,
+  Sequelize,
+  {{#each Models as |model|}}
+  {{model.Name}}: {{model.Name}}Factory(sequelize),
+  {{/each}}
+}
+
+Object.values(db).forEach((model: any) => {
+  if (model.associate) {
+    model.associate(db)
+  }
+})
+
+export default db
