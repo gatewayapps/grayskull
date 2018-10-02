@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import { IClient } from './IClient'
 
-type ClientInstance = Sequelize.Instance<IClient> & IClient
+export type ClientInstance = Sequelize.Instance<IClient> & IClient
 
 function ClientFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IClient> = {

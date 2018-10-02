@@ -22,6 +22,7 @@
   "devDependencies": {
     "@gatewayapps/cradle": "0.0.12",
     "@gatewayapps/cradle-template-emitter": "^0.1.5",
+    "@types/bluebird": "^3.5.24",
     "@types/express": "^4.16.0",
     "@types/sequelize": "^4.27.26",
     "bootstrap": "^4.1.3",
