@@ -1,0 +1,28 @@
+UserAccount:
+  properties:
+    userAccountId: integer primary auto(1,1)
+    emailAddress: string
+    password_hash: string
+    firstName: string(30)
+    lastName: string(30)
+    profileImageUrl: string
+    dateCreated: datetime default(NOW)
+    lastActive: datetime default(NOW)
+    emailVerified: boolean default(0)
+Client:
+  properties:
+    clientId: integer primary auto(1,1)
+    name: string(50)
+    description: string(500)?
+    url: string
+    secret: string
+UserClients:
+  properties:
+    userAccountId: integer
+    clientId: integer
+    dateCreated: datetime default(NOW)
+    dateRevoked: datetime?
+    createdBy: integer
+    revokedBy: integer?
+    revoked: boolean default(0)
+
