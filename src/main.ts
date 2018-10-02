@@ -36,7 +36,7 @@ app.prepare().then(() => {
 
     return app.render(req, res, '/login', req.query)
   })
-  
+
   server.get('*', (req, res) => {
     return handle(req, res)
   })
@@ -44,7 +44,7 @@ app.prepare().then(() => {
   console.log('Initializing database connection')
   // db.sequelize.sync().then(() => {
     /* eslint-disable no-console */
-    server.listen(3000, (err) => {
+  server.listen(3000, (err) => {
       if (err) { throw err }
       console.log('Server ready on http://localhost:3000')
     })
