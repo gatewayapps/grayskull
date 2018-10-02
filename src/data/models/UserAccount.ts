@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import { IUserAccount } from './IUserAccount'
 
-type UserAccountInstance = Sequelize.Instance<IUserAccount> & IUserAccount
+export type UserAccountInstance = Sequelize.Instance<IUserAccount> & IUserAccount
 
 function UserAccountFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IUserAccount> = {

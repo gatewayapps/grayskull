@@ -11,7 +11,7 @@ import { I{{p.ModelName}}, {{p.ModelName}} } from './{{p.ModelName}}'
 {{/isObject}}
 {{/each}}
 
-type {{Name}}Instance = Sequelize.Instance<I{{Name}}> & I{{Name}}
+export type {{Name}}Instance = Sequelize.Instance<I{{Name}}> & I{{Name}}
 
 function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<I{{Name}}> = {

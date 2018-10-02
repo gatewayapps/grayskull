@@ -6,18 +6,11 @@ import express from 'express'
 import next from 'next'
 import path from 'path'
 import pathMatch from 'path-match'
+import Sequelize from 'sequelize'
 import { parse } from 'url'
 import db from './data'
-db.sequelize.authenticate().then(() => {
-  db.sequelize.sync().then(() => {
-
-    db.Client.create({
-      name: 'Test'
-    }).then((client) => {
-      console.log(client)
-    })
-  })
-})
+import { ClientInstance } from './data/models/Client'
+import { IClient } from './data/models/IClient'
 
 const securityOptions = config.get('Security')
 const dev = process.env.NODE_ENV !== 'production'
@@ -40,8 +33,8 @@ app.prepare().then(() => {
   })
 
   server.post('/login', (req, res) => {
-    res.locals.error = { message: 'suck it' }
-    return app.render(req, res, '/login', { data: { name: 'daniel', blah: 'what', more: 123 }, ...req.query })
+
+    return app.render(req, res, '/login', req.query)
   })
 
   server.get('/artist/:id', (req, res) => {
@@ -58,9 +51,15 @@ app.prepare().then(() => {
     return handle(req, res)
   })
 
-  /* eslint-disable no-console */
-  server.listen(3000, (err) => {
-    if (err) { throw err }
-    console.log('Server ready on http://localhost:3000')
+  console.log('Initializing database connection')
+  db.sequelize.sync().then(() => {
+    /* eslint-disable no-console */
+    server.listen(3000, (err) => {
+      if (err) { throw err }
+      console.log('Server ready on http://localhost:3000')
+    })
+  }).catch((err) => {
+    console.error(err)
   })
+
 })

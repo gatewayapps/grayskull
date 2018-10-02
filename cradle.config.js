@@ -27,12 +27,14 @@ const emitterOptions = [
   new cradle.EmitterOptions('serviceBase', '@gatewayapps/cradle-template-emitter', {
     sourcePath: './cradle/templates/serviceBase.handlebars',
     outputPath: './src/api/services/{{Name}}ServiceBase.ts',
-    overwriteExisting: true
+    overwriteExisting: true,
+    languageType: 'ts'
   }),
   new cradle.EmitterOptions('service', '@gatewayapps/cradle-template-emitter', {
     sourcePath: './cradle/templates/service.handlebars',
     outputPath: './src/api/services/{{Name}}Service.ts',
-    overwriteExisting: false
+    overwriteExisting: false,
+    languageType: 'ts'
   })
 ]
 

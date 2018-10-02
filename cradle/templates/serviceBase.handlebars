@@ -1,25 +1,45 @@
-import {{Name}}ServiceBase from './{{Name}}ServiceBase'
-import { {{Name}}Model } from '../models/{{Name}}'
-import mongoose from 'mongoose'
+import Promise from 'bluebird'
+import db from '../../data'
+import { I{{Name}} } from '../../data/models/I{{Name}}'
+import { {{Name}}Instance } from '../../data/models/{{Name}}'
 
-export default class {{Name}}Service extends {{Name}}ServiceBase {
-    public create{{Name}}(data: any): Promise<mongoose.Document> {
-        return super.create{{Name}}(data)
+export default class {{Name}}ServiceBase {
+    public create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
+      return db.{{Name}}.create(data)
     }
 
-    public delete{{Name}}(id: string): Promise<mongoose.Document> {
-        return super.delete{{Name}}(id)
+    {{#each Properties as |prop|}}
+      {{#if prop.IsPrimaryKey}}
+    public delete{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<number> {
+      return db.{{../Name}}.destroy({
+        where: {
+          {{prop.Name}}
+        }
+      })
+    }
+
+    public get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return db.{{../Name}}.findOne({
+        where: {
+          {{prop.Name}}
+        }
+      })
+    }
+      {{/if}}
+    {{/each}}
+    {{!-- public delete{{Name}}(id: string): Promise<mongoose.Document> {
+        return {{Name}}Model.findByIdAndUpdate(id, { deleted: true }).exec()
     }
 
     public get{{Name}}(): Promise<mongoose.Document[]> {
-        return super.get{{Name}}()
+        return {{Name}}Model.find().exec()
     }
 
     public get{{Name}}ById(id: string): Promise<mongoose.Document> {
-        return super.get{{Name}}ById(id)
+        return {{Name}}Model.findById(id).exec()
     }
 
     public update{{Name}}(id: string, data: any): Promise<mongoose.Document> {
-        return super.update{{Name}}(id, data)
-    }
+        return {{Name}}Model.findByIdAndUpdate(id, data).exec()
+    } --}}
 }
