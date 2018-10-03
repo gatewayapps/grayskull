@@ -1,3 +1,4 @@
+const Promise = require('bluebird')
 const cradle = require('@gatewayapps/cradle')
 const tslint = require('tslint')
 const fs = require('fs')
@@ -11,15 +12,20 @@ const linter = new tslint.Linter({
 const prettierOptions = require('./prettier.config.js')
 
 function lintAndPretty(filePath) {
-  const fileContents = ts.getSourceFile(filePath).getFullText()
+  let success = false
+  let fileContents
+  while (!success) {
+    try {
+      fileContents = fs.readFileSync(filePath, 'utf8')
+      success = true
+    } catch (err) {}
+  }
 
   const prettierOptions = require('./prettier.config.js')
   const prettyText = prettier.format(fileContents, require('./prettier.config.js'))
-  fs.writeFileSync(filePath, prettyText, 'utf8')
 
-  const prettyContents = ts.getSourceFile(filePath).getFullText()
   const configuration = tslint.Configuration.findConfiguration('tslint.json', filePath).results
-  linter.lint(filePath, prettyContents, configuration)
+  linter.lint(filePath, prettyText, configuration)
 }
 
 const loaderOptions = new cradle.LoaderOptions(

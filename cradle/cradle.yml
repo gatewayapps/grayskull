@@ -1,7 +1,7 @@
 UserAccount:
   properties:
     dateCreated: datetime default(NOW)
-    emailAddress: string
+    emailAddress: string unique
     emailVerified: boolean default(0)
     firstName: string(30)
     lastActive: datetime default(NOW)
@@ -11,6 +11,7 @@ UserAccount:
     phoneNumber: string
     profileImageUrl: string
     userAccountId: integer primary auto(1,1)
+    isGlobalAdmin: boolean default(0)
 Client:
   properties:
     clientId: integer primary auto(1,1)

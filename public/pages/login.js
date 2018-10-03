@@ -10,9 +10,14 @@ const login = (props, ownProps) => (
             <div className="col col-md-8 offset-md-2">
               <form noValidate method="post" className="form">
                 <div className="card">
-                  <div className="card-header">Login</div>
+                  <div className="card-header" >Login to {props.client.name}</div>
                   <div className="card-body">
-                    {props.error && <div className="alert alert-danger">{props.error.message}</div>}
+                  {props.error && <div className="alert alert-danger">{props.error.message}</div>}
+                    <div className='row'>
+                    <div className='col-3'>
+                      {props.client.logoImageUrl && <img src={props.client.logoImageUrl} style={{width: '100%'}} />}
+                    </div>
+                    <div className='col-9'>
                     <div className="form-group">
                       <label htmlFor="name">E-mail Address: </label>
                       <input type="email" className="form-control" name="name" defaultValue={props.data.name} />
@@ -21,6 +26,9 @@ const login = (props, ownProps) => (
                       <label htmlFor="password">Password: </label>
                       <input type="password" className="form-control" name="password" />
                     </div>
+                    </div>
+                    </div>
+                    
                   </div>
                   <div className="card-footer">
                     <div className="btn-toolbar float-right">
@@ -41,7 +49,7 @@ const login = (props, ownProps) => (
 )
 
 login.getInitialProps = async ({ req, query, res }) => {
-  return { data: req.body, query, ...res.locals }
+  return { data: req.body, query, client: res.locals.client }
 }
 
 export default login

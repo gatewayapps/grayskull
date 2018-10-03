@@ -1,4 +1,7 @@
 {
+  "General": {
+    "realmName": "Grayskull"
+  },
   "Security": {
     "maxLoginAttemptsPerMinute": 10,
     "passwordExpiresDays": 0,
@@ -7,8 +10,27 @@
     "passwordRequireNumber": false,
     "passwordRequireSymbol": false,
     "passwordMinimumLength": 8,
-    "multifactorRequired": false
+    "multifactorRequired": false,
+    "adminEmailAddress": "daniel@gatewayapps.com",
+    "globalSecret": "dLTpAgSerfGq74rVIhz7ILHUTWcoPl5M6nzAjRmvvRMV8aZ8Jm20mygSsyiurfhN",
+    "invitationExpiresIn": 1800
   },
+  "Mail": {
+    "host": "smtp.gmail.com",
+    "user": "danielgary@gmail.com",
+    "password": "jhvtrmbhtizklttm",
+    "ssl": true,
+    "port": 465
+  },
+  "Clients": [
+    {
+      "clientId": 1,
+      "name": "Grayskull Test Client",
+      "logoImageUrl": "/static/grayskull.gif",
+      "description": "",
+      "url": ""
+    }
+  ],
   "Database": {
     "connection": "postgres://root:pass@127.0.0.1:5432/grayskull"
   }

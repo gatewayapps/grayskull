@@ -1,44 +1,66 @@
-import Promise from 'bluebird'
 import db from '../../data'
 import { I{{Name}} } from '../../data/models/I{{Name}}'
 import { {{Name}}Instance } from '../../data/models/{{Name}}'
 
 export default class {{Name}}ServiceBase {
-    public create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
-      return db.{{Name}}.create(data, {returning: true, raw: true})
+    public async create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
+      return await db.{{Name}}.create(data, {returning: true, raw: true})
     }
-
     {{#each Properties as |prop|}}
-      {{#if prop.IsPrimaryKey}}
-    public delete{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<number> {
-      return db.{{../Name}}.destroy({
+    {{#if prop.IsPrimaryKey}}
+    public async delete{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<number> {
+      return await db.{{../Name}}.destroy({
+        where: {
+          {{prop.Name}}
+        }
+      })
+    }
+    public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return await db.{{../Name}}.findOne({
+        where: {
+          {{prop.Name}}
+        },
+        raw: true
+      })
+    }
+     public async update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return await db.{{../Name}}.update(
+        data, {
+        where: {
+          {{prop.Name}}
+        },
+        returning: true
+      }).then(()=>{
+        return this.get{{../Name}}By{{prop.Name}}({{prop.Name}})
+     })
+    }{{else if prop.Unique}}
+    public async delete{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<number> {
+      return await db.{{../Name}}.destroy({
         where: {
           {{prop.Name}}
         }
       })
     }
 
-    public get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return db.{{../Name}}.findOne({
+    public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return await db.{{../Name}}.findOne({
         where: {
           {{prop.Name}}
         },
         raw: true
       })
     }
-
-     public update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return db.{{../Name}}.update(
+     public async update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return await db.{{../Name}}.update(
         data, {
         where: {
           {{prop.Name}}
         },
-        returning: true,
-        plain: true,
-        raw: true
-      })
-    }
+        returning: true
+      }).then(()=>{
+        return this.get{{../Name}}By{{prop.Name}}({{prop.Name}})
+     })
+    } 
       {{/if}}
     {{/each}}
-
 }
