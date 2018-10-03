@@ -1,0 +1,22 @@
+version: "2"
+
+services:
+  web:
+    build: .
+    environment:
+      - NODE_ENV=development
+    command: npm run debug
+    volumes:
+      - .:/www
+      - /www/node_modules
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=root
+      - POSTGRES_DB=grayskull
+    ports:
+      - "5432:5432"

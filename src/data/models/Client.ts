@@ -6,30 +6,30 @@ export type ClientInstance = Sequelize.Instance<IClient> & IClient
 
 function ClientFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IClient> = {
-     clientId: {
-       primaryKey: true,
-       autoIncrement: true,
-       type: Sequelize.INTEGER
-     },
-     name: {
-       type: Sequelize.STRING
-     },
-     logoImageUrl: {
+    clientId: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: Sequelize.INTEGER
+    },
+    name: {
+      type: Sequelize.STRING
+    },
+    logoImageUrl: {
       allowNull: true,
       type: Sequelize.STRING
-     },
-     description: {
+    },
+    description: {
       allowNull: true,
       type: Sequelize.STRING
-     },
-     url: {
+    },
+    url: {
       allowNull: true,
       type: Sequelize.STRING
-     },
-     secret: {
+    },
+    secret: {
       allowNull: true,
       type: Sequelize.STRING
-     },
+    }
   }
   return sequelize.define<ClientInstance, IClient>('Client', attributes)
 }

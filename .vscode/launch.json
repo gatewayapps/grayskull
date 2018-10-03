@@ -10,10 +10,6 @@
       "request": "launch",
       "console": "integratedTerminal",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/nodemon.cmd",
-      "runtimeArgs": [
-
- 
-      ],
       "args":[
         "--watch",
         "src/**/*.ts",
@@ -30,6 +26,25 @@
       "sourceMaps": true,
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch in Docker",
+      "protocol": "inspector",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [ "run", "docker-debug" ],
+      "restart": true,
+      "trace": true,
+      "sourceMaps": true,
+      "port": 9229,
+      "address": "localhost",
+      "timeout": 60000,
+      "cwd": "${workspaceFolder}",
+      "remoteRoot": "/www/src",
+      "localRoot": "${workspaceFolder}/src",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

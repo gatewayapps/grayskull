@@ -33,7 +33,6 @@ app.prepare().then(() => {
   })
 
   server.post('/login', (req, res) => {
-
     return app.render(req, res, '/login', req.query)
   })
 
@@ -41,15 +40,19 @@ app.prepare().then(() => {
     return handle(req, res)
   })
 
-  console.log('Initializing database connection')
-  // db.sequelize.sync().then(() => {
-    /* eslint-disable no-console */
-  server.listen(3000, (err) => {
-      if (err) { throw err }
-      console.log('Server ready on http://localhost:3000')
+  // console.log('Initializing database connection')
+  db.sequelize
+    .sync()
+    .then(() => {
+      /* eslint-disable no-console */
+      server.listen(3000, (err) => {
+        if (err) {
+          throw err
+        }
+        console.log('Server ready on http://localhost:3000')
+      })
     })
-  // }).catch((err) => {
-  //   console.error(err)
-  // })
-
+    .catch((err) => {
+      console.error(err)
+    })
 })

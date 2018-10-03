@@ -5,7 +5,7 @@ import { {{Name}}Instance } from '../../data/models/{{Name}}'
 
 export default class {{Name}}ServiceBase {
     public create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
-      return db.{{Name}}.create(data)
+      return db.{{Name}}.create(data, {returning: true, raw: true})
     }
 
     {{#each Properties as |prop|}}
@@ -22,24 +22,23 @@ export default class {{Name}}ServiceBase {
       return db.{{../Name}}.findOne({
         where: {
           {{prop.Name}}
-        }
+        },
+        raw: true
+      })
+    }
+
+     public update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return db.{{../Name}}.update(
+        data, {
+        where: {
+          {{prop.Name}}
+        },
+        returning: true,
+        plain: true,
+        raw: true
       })
     }
       {{/if}}
     {{/each}}
-    {{!-- public delete{{Name}}(id: string): Promise<mongoose.Document> {
-        return {{Name}}Model.findByIdAndUpdate(id, { deleted: true }).exec()
-    }
 
-    public get{{Name}}(): Promise<mongoose.Document[]> {
-        return {{Name}}Model.find().exec()
-    }
-
-    public get{{Name}}ById(id: string): Promise<mongoose.Document> {
-        return {{Name}}Model.findById(id).exec()
-    }
-
-    public update{{Name}}(id: string, data: any): Promise<mongoose.Document> {
-        return {{Name}}Model.findByIdAndUpdate(id, data).exec()
-    } --}}
 }
