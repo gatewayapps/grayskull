@@ -1,10 +1,10 @@
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
+import UserAccountServiceBase from '@services/UserAccountServiceBase'
 import bcrypt from 'bcrypt'
 import config from 'config'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
-import UserAccountServiceBase from './.cradle/UserAccountServiceBase'
 import ClientService from './ClientService'
 import MailService from './MailService'
 
