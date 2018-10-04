@@ -1,3 +1,6 @@
+import db from '@data/context'
+import { ClientInstance } from '@data/models/Client'
+import { IClient } from '@data/models/IClient'
 import withCss from '@zeit/next-css'
 import withSass from '@zeit/next-sass'
 import bodyParser from 'body-parser'
@@ -10,9 +13,6 @@ import Sequelize from 'sequelize'
 import { parse } from 'url'
 import ClientService from './api/services/ClientService'
 import UserAccountService from './api/services/UserAccountService'
-import db from './data'
-import { ClientInstance } from './data/models/Client'
-import { IClient } from './data/models/IClient'
 
 const securityOptions: any = config.get('Security')
 const clients: any = config.get('Clients')
@@ -33,30 +33,6 @@ app.prepare().then(() => {
   // Server-side
   const route = pathMatch()
 
-  server.get('/login', (req, res) => {
-    if (req.query.clientId) {
-      return ClientService.getClientByclientId(parseInt(req.query.clientId, 10)).then((client) => {
-        res.locals.client = client
-        return app.render(req, res, '/login', req.query)
-      })
-    } else {
-      res.statusCode = 404
-      res.send()
-    }
-  })
-
-  server.post('/login', (req, res) => {
-    if (req.query.clientId) {
-      return ClientService.getClientByclientId(parseInt(req.query.clientId, 10)).then((client) => {
-        res.locals.client = client
-        return app.render(req, res, '/login', req.query)
-      })
-    } else {
-      res.statusCode = 404
-      res.send()
-    }
-  })
-
   server.get('/register', async (req, res) => {
     if (!req.query.cpt) {
       res.statusCode = 404
@@ -73,7 +49,12 @@ app.prepare().then(() => {
         } else if (decoded.admin) {
           res.locals.client = { name: `${general.realmName} Global Administrator` }
         }
-        return app.render(req, res, '/register', req.query)
+        if (!res.locals.client) {
+          res.statusCode = 404
+          res.send()
+        } else {
+          return app.render(req, res, '/register', req.query)
+        }
       }
     }
   })

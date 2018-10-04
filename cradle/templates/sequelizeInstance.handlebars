@@ -4,8 +4,7 @@ import config from 'config'
 import {{model.Name}}Factory from './models/{{model.Name}}'
 {{/each}}
 
-
-const databaseConfig = config.get('Database')
+const databaseConfig: any = config.get('Database')
 const sequelize = new Sequelize(databaseConfig.connection)
 
 const db = {

@@ -1,12 +1,12 @@
+import { IUserAccount } from '@data/models/IUserAccount'
+import { UserAccountInstance } from '@data/models/UserAccount'
 import bcrypt from 'bcrypt'
 import config from 'config'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
-import { IUserAccount } from '../../data/models/IUserAccount'
-import { UserAccountInstance } from '../../data/models/UserAccount'
+import UserAccountServiceBase from './.cradle/UserAccountServiceBase'
 import ClientService from './ClientService'
 import MailService from './MailService'
-import UserAccountServiceBase from './UserAccountServiceBase'
 
 const security: any = config.get('Security')
 const general: any = config.get('General')
@@ -49,17 +49,13 @@ class UserAccountService extends UserAccountServiceBase {
       .add(security.invitationExpiresIn, 'seconds')
       .fromNow(true)
 
-    MailService.sendMail(
-      emailAddress,
-      `${clientName} Invitation`,
-      `
-    Please click the following link to accept your invitation to register for ${clientName}
+    const body = `Please click the following link to accept your invitation to register for ${clientName}
     http://localhost:3000/register?cpt=${token}
 
     This link will expire in ${relativeTime}.
-    `,
-      'admin@grayskull.io'
-    )
+    `
+
+    MailService.sendMail(emailAddress, `${clientName} Invitation`, body, 'admin@grayskull.io')
   }
 
   private generateCPT(emailAddress: string, expiresIn: number, admin: boolean, clientId?: number): string {

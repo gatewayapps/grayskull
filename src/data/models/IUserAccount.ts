@@ -10,4 +10,5 @@ export interface IUserAccount {
     phoneNumber: string
     profileImageUrl: string
     userAccountId?: number
+    isGlobalAdmin: boolean
 }

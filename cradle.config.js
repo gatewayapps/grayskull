@@ -3,29 +3,15 @@ const cradle = require('@gatewayapps/cradle')
 const tslint = require('tslint')
 const fs = require('fs')
 const prettier = require('prettier')
-const ts = tslint.Linter.createProgram('tsconfig.json', './')
-const linter = new tslint.Linter({
-  fix: true,
-  formatter: 'json'
-})
+const childProcess = require('child_process')
 
 const prettierOptions = require('./prettier.config.js')
 
 function lintAndPretty(filePath) {
-  let success = false
-  let fileContents
-  while (!success) {
-    try {
-      fileContents = fs.readFileSync(filePath, 'utf8')
-      success = true
-    } catch (err) {}
-  }
-
-  const prettierOptions = require('./prettier.config.js')
-  const prettyText = prettier.format(fileContents, require('./prettier.config.js'))
-
-  const configuration = tslint.Configuration.findConfiguration('tslint.json', filePath).results
-  linter.lint(filePath, prettyText, configuration)
+  childProcess.exec(`npx tslint --fix ${filePath}`, () => {
+    // Hand off the prettier task, because we don't care when it finishes
+    childProcess.spawn('./node_modules/.bin/prettier.cmd', ['prettier', '--write', filePath])
+  })
 }
 
 const loaderOptions = new cradle.LoaderOptions(
@@ -46,7 +32,7 @@ const emitterOptions = [
   }),
   new cradle.EmitterOptions('sequelizeInstance', '@gatewayapps/cradle-template-emitter', {
     sourcePath: './cradle/templates/sequelizeInstance.handlebars',
-    outputPath: './src/data/index.ts',
+    outputPath: './src/data/context.ts',
     overwriteExisting: true,
     languageType: 'sequelize',
     mode: 'schema',
@@ -61,7 +47,7 @@ const emitterOptions = [
   }),
   new cradle.EmitterOptions('serviceBase', '@gatewayapps/cradle-template-emitter', {
     sourcePath: './cradle/templates/serviceBase.handlebars',
-    outputPath: './src/api/services/{{Name}}ServiceBase.ts',
+    outputPath: './src/api/services/.cradle/{{Name}}ServiceBase.ts',
     overwriteExisting: true,
     languageType: 'ts',
     onFileEmitted: lintAndPretty

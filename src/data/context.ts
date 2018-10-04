@@ -4,7 +4,7 @@ import ClientFactory from './models/Client'
 import UserAccountFactory from './models/UserAccount'
 import UserClientsFactory from './models/UserClients'
 
-const databaseConfig = config.get('Database')
+const databaseConfig: any = config.get('Database')
 const sequelize = new Sequelize(databaseConfig.connection)
 
 const db = {
@@ -12,7 +12,7 @@ const db = {
   Sequelize,
   UserAccount: UserAccountFactory(sequelize),
   Client: ClientFactory(sequelize),
-  UserClients: UserClientsFactory(sequelize)
+  UserClients: UserClientsFactory(sequelize),
 }
 
 Object.values(db).forEach((model: any) => {

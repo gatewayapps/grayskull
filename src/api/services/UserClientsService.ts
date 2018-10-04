@@ -1,4 +1,4 @@
-import UserClientsServiceBase from './UserClientsServiceBase'
+import UserClientsServiceBase from './.cradle/UserClientsServiceBase'
 
 class UserClientsService extends UserClientsServiceBase {}
 

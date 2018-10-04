@@ -1,6 +1,6 @@
-import db from '../../data'
-import { I{{Name}} } from '../../data/models/I{{Name}}'
-import { {{Name}}Instance } from '../../data/models/{{Name}}'
+import db from '@data/context'
+import { I{{Name}} } from '@data/models/I{{Name}}'
+import { {{Name}}Instance } from '@data/models/{{Name}}'
 
 export default class {{Name}}ServiceBase {
     public async create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
@@ -15,7 +15,21 @@ export default class {{Name}}ServiceBase {
         }
       })
     }
-    public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+     public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return await db.{{../Name}}.findOne({
+        where: {
+          {{prop.Name}}
+        },
+        {{#if ../Meta.sensitive}}
+        attributes: {
+          exclude: [{{#each ../Meta.sensitive as |s|}}'{{s}}',{{/each}}]
+        },
+        {{/if}}
+        raw: true
+      })
+    }
+    {{#if ../Meta.sensitive}}
+    public async get{{../Name}}By{{prop.Name}}WithSensitiveData({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
       return await db.{{../Name}}.findOne({
         where: {
           {{prop.Name}}
@@ -23,6 +37,7 @@ export default class {{Name}}ServiceBase {
         raw: true
       })
     }
+    {{/if}}
      public async update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
       return await db.{{../Name}}.update(
         data, {
@@ -42,7 +57,21 @@ export default class {{Name}}ServiceBase {
       })
     }
 
-    public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+     public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
+      return await db.{{../Name}}.findOne({
+        where: {
+          {{prop.Name}}
+        },
+        {{#if ../Meta.sensitive}}
+        attributes: {
+          exclude: [{{#each ../Meta.sensitive as |s|}}'{{s}}',{{/each}}]
+        },
+        {{/if}}
+        raw: true
+      })
+    }
+    {{#if ../Meta.sensitive}}
+    public async get{{../Name}}By{{prop.Name}}WithSensitiveData({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
       return await db.{{../Name}}.findOne({
         where: {
           {{prop.Name}}
@@ -50,6 +79,7 @@ export default class {{Name}}ServiceBase {
         raw: true
       })
     }
+    {{/if}}
      public async update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
       return await db.{{../Name}}.update(
         data, {

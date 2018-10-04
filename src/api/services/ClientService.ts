@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import { ClientInstance } from '../../data/models/Client'
 import { IClient } from '../../data/models/IClient'
-import ClientServiceBase from './ClientServiceBase'
+import ClientServiceBase from './.cradle/ClientServiceBase'
 
 class ClientService extends ClientServiceBase {
   public async createClient(data: IClient): Promise<ClientInstance> {

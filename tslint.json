@@ -9,6 +9,7 @@
         "semicolon": [true, "never"],
         "quotemark": [true, "single"],
         "object-literal-sort-keys": false,
+        "ordered-imports": true,
         "variable-name": false,
         "max-line-length": [false, 180],
         "trailing-comma": [false],

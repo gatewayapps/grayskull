@@ -43,6 +43,9 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
        autoIncrement: true,
        type: Sequelize.INTEGER
      },
+     isGlobalAdmin: {
+       type: Sequelize.BOOLEAN
+     },
   }
   return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes)
 }

@@ -1,4 +1,7 @@
 UserAccount:
+  meta:
+    sensitive:
+      - 'password_hash'
   properties:
     dateCreated: datetime default(NOW)
     emailAddress: string unique
@@ -13,6 +16,9 @@ UserAccount:
     userAccountId: integer primary auto(1,1)
     isGlobalAdmin: boolean default(0)
 Client:
+  meta:
+    sensitive:
+      - secret
   properties:
     clientId: integer primary auto(1,1)
     name: string(50)
