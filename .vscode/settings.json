@@ -5,6 +5,12 @@
   "[javascript]": {
     "editor.formatOnSave": true
   },
+  "[json]": {
+    "editor.formatOnSave": true
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true
+  },
   "prettier.tslintIntegration": true,
   "files.insertFinalNewline": true,
   "files.exclude": {
