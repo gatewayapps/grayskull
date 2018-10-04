@@ -1,5 +1,19 @@
 {
+  "General": {
+    "realmName": "REALM_NAME",
+    "clientsFilePath": "CLIENTS_FILE_PATH"
+  },
   "Security": {
-    "maxLoginAttemptsPerMinute": "MAX_LOGIN_ATTEMPTS_PER_MINUTE"
+    "maxLoginAttemptsPerMinute": "MAX_LOGIN_ATTEMPTS_PER_MINUTE",
+    "passwordExpiresDays": "PASSWORD_EXPIRES_DAYS",
+    "passwordRequireLowercase": "PASSWORD_REQUIRE_LOWERCASE",
+    "passwordRequireUppercase": "PASSWORD_REQUIRE_UPPERCASE",
+    "passwordRequireNumber": "PASSWORD_REQUIRE_NUMBER",
+    "passwordRequireSymbol": "PASSWORD_REQUIRE_SYMBOL",
+    "passwordMinimumLength": "PASSWORD_MINIMUM_LENGTH",
+    "multifactorRequired": "MULTIFACTOR_REQUIRED",
+    "adminEmailAddress": "GRAYSKULL_ADMIN_EMAIL_ADDRESS",
+    "globalSecret": "GRAYSKULL_GLOBAL_SECRET",
+    "invitationExpiresIn": "INVITATION_EXPIRATION_SECONDS"
   }
 }

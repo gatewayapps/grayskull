@@ -11,6 +11,8 @@ import path from 'path'
 import pathMatch from 'path-match'
 import Sequelize from 'sequelize'
 import { parse } from 'url'
+import LoginController from './api/controllers/loginController'
+import UserController from './api/controllers/userController'
 import ClientService from './api/services/ClientService'
 import UserAccountService from './api/services/UserAccountService'
 
@@ -32,6 +34,12 @@ app.prepare().then(() => {
 
   // Server-side
   const route = pathMatch()
+
+  const lc = new LoginController(app)
+  lc.registerRoutes(server)
+
+  const uc = new UserController(app)
+  uc.registerRoutes(server)
 
   server.get('/register', async (req, res) => {
     if (!req.query.cpt) {

@@ -1,20 +1,13 @@
-import { Application as ExpressApplication } from 'express'
-import ClientService from '../services/ClientService'
+import ClientService from '@services/ClientService'
 
+import { hasPermission } from '@decorators/permissionDecorator'
+import { HttpMethod, route } from '@decorators/routeDecorator'
 import ControllerBase from './ControllerBase'
 
 export default class LoginController extends ControllerBase {
-  public registerRoutes(server: ExpressApplication) {
-    server.get('/login', this.renderLoginPage)
-
-    server.post('/login', this.handleLoginAttempt)
-  }
-
-  private async handleLoginAttempt(req, res) {
-    // future code
-  }
-
-  private async renderLoginPage(req, res) {
+  @route(HttpMethod.GET, '/login')
+  @hasPermission('test-permission')
+  public async renderLoginPage(req, res) {
     if (req.query.clientId) {
       res.locals.client = await ClientService.getClientByclientId(parseInt(req.query.clientId, 10))
       return this.next.render(req, res, '/login', req.query)
