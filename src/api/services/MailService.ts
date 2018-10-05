@@ -1,7 +1,7 @@
-import config from 'config'
+import ConfigurationManager from '@/config/ConfigurationManager'
 import email from 'emailjs'
 
-const server = email.server.connect(config.get('Mail'))
+const server = email.server.connect(ConfigurationManager.Mail)
 
 class MailService {
   public sendMail(to: string, subject: string, body: string, from: string): Promise<object> {

@@ -1,15 +1,15 @@
+import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
+import AuthenticationService from '@services/AuthenticationService'
 import UserAccountServiceBase from '@services/UserAccountServiceBase'
 import bcrypt from 'bcrypt'
-import config from 'config'
+
+import ConfigurationManager from '@/config/ConfigurationManager'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
 import ClientService from './ClientService'
 import MailService from './MailService'
-
-const security: any = config.get('Security')
-const general: any = config.get('General')
 
 class UserAccountService extends UserAccountServiceBase {
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
@@ -20,20 +20,40 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async inviteAdmin() {
-    const token = this.generateCPT(security.adminEmailAddress, security.invitationExpiresIn, true)
-    this.sendInvitation(security.adminEmailAddress, `${general.realmName} Global Administrator`, token)
+    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, true)
+    this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token)
   }
 
   public async inviteUser(emailAddress: string, clientId: number) {
     const client = await ClientService.getClientByclientId(clientId)
     if (client) {
-      const token = this.generateCPT(emailAddress, security.invitationExpiresIn, false, clientId)
+      const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, clientId)
       this.sendInvitation(emailAddress, client.name, token)
     }
   }
 
+  public async processCPT(cpt: string): Promise<{ client: ClientInstance | { name: string } | null; emailAddress: string; admin: boolean }> {
+    const decoded = this.decodeCPT(cpt)
+    const emailAddress = decoded.emailAddress
+    let client
+    if (decoded.clientId) {
+      client = await ClientService.getClientByclientId(decoded.clientId)
+    } else if (decoded.admin) {
+      client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
+    }
+    return {
+      client,
+      emailAddress,
+      admin: decoded.admin
+    }
+  }
+
   public validateCPT(token: string): boolean {
-    return !!jwt.verify(token, security.globalSecret)
+    try {
+      return !!jwt.verify(token, ConfigurationManager.Security.globalSecret)
+    } catch {
+      return false
+    }
   }
 
   public decodeCPT(token: string): any {
@@ -46,7 +66,7 @@ class UserAccountService extends UserAccountServiceBase {
 
   private sendInvitation(emailAddress: string, clientName: string, token: string) {
     const relativeTime = moment()
-      .add(security.invitationExpiresIn, 'seconds')
+      .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
       .fromNow(true)
 
     const body = `Please click the following link to accept your invitation to register for ${clientName}
@@ -63,9 +83,9 @@ class UserAccountService extends UserAccountServiceBase {
       {
         emailAddress,
         clientId,
-        admin: security.adminEmailAddress === emailAddress ? true : undefined
+        admin: ConfigurationManager.Security.adminEmailAddress === emailAddress ? true : undefined
       },
-      security.globalSecret,
+      ConfigurationManager.Security.globalSecret,
       {
         expiresIn
       }

@@ -22,15 +22,7 @@
     "ssl": true,
     "port": 465
   },
-  "Clients": [
-    {
-      "clientId": 1,
-      "name": "Grayskull Test Client",
-      "logoImageUrl": "/static/grayskull.gif",
-      "description": "",
-      "url": ""
-    }
-  ],
+  "Clients": ,
   "Database": {
     "connection": "postgres://root:pass@127.0.0.1:5432/grayskull"
   }

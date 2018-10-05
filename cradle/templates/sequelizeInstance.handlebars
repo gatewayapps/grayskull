@@ -1,11 +1,11 @@
+import ConfigurationManager from '@/config/ConfigurationManager'
 import Sequelize from 'sequelize'
-import config from 'config'
+
 {{#each Models as |model|}}
 import {{model.Name}}Factory from './models/{{model.Name}}'
 {{/each}}
 
-const databaseConfig: any = config.get('Database')
-const sequelize = new Sequelize(databaseConfig.connection)
+const sequelize = new Sequelize()
 
 const db = {
   sequelize,

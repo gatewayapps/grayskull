@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt'
-import config from 'config'
+
+import ConfigurationManager from '@/config/ConfigurationManager'
 import moment from 'moment'
 import UserAccountService from './UserAccountService'
-
-const securityOptions: any = config.get('Security')
 
 class AuthenticationService {
   public async authenticateUser(emailAddress: string, password: string): Promise<boolean> {
@@ -16,17 +15,33 @@ class AuthenticationService {
   }
 
   public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
-    if (securityOptions.passwordExpiresDays > 0) {
+    if (ConfigurationManager.Security.passwordExpiresDays > 0) {
       const userAccount = await UserAccountService.getUserAccountByemailAddress(emailAddress)
       if (userAccount) {
         const lastPasswordChange = userAccount.lastPasswordChange || userAccount.dateCreated!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
-        if (daysSincePasswordChange >= securityOptions.passwordExpiresDays) {
+        if (daysSincePasswordChange >= ConfigurationManager.Security.passwordExpiresDays) {
           return true
         }
       }
     }
     return false
+  }
+
+  public async validatePassword(password: string, confirm: string): Promise<boolean> {
+    if (password !== confirm) {
+      throw new Error('Passwords do not match.  Please re-enter your passwords')
+    }
+    /*    "passwordRequireLowercase": false,
+    "passwordRequireUppercase": false,
+    "passwordRequireNumber": false,
+    "passwordRequireSymbol": false,
+    "passwordMinimumLength": 8,*/
+
+    if (password.length < ConfigurationManager.Security.passwordMinimumLength) {
+      throw new Error(`Password must be at least ${ConfigurationManager.Security.passwordMinimumLength} characters long`)
+    }
+    return true
   }
 }
 

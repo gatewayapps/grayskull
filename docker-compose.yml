@@ -12,6 +12,8 @@ services:
     ports:
       - "3000:3000"
       - "9229:9229"
+    links:
+      - maildev
   postgres:
     image: postgres
     environment:
@@ -20,3 +22,8 @@ services:
       - POSTGRES_DB=grayskull
     ports:
       - "5432:5432"
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - "1025:25"
+      - "8080:80"

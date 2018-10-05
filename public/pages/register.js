@@ -12,7 +12,7 @@ const register = (props, ownProps) => (
                 <div className="card">
                   <div className="card-header">Register for {props.client.name}</div>
                   <div className="card-body">
-                  {props.error && <div className="alert alert-danger">{props.error.message}</div>}
+                  {props.error && <div className="alert alert-danger">{`${props.error.message}`}</div>}
                       <div className="form-group row">
                         <label className='col-2 col-form-label' htmlFor="emailAddress">E-mail Address: </label>
                         <div className='col-10'>

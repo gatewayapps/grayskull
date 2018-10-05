@@ -6,10 +6,10 @@
     "editor.formatOnSave": true
   },
   "[json]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "[jsonc]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "prettier.tslintIntegration": true,
   "files.insertFinalNewline": true,

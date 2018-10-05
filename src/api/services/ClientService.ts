@@ -1,6 +1,7 @@
 import { ClientInstance } from '@data/models/Client'
 import { IClient } from '@data/models/IClient'
 import ClientServiceBase from '@services/ClientServiceBase'
+import UserAccountService from '@services/UserAccountService'
 import crypto from 'crypto'
 
 class ClientService extends ClientServiceBase {

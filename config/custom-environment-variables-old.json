@@ -1,7 +1,8 @@
 {
   "General": {
     "realmName": "REALM_NAME",
-    "clientsFilePath": "CLIENTS_FILE_PATH"
+    "clientsFilePath": "CLIENTS_FILE_PATH",
+    "port": "SERVER_PORT"
   },
   "Security": {
     "maxLoginAttemptsPerMinute": "MAX_LOGIN_ATTEMPTS_PER_MINUTE",
@@ -15,5 +16,12 @@
     "adminEmailAddress": "GRAYSKULL_ADMIN_EMAIL_ADDRESS",
     "globalSecret": "GRAYSKULL_GLOBAL_SECRET",
     "invitationExpiresIn": "INVITATION_EXPIRATION_SECONDS"
+  },
+  "Mail": {
+    "host": "MAIL_SMTP_HOST",
+    "user": "MAIL_AUTH_USER",
+    "password": "MAIL_AUTH_PASSWORD",
+    "ssl": "MAIL_SSL_ENABLED",
+    "port": "MAIL_PORT"
   }
 }
