@@ -1,8 +1,8 @@
 export interface IClient {
-    clientId?: number
-    name: string
-    logoImageUrl?: string
-    description?: string
-    url?: string
-    secret?: string
+  client_id?: number
+  name: string
+  logoImageUrl?: string
+  description?: string
+  url?: string
+  secret?: string
 }

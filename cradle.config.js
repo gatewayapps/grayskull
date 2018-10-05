@@ -7,10 +7,9 @@ const childProcess = require('child_process')
 
 const prettierOptions = require('./prettier.config.js')
 
-function lintAndPretty(filePath) {
-  childProcess.exec(`npx tslint --fix ${filePath}`, () => {
-    // Hand off the prettier task, because we don't care when it finishes
-    childProcess.spawn('./node_modules/.bin/prettier.cmd', ['prettier', '--write', filePath])
+async function lintAndPretty(filePath) {
+  childProcess.exec(`npx tslint --fix ${filePath}`, async () => {
+    childProcess.exec(`npx prettier --write ${filePath}`)
   })
 }
 

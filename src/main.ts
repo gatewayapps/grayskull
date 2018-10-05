@@ -57,9 +57,9 @@ app.prepare().then(() => {
 function ensureClients(): Promise<any> {
   return Promise.all(
     clients.map((c) => {
-      return ClientService.getClientByclientId(c.clientId).then((client) => {
+      return ClientService.getClientByclient_id(c.client_id).then((client) => {
         if (client) {
-          return ClientService.updateClientByclientId(c, c.clientId)
+          return ClientService.updateClientByclient_id(c, c.client_id)
         } else {
           return ClientService.createClient(c)
         }
@@ -71,7 +71,7 @@ function ensureClients(): Promise<any> {
 async function ensureAdmin(): Promise<any> {
   const user = await UserAccountService.getUserAccountByemailAddress(ConfigurationManager.Security.adminEmailAddress)
   if (!user) {
-    // We use clientId -1 as admin
+    // We use client_id -1 as admin
     UserAccountService.inviteAdmin()
   }
 }

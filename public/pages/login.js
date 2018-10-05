@@ -20,7 +20,7 @@ const login = (props, ownProps) => (
                     <div className='col-9'>
                     <div className="form-group">
                       <label htmlFor="name">E-mail Address: </label>
-                      <input type="email" className="form-control" name="name" defaultValue={props.data.name} />
+                      <input type="email" className="form-control" name="emailAddress" defaultValue={props.data.name} />
                     </div>
                     <div className="form-group">
                       <label htmlFor="password">Password: </label>
@@ -49,7 +49,7 @@ const login = (props, ownProps) => (
 )
 
 login.getInitialProps = async ({ req, query, res }) => {
-  return { data: req.body, query, client: res.locals.client }
+  return { data: req.body, query, ...res.locals}
 }
 
 export default login

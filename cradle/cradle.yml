@@ -1,7 +1,7 @@
 UserAccount:
   meta:
     sensitive:
-      - 'password_hash'
+      - 'passwordHash'
   properties:
     dateCreated: datetime default(NOW)
     emailAddress: string unique
@@ -10,17 +10,18 @@ UserAccount:
     lastActive: datetime default(NOW)
     lastName: string(30)
     lastPasswordChange: datetime
-    password_hash: string
+    passwordHash: string
     phoneNumber: string
     profileImageUrl: string
     userAccountId: integer primary auto(1,1)
     isGlobalAdmin: boolean default(0)
+    isActive: boolean default(true)
 Client:
   meta:
     sensitive:
       - secret
   properties:
-    clientId: integer primary auto(1,1)
+    client_id: integer primary auto(1,1)
     name: string(50)
     logoImageUrl: string?
     description: string(500)?
@@ -29,7 +30,7 @@ Client:
 UserClients:
   properties:
     userAccountId: integer
-    clientId: integer
+    client_id: integer
     dateCreated: datetime default(1990-01-01)
     dateRevoked: datetime?
     createdBy: integer

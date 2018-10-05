@@ -5,7 +5,7 @@ import Sequelize from 'sequelize'
 import {{model.Name}}Factory from './models/{{model.Name}}'
 {{/each}}
 
-const sequelize = new Sequelize()
+const sequelize = new Sequelize(ConfigurationManager.General.databaseConnectionString)
 
 const db = {
   sequelize,

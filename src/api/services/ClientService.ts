@@ -12,8 +12,8 @@ class ClientService extends ClientServiceBase {
     return super.createClient(data)
   }
 
-  public async getClientByclientId(clientId: number): Promise<ClientInstance | null> {
-    const client = await super.getClientByclientId(clientId)
+  public async getClientByclient_id(client_id: number): Promise<ClientInstance | null> {
+    const client = await super.getClientByclient_id(client_id)
     if (client) {
       delete client.secret
     }

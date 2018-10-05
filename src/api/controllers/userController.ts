@@ -39,7 +39,7 @@ export default class UserController extends ControllerBase {
         res.json(user)
       } catch (err) {
         res.locals = await UserAccountService.processCPT(req.query.cpt)
-        res.locals.error = err
+        res.locals.error = { message: err.message }
         return this.next.render(req, res, '/register', req.query)
       }
     }

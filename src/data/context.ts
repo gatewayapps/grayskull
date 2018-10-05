@@ -1,5 +1,6 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import Sequelize from 'sequelize'
+
 import ClientFactory from './models/Client'
 import UserAccountFactory from './models/UserAccount'
 import UserClientsFactory from './models/UserClients'

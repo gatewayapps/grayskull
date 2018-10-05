@@ -1,7 +1,6 @@
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
-import AuthenticationService from '@services/AuthenticationService'
 import UserAccountServiceBase from '@services/UserAccountServiceBase'
 import bcrypt from 'bcrypt'
 
@@ -15,7 +14,7 @@ class UserAccountService extends UserAccountServiceBase {
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     const PASSWORD_SALT_ROUNDS = 10
 
-    data.password_hash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
+    data.passwordHash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
     return super.createUserAccount(data)
   }
 
@@ -24,10 +23,10 @@ class UserAccountService extends UserAccountServiceBase {
     this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token)
   }
 
-  public async inviteUser(emailAddress: string, clientId: number) {
-    const client = await ClientService.getClientByclientId(clientId)
+  public async inviteUser(emailAddress: string, client_id: number) {
+    const client = await ClientService.getClientByclient_id(client_id)
     if (client) {
-      const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, clientId)
+      const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, client_id)
       this.sendInvitation(emailAddress, client.name, token)
     }
   }
@@ -36,8 +35,8 @@ class UserAccountService extends UserAccountServiceBase {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     let client
-    if (decoded.clientId) {
-      client = await ClientService.getClientByclientId(decoded.clientId)
+    if (decoded.client_id) {
+      client = await ClientService.getClientByclient_id(decoded.client_id)
     } else if (decoded.admin) {
       client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
     }
@@ -78,11 +77,11 @@ class UserAccountService extends UserAccountServiceBase {
     MailService.sendMail(emailAddress, `${clientName} Invitation`, body, 'admin@grayskull.io')
   }
 
-  private generateCPT(emailAddress: string, expiresIn: number, admin: boolean, clientId?: number): string {
+  private generateCPT(emailAddress: string, expiresIn: number, admin: boolean, client_id?: number): string {
     return jwt.sign(
       {
         emailAddress,
-        clientId,
+        client_id,
         admin: ConfigurationManager.Security.adminEmailAddress === emailAddress ? true : undefined
       },
       ConfigurationManager.Security.globalSecret,
