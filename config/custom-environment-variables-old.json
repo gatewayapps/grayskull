@@ -15,7 +15,9 @@
     "multifactorRequired": "MULTIFACTOR_REQUIRED",
     "adminEmailAddress": "GRAYSKULL_ADMIN_EMAIL_ADDRESS",
     "globalSecret": "GRAYSKULL_GLOBAL_SECRET",
-    "invitationExpiresIn": "INVITATION_EXPIRATION_SECONDS"
+    "invitationExpiresIn": "INVITATION_EXPIRATION_SECONDS",
+    "accessTokenExpiresIn": "ACCESS_TOKEN_EXPIRATION_SECONDS",
+    "refreshTokenExpiresIn": "REFRESH_TOKEN_EXPIRES_SECONDS"
   },
   "Mail": {
     "host": "MAIL_SMTP_HOST",

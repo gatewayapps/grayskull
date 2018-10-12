@@ -23,6 +23,7 @@ app.prepare().then(() => {
   const server = express()
 
   server.use(bodyParser.urlencoded())
+  server.use(bodyParser.json())
   // server.use('/api', apiRoutes);
 
   // Server-side

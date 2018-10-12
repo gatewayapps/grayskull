@@ -6,6 +6,21 @@ import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
 
 export default class LoginController extends ControllerBase {
+  @route(HttpMethod.POST, '/access_token')
+  public async postAccessToken(req: Request, res: Response) {
+    try {
+      if (!req.body || !req.body.grant_type || !req.body.client_id || !req.body.client_secret) {
+        res.status(400).json({ success: false, message: 'Invalid request body' })
+        return
+      }
+
+      const accessTokenRespnse = await AuthenticationService.getAccessToken(req.body.grant_type, req.body.client_id, req.body.client_secret, req.body.code, req.body.refresh_token)
+      res.json(accessTokenRespnse)
+    } catch (err) {
+      res.status(400).json({ success: false, message: err.message })
+    }
+  }
+
   @route(HttpMethod.GET, '/auth')
   @query('client_id', 'response_type', 'redirect_uri')
   @queryMustEqual('response_type', 'code')

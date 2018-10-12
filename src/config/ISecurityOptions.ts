@@ -10,4 +10,6 @@ export interface ISecurityOptions {
   adminEmailAddress: string
   globalSecret: string
   invitationExpiresIn: number
+  accessTokenExpiresIn: number
+  refreshTokenExpiresIn: number
 }
