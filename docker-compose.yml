@@ -3,27 +3,38 @@ version: "2"
 services:
   web:
     build: .
-    environment:
-      - NODE_ENV=development
-    command: npm run debug
     volumes:
-      - .:/www
-      - /www/node_modules
+      - ./config/clients.json:/www/config/clients.json
+      - ./config/default.js:/www/config/default.js
     ports:
       - "3000:3000"
       - "9229:9229"
     links:
       - maildev
-  postgres:
-    image: postgres
+      - mysql
+  mysql:
+    image: mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password
     environment:
-      - POSTGRES_PASSWORD=pass
-      - POSTGRES_USER=root
-      - POSTGRES_DB=grayskull
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=grayskull
     ports:
-      - "5432:5432"
+      - "3306:3306"
+    security_opt:
+      - seccomp:unconfined
   maildev:
     image: djfarrelly/maildev
     ports:
       - "1025:25"
       - "8080:80"
+  testClient:
+    image: node:8-slim
+    command: bash -c "cd /www && npm install && npm start"
+    volumes:
+      - ./examples/testClient:/www
+      - /www/node_modules
+    environment:
+      - "AUTH_SERVER_BASE_URL=http://justin.gatewayapps.net:3000"
+      - "CLIENT_BASE_URL=http://justin.gatewayapps.net:5000"
+    ports:
+      - "5000:5000"

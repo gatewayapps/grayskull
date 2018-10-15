@@ -1,20 +1,16 @@
-import { IGeneralOptions } from '../src/config/IGeneralOptions'
-import { IMailOptions } from '../src/config/IMailOptions'
-import { ISecurityOptions } from '../src/config/ISecurityOptions'
-
-const defaultConfig: { General: IGeneralOptions; Mail: IMailOptions; Security: ISecurityOptions } = {
+module.exports = {
   General: {
     clientsFilePath: '../config/clients.json',
     port: 3000,
     realmName: 'Grayskull',
-    databaseConnectionString: 'postgres://root:pass@127.0.0.1:5432/grayskull'
+    databaseConnectionString: 'mysql://root:pass@mysql:3306/grayskull'
   },
   Mail: {
-    host: 'localhost',
+    host: 'maildev',
     user: '',
     password: '',
     ssl: false,
-    port: 1025
+    port: 25
   },
   Security: {
     maxLoginAttemptsPerMinute: 10,
@@ -32,5 +28,3 @@ const defaultConfig: { General: IGeneralOptions; Mail: IMailOptions; Security: I
     refreshTokenExpiresIn: 3600
   }
 }
-
-export default defaultConfig
