@@ -27,7 +27,9 @@ const defaultConfig: { General: IGeneralOptions; Mail: IMailOptions; Security: I
     multifactorRequired: false,
     adminEmailAddress: 'admin@grayskull.io',
     globalSecret: 'dLTpAgSerfGq74rVIhz7ILHUTWcoPl5M6nzAjRmvvRMV8aZ8Jm20mygSsyiurfhN',
-    invitationExpiresIn: 1800
+    invitationExpiresIn: 1800,
+    accessTokenExpiresIn: 1800,
+    refreshTokenExpiresIn: 3600
   }
 }
 

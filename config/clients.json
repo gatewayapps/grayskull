@@ -4,7 +4,8 @@
     "name": "Grayskull Test Client",
     "logoImageUrl": "/static/grayskull.gif",
     "description": "",
-    "url": "http://www.google.com"
+    "secret": "your-super-secret-key",
+    "url": "http://localhost:5000"
   },
   {
     "client_id": 2,

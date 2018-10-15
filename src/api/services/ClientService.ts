@@ -19,6 +19,14 @@ class ClientService extends ClientServiceBase {
     }
     return client
   }
+
+  public async validateClient(client_id: number, secret: string): Promise<ClientInstance | null> {
+    const client = await super.getClientByclient_idWithSensitiveData(client_id)
+    if (client && client.secret === secret) {
+      return client
+    }
+    return null
+  }
 }
 
 export default new ClientService()
