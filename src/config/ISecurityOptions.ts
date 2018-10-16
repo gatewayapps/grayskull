@@ -11,5 +11,4 @@ export interface ISecurityOptions {
   globalSecret: string
   invitationExpiresIn: number
   accessTokenExpiresIn: number
-  refreshTokenExpiresIn: number
 }

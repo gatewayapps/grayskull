@@ -1,55 +1,72 @@
+import React from 'react'
 import Primary from '../layouts/primary'
+import generateFingerprint from '../utils/generateFingerprint'
 
-const login = (props, ownProps) => (
-  <Primary>
-    <div>
-      <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, display: 'flex', flexDirection: 'column' }}>
-        <div style={{ flex: 1 }} />
-        <div className="container">
-          <div className="row">
-            <div className="col col-md-8 offset-md-2">
-              <form noValidate method="post" className="form">
-                <div className="card">
-                  <div className="card-header" >Login to {props.client.name}</div>
-                  <div className="card-body">
-                  {props.error && <div className="alert alert-danger">{props.error.message}</div>}
-                    <div className='row'>
-                    <div className='col-3'>
-                      {props.client.logoImageUrl && <img src={props.client.logoImageUrl} style={{width: '100%'}} />}
+class Login extends React.PureComponent {
+  state = {
+    fingerprint: ''
+  }
+
+  static async getInitialProps({ req, query, res }) {
+    return { data: req.body, query, ...res.locals }
+  }
+
+  async componentDidMount() {
+    const fingerprint = await generateFingerprint()
+    this.setState({ fingerprint })
+  }
+
+  render() {
+    const { props } = this
+
+    return (
+      <Primary>
+        <div>
+          <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ flex: 1 }} />
+            <div className="container">
+              <div className="row">
+                <div className="col col-md-8 offset-md-2">
+                  <form noValidate method="post" className="form">
+                    <input type='hidden' name='sessionId' value={this.state.fingerprint} required />
+                    <div className="card">
+                      <div className="card-header" >Login to {props.client.name}</div>
+                      <div className="card-body">
+                        {props.error && <div className="alert alert-danger">{props.error.message}</div>}
+                        <div className='row'>
+                          <div className='col-3'>
+                            {props.client.logoImageUrl && <img src={props.client.logoImageUrl} style={{ width: '100%' }} />}
+                          </div>
+                          <div className='col-9'>
+                            <div className="form-group">
+                              <label htmlFor="name">E-mail Address: </label>
+                              <input type="email" className="form-control" name="emailAddress" defaultValue={props.data.name} />
+                            </div>
+                            <div className="form-group">
+                              <label htmlFor="password">Password: </label>
+                              <input type="password" className="form-control" name="password" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="card-footer">
+                        <div className="btn-toolbar float-right">
+                          <button className="btn btn-info" type="submit">
+                            Login
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className='col-9'>
-                    <div className="form-group">
-                      <label htmlFor="name">E-mail Address: </label>
-                      <input type="email" className="form-control" name="emailAddress" defaultValue={props.data.name} />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="password">Password: </label>
-                      <input type="password" className="form-control" name="password" />
-                    </div>
-                    </div>
-                    </div>
-                    
-                  </div>
-                  <div className="card-footer">
-                    <div className="btn-toolbar float-right">
-                      <button className="btn btn-info" type="submit">
-                        Login
-                      </button>
-                    </div>
-                  </div>
+                  </form>
                 </div>
-              </form>
+              </div>
             </div>
+            <div style={{ flex: 1 }} />
           </div>
         </div>
-        <div style={{ flex: 1 }} />
-      </div>
-    </div>
-  </Primary>
-)
-
-login.getInitialProps = async ({ req, query, res }) => {
-  return { data: req.body, query, ...res.locals}
+      </Primary>
+    )
+  }
 }
 
-export default login
+export default Login

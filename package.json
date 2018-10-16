@@ -65,7 +65,7 @@
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "mysql2": "^1.6.1",
-    "next": "^7.0.1",
+    "next": "^7.0.2",
     "node-cache": "^4.2.0",
     "node-sass": "^4.9.3",
     "path": "^0.12.7",
@@ -73,6 +73,7 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "sequelize": "^4.39.0",
-    "tsconfig-paths": "^3.6.0"
+    "tsconfig-paths": "^3.6.0",
+    "ua-parser-js": "^0.7.18"
   }
 }

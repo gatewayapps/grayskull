@@ -22,6 +22,18 @@ interface IAccessTokenResponse {
   expires_in: number
   access_token: string
   refresh_token: string
+  session_id?: string
+}
+
+interface IAuthenticationCodeCacheResult {
+  sessionId: string
+  userAccount: IUserAccount
+}
+
+interface IRefreshTokenPayload {
+  client_id: number
+  session_id: string
+  userAccountId: number
 }
 
 class AuthenticationService {
@@ -30,12 +42,12 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
-  public async authenticateUser(emailAddress: string, password: string): Promise<string | boolean> {
+  public async authenticateUser(emailAddress: string, password: string, sessionId: string): Promise<string | boolean> {
     const existingUser = await UserAccountService.getUserAccountByemailAddressWithSensitiveData(emailAddress)
     if (existingUser) {
       const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash)
       if (passwordMatch) {
-        return this.generateAndCacheAuthorizationCode(existingUser)
+        return this.generateAndCacheAuthorizationCode(existingUser, sessionId)
       }
     }
     return false
@@ -47,23 +59,28 @@ class AuthenticationService {
       throw new Error(`Invalid client_id or client_secret`)
     }
 
+    let userAccount: IUserAccount | null = null
+    let session_id: string | undefined
+
     switch (grant_type) {
       case 'authorization_code': {
         if (!code) {
           throw new Error(`code is missing`)
         }
 
-        const authCodeUserAccount = await this.getAuthorizationCodeFromCache(code)
-        if (!authCodeUserAccount) {
+        const authCodeCacheResult = await this.getAuthorizationCodeFromCache(code)
+        if (!authCodeCacheResult) {
           throw new Error(`authorization_code has expired`)
         }
 
-        const userAccount = await UserAccountService.getUserAccountByuserAccountId(authCodeUserAccount.userAccountId || -1)
+        userAccount = await UserAccountService.getUserAccountByuserAccountId(authCodeCacheResult.userAccount.userAccountId || -1)
         if (!userAccount) {
           throw new Error(`Unable to locate user account`)
         }
 
-        return await this.composeAccessTokenResponse(client, userAccount)
+        refresh_token = await this.createRefreshToken(client, userAccount, authCodeCacheResult.sessionId)
+        session_id = authCodeCacheResult.sessionId
+        break
       }
 
       case 'refresh_token': {
@@ -71,21 +88,33 @@ class AuthenticationService {
           throw new Error(`refresh_token is missing`)
         }
 
-        const decodedRefreshToken = await this.verifyToken(client, refresh_token)
+        const decodedRefreshToken = await this.verifyRefreshToken(client, refresh_token)
         if (!decodedRefreshToken || decodedRefreshToken.client_id !== client.client_id) {
           throw new Error(`Invalid refresh_token`)
         }
 
-        const userAccount = await UserAccountService.getUserAccountByuserAccountId(decodedRefreshToken.userAccountId)
-        if (!userAccount) {
-          throw new Error(`Unable to locate user account`)
-        }
+        userAccount = await UserAccountService.getUserAccountByuserAccountId(decodedRefreshToken.userAccountId)
+        break
+      }
 
-        return await this.composeAccessTokenResponse(client, userAccount)
+      default: {
+        throw new Error(`grant_type '${grant_type}' is not supported`)
       }
     }
 
-    throw new Error(`grant_type '${grant_type}' is not supported`)
+    if (!userAccount) {
+      throw new Error(`Unable to locate user account`)
+    }
+
+    const access_token = await this.createAccessToken(client, userAccount)
+
+    return {
+      access_token,
+      expires_in: ConfigurationManager.Security.accessTokenExpiresIn,
+      refresh_token,
+      session_id,
+      token_type: 'Bearer'
+    }
   }
 
   public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
@@ -156,18 +185,7 @@ class AuthenticationService {
     return true
   }
 
-  private async composeAccessTokenResponse(client: ClientInstance, userAccount: UserAccountInstance): Promise<IAccessTokenResponse> {
-    const refresh_token = await this.createRefreshToken(client, userAccount)
-    const access_token = await this.createAccessToken(client, userAccount)
-    return {
-      access_token,
-      expires_in: ConfigurationManager.Security.accessTokenExpiresIn,
-      refresh_token,
-      token_type: 'Bearer'
-    }
-  }
-
-  private createAccessToken(client: ClientInstance, userAccount: UserAccountInstance): Promise<string> {
+  private createAccessToken(client: ClientInstance, userAccount: IUserAccount): Promise<string> {
     return new Promise((resolve, reject) => {
       const payload = Object.assign({}, userAccount, {
         client_id: client.client_id
@@ -185,16 +203,24 @@ class AuthenticationService {
     })
   }
 
-  private createRefreshToken(client: ClientInstance, userAccount: UserAccountInstance): Promise<string> {
+  private createRefreshToken(client: ClientInstance, userAccount: IUserAccount, sessionId: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      const payload = {
+      if (!client.client_id) {
+        reject(new Error('client_id is missing'))
+        return
+      }
+
+      if (!userAccount.userAccountId) {
+        reject(new Error('userAccountId is missing'))
+        return
+      }
+
+      const payload: IRefreshTokenPayload = {
         client_id: client.client_id,
+        session_id: sessionId,
         userAccountId: userAccount.userAccountId
       }
-      const options = {
-        expiresIn: ConfigurationManager.Security.refreshTokenExpiresIn
-      }
-      return jwt.sign(payload, client.secret || '', options, (err, token) => {
+      return jwt.sign(payload, ConfigurationManager.Security.globalSecret, (err, token) => {
         if (err) {
           reject(err)
         } else {
@@ -204,27 +230,27 @@ class AuthenticationService {
     })
   }
 
-  private generateAndCacheAuthorizationCode(userAccount: IUserAccount): string {
+  private generateAndCacheAuthorizationCode(userAccount: IUserAccount, sessionId: string): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
-    this.localCache.set(authorizationCode, userAccount, 120)
+    this.localCache.set(authorizationCode, { sessionId, userAccount }, 120)
     return authorizationCode
   }
 
-  private getAuthorizationCodeFromCache(code: string): Promise<IUserAccount | undefined> {
+  private getAuthorizationCodeFromCache(code: string): Promise<IAuthenticationCodeCacheResult | undefined> {
     return new Promise((resolve, reject) => {
-      this.localCache.get<IUserAccount>(code, (err, userAccount) => {
+      this.localCache.get<IAuthenticationCodeCacheResult>(code, (err, cacheResult) => {
         if (err) {
           return reject(err)
         } else {
-          return resolve(userAccount)
+          return resolve(cacheResult)
         }
       })
     })
   }
 
-  private verifyToken(client: ClientInstance, token: string): Promise<any> {
+  private verifyRefreshToken(client: ClientInstance, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, client.secret || '', (err, payload) => {
+      jwt.verify(token, ConfigurationManager.Security.globalSecret, (err, payload) => {
         if (err) {
           reject(err)
         } else {
