@@ -41,8 +41,10 @@ export default class LoginController extends ControllerBase {
     if ((await this.validateLoginRequest(req)) === false) {
       res.status(400).send()
       return
+    } else if (!req.body.sessionId) {
+      console.log('Received auth post without a sessionId')
     } else {
-      const authorizationCode = await AuthenticationService.authenticateUser(req.body.emailAddress, req.body.password)
+      const authorizationCode = await AuthenticationService.authenticateUser(req.body.emailAddress, req.body.password, req.body.sessionId)
       if (authorizationCode) {
         const queryParts = [`code=${authorizationCode}`]
         if (req.query.state) {
@@ -50,11 +52,11 @@ export default class LoginController extends ControllerBase {
         }
         const queryString = queryParts.join('&')
         return res.redirect(`${req.query.redirect_uri}?${queryString}`)
-      } else {
-        res.locals.error = { message: 'Invalid email address/password combination' }
-        return this.renderLoginPage(req, res)
       }
     }
+
+    res.locals.error = { message: 'Invalid email address/password combination' }
+    return this.renderLoginPage(req, res)
   }
 
   private async validateLoginRequest(req: Request): Promise<boolean> {
