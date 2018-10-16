@@ -10,7 +10,7 @@ module.exports = {
     user: '',
     password: '',
     ssl: false,
-    port: 25
+    port: 1025
   },
   Security: {
     maxLoginAttemptsPerMinute: 10,
