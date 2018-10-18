@@ -1,6 +1,6 @@
 {
   "name": "grayskull",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "scripts": {
@@ -70,6 +70,7 @@
     "node-sass": "^4.9.3",
     "path": "^0.12.7",
     "path-match": "^1.2.4",
+    "pg": "^7.5.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "sequelize": "^4.39.0",

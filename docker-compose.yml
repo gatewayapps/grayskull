@@ -11,17 +11,15 @@ services:
       - "9229:9229"
     links:
       - maildev
-      - mysql
-  mysql:
-    image: mysql
-    command: mysqld --default-authentication-plugin=mysql_native_password
+      - postgres
+  postgres:
+    image: postgres
     environment:
-      - MYSQL_ROOT_PASSWORD=pass
-      - MYSQL_DATABASE=grayskull
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=root
+      - POSTGRES_DB=grayskull
     ports:
-      - "3306:3306"
-    security_opt:
-      - seccomp:unconfined
+      - "5432:5432" 
   maildev:
     image: djfarrelly/maildev
     ports:
