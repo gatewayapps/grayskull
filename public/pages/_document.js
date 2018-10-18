@@ -12,6 +12,7 @@ export default class MyDocument extends Document {
         <Head>
           <style>{`body { margin: 0 } /* custom! */`}</style>
           <script type='text/javascript' src='/static/__fp2.js' />
+          <link rel="stylesheet" href="/static/fontawesome-pro/css/all.min.css" />
         </Head>
         <body className="custom_class">
           <Main />

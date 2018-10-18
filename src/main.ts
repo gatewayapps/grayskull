@@ -24,6 +24,13 @@ app.prepare().then(() => {
 
   server.use(bodyParser.urlencoded())
   server.use(bodyParser.json())
+
+  server.use((req, res, nxt) => {
+    const portPart = ConfigurationManager.General.port === 80 ? '' : `:${ConfigurationManager.General.port}`
+    req.baseUrl = `${req.protocol}://${req.hostname}${portPart}`
+    nxt()
+  })
+
   // server.use('/api', apiRoutes);
 
   // Server-side
@@ -73,6 +80,6 @@ async function ensureAdmin(): Promise<any> {
   const user = await UserAccountService.getUserAccountByemailAddress(ConfigurationManager.Security.adminEmailAddress)
   if (!user) {
     // We use client_id -1 as admin
-    UserAccountService.inviteAdmin()
+    UserAccountService.inviteAdmin(ConfigurationManager.General.fallbackUrl)
   }
 }

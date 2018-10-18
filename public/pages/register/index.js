@@ -1,4 +1,4 @@
-import Primary from '../layouts/primary'
+import Primary from '../../layouts/primary'
 import React from 'react'
 
 const register = (props, ownProps) => (

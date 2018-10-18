@@ -1,3 +1,4 @@
+import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
@@ -10,6 +11,10 @@ import moment from 'moment'
 import ClientService from './ClientService'
 import MailService from './MailService'
 
+import Cache from 'node-cache'
+
+const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
+
 class UserAccountService extends UserAccountServiceBase {
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     const PASSWORD_SALT_ROUNDS = 10
@@ -18,16 +23,39 @@ class UserAccountService extends UserAccountServiceBase {
     return super.createUserAccount(data)
   }
 
-  public async inviteAdmin() {
-    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, true)
-    this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token)
+  public async changeUserPassword(emailAddress: string, password: string) {
+    const PASSWORD_SALT_ROUNDS = 10
+
+    const passwordHash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
+
+    await db.UserAccount.update({ passwordHash }, { where: { emailAddress } })
   }
 
-  public async inviteUser(emailAddress: string, client_id: number) {
+  public async inviteAdmin(baseUrl: string) {
+    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, true)
+    this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
+  }
+
+  public async sendResetPasswordMessage(emailAddress: string, baseUrl: string) {
+    const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, undefined)
+    const relativeTime = moment()
+      .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
+      .fromNow(true)
+
+    const body = `Please click the following link to reset your password.
+    <a href='${baseUrl}/resetPassword?cpt=${cpt}' target='_blank'>Rest Password</a>
+
+    This link will expire in ${relativeTime}.
+    `
+
+    MailService.sendMail(emailAddress, `Password Reset Instructions`, body, 'admin@grayskull.io')
+  }
+
+  public async inviteUser(emailAddress: string, client_id: number, baseUrl: string) {
     const client = await ClientService.getClientByclient_id(client_id)
     if (client) {
       const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, client_id)
-      this.sendInvitation(emailAddress, client.name, token)
+      this.sendInvitation(emailAddress, client.name, token, baseUrl)
     }
   }
 
@@ -40,6 +68,7 @@ class UserAccountService extends UserAccountServiceBase {
     } else if (decoded.admin) {
       client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
     }
+    TokenCache.del(cpt)
     return {
       client,
       emailAddress,
@@ -48,6 +77,9 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public validateCPT(token: string): boolean {
+    if (TokenCache.get<number | undefined>(token) !== 1) {
+      return false
+    }
     try {
       return !!jwt.verify(token, ConfigurationManager.Security.globalSecret)
     } catch {
@@ -63,13 +95,13 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  private sendInvitation(emailAddress: string, clientName: string, token: string) {
+  private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string) {
     const relativeTime = moment()
       .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
       .fromNow(true)
 
     const body = `Please click the following link to accept your invitation to register for ${clientName}
-    http://localhost:3000/register?cpt=${token}
+    <a href='${baseUrl}/register?cpt=${token}' target='_blank'>Register</a>
 
     This link will expire in ${relativeTime}.
     `
@@ -78,7 +110,7 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   private generateCPT(emailAddress: string, expiresIn: number, admin: boolean, client_id?: number): string {
-    return jwt.sign(
+    const newToken = jwt.sign(
       {
         emailAddress,
         client_id,
@@ -89,6 +121,10 @@ class UserAccountService extends UserAccountServiceBase {
         expiresIn
       }
     )
+
+    TokenCache.set(newToken, 1)
+
+    return newToken
   }
 }
 

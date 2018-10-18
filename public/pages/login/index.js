@@ -1,6 +1,7 @@
 import React from 'react'
-import Primary from '../layouts/primary'
-import generateFingerprint from '../utils/generateFingerprint'
+import Link from 'next/link'
+import Primary from '../../layouts/primary'
+import generateFingerprint from '../../utils/generateFingerprint'
 
 class Login extends React.PureComponent {
   state = {
@@ -32,6 +33,7 @@ class Login extends React.PureComponent {
                     <div className="card">
                       <div className="card-header" >Login to {props.client.name}</div>
                       <div className="card-body">
+                        {props.message && <div className='alert alert-info'>{props.message}</div>}
                         {props.error && <div className="alert alert-danger">{props.error.message}</div>}
                         <div className='row'>
                           <div className='col-3'>
@@ -50,9 +52,14 @@ class Login extends React.PureComponent {
                         </div>
                       </div>
                       <div className="card-footer">
+                        <Link href='/resetPassword'>
+                          <div className='btn-toolbar float-left'>
+                            <button className='btn btn-link'>Forgot Password</button>
+                          </div>
+                        </Link>
                         <div className="btn-toolbar float-right">
-                          <button className="btn btn-info" type="submit">
-                            Login
+                          <button className="btn btn-outline-info" type="submit">
+                            <i className='fal fa-sign-in' /> Login
                           </button>
                         </div>
                       </div>
