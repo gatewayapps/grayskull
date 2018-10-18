@@ -3,14 +3,14 @@ module.exports = {
     clientsFilePath: '../config/clients.json',
     port: 3000,
     realmName: 'Grayskull',
-    databaseConnectionString: 'mysql://root:pass@127.0.0.1:3306/grayskull'
+    databaseConnectionString: 'postgres://root:pass@postgres:5432/grayskull'
   },
   Mail: {
     host: 'maildev',
     user: '',
     password: '',
     ssl: false,
-    port: 1025
+    port: 25
   },
   Security: {
     maxLoginAttemptsPerMinute: 10,
