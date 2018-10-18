@@ -1,0 +1,82 @@
+{
+  "_from": "@fortawesome/fontawesome-pro",
+  "_id": "@fortawesome/fontawesome-pro@5.4.0",
+  "_inBundle": false,
+  "_integrity": "sha512-i+ATF69JudLEvr71RFwMjgtcUOR/2N19JrL4JK/FvAKZBfb25oAKzMua+c6ga+zyVZ8i2pAjmkUHGHN1lvdtCQ==",
+  "_location": "/@fortawesome/fontawesome-pro",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@fortawesome/fontawesome-pro",
+    "name": "@fortawesome/fontawesome-pro",
+    "escapedName": "@fortawesome%2ffontawesome-pro",
+    "scope": "@fortawesome",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://npm.fontawesome.com/@fortawesome/fontawesome-pro/-/fontawesome-pro-5.4.0.tgz",
+  "_shasum": "bea1b656d205e4e5068889b0127c7c237c66653a",
+  "_spec": "@fortawesome/fontawesome-pro",
+  "_where": "C:\\repos\\rubicon-erp",
+  "author": {
+    "name": "Dave Gandy",
+    "email": "dave@fontawesome.com",
+    "url": "http://twitter.com/davegandy"
+  },
+  "bugs": {
+    "url": "http://github.com/FortAwesome/Font-Awesome/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Brian Talbot",
+      "url": "http://twitter.com/talbs"
+    },
+    {
+      "name": "Travis Chase",
+      "url": "http://twitter.com/supercodepoet"
+    },
+    {
+      "name": "Rob Madole",
+      "url": "http://twitter.com/robmadole"
+    },
+    {
+      "name": "Geremia Taglialatela",
+      "url": "http://twitter.com/gtagliala"
+    },
+    {
+      "name": "Mike Wilkerson",
+      "url": "http://twitter.com/mw77"
+    }
+  ],
+  "dependencies": {},
+  "deprecated": false,
+  "description": "The iconic font, CSS, and SVG framework",
+  "engines": {
+    "node": ">=6"
+  },
+  "homepage": "https://fontawesome.com",
+  "keywords": [
+    "font",
+    "awesome",
+    "fontawesome",
+    "icon",
+    "svg",
+    "bootstrap"
+  ],
+  "license": "UNLICENSED",
+  "main": "js/fontawesome.js",
+  "name": "@fortawesome/fontawesome-pro",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FortAwesome/Font-Awesome.git"
+  },
+  "style": "css/fontawesome.css",
+  "version": "5.4.0"
+}

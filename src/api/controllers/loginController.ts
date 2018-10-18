@@ -2,6 +2,7 @@ import { query, queryMustEqual } from '@decorators/paramDecorator'
 import { HttpMethod, route } from '@decorators/routeDecorator'
 import AuthenticationService from '@services/AuthenticationService'
 import ClientService from '@services/ClientService'
+import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
 
@@ -32,6 +33,53 @@ export default class LoginController extends ControllerBase {
       res.locals.client = await ClientService.getClientByclient_id(parseInt(req.query.client_id, 10))
       return this.next.render(req, res, '/login', req.query)
     }
+  }
+
+  @route(HttpMethod.GET, '/resetPassword')
+  public async renderResetPassword(req: Request, res: Response) {
+    if (req.query.cpt) {
+      const decodedToken = await UserAccountService.decodeCPT(req.query.cpt)
+      if (decodedToken) {
+        res.locals.emailAddress = decodedToken.emailAddress
+        return this.next.render(req, res, '/resetPassword/changePassword', req.query)
+      }
+    }
+
+    return this.next.render(req, res, '/resetPassword', req.query)
+  }
+
+  @route(HttpMethod.POST, '/resetPassword')
+  public async processResetPasswordRequest(req: Request, res: Response) {
+    if (req.query.cpt) {
+      const decodedToken = await UserAccountService.decodeCPT(req.query.cpt)
+      if (decodedToken) {
+        try {
+          const validPassword = await AuthenticationService.validatePassword(req.body.password, req.body.confirm)
+          if (validPassword) {
+            await UserAccountService.changeUserPassword(decodedToken.emailAddress, req.body.password)
+
+            // Processing a CPT removes it from cache and marks it invalid
+            // This should prevent someone using old reset password tokens
+            await UserAccountService.processCPT(req.query.cpt)
+
+            res.locals.message = `You have succesfully changed your password.  Please sign in using your new login`
+            return this.next.render(req, res, '/resetPassword/changePassword', req.query)
+          }
+        } catch (err) {
+          res.locals.error = { message: err.message }
+        }
+      } else {
+        res.locals.error = { message: 'Invalid reset password token' }
+      }
+      return this.next.render(req, res, '/resetPassword/changePassword', req.query)
+    } else {
+      const userAccount = await UserAccountService.getUserAccountByemailAddress(req.body.emailAddress)
+      if (userAccount) {
+        await UserAccountService.sendResetPasswordMessage(req.body.emailAddress, req.baseUrl)
+      }
+      res.locals = { message: `We have sent instructions on resetting your password to ${req.body.emailAddress}.` }
+    }
+    return this.next.render(req, res, '/resetPassword', req.query)
   }
 
   @route(HttpMethod.POST, '/auth')

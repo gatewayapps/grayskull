@@ -11,7 +11,8 @@ class MailService {
           to,
           from,
           subject,
-          text: body
+          text: body,
+          attachment: [{ data: `<html><body>${body.replace(/\n/g, '<br />')}</body></html>`, alternative: true }]
         },
         (err, msg) => {
           if (err) {
