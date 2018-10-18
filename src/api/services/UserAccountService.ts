@@ -59,7 +59,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async processCPT(cpt: string): Promise<{ client: ClientInstance | { name: string } | null; emailAddress: string; admin: boolean }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string } | null; emailAddress: string; admin: boolean }> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     let client
@@ -68,7 +68,9 @@ class UserAccountService extends UserAccountServiceBase {
     } else if (decoded.admin) {
       client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
     }
-    TokenCache.del(cpt)
+    if (removeFromCache) {
+      TokenCache.del(cpt)
+    }
     return {
       client,
       emailAddress,
