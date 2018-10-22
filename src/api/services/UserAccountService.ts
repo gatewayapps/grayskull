@@ -59,7 +59,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string } | null; emailAddress: string; admin: boolean }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; admin: boolean }> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     let client
