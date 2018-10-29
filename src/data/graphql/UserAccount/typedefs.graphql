@@ -1,0 +1,60 @@
+type UserAccount {
+	dateCreated: Date!
+	emailAddress: String!
+	emailVerified: Boolean!
+	firstName: String!
+	lastActive: Date!
+	lastName: String!
+	lastPasswordChange: Date!
+	phoneNumber: String!
+	profileImageUrl: String!
+	userAccountId: Int!
+	isGlobalAdmin: Boolean!
+	isActive: Boolean!
+}
+
+input LoginArgs {
+	emailAddress: String!
+	password: String!
+	fingrprint: String!
+	client_id: Int!
+	response_type: String!
+	redirect_uri: String!
+}
+
+input ValidatePasswordArgs {
+	password: String!
+	confirm: String!
+}
+
+input ChangePasswordArgs {
+	password: String!
+	confirm: String!
+	cpt: String!
+}
+
+input ResetPasswordArgs {
+	emailAddress: String!
+}
+
+input CreateUserAccountArgs {
+	password: String!
+	confirm: String!
+	cpt: String!
+	firstName: String!
+	lastName: String!
+}
+
+type Query {
+	userAccounts(offset: Int, limit: Int): [UserAccount]
+	userAccountByEmailAddress(emailAddress: String!): UserAccount
+	userAccountByUserAccountId(userAccountId: Int!): UserAccount
+}
+
+type Mutation {
+	login(data: LoginArgs!): Boolean
+	validatePassword(data: ValidatePasswordArgs!): Boolean
+	changePassword(data: ChangePasswordArgs!): Boolean
+	resetPassword(data: ResetPasswordArgs!): Boolean
+	createUserAccount(data: CreateUserAccountArgs!): UserAccount
+}

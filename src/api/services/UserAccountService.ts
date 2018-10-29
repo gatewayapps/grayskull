@@ -16,6 +16,12 @@ import Cache from 'node-cache'
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
 class UserAccountService extends UserAccountServiceBase {
+
+  /**
+   * 
+   * @param data 
+   * @param password 
+   */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     const PASSWORD_SALT_ROUNDS = 10
 
@@ -59,7 +65,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string } | null; emailAddress: string; admin: boolean }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; admin: boolean }> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     let client

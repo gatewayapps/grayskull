@@ -1,6 +1,7 @@
 import db from '@data/context'
 import withCss from '@zeit/next-css'
 import withSass from '@zeit/next-sass'
+import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import express from 'express'
 import next from 'next'
@@ -10,6 +11,7 @@ import UserController from './api/controllers/userController'
 import ClientService from './api/services/ClientService'
 import UserAccountService from './api/services/UserAccountService'
 import ConfigurationManager from './config/ConfigurationManager'
+import { schema } from './data/graphql/graphql'
 
 const clients = require(ConfigurationManager.General.clientsFilePath)
 
@@ -30,6 +32,17 @@ app.prepare().then(() => {
     req.baseUrl = `${req.protocol}://${req.hostname}${portPart}`
     nxt()
   })
+
+  const apollo = new ApolloServer({
+    schema,
+    playground: true,
+    introspection: true,
+    formatError: (error) => {
+      console.log(error)
+      return new Error('Internal server error')
+    }
+  })
+  apollo.applyMiddleware({ app: server, path: '/api/graphql' })
 
   // server.use('/api', apiRoutes);
 

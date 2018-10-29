@@ -1,0 +1,57 @@
+UserAccount:
+  meta:
+    sensitive:
+      - 'passwordHash'
+  properties:
+    dateCreated: datetime default(NOW)
+    emailAddress: string unique
+    emailVerified: boolean default(0)
+    firstName: string(30)
+    lastActive: datetime default(NOW)
+    lastName: string(30)
+    lastPasswordChange: datetime
+    passwordHash: string
+    phoneNumber: string
+    profileImageUrl: string
+    userAccountId: integer primary auto(1,1)
+    isGlobalAdmin: boolean default(0)
+    isActive: boolean default(true)
+  operations:
+      # Login User #
+    login:
+      returns: boolean
+      arguments:
+        emailAddress: string
+        password: string
+        fingrprint: string
+        client_id: integer
+        response_type: string
+        redirect_uri: string
+    # Create User Account #
+    createUserAccount:
+      returns: UserAccount
+      arguments:
+        password: string
+        confirm: string
+        cpt: string
+        firstName:
+        lastName:
+    # Reset Password #
+    resetPassword:
+      returns: boolean
+      arguments:
+        emailAddress:
+    # Validate a Password #
+    validatePassword:
+      returns: boolean
+      arguments:
+        password: string
+        confirm: string
+    # Change Password #
+    changePassword:
+      returns: boolean
+      arguments:
+        password: string
+        confirm: string
+        cpt: string
+
