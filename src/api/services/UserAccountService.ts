@@ -16,11 +16,10 @@ import Cache from 'node-cache'
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
 class UserAccountService extends UserAccountServiceBase {
-
   /**
-   * 
-   * @param data 
-   * @param password 
+   *
+   * @param data
+   * @param password
    */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     const PASSWORD_SALT_ROUNDS = 10
@@ -90,7 +89,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
     try {
       return !!jwt.verify(token, ConfigurationManager.Security.globalSecret)
-    } catch {
+    } catch (err) {
       return false
     }
   }
