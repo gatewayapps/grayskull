@@ -1,0 +1,13 @@
+type Client {
+	client_id: Int!
+	name: String!
+	logoImageUrl: String!
+	description: String!
+	url: String!
+}
+
+type Query {
+	clients(offset: Int, limit: Int): [Client]
+	clientByClientId(clientId: Int!): Client
+}
+

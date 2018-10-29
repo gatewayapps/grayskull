@@ -16,6 +16,12 @@ import Cache from 'node-cache'
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
 class UserAccountService extends UserAccountServiceBase {
+
+  /**
+   * 
+   * @param data 
+   * @param password 
+   */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     const PASSWORD_SALT_ROUNDS = 10
 

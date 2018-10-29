@@ -1,0 +1,11 @@
+Client:
+  meta:
+    sensitive:
+      - secret
+  properties:
+    client_id: integer primary auto(1,1)
+    name: string(50)
+    logoImageUrl: string?
+    description: string(500)?
+    url: string?
+    secret: string?

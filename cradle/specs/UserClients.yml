@@ -1,0 +1,9 @@
+UserClients:
+  properties:
+    userAccountId: integer
+    client_id: integer
+    dateCreated: datetime default(1990-01-01)
+    dateRevoked: datetime?
+    createdBy: integer
+    revokedBy: integer?
+    revoked: boolean default(0)

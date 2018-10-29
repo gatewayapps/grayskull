@@ -30,7 +30,7 @@ export default class LoginController extends ControllerBase {
       res.status(400).send()
       return
     } else {
-      res.locals.client = await ClientService.getClientByclient_id(parseInt(req.query.client_id, 10))
+      // res.locals.client = await ClientService.getClientByclient_id(parseInt(req.query.client_id, 10))
       return this.next.render(req, res, '/login', req.query)
     }
   }
