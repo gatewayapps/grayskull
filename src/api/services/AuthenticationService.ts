@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken'
 import moment from 'moment'
 import NodeCache from 'node-cache'
 import UserAccountService from './UserAccountService'
+import UserClientsService from './UserClientsService';
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -42,15 +43,26 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
-  public async authenticateUser(emailAddress: string, password: string, sessionId: string): Promise<string | boolean> {
+  public async authenticateUser(emailAddress: string, password: string, sessionId: string, clientId: number): Promise<string> {
     const existingUser = await UserAccountService.getUserAccountByemailAddressWithSensitiveData(emailAddress)
-    if (existingUser) {
-      const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash)
-      if (passwordMatch) {
-        return this.generateAndCacheAuthorizationCode(existingUser, sessionId)
+
+    if (!existingUser) {
+      throw new Error('Invalid email address/password combination')
+    }
+
+    const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash)
+    if (!passwordMatch) {
+      throw new Error('Invalid email address/password combination')
+    }
+
+    if (!existingUser.isGlobalAdmin) {
+      const userClient = await UserClientsService.getUserClient(existingUser.userAccountId!, clientId)
+      if (!userClient) {
+        throw new Error('You do not have access to login here. Contact your system administrator.')
       }
     }
-    return false
+
+    return this.generateAndCacheAuthorizationCode(existingUser, sessionId)
   }
 
   public async getAccessToken(grant_type: GrantType, client_id: number, client_secret: string, code: string | undefined, refresh_token: string | undefined): Promise<IAccessTokenResponse> {
