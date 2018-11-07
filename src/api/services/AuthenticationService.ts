@@ -116,6 +116,11 @@ class AuthenticationService {
       throw new Error(`Unable to locate user account`)
     }
 
+    const userClient = await UserClientsService.getUserClient(userAccount.userAccountId!, client.client_id!)
+    if (!userClient) {
+      throw new Error(`Your user account does not have access to ${client.name}`)
+    }
+
     const access_token = await this.createAccessToken(client, userAccount)
 
     return {
