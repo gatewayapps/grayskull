@@ -76,20 +76,21 @@ app.prepare().then(() => {
 })
 
 async function ensureGrayskullClient(): Promise<void> {
-  const grayskullClient = await ClientService.getClientByclient_id(ConfigurationManager.General.grayskullClientId)
+  const grayskullClient = await ClientService.getClient({ client_id: ConfigurationManager.General.grayskullClientId })
   if (!grayskullClient) {
     await ClientService.createClient({
       client_id: ConfigurationManager.General.grayskullClientId,
       name: ConfigurationManager.General.realmName,
-      url: ConfigurationManager.General.fallbackUrl,
       secret: ConfigurationManager.Security.globalSecret,
       logoImageUrl: '/static/grayskull.gif',
+      url: ConfigurationManager.General.fallbackUrl,
+      redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`,
     })
   }
 }
 
 async function ensureAdmin(): Promise<void> {
-  const user = await UserAccountService.getUserAccountByemailAddress(ConfigurationManager.Security.adminEmailAddress)
+  const user = await UserAccountService.getUserAccount({ emailAddress: ConfigurationManager.Security.adminEmailAddress })
   if (!user) {
     UserAccountService.inviteAdmin(ConfigurationManager.General.fallbackUrl)
   }

@@ -3,6 +3,12 @@ export interface IClient {
   name: string
   logoImageUrl?: string
   description?: string
-  url?: string
-  secret?: string
+  secret: string
+  url: string
+  redirectUri: string
+  isActive?: boolean
+  createdBy?: number
+  createdAt?: Date
+  modifiedBy?: number
+  modifiedAt?: Date
 }

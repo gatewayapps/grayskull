@@ -35,7 +35,5 @@ export default {
       throw new Error('createUserAccount is not implemented')
     }
   },
-  UserAccount: {
-
-  }
+  UserAccount: {}
 }

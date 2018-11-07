@@ -40,7 +40,7 @@ export default class UserController extends ControllerBase {
       try {
         await AuthenticationService.validatePassword(req.body.password, req.body.confirm)
         const { client } = await UserAccountService.registerUser(req.body, req.body.password, req.query.cpt)
-        return res.redirect(`/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.url!)}`)
+        return res.redirect(`/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.redirectUri)}`)
       } catch (err) {
         res.locals.error = { message: err.message }
         return this.renderRegisterPage(req, res)

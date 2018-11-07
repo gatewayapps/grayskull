@@ -1,33 +1,33 @@
 export interface I{{Name}} {
-    {{#each Properties as |prop|}}
-    {{#if prop.AllowNull }}
-    {{#isArray TypeName}}
-    {{#if prop.MemberType.ModelName}}
-    {{prop.Name}}?: List<I{{prop.MemberType.ModelName}}>
-    {{else}}
-    {{prop.Name}}?: List<{{prop.MemberType.TypeName}}>
-    {{/if}}
-    {{/isArray}}
-    {{#isObject prop}}
-    {{prop.Name}}?: I{{prop.ModelName}}
-    {{/isObject}}
-    {{#isBaseDataType prop}}
-    {{prop.Name}}?: {{prop.TypeName}}
-    {{/isBaseDataType}}
-    {{else}}
-    {{#isArray TypeName}}
-    {{#if prop.MemberType.ModelName}}
-    {{prop.Name}}: List<I{{prop.MemberType.ModelName}}>
-    {{else}}
-    {{prop.Name}}: List<{{prop.MemberType.TypeName}}>
-    {{/if}}
-    {{/isArray}}
-    {{#isObject prop}}
-    {{prop.Name}}: I{{prop.ModelName}}
-    {{/isObject}}
-    {{#isBaseDataType prop}}
-    {{prop.Name}}{{#if prop.Autogenerate}}?{{else if prop.DefaultValue}}?{{/if}}: {{prop.TypeName}}
-    {{/isBaseDataType}}
-    {{/if}}
-    {{/each}}
+  {{#each Properties as |prop|}}
+  {{#if prop.AllowNull }}
+  {{#isArray TypeName}}
+  {{#if prop.MemberType.ModelName}}
+  {{prop.Name}}?: List<I{{prop.MemberType.ModelName}}>
+  {{else}}
+  {{prop.Name}}?: List<{{prop.MemberType.TypeName}}>
+  {{/if}}
+  {{/isArray}}
+  {{#isObject prop}}
+  {{prop.Name}}?: I{{prop.ModelName}}
+  {{/isObject}}
+  {{#isBaseDataType prop}}
+  {{prop.Name}}?: {{prop.TypeName}}
+  {{/isBaseDataType}}
+  {{else}}
+  {{#isArray TypeName}}
+  {{#if prop.MemberType.ModelName}}
+  {{prop.Name}}: List<I{{prop.MemberType.ModelName}}>
+  {{else}}
+  {{prop.Name}}: List<{{prop.MemberType.TypeName}}>
+  {{/if}}
+  {{/isArray}}
+  {{#isObject prop}}
+  {{prop.Name}}: I{{prop.ModelName}}
+  {{/isObject}}
+  {{#isBaseDataType prop}}
+  {{prop.Name}}{{#if prop.Autogenerate}}?{{else hasDefaultValue prop}}?{{/if}}: {{prop.TypeName}}
+  {{/isBaseDataType}}
+  {{/if}}
+  {{/each}}
 }

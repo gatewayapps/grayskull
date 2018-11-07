@@ -1,15 +1,18 @@
 type UserAccount {
-	dateCreated: Date!
+	userAccountId: Int!
+	firstName: String!
+	lastName: String!
 	emailAddress: String!
 	emailVerified: Boolean!
-	firstName: String!
 	lastActive: Date!
-	lastName: String!
 	lastPasswordChange: Date!
 	phoneNumber: String!
 	profileImageUrl: String!
-	userAccountId: Int!
 	isActive: Boolean!
+	createdBy: Int
+	createdAt: Date!
+	modifiedBy: Int
+	modifiedAt: Date!
 }
 
 input LoginArgs {
@@ -52,10 +55,22 @@ type UserAccountMeta {
 input UserAccountFilter {
   or: [UserAccountFilter!]
   and: [UserAccountFilter!]
-	dateCreated_lessThan: Date
-	dateCreated_greaterThan: Date
-	dateCreated_equals: Date
-	dateCreated_notEquals: Date
+	userAccountId_lessThan: Int
+	userAccountId_greaterThan: Int
+	userAccountId_equals: Int
+	userAccountId_notEquals: Int
+	firstName_contains: String
+	firstName_notContains: String
+	firstName_startsWith: String
+	firstName_endsWith: String
+	firstName_equals: String
+	firstName_notEquals: String
+	lastName_contains: String
+	lastName_notContains: String
+	lastName_startsWith: String
+	lastName_endsWith: String
+	lastName_equals: String
+	lastName_notEquals: String
 	emailAddress_contains: String
 	emailAddress_notContains: String
 	emailAddress_startsWith: String
@@ -64,32 +79,14 @@ input UserAccountFilter {
 	emailAddress_notEquals: String
 	emailVerified_equals: Boolean
 	emailVerified_notEquals: Boolean
-	firstName_contains: String
-	firstName_notContains: String
-	firstName_startsWith: String
-	firstName_endsWith: String
-	firstName_equals: String
-	firstName_notEquals: String
 	lastActive_lessThan: Date
 	lastActive_greaterThan: Date
 	lastActive_equals: Date
 	lastActive_notEquals: Date
-	lastName_contains: String
-	lastName_notContains: String
-	lastName_startsWith: String
-	lastName_endsWith: String
-	lastName_equals: String
-	lastName_notEquals: String
 	lastPasswordChange_lessThan: Date
 	lastPasswordChange_greaterThan: Date
 	lastPasswordChange_equals: Date
 	lastPasswordChange_notEquals: Date
-	passwordHash_contains: String
-	passwordHash_notContains: String
-	passwordHash_startsWith: String
-	passwordHash_endsWith: String
-	passwordHash_equals: String
-	passwordHash_notEquals: String
 	phoneNumber_contains: String
 	phoneNumber_notContains: String
 	phoneNumber_startsWith: String
@@ -102,17 +99,29 @@ input UserAccountFilter {
 	profileImageUrl_endsWith: String
 	profileImageUrl_equals: String
 	profileImageUrl_notEquals: String
-	userAccountId_lessThan: Int
-	userAccountId_greaterThan: Int
-	userAccountId_equals: Int
-	userAccountId_notEquals: Int
 	isActive_equals: Boolean
 	isActive_notEquals: Boolean
+	createdBy_lessThan: Int
+	createdBy_greaterThan: Int
+	createdBy_equals: Int
+	createdBy_notEquals: Int
+	createdAt_lessThan: Date
+	createdAt_greaterThan: Date
+	createdAt_equals: Date
+	createdAt_notEquals: Date
+	modifiedBy_lessThan: Int
+	modifiedBy_greaterThan: Int
+	modifiedBy_equals: Int
+	modifiedBy_notEquals: Int
+	modifiedAt_lessThan: Date
+	modifiedAt_greaterThan: Date
+	modifiedAt_equals: Date
+	modifiedAt_notEquals: Date
 }
 
 input UserAccountUniqueFilter {
-	emailAddress: String
 	userAccountId: Int
+	emailAddress: String
 }
 
 type Query {

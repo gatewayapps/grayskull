@@ -10,7 +10,7 @@ import moment from 'moment'
 import Cache from 'node-cache'
 import ClientService from './ClientService'
 import MailService from './MailService'
-import UserClientsService from './UserClientsService'
+import UserClientService from './UserClientService'
 
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
@@ -62,22 +62,22 @@ class UserAccountService extends UserAccountServiceBase {
     }
 
     // Lookup the user who is inviting the new user
-    const invitedByUser = await this.getUserAccountByuserAccountId(invitedById)
+    const invitedByUser = await this.getUserAccount({ userAccountId: invitedById })
     if (!invitedByUser || !invitedByUser.userAccountId) {
       throw new Error('invitedBy user account not found')
     }
 
     // Check to see if there is already a user
-    const user = await this.getUserAccountByemailAddress(emailAddress)
+    const user = await this.getUserAccount({ emailAddress })
     if (user && user.userAccountId) {
       // See if the user is already associated with the client
-      const userClient = await UserClientsService.getUserClient(user.userAccountId, client.client_id)
+      const userClient = await UserClientService.getUserClient({ userAccountId: user.userAccountId, client_id: client.client_id })
       if (userClient) {
         // User is already associated with the client nothing else to do
         return
       }
       // Link the client to the user
-      await UserClientsService.createUserClients({
+      await UserClientService.createUserClient({
         userAccountId: user.userAccountId,
         client_id: client.client_id,
         createdBy: invitedByUser.userAccountId,
@@ -99,7 +99,7 @@ class UserAccountService extends UserAccountServiceBase {
     const invitedById = decoded.invitedById
     let client
     if (decoded.client_id) {
-      client = await ClientService.getClientByclient_id(decoded.client_id)
+      client = await ClientService.getClient({ client_id: decoded.client_id })
     } else if (decoded.admin) {
       client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
     }
@@ -118,7 +118,7 @@ class UserAccountService extends UserAccountServiceBase {
     const user = await this.createUserAccountWithPassword(data, password)
 
     if (token.client && token.client.client_id) {
-      await UserClientsService.createUserClients({
+      await UserClientService.createUserClient({
         userAccountId: user.userAccountId!,
         client_id: token.client.client_id,
         createdBy: token.invitedById || user.userAccountId!,
@@ -126,7 +126,7 @@ class UserAccountService extends UserAccountServiceBase {
       })
     }
 
-    const client = token.client!.client_id ? await ClientService.getClientByclient_id(token.client!.client_id!) : await ClientService.getClientByclient_id(1)
+    const client = token.client!.client_id ? await ClientService.getClient({ client_id: token.client!.client_id! }) : await ClientService.getClient({ client_id: 1 })
     return {
       client,
       userAccount: user,

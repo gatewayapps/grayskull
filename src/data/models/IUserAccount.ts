@@ -1,14 +1,17 @@
 export interface IUserAccount {
-  dateCreated?: Date
-  emailAddress: string
-  emailVerified: boolean
+  userAccountId?: number
   firstName: string
-  lastActive?: Date
   lastName: string
+  emailAddress: string
+  emailVerified?: boolean
+  lastActive?: Date
   lastPasswordChange: Date
   passwordHash: string
   phoneNumber: string
   profileImageUrl: string
-  userAccountId?: number
   isActive?: boolean
+  createdBy?: number
+  createdAt?: Date
+  modifiedBy?: number
+  modifiedAt?: Date
 }

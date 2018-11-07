@@ -1,0 +1,9 @@
+UserClient:
+  properties:
+    userAccountId: integer unique('userClient')
+    client_id: integer unique('userClient')
+    createdBy: integer
+    createdAt: datetime default(NOW)
+    revoked: boolean default(false)
+    revokedBy: integer?
+    RevokedAt: datetime?

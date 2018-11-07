@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken'
 import moment from 'moment'
 import NodeCache from 'node-cache'
 import UserAccountService from './UserAccountService'
-import UserClientsService from './UserClientsService'
+import UserClientService from './UserClientService'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -44,7 +44,7 @@ class AuthenticationService {
   }
 
   public async authenticateUser(emailAddress: string, password: string, sessionId: string, clientId: number): Promise<string> {
-    const existingUser = await UserAccountService.getUserAccountByemailAddressWithSensitiveData(emailAddress)
+    const existingUser = await UserAccountService.getUserAccountWithSensitiveData({ emailAddress })
 
     if (!existingUser) {
       throw new Error('Invalid email address/password combination')
@@ -55,7 +55,7 @@ class AuthenticationService {
       throw new Error('Invalid email address/password combination')
     }
 
-    const userClient = await UserClientsService.getUserClient(existingUser.userAccountId!, clientId)
+    const userClient = await UserClientService.getUserClient({ userAccountId: existingUser.userAccountId!, client_id: clientId })
     if (!userClient) {
       throw new Error('You do not have access to login here. Contact your system administrator.')
     }
@@ -83,7 +83,7 @@ class AuthenticationService {
           throw new Error(`authorization_code has expired`)
         }
 
-        userAccount = await UserAccountService.getUserAccountByuserAccountId(authCodeCacheResult.userAccount.userAccountId || -1)
+        userAccount = await UserAccountService.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || -1 })
         if (!userAccount) {
           throw new Error(`Unable to locate user account`)
         }
@@ -103,7 +103,7 @@ class AuthenticationService {
           throw new Error(`Invalid refresh_token`)
         }
 
-        userAccount = await UserAccountService.getUserAccountByuserAccountId(decodedRefreshToken.userAccountId)
+        userAccount = await UserAccountService.getUserAccount({ userAccountId: decodedRefreshToken.userAccountId })
         break
       }
 
@@ -116,7 +116,7 @@ class AuthenticationService {
       throw new Error(`Unable to locate user account`)
     }
 
-    const userClient = await UserClientsService.getUserClient(userAccount.userAccountId!, client.client_id!)
+    const userClient = await UserClientService.getUserClient({ userAccountId: userAccount.userAccountId!, client_id: client.client_id! })
     if (!userClient) {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
@@ -134,9 +134,9 @@ class AuthenticationService {
 
   public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
     if (ConfigurationManager.Security.passwordExpiresDays > 0) {
-      const userAccount = await UserAccountService.getUserAccountByemailAddress(emailAddress)
+      const userAccount = await UserAccountService.getUserAccount({ emailAddress })
       if (userAccount) {
-        const lastPasswordChange = userAccount.lastPasswordChange || userAccount.dateCreated!
+        const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
         if (daysSincePasswordChange >= ConfigurationManager.Security.passwordExpiresDays) {
           return true
@@ -147,7 +147,7 @@ class AuthenticationService {
   }
 
   public async validateRedirectUri(client_id: number, redirectUri: string): Promise<boolean> {
-    const client = await ClientService.getClientByclient_id(client_id)
+    const client = await ClientService.getClient({ client_id })
     if (client) {
       return (
         !client.url ||

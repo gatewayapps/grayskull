@@ -3,18 +3,21 @@ UserAccount:
     sensitive:
       - 'passwordHash'
   properties:
-    dateCreated: datetime default(NOW)
-    emailAddress: string unique
-    emailVerified: boolean default(0)
+    userAccountId: integer primary auto(1,1)
     firstName: string(30)
-    lastActive: datetime default(NOW)
     lastName: string(30)
+    emailAddress: string unique
+    emailVerified: boolean default(false)
+    lastActive: datetime default(NOW)
     lastPasswordChange: datetime
     passwordHash: string
     phoneNumber: string
     profileImageUrl: string
-    userAccountId: integer primary auto(1,1)
     isActive: boolean default(true)
+    createdBy: integer?
+    createdAt: datetime default(NOW)
+    modifiedBy: integer?
+    modifiedAt: datetime default(NOW)
   operations:
       # Login User #
     login:

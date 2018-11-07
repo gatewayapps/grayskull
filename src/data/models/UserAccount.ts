@@ -6,25 +6,28 @@ export type UserAccountInstance = Sequelize.Instance<IUserAccount> & IUserAccoun
 
 function UserAccountFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IUserAccount> = {
-    dateCreated: {
-      defaultValue: Sequelize.NOW,
-      type: Sequelize.DATE
-    },
-    emailAddress: {
-      type: Sequelize.STRING
-    },
-    emailVerified: {
-      type: Sequelize.BOOLEAN
+    userAccountId: {
+      primaryKey: true,
+      autoIncrement: true,
+      type: Sequelize.INTEGER
     },
     firstName: {
       type: Sequelize.STRING
     },
+    lastName: {
+      type: Sequelize.STRING
+    },
+    emailAddress: {
+      unique: true,
+      type: Sequelize.STRING
+    },
+    emailVerified: {
+      defaultValue: false,
+      type: Sequelize.BOOLEAN
+    },
     lastActive: {
       defaultValue: Sequelize.NOW,
       type: Sequelize.DATE
-    },
-    lastName: {
-      type: Sequelize.STRING
     },
     lastPasswordChange: {
       type: Sequelize.DATE
@@ -38,14 +41,25 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     profileImageUrl: {
       type: Sequelize.STRING
     },
-    userAccountId: {
-      primaryKey: true,
-      autoIncrement: true,
-      type: Sequelize.INTEGER
-    },
     isActive: {
       defaultValue: true,
       type: Sequelize.BOOLEAN
+    },
+    createdBy: {
+      allowNull: true,
+      type: Sequelize.INTEGER
+    },
+    createdAt: {
+      defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    modifiedBy: {
+      allowNull: true,
+      type: Sequelize.INTEGER
+    },
+    modifiedAt: {
+      defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
     }
   }
   return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes)

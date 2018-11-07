@@ -5,5 +5,6 @@ module.exports = new cradle.EmitterOptions('sequelize-attributes', '@gatewayapps
   outputPath: './src/data/models/I{{Name}}.ts',
   overwriteExisting: true,
   languageType: 'ts',
-  onFilesEmitted: utils.lintAndPretty
+  onFilesEmitted: utils.lintAndPretty,
+  registerCustomHelpers: utils.registerHandleBarHelpers,
 })
