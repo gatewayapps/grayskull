@@ -36,12 +36,12 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async inviteAdmin(baseUrl: string) {
-    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, true)
+    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, ConfigurationManager.General.grayskullClientId)
     this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
   }
 
   public async sendResetPasswordMessage(emailAddress: string, baseUrl: string) {
-    const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, undefined)
+    const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, undefined)
     const relativeTime = moment()
       .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
       .fromNow(true)
@@ -89,11 +89,11 @@ class UserAccountService extends UserAccountServiceBase {
     }
 
     // 3. Send an inviation to the user
-    const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, client.client_id, invitedByUser.userAccountId)
+    const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, client.client_id, invitedByUser.userAccountId)
     this.sendInvitation(emailAddress, client.name, token, baseUrl, invitedByUser)
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; admin: boolean; invitedById?: number }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; invitedById?: number }> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     const invitedById = decoded.invitedById
@@ -109,14 +109,13 @@ class UserAccountService extends UserAccountServiceBase {
     return {
       client,
       emailAddress,
-      admin: decoded.admin,
       invitedById
     }
   }
 
   public async registerUser(data: IUserAccount, password: string, cpt: string) {
-    const user = await this.createUserAccountWithPassword(data, password)
     const token = await this.processCPT(cpt)
+    const user = await this.createUserAccountWithPassword(data, password)
 
     if (token.client && token.client.client_id) {
       await UserClientsService.createUserClients({
@@ -175,12 +174,11 @@ class UserAccountService extends UserAccountServiceBase {
     MailService.sendMail(emailAddress, `${clientName} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
-  private generateCPT(emailAddress: string, expiresIn: number, admin: boolean, client_id?: number, invitedById?: number): string {
+  private generateCPT(emailAddress: string, expiresIn: number, client_id?: number, invitedById?: number): string {
     const newToken = jwt.sign(
       {
         emailAddress,
         client_id,
-        admin: ConfigurationManager.Security.adminEmailAddress === emailAddress ? true : undefined,
         invitedById,
       },
       ConfigurationManager.Security.globalSecret,

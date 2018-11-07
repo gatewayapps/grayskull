@@ -1,4 +1,4 @@
-import ClientService from '../../../api/services/ClientService'
+import ClientService from '@services/ClientService'
 
 export default {
   Query: {
@@ -6,11 +6,18 @@ export default {
       // Insert your clients implementation here
       throw new Error('clients is not implemented')
     },
-    clientByClientId: (obj, args, context, info) => {
-      // Insert your clientByClientId implementation here
-      return ClientService.getClientByclient_id(args.clientId)
+    clientsMeta: (obj, args, context, info) => {
+      // Insert your clientsMeta implementation here
+      throw new Error('clientsMeta is not implemented')
+    },
+    client: (obj, args, context, info) => {
+      return ClientService.getClientByclient_id(args.where.client_id)
     }
   },
-  Mutation: {},
-  Client: {}
+  Mutation: {
+
+  },
+  Client: {
+
+  }
 }

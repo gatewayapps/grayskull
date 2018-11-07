@@ -1,5 +1,6 @@
 module.exports = {
   General: {
+    grayskullClientId: 1,
     clientsFilePath: '../config/clients.json',
     port: 3000,
     realmName: 'Grayskull',

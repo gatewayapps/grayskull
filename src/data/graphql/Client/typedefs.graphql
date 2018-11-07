@@ -1,13 +1,61 @@
 type Client {
 	client_id: Int!
 	name: String!
-	logoImageUrl: String!
-	description: String!
-	url: String!
+	logoImageUrl: String
+	description: String
+	url: String
+}
+
+
+type ClientMeta {
+	count: Int!
+}
+
+input ClientFilter {
+  or: [ClientFilter!]
+  and: [ClientFilter!]
+	client_id_lessThan: Int
+	client_id_greaterThan: Int
+	client_id_equals: Int
+	client_id_notEquals: Int
+	name_contains: String
+	name_notContains: String
+	name_startsWith: String
+	name_endsWith: String
+	name_equals: String
+	name_notEquals: String
+	logoImageUrl_contains: String
+	logoImageUrl_notContains: String
+	logoImageUrl_startsWith: String
+	logoImageUrl_endsWith: String
+	logoImageUrl_equals: String
+	logoImageUrl_notEquals: String
+	description_contains: String
+	description_notContains: String
+	description_startsWith: String
+	description_endsWith: String
+	description_equals: String
+	description_notEquals: String
+	url_contains: String
+	url_notContains: String
+	url_startsWith: String
+	url_endsWith: String
+	url_equals: String
+	url_notEquals: String
+	secret_contains: String
+	secret_notContains: String
+	secret_startsWith: String
+	secret_endsWith: String
+	secret_equals: String
+	secret_notEquals: String
+}
+
+input ClientUniqueFilter {
+	client_id: Int
 }
 
 type Query {
-	clients(offset: Int, limit: Int): [Client]
-	clientByClientId(clientId: Int!): Client
+	clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
+	clientsMeta(filter: ClientFilter): ClientMeta
+	client(where: ClientUniqueFilter): Client
 }
-

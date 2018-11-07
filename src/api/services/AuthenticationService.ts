@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken'
 import moment from 'moment'
 import NodeCache from 'node-cache'
 import UserAccountService from './UserAccountService'
-import UserClientsService from './UserClientsService';
+import UserClientsService from './UserClientsService'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -55,11 +55,9 @@ class AuthenticationService {
       throw new Error('Invalid email address/password combination')
     }
 
-    if (!existingUser.isGlobalAdmin) {
-      const userClient = await UserClientsService.getUserClient(existingUser.userAccountId!, clientId)
-      if (!userClient) {
-        throw new Error('You do not have access to login here. Contact your system administrator.')
-      }
+    const userClient = await UserClientsService.getUserClient(existingUser.userAccountId!, clientId)
+    if (!userClient) {
+      throw new Error('You do not have access to login here. Contact your system administrator.')
     }
 
     return this.generateAndCacheAuthorizationCode(existingUser, sessionId)

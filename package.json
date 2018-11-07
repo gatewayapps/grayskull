@@ -25,7 +25,7 @@
   "devDependencies": {
     "@babel/parser": "^7.1.2",
     "@gatewayapps/cradle": "^0.2.2",
-    "@gatewayapps/cradle-apollo-emitter": "0.1.0",
+    "@gatewayapps/cradle-apollo-emitter": "^0.1.5",
     "@gatewayapps/cradle-template-emitter": "^0.2.1",
     "@types/bcrypt": "^3.0.0",
     "@types/bluebird": "^3.5.24",

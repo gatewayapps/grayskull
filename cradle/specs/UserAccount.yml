@@ -14,7 +14,6 @@ UserAccount:
     phoneNumber: string
     profileImageUrl: string
     userAccountId: integer primary auto(1,1)
-    isGlobalAdmin: boolean default(0)
     isActive: boolean default(true)
   operations:
       # Login User #

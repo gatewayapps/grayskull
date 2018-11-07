@@ -59,7 +59,7 @@ app.prepare().then(() => {
   // console.log('Initializing database connection')
   db.sequelize
     .sync()
-    .then(ensureClients)
+    .then(ensureGrayskullClient)
     .then(ensureAdmin)
     .then(() => {
       /* eslint-disable no-console */
@@ -75,24 +75,22 @@ app.prepare().then(() => {
     })
 })
 
-function ensureClients(): Promise<any> {
-  return Promise.all(
-    clients.map((c) => {
-      return ClientService.getClientByclient_id(c.client_id).then((client) => {
-        if (client) {
-          return ClientService.updateClientByclient_id(c, c.client_id)
-        } else {
-          return ClientService.createClient(c)
-        }
-      })
+async function ensureGrayskullClient(): Promise<void> {
+  const grayskullClient = await ClientService.getClientByclient_id(ConfigurationManager.General.grayskullClientId)
+  if (!grayskullClient) {
+    await ClientService.createClient({
+      client_id: ConfigurationManager.General.grayskullClientId,
+      name: ConfigurationManager.General.realmName,
+      url: ConfigurationManager.General.fallbackUrl,
+      secret: ConfigurationManager.Security.globalSecret,
+      logoImageUrl: '/static/grayskull.gif',
     })
-  )
+  }
 }
 
-async function ensureAdmin(): Promise<any> {
+async function ensureAdmin(): Promise<void> {
   const user = await UserAccountService.getUserAccountByemailAddress(ConfigurationManager.Security.adminEmailAddress)
   if (!user) {
-    // We use client_id -1 as admin
     UserAccountService.inviteAdmin(ConfigurationManager.General.fallbackUrl)
   }
 }

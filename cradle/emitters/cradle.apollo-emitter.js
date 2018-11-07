@@ -6,6 +6,7 @@ module.exports = new cradle.EmitterOptions(
   '@gatewayapps/cradle-apollo-emitter',
   {
     outputDirectory: './src/data/graphql/',
+    outputType: 'typescript',
     shouldTypeIncludeProperty: (model, propertyName, propertyType) => (!utils.isFieldSensitive(model, propertyName)),
     shouldTypeIncludeReference: (model, referenceName, referenceType) => (!utils.isFieldSensitive(model, referenceName)),
     modelOutputPath: (modelName) => `./src/data/graphql/types/${modelName}.ts`,

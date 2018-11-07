@@ -9,7 +9,6 @@ type UserAccount {
 	phoneNumber: String!
 	profileImageUrl: String!
 	userAccountId: Int!
-	isGlobalAdmin: Boolean!
 	isActive: Boolean!
 }
 
@@ -45,10 +44,81 @@ input CreateUserAccountArgs {
 	lastName: String!
 }
 
+
+type UserAccountMeta {
+	count: Int!
+}
+
+input UserAccountFilter {
+  or: [UserAccountFilter!]
+  and: [UserAccountFilter!]
+	dateCreated_lessThan: Date
+	dateCreated_greaterThan: Date
+	dateCreated_equals: Date
+	dateCreated_notEquals: Date
+	emailAddress_contains: String
+	emailAddress_notContains: String
+	emailAddress_startsWith: String
+	emailAddress_endsWith: String
+	emailAddress_equals: String
+	emailAddress_notEquals: String
+	emailVerified_equals: Boolean
+	emailVerified_notEquals: Boolean
+	firstName_contains: String
+	firstName_notContains: String
+	firstName_startsWith: String
+	firstName_endsWith: String
+	firstName_equals: String
+	firstName_notEquals: String
+	lastActive_lessThan: Date
+	lastActive_greaterThan: Date
+	lastActive_equals: Date
+	lastActive_notEquals: Date
+	lastName_contains: String
+	lastName_notContains: String
+	lastName_startsWith: String
+	lastName_endsWith: String
+	lastName_equals: String
+	lastName_notEquals: String
+	lastPasswordChange_lessThan: Date
+	lastPasswordChange_greaterThan: Date
+	lastPasswordChange_equals: Date
+	lastPasswordChange_notEquals: Date
+	passwordHash_contains: String
+	passwordHash_notContains: String
+	passwordHash_startsWith: String
+	passwordHash_endsWith: String
+	passwordHash_equals: String
+	passwordHash_notEquals: String
+	phoneNumber_contains: String
+	phoneNumber_notContains: String
+	phoneNumber_startsWith: String
+	phoneNumber_endsWith: String
+	phoneNumber_equals: String
+	phoneNumber_notEquals: String
+	profileImageUrl_contains: String
+	profileImageUrl_notContains: String
+	profileImageUrl_startsWith: String
+	profileImageUrl_endsWith: String
+	profileImageUrl_equals: String
+	profileImageUrl_notEquals: String
+	userAccountId_lessThan: Int
+	userAccountId_greaterThan: Int
+	userAccountId_equals: Int
+	userAccountId_notEquals: Int
+	isActive_equals: Boolean
+	isActive_notEquals: Boolean
+}
+
+input UserAccountUniqueFilter {
+	emailAddress: String
+	userAccountId: Int
+}
+
 type Query {
-	userAccounts(offset: Int, limit: Int): [UserAccount]
-	userAccountByEmailAddress(emailAddress: String!): UserAccount
-	userAccountByUserAccountId(userAccountId: Int!): UserAccount
+	userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]!
+	userAccountsMeta(filter: UserAccountFilter): UserAccountMeta
+	userAccount(where: UserAccountUniqueFilter): UserAccount
 }
 
 type Mutation {

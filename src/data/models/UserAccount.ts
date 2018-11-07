@@ -43,9 +43,6 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       autoIncrement: true,
       type: Sequelize.INTEGER
     },
-    isGlobalAdmin: {
-      type: Sequelize.BOOLEAN
-    },
     isActive: {
       defaultValue: true,
       type: Sequelize.BOOLEAN
