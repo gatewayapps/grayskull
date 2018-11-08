@@ -1,0 +1,13 @@
+jobs:
+- job: Test
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: NodeTool@0 
+    inputs:
+      versionSpec: '10.x'
+  - script: |
+      npm rebuild node-sass
+      npm install
+      npx tslint --project ./
+      npx tsc
