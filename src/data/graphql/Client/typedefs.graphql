@@ -1,13 +1,112 @@
 type Client {
 	client_id: Int!
 	name: String!
-	logoImageUrl: String!
-	description: String!
+	logoImageUrl: String
+	description: String
 	url: String!
+	redirectUri: String!
+	isActive: Boolean!
+	createdBy: Int
+	createdAt: Date!
+	modifiedBy: Int
+	modifiedAt: Date!
+	createdByUser: UserAccount
+	modifiedByUser: UserAccount
+}
+
+input CreateClientArgs {
+	name: String!
+	logoImageUrl: String
+	description: String
+	secret: String!
+	url: String!
+	redirectUri: String!
+	isActive: Boolean!
+}
+
+input UpdateClientArgs {
+	client_id: Int!
+	name: String!
+	logoImageUrl: String
+	description: String
+	url: String!
+	redirectUri: String!
+	isActive: Boolean!
+}
+
+
+type ClientMeta {
+	count: Int!
+}
+
+input ClientFilter {
+  or: [ClientFilter!]
+  and: [ClientFilter!]
+	client_id_lessThan: Int
+	client_id_greaterThan: Int
+	client_id_equals: Int
+	client_id_notEquals: Int
+	name_contains: String
+	name_notContains: String
+	name_startsWith: String
+	name_endsWith: String
+	name_equals: String
+	name_notEquals: String
+	logoImageUrl_contains: String
+	logoImageUrl_notContains: String
+	logoImageUrl_startsWith: String
+	logoImageUrl_endsWith: String
+	logoImageUrl_equals: String
+	logoImageUrl_notEquals: String
+	description_contains: String
+	description_notContains: String
+	description_startsWith: String
+	description_endsWith: String
+	description_equals: String
+	description_notEquals: String
+	url_contains: String
+	url_notContains: String
+	url_startsWith: String
+	url_endsWith: String
+	url_equals: String
+	url_notEquals: String
+	redirectUri_contains: String
+	redirectUri_notContains: String
+	redirectUri_startsWith: String
+	redirectUri_endsWith: String
+	redirectUri_equals: String
+	redirectUri_notEquals: String
+	isActive_equals: Boolean
+	isActive_notEquals: Boolean
+	createdBy_lessThan: Int
+	createdBy_greaterThan: Int
+	createdBy_equals: Int
+	createdBy_notEquals: Int
+	createdAt_lessThan: Date
+	createdAt_greaterThan: Date
+	createdAt_equals: Date
+	createdAt_notEquals: Date
+	modifiedBy_lessThan: Int
+	modifiedBy_greaterThan: Int
+	modifiedBy_equals: Int
+	modifiedBy_notEquals: Int
+	modifiedAt_lessThan: Date
+	modifiedAt_greaterThan: Date
+	modifiedAt_equals: Date
+	modifiedAt_notEquals: Date
+}
+
+input ClientUniqueFilter {
+	client_id: Int
 }
 
 type Query {
-	clients(offset: Int, limit: Int): [Client]
-	clientByClientId(clientId: Int!): Client
+	clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
+	clientsMeta(filter: ClientFilter): ClientMeta
+	client(where: ClientUniqueFilter): Client
 }
 
+type Mutation {
+	createClient(data: CreateClientArgs!): Client
+	updateClient(data: UpdateClientArgs!): Client
+}

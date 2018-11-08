@@ -6,5 +6,6 @@ module.exports = new cradle.EmitterOptions('service-base', '@gatewayapps/cradle-
   outputPath: './src/api/services/.cradle/{{Name}}ServiceBase.ts',
   overwriteExisting: true,
   languageType: 'ts',
-  onFilesEmitted: utils.lintAndPretty
+  onFilesEmitted: utils.lintAndPretty,
+  registerCustomHelpers: utils.registerHandleBarHelpers,
 })

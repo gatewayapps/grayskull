@@ -1,17 +1,16 @@
+import ConfigurationManager from '@/config/ConfigurationManager'
 import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
 import UserAccountServiceBase from '@services/UserAccountServiceBase'
 import bcrypt from 'bcrypt'
-
-import ConfigurationManager from '@/config/ConfigurationManager'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
+import Cache from 'node-cache'
 import ClientService from './ClientService'
 import MailService from './MailService'
-
-import Cache from 'node-cache'
+import UserClientService from './UserClientService'
 
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
@@ -37,12 +36,12 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async inviteAdmin(baseUrl: string) {
-    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, true)
+    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, ConfigurationManager.General.grayskullClientId)
     this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
   }
 
   public async sendResetPasswordMessage(emailAddress: string, baseUrl: string) {
-    const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, undefined)
+    const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, undefined)
     const relativeTime = moment()
       .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
       .fromNow(true)
@@ -56,20 +55,51 @@ class UserAccountService extends UserAccountServiceBase {
     MailService.sendMail(emailAddress, `Password Reset Instructions`, body, 'admin@grayskull.io')
   }
 
-  public async inviteUser(emailAddress: string, client_id: number, baseUrl: string) {
-    const client = await ClientService.getClientByclient_id(client_id)
-    if (client) {
-      const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, false, client_id)
-      this.sendInvitation(emailAddress, client.name, token, baseUrl)
+  public async inviteUser(emailAddress: string, client: ClientInstance, invitedById: number, baseUrl: string): Promise<void> {
+    // Verify we have valid client instance
+    if (!client || !client.client_id) {
+      throw new Error('Invalid client')
     }
+
+    // Lookup the user who is inviting the new user
+    const invitedByUser = await this.getUserAccount({ userAccountId: invitedById })
+    if (!invitedByUser || !invitedByUser.userAccountId) {
+      throw new Error('invitedBy user account not found')
+    }
+
+    // Check to see if there is already a user
+    const user = await this.getUserAccount({ emailAddress })
+    if (user && user.userAccountId) {
+      // See if the user is already associated with the client
+      const userClient = await UserClientService.getUserClient({ userAccountId: user.userAccountId, client_id: client.client_id })
+      if (userClient) {
+        // User is already associated with the client nothing else to do
+        return
+      }
+      // Link the client to the user
+      await UserClientService.createUserClient({
+        userAccountId: user.userAccountId,
+        client_id: client.client_id,
+        createdBy: invitedByUser.userAccountId,
+        revoked: false,
+      })
+      // Send an email to the user to notify them of the new access
+      this.sendNewClientAccess(user.emailAddress, client, invitedByUser)
+      return
+    }
+
+    // 3. Send an inviation to the user
+    const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, client.client_id, invitedByUser.userAccountId)
+    this.sendInvitation(emailAddress, client.name, token, baseUrl, invitedByUser)
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; admin: boolean }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; invitedById?: number }> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
+    const invitedById = decoded.invitedById
     let client
     if (decoded.client_id) {
-      client = await ClientService.getClientByclient_id(decoded.client_id)
+      client = await ClientService.getClient({ client_id: decoded.client_id })
     } else if (decoded.admin) {
       client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
     }
@@ -79,7 +109,27 @@ class UserAccountService extends UserAccountServiceBase {
     return {
       client,
       emailAddress,
-      admin: decoded.admin
+      invitedById
+    }
+  }
+
+  public async registerUser(data: IUserAccount, password: string, cpt: string) {
+    const token = await this.processCPT(cpt)
+    const user = await this.createUserAccountWithPassword(data, password)
+
+    if (token.client && token.client.client_id) {
+      await UserClientService.createUserClient({
+        userAccountId: user.userAccountId!,
+        client_id: token.client.client_id,
+        createdBy: token.invitedById || user.userAccountId!,
+        revoked: false,
+      })
+    }
+
+    const client = token.client!.client_id ? await ClientService.getClient({ client_id: token.client!.client_id! }) : await ClientService.getClient({ client_id: 1 })
+    return {
+      client,
+      userAccount: user,
     }
   }
 
@@ -102,26 +152,34 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string) {
+  private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance) {
+    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.url}">${client.name}</a>.`
+    MailService.sendMail(emailAddress, `${client.name} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
+  }
+
+  private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, invitedByUser?: UserAccountInstance) {
     const relativeTime = moment()
       .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
       .fromNow(true)
 
-    const body = `Please click the following link to accept your invitation to register for ${clientName}
-    <a href='${baseUrl}/register?cpt=${token}' target='_blank'>Register</a>
+    const invitedByMessage = invitedByUser
+      ? `<p>${invitedByUser.firstName} ${invitedByUser.lastName} has invited you to start using ${clientName}.</p>`
+      : ''
 
-    This link will expire in ${relativeTime}.
+    const body = `${invitedByMessage}<p>Please click the following link to accept your invitation to register for ${clientName}
+    <a href='${baseUrl}/register?cpt=${token}' target='_blank'>Register</a></p>
+    <p>This link will expire in ${relativeTime}.</p>
     `
 
-    MailService.sendMail(emailAddress, `${clientName} Invitation`, body, 'admin@grayskull.io')
+    MailService.sendMail(emailAddress, `${clientName} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
-  private generateCPT(emailAddress: string, expiresIn: number, admin: boolean, client_id?: number): string {
+  private generateCPT(emailAddress: string, expiresIn: number, client_id?: number, invitedById?: number): string {
     const newToken = jwt.sign(
       {
         emailAddress,
         client_id,
-        admin: ConfigurationManager.Security.adminEmailAddress === emailAddress ? true : undefined
+        invitedById,
       },
       ConfigurationManager.Security.globalSecret,
       {

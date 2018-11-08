@@ -1,9 +1,10 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import Sequelize from 'sequelize'
 
-import ClientFactory from './models/Client'
 import UserAccountFactory from './models/UserAccount'
-import UserClientsFactory from './models/UserClients'
+import ClientFactory from './models/Client'
+import UserClientFactory from './models/UserClient'
+import SessionFactory from './models/Session'
 
 const sequelize = new Sequelize(ConfigurationManager.General.databaseConnectionString)
 
@@ -12,7 +13,8 @@ const db = {
   Sequelize,
   UserAccount: UserAccountFactory(sequelize),
   Client: ClientFactory(sequelize),
-  UserClients: UserClientsFactory(sequelize)
+  UserClient: UserClientFactory(sequelize),
+  Session: SessionFactory(sequelize)
 }
 
 Object.values(db).forEach((model: any) => {

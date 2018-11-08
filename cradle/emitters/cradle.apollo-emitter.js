@@ -6,6 +6,8 @@ module.exports = new cradle.EmitterOptions(
   '@gatewayapps/cradle-apollo-emitter',
   {
     outputDirectory: './src/data/graphql/',
+    outputType: 'typescript',
+    shouldOutputResolverFiles: false,
     shouldTypeIncludeProperty: (model, propertyName, propertyType) => (!utils.isFieldSensitive(model, propertyName)),
     shouldTypeIncludeReference: (model, referenceName, referenceType) => (!utils.isFieldSensitive(model, referenceName)),
     modelOutputPath: (modelName) => `./src/data/graphql/types/${modelName}.ts`,
@@ -41,7 +43,7 @@ module.exports = new cradle.EmitterOptions(
     verbose: true,
     onComplete: utils.lintAndPretty,
     isModelToplevel: (model) => {
-      return !['UserClients'].includes(model.Name)
+      return !['UserClient', 'Session'].includes(model.Name)
     },
     registerCustomHelpers: utils.registerHandleBarHelpers
   },

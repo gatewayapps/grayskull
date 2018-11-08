@@ -26,38 +26,41 @@ function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
     {{/if}} --}}
     {{/isArray}}
     {{#isObject prop}}
-     {{!-- {{prop.Name}}?: {{prop.ModelName}}, --}}
+    {{!-- {{prop.Name}}?: {{prop.ModelName}}, --}}
     {{/isObject}}
     {{#isBaseDataType prop}}
-     {{prop.Name}}: {
+    {{prop.Name}}: {
       allowNull: true,
       type: Sequelize.{{prop.TypeName}}
-     },
+    },
     {{/isBaseDataType}}
     {{else}}
     {{#isArray TypeName}}
     {{!-- {{#if prop.MemberType.ModelName}}
-     {{prop.Name}}: List<{{prop.MemberType.ModelName}}>,
+    {{prop.Name}}: List<{{prop.MemberType.ModelName}}>,
     {{else}}
-     {{prop.Name}}: List<Sequelize.{{prop.MemberType.TypeName}}>,
+    {{prop.Name}}: List<Sequelize.{{prop.MemberType.TypeName}}>,
     {{/if}} --}}
     {{/isArray}}
     {{#isObject prop}}
-     {{!-- {{prop.Name}}: {{prop.ModelName}}, --}}
+    {{!-- {{prop.Name}}: {{prop.ModelName}}, --}}
     {{/isObject}}
     {{#isBaseDataType prop}}
-     {{prop.Name}}: {
-       {{#if prop.IsPrimaryKey}}
-       primaryKey: true,
-       {{/if}}
-       {{#if prop.Autogenerate}}
-       autoIncrement: true,
-       {{/if}}
-       {{#if prop.DefaultValue}}
-          defaultValue: {{{prop.DefaultValue}}},
-       {{/if}}
-       type: Sequelize.{{prop.TypeName}}
-     },
+    {{prop.Name}}: {
+      {{#if prop.IsPrimaryKey}}
+      primaryKey: true,
+      {{/if}}
+      {{#if prop.Autogenerate}}
+      autoIncrement: true,
+      {{/if}}
+      {{#if prop.Unique}}
+      unique: {{{getUniqueValue prop.Unique}}},
+      {{/if}}
+      {{#hasDefaultValue prop}}
+      defaultValue: {{{prop.DefaultValue}}},
+      {{/hasDefaultValue}}
+      type: Sequelize.{{prop.TypeName}}
+    },
     {{/isBaseDataType}}
     {{/if}}
     {{/each}}

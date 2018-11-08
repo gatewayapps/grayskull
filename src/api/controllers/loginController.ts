@@ -1,3 +1,4 @@
+import ConfigurationManager from '@/config/ConfigurationManager'
 import { query, queryMustEqual } from '@decorators/paramDecorator'
 import { HttpMethod, route } from '@decorators/routeDecorator'
 import AuthenticationService from '@services/AuthenticationService'
@@ -5,6 +6,9 @@ import ClientService from '@services/ClientService'
 import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
+import { setAuthCookies, decodeState } from '@/utils/authentication'
+import { access } from 'fs';
+import SessionService from '@services/SessionService';
 
 export default class LoginController extends ControllerBase {
   @route(HttpMethod.POST, '/access_token')
@@ -30,8 +34,36 @@ export default class LoginController extends ControllerBase {
       res.status(400).send()
       return
     } else {
-      // res.locals.client = await ClientService.getClientByclient_id(parseInt(req.query.client_id, 10))
       return this.next.render(req, res, '/login', req.query)
+    }
+  }
+
+  @route(HttpMethod.POST, '/auth')
+  @query('client_id', 'response_type', 'redirect_uri')
+  @queryMustEqual('response_type', 'code')
+  public async processLoginRequest(req: Request, res: Response) {
+    try {
+      if ((await this.validateLoginRequest(req)) === false) {
+        res.status(400).send()
+        return
+      } else if (!req.body.sessionId) {
+        console.log('Received auth post without a sessionId')
+        res.status(400).send()
+        return
+      } else {
+        const authorizationCode = await AuthenticationService.authenticateUser(req.body.emailAddress, req.body.password, req.body.sessionId, parseInt(req.query.client_id, 10))
+        if (authorizationCode) {
+          const queryParts = [`code=${authorizationCode}`]
+          if (req.query.state) {
+            queryParts.push(`state=${req.query.state}`)
+          }
+          const queryString = queryParts.join('&')
+          return res.redirect(`${req.query.redirect_uri}?${queryString}`)
+        }
+      }
+    } catch (err) {
+      res.locals.error = { message: err.message }
+      return this.renderLoginPage(req, res)
     }
   }
 
@@ -73,7 +105,7 @@ export default class LoginController extends ControllerBase {
       }
       return this.next.render(req, res, '/resetPassword/changePassword', req.query)
     } else {
-      const userAccount = await UserAccountService.getUserAccountByemailAddress(req.body.emailAddress)
+      const userAccount = await UserAccountService.getUserAccount({ emailAddress: req.body.emailAddress })
       if (userAccount) {
         await UserAccountService.sendResetPasswordMessage(req.body.emailAddress, req.baseUrl)
       }
@@ -82,29 +114,36 @@ export default class LoginController extends ControllerBase {
     return this.next.render(req, res, '/resetPassword', req.query)
   }
 
-  @route(HttpMethod.POST, '/auth')
-  @query('client_id', 'response_type', 'redirect_uri')
-  @queryMustEqual('response_type', 'code')
-  public async processLoginRequest(req: Request, res: Response) {
-    if ((await this.validateLoginRequest(req)) === false) {
-      res.status(400).send()
-      return
-    } else if (!req.body.sessionId) {
-      console.log('Received auth post without a sessionId')
-    } else {
-      const authorizationCode = await AuthenticationService.authenticateUser(req.body.emailAddress, req.body.password, req.body.sessionId)
-      if (authorizationCode) {
-        const queryParts = [`code=${authorizationCode}`]
-        if (req.query.state) {
-          queryParts.push(`state=${req.query.state}`)
-        }
-        const queryString = queryParts.join('&')
-        return res.redirect(`${req.query.redirect_uri}?${queryString}`)
-      }
-    }
+  @route(HttpMethod.GET, '/signin')
+  @query('code')
+  public async getSignin(req: Request, res: Response) {
+    try {
+      // 1. Get accessToken via AuthenticationService
+      const accessToken = await AuthenticationService.getAccessToken('authorization_code',
+        ConfigurationManager.General.grayskullClientId,
+        ConfigurationManager.Security.globalSecret,
+        req.query.code)
 
-    res.locals.error = { message: 'Invalid email address/password combination' }
-    return this.renderLoginPage(req, res)
+      if (!accessToken.session_id) {
+        throw new Error('Session not found')
+      }
+
+      // 2. Store sessionId and refreshToken to the database
+      const sessionId = `${accessToken.session_id}:${Date.now()}`
+      await SessionService.createSession({ sessionId, refreshToken: accessToken.refresh_token })
+
+      // 3. Set sessionId and accessToken cookies
+      setAuthCookies(res, sessionId, accessToken.access_token, accessToken.expires_in * 1000)
+
+      // 4. Redirect to returnUrl or home page
+      const state = decodeState(req.query.state)
+      const returnPath = state && state.returnPath ? state.returnPath : '/'
+      res.redirect(returnPath)
+    } catch (err) {
+      console.error(err)
+      res.locals.error = { message: err.message }
+      return this.renderLoginPage(req, res)
+    }
   }
 
   private async validateLoginRequest(req: Request): Promise<boolean> {

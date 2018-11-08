@@ -7,5 +7,38 @@ Client:
     name: string(50)
     logoImageUrl: string?
     description: string(500)?
-    url: string?
-    secret: string?
+    secret: string
+    url: string
+    redirectUri: string
+    isActive: boolean default(true)
+    createdBy: integer?
+    createdAt: datetime default(NOW)
+    modifiedBy: integer?
+    modifiedAt: datetime default(NOW)
+  references:
+    createdByUser: single of UserAccount on createdBy
+    modifiedByUser: single of UserAccount on modifiedBy
+  operations:
+    createClient:
+      returns: Client
+      arguments:
+        name:
+        logoImageUrl:
+        description:
+        secret:
+        url:
+        redirectUri:
+        isActive:
+    updateClient:
+      returns: Client
+      arguments:
+        client_id:
+        name:
+        logoImageUrl:
+        description:
+        url:
+        redirectUri:
+        isActive:
+
+
+

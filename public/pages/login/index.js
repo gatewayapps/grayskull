@@ -7,8 +7,8 @@ import Primary from '../../layouts/primary'
 import generateFingerprint from '../../utils/generateFingerprint'
 
 const GET_CLIENT_QUERY = gql`
-  query GET_CLIENT($id: Int!) {
-    clientByClientId(clientId: $id) {
+  query GET_CLIENT($client_id: Int!) {
+    client(where: { client_id: $client_id }) {
       client_id
       name
       logoImageUrl
@@ -90,16 +90,16 @@ class Login extends React.PureComponent {
 
     return (
       <Primary>
-        <Query fetchPolicy="" query={GET_CLIENT_QUERY} variables={{ id: parseInt(this.props.query.client_id) }}>
+        <Query fetchPolicy="" query={GET_CLIENT_QUERY} variables={{ client_id: parseInt(this.props.query.client_id) }}>
           {({ loading, error, data }) => {
             if (loading) {
               return <LoadingIndicator />
             } else if (error) {
               return <ErrorMessage error={error} />
-            } else if (!data || !data.clientByClientId) {
+            } else if (!data || !data.client) {
               return <div>No client found</div>
             } else {
-              return this.renderLoginBody(data.clientByClientId)
+              return this.renderLoginBody(data.client)
             }
           }}
         </Query>

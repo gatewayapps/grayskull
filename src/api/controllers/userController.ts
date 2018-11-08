@@ -1,15 +1,29 @@
-import ClientService from '@services/ClientService'
-
+import ConfigurationManager from '@/config/ConfigurationManager'
+import { query } from '@decorators/paramDecorator'
 import { HttpMethod, route } from '@decorators/routeDecorator'
+import AuthenticationService from '@services/AuthenticationService'
+import ClientService from '@services/ClientService'
 import UserAccountService from '@services/UserAccountService'
 import ControllerBase from './ControllerBase'
-
-import { query } from '@decorators/paramDecorator'
-import AuthenticationService from '@services/AuthenticationService'
 
 import { Request, Response } from 'express'
 
 export default class UserController extends ControllerBase {
+  @route(HttpMethod.POST, '/user/invite')
+  public async inviteUser(req: Request, res: Response) {
+    try {
+      const client = await ClientService.validateClient(req.body.client_id, req.body.client_secret)
+      if (!client) {
+        res.status(400).send({ success: false, message: 'Unable to verify client. Check your client_id and client_secret.' })
+        return
+      }
+      await UserAccountService.inviteUser(req.body.emailAddress, client, req.body.invitedBy, req.baseUrl)
+      res.send({ success: true })
+    } catch (err) {
+      res.status(400).send({ success: false, message: err.message })
+    }
+  }
+
   @route(HttpMethod.GET, '/register')
   @query('cpt')
   public async getRegisterPage(req: Request, res: Response) {
@@ -23,12 +37,9 @@ export default class UserController extends ControllerBase {
       res.status(400).send()
     } else {
       try {
-        const isPasswordValid = await AuthenticationService.validatePassword(req.body.password, req.body.confirm)
-
-        const user = await UserAccountService.createUserAccountWithPassword(req.body, req.body.password)
-        const token = await UserAccountService.processCPT(req.query.cpt)
-        const client = token.client!.client_id ? await ClientService.getClientByclient_id(token.client!.client_id!) : await ClientService.getClientByclient_id(1)
-        return res.redirect(`/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.url!)}`)
+        await AuthenticationService.validatePassword(req.body.password, req.body.confirm)
+        const { client } = await UserAccountService.registerUser(req.body, req.body.password, req.query.cpt)
+        return res.redirect(`/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.redirectUri)}`)
       } catch (err) {
         res.locals.error = { message: err.message }
         return this.renderRegisterPage(req, res)

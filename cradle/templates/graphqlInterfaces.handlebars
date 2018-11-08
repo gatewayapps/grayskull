@@ -1,0 +1,62 @@
+export interface I{{Name}}Meta {
+  count: number
+}
+
+export interface I{{Name}}Filter {
+  or?: [I{{Name}}Filter]
+  and?: [I{{Name}}Filter]
+  {{#each Properties as |prop|}}
+  {{#isBaseDataType prop}}
+  {{#isNotSensitive prop.Name ../../Meta}}
+  {{#ifEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}_in?: [ string ]
+  {{prop.Name}}_equals?: string
+  {{prop.Name}}_notEquals?: string
+  {{/ifEquals}}
+  {{#ifEquals prop.TypeName 'Date'}}
+  {{prop.Name}}_lessThan?: {{prop.TypeName}}
+  {{prop.Name}}_greaterThan?: {{prop.TypeName}}
+  {{prop.Name}}_equals?: {{prop.TypeName}}
+  {{prop.Name}}_notEquals?: {{prop.TypeName}}
+  {{/ifEquals}}
+  {{#ifEquals prop.TypeName 'boolean'}}
+  {{prop.Name}}_equals?: {{prop.TypeName}}
+  {{prop.Name}}_notEquals?: {{prop.TypeName}}
+  {{/ifEquals}}
+  {{#ifEquals prop.TypeName 'string'}}
+  {{prop.Name}}_contains?: {{prop.TypeName}}
+  {{prop.Name}}_startsWith?: {{prop.TypeName}}
+  {{prop.Name}}_endsWith?: {{prop.TypeName}}
+  {{prop.Name}}_equals?: {{prop.TypeName}}
+  {{prop.Name}}_notEquals?: {{prop.TypeName}}
+  {{/ifEquals}}
+  {{#ifEquals prop.TypeName 'number'}}
+  {{prop.Name}}_lessThan?: {{prop.TypeName}}
+  {{prop.Name}}_greaterThan?: {{prop.TypeName}}
+  {{prop.Name}}_equals?: {{prop.TypeName}}
+  {{prop.Name}}_notEquals?: {{prop.TypeName}}
+  {{/ifEquals}}
+  {{/isNotSensitive}}
+  {{/isBaseDataType}}
+  {{/each}}
+}
+
+export interface I{{Name}}UniqueFilter {
+  {{#each Properties as |prop|}}
+  {{#if prop.Unique}}
+  {{#ifEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}?: string
+  {{/ifEquals}}
+  {{#ifNotEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}?: {{prop.TypeName}}
+  {{/ifNotEquals}}
+  {{else if prop.IsPrimaryKey}}
+  {{#ifEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}?: string
+  {{/ifEquals}}
+  {{#ifNotEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}?: {{prop.TypeName}}
+  {{/ifNotEquals}}
+  {{/if}}
+  {{/each}}
+}

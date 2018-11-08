@@ -30,7 +30,7 @@ export default class MyApp extends App {
           <div>
             <Head>
               <meta name="viewport" content="width=device-width, initial-scale=1" />
-              <title>Rubicon {pageProps.pageTitle && '| ' + pageProps.pageTitle}</title>
+              <title>Grayskull {pageProps.pageTitle && '| ' + pageProps.pageTitle}</title>
             </Head>
 
             <Component {...pageProps} />

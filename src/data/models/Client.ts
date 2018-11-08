@@ -22,13 +22,34 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       allowNull: true,
       type: Sequelize.STRING
     },
-    url: {
-      allowNull: true,
+    secret: {
       type: Sequelize.STRING
     },
-    secret: {
-      allowNull: true,
+    url: {
       type: Sequelize.STRING
+    },
+    redirectUri: {
+      type: Sequelize.STRING
+    },
+    isActive: {
+      defaultValue: true,
+      type: Sequelize.BOOLEAN
+    },
+    createdBy: {
+      allowNull: true,
+      type: Sequelize.INTEGER
+    },
+    createdAt: {
+      defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    modifiedBy: {
+      allowNull: true,
+      type: Sequelize.INTEGER
+    },
+    modifiedAt: {
+      defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
     }
   }
   return sequelize.define<ClientInstance, IClient>('Client', attributes)

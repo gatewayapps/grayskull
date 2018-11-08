@@ -1,96 +1,77 @@
+import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '@/interfaces/graphql/I{{Name}}'
+import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { I{{Name}} } from '@data/models/I{{Name}}'
 import { {{Name}}Instance } from '@data/models/{{Name}}'
+import { AnyWhereOptions } from 'sequelize'
 
 export default class {{Name}}ServiceBase {
-    public async create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
-      return await db.{{Name}}.create(data, {returning: true, raw: true})
+  public async {{toCamelCase (pluralize Name)}}Meta(filter?: I{{Name}}Filter): Promise<I{{Name}}Meta> {
+    const where = convertFilterToSequelizeWhere(filter)
+    const count = await db.{{Name}}.count({ where })
+    return {
+      count
     }
-    {{#each Properties as |prop|}}
-    {{#if prop.IsPrimaryKey}}
-    public async delete{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<number> {
-      return await db.{{../Name}}.destroy({
-        where: {
-          {{prop.Name}}
-        }
-      })
-    }
-     public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return await db.{{../Name}}.findOne({
-        where: {
-          {{prop.Name}}
-        },
-        {{#if ../Meta.sensitive}}
-        attributes: {
-          exclude: [{{#each ../Meta.sensitive as |s|}}'{{s}}',{{/each}}]
-        },
-        {{/if}}
-        raw: true
-      })
-    }
-    {{#if ../Meta.sensitive}}
-    public async get{{../Name}}By{{prop.Name}}WithSensitiveData({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return await db.{{../Name}}.findOne({
-        where: {
-          {{prop.Name}}
-        },
-        raw: true
-      })
-    }
-    {{/if}}
-     public async update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return await db.{{../Name}}.update(
-        data, {
-        where: {
-          {{prop.Name}}
-        },
-        returning: true
-      }).then(()=>{
-        return this.get{{../Name}}By{{prop.Name}}({{prop.Name}})
-     })
-    }{{else if prop.Unique}}
-    public async delete{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<number> {
-      return await db.{{../Name}}.destroy({
-        where: {
-          {{prop.Name}}
-        }
-      })
-    }
+  }
 
-     public async get{{../Name}}By{{prop.Name}}({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return await db.{{../Name}}.findOne({
-        where: {
-          {{prop.Name}}
-        },
-        {{#if ../Meta.sensitive}}
-        attributes: {
-          exclude: [{{#each ../Meta.sensitive as |s|}}'{{s}}',{{/each}}]
-        },
-        {{/if}}
-        raw: true
-      })
-    }
-    {{#if ../Meta.sensitive}}
-    public async get{{../Name}}By{{prop.Name}}WithSensitiveData({{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return await db.{{../Name}}.findOne({
-        where: {
-          {{prop.Name}}
-        },
-        raw: true
-      })
-    }
-    {{/if}}
-     public async update{{../Name}}By{{prop.Name}}(data: I{{../Name}}, {{prop.Name}}: {{prop.TypeName}}): Promise<{{../Name}}Instance | null> {
-      return await db.{{../Name}}.update(
-        data, {
-        where: {
-          {{prop.Name}}
-        },
-        returning: true
-      }).then(()=>{
-        return this.get{{../Name}}By{{prop.Name}}({{prop.Name}})
-     })
-    } 
+  public async get{{pluralize Name}}(filter?: I{{Name}}Filter): Promise<{{Name}}Instance[]> {
+    const where = convertFilterToSequelizeWhere(filter)
+    return await db.{{Name}}.findAll({
+      where,
+      {{#if Meta.sensitive}}
+      attributes: {
+        exclude: [{{#each Meta.sensitive as |s|}}'{{s}}',{{/each}}],
+      },
       {{/if}}
-    {{/each}}
+      raw: true,
+    })
+  }
+
+  {{#if Meta.sensitive}}
+  public async get{{pluralize Name}}WithSensitiveData(filter?: I{{Name}}Filter): Promise<{{Name}}Instance[]> {
+    const where = convertFilterToSequelizeWhere(filter)
+    return await db.{{Name}}.findAll({
+      where,
+      raw: true,
+    })
+  }
+  {{/if}}
+
+  public async get{{Name}}(filter: I{{Name}}UniqueFilter): Promise<{{Name}}Instance | null> {
+    return await db.{{Name}}.findOne({
+      where: filter,
+      {{#if Meta.sensitive}}
+      attributes: {
+        exclude: [{{#each Meta.sensitive as |s|}}'{{s}}',{{/each}}],
+      },
+      {{/if}}
+      raw: true,
+    })
+  }
+
+  {{#if Meta.sensitive}}
+  public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter): Promise<{{Name}}Instance | null> {
+    return await db.{{Name}}.findOne({
+      where: filter,
+      raw: true,
+    })
+  }
+  {{/if}}
+
+  public async create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
+    return await db.{{Name}}.create(data, {returning: true, raw: true})
+  }
+
+  public async delete{{Name}}(filter: I{{Name}}UniqueFilter): Promise<number> {
+    return await db.{{Name}}.destroy({
+      where: filter as AnyWhereOptions,
+    })
+  }
+
+  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: I{{Name}}): Promise<{{Name}}Instance | null> {
+    return await db.{{Name}}.update(data, {
+      where: filter as AnyWhereOptions,
+      returning: true,
+    }).then(() => this.get{{Name}}(filter))
+  }
 }

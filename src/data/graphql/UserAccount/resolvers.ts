@@ -4,13 +4,13 @@ export default {
       // Insert your userAccounts implementation here
       throw new Error('userAccounts is not implemented')
     },
-    userAccountByEmailAddress: (obj, args, context, info) => {
-      // Insert your userAccountByEmailAddress implementation here
-      throw new Error('userAccountByEmailAddress is not implemented')
+    userAccountsMeta: (obj, args, context, info) => {
+      // Insert your userAccountsMeta implementation here
+      throw new Error('userAccountsMeta is not implemented')
     },
-    userAccountByUserAccountId: (obj, args, context, info) => {
-      // Insert your userAccountByUserAccountId implementation here
-      throw new Error('userAccountByUserAccountId is not implemented')
+    userAccount: (obj, args, context, info) => {
+      // Insert your userAccount implementation here
+      throw new Error('userAccount is not implemented')
     }
   },
   Mutation: {
