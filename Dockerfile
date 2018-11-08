@@ -2,7 +2,7 @@ FROM node:8-slim AS build
 
 WORKDIR /www
 COPY ./package.json ./package.json
-COPY ./package-lock.json ./package-lock.json
+#COPY ./package-lock.json ./package-lock.json
 RUN NODE_ENV=development
 RUN npm install
 COPY . /www
