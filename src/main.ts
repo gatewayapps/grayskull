@@ -13,6 +13,7 @@ import ClientService from './api/services/ClientService'
 import UserAccountService from './api/services/UserAccountService'
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
+import { getUserContext } from './middleware/authentication'
 
 const clients = require(ConfigurationManager.General.clientsFilePath)
 
@@ -27,6 +28,7 @@ app.prepare().then(() => {
   server.use(cookieParser(ConfigurationManager.Security.globalSecret))
   server.use(bodyParser.urlencoded())
   server.use(bodyParser.json())
+  server.use(getUserContext)
 
   server.use((req, res, nxt) => {
     const portPart = ConfigurationManager.General.port === 80 ? '' : `:${ConfigurationManager.General.port}`
@@ -41,15 +43,14 @@ app.prepare().then(() => {
     formatError: (error) => {
       console.log(error)
       return new Error('Internal server error')
+    },
+    context: ({ req }) => {
+      return { user: req.user }
     }
   })
   apollo.applyMiddleware({ app: server, path: '/api/graphql' })
 
-  // server.use('/api', apiRoutes);
-
   // Server-side
-  const route = pathMatch()
-
   const routeControllers = [new LoginController(app), new UserController(app)]
   routeControllers.forEach((c) => c.registerRoutes(server))
 

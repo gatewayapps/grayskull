@@ -25,6 +25,7 @@ Client:
         name:
         logoImageUrl:
         description:
+        secret:
         url:
         redirectUri:
         isActive:

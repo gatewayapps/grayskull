@@ -3,22 +3,24 @@ import ClientService from '@services/ClientService'
 export default {
   Query: {
     clients: (obj, args, context, info) => {
-      // Insert your clients implementation here
-      throw new Error('clients is not implemented')
+      return ClientService.getClients(args.where)
     },
     clientsMeta: (obj, args, context, info) => {
       // Insert your clientsMeta implementation here
-      throw new Error('clientsMeta is not implemented')
+      return ClientService.clientsMeta(args.where)
     },
-    client: (obj, args, context, info) => {
+    client: async (obj, args, context, info) => {
       // Insert your client implementation here
       return ClientService.getClient(args.where)
     }
   },
   Mutation: {
     createClient: (obj, args, context, info) => {
+      if (!context.user) {
+        throw new Error('You must be logged in to create a client')
+      }
       // Insert your createClient implementation here
-      throw new Error('createClient is not implemented')
+      return ClientService.createClient(args.data, context.user)
     },
     updateClient: (obj, args, context, info) => {
       // Insert your updateClient implementation here

@@ -18,6 +18,7 @@ input CreateClientArgs {
 	name: String!
 	logoImageUrl: String
 	description: String
+	secret: String!
 	url: String!
 	redirectUri: String!
 	isActive: Boolean!
