@@ -1,7 +1,6 @@
 {
   "General": {
     "realmName": "REALM_NAME",
-    "clientsFilePath": "CLIENTS_FILE_PATH",
     "port": "SERVER_PORT"
   },
   "Security": {
