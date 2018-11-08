@@ -63,11 +63,11 @@ app.prepare().then(() => {
     .then(ensureAdmin)
     .then(() => {
       /* eslint-disable no-console */
-      server.listen(3000, (err) => {
+      server.listen(ConfigurationManager.General.port || 3000, (err) => {
         if (err) {
           throw err
         }
-        console.log('Server ready on http://localhost:3000')
+        console.log(`Server ready on http://localhost:${ConfigurationManager.General.port || 3000}`)
       })
     })
     .catch((err) => {
@@ -84,7 +84,7 @@ async function ensureGrayskullClient(): Promise<void> {
       secret: ConfigurationManager.Security.globalSecret,
       logoImageUrl: '/static/grayskull.gif',
       url: ConfigurationManager.General.fallbackUrl,
-      redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`,
+      redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`
     })
   }
 }
