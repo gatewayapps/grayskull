@@ -4,7 +4,6 @@ services:
   web:
     build: .
     volumes:
-      - ./config/clients.json:/www/config/clients.json
       - ./config/default.js:/www/config/default.js
     ports:
       - "3000:3000"

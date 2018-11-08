@@ -15,8 +15,6 @@ import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 import { getUserContext } from './middleware/authentication'
 
-const clients = require(ConfigurationManager.General.clientsFilePath)
-
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev, dir: './public', conf: withSass(withCss()) })
 const handle = app.getRequestHandler()
