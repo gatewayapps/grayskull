@@ -3,6 +3,7 @@ import { IClient } from '@data/models/IClient'
 import { IUserAccount } from '@data/models/IUserAccount'
 import ClientServiceBase from '@services/ClientServiceBase'
 import UserAccountService from '@services/UserAccountService'
+import UserClientService from '@services/UserClientService'
 import crypto from 'crypto'
 
 class ClientService extends ClientServiceBase {
@@ -14,7 +15,15 @@ class ClientService extends ClientServiceBase {
       data.createdBy = userContext.userAccountId
       data.modifiedBy = userContext.userAccountId
     }
-    return super.createClient(data)
+    const client = await super.createClient(data)
+    if (userContext) {
+      await UserClientService.createUserClient({
+        client_id: client.client_id!,
+        userAccountId: userContext.userAccountId!,
+        createdBy: userContext.userAccountId!,
+      })
+    }
+    return client
   }
 
   public async validateClient(client_id: number, secret: string): Promise<ClientInstance | null> {
