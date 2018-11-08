@@ -4,6 +4,7 @@ import Sequelize from 'sequelize'
 import UserAccountFactory from './models/UserAccount'
 import ClientFactory from './models/Client'
 import UserClientFactory from './models/UserClient'
+import SessionFactory from './models/Session'
 
 const sequelize = new Sequelize(ConfigurationManager.General.databaseConnectionString)
 
@@ -12,7 +13,8 @@ const db = {
   Sequelize,
   UserAccount: UserAccountFactory(sequelize),
   Client: ClientFactory(sequelize),
-  UserClient: UserClientFactory(sequelize)
+  UserClient: UserClientFactory(sequelize),
+  Session: SessionFactory(sequelize)
 }
 
 Object.values(db).forEach((model: any) => {

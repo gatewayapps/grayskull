@@ -4,7 +4,6 @@ import { HttpMethod, route } from '@decorators/routeDecorator'
 import AuthenticationService from '@services/AuthenticationService'
 import ClientService from '@services/ClientService'
 import UserAccountService from '@services/UserAccountService'
-import UserClientsService from '@services/UserClientsService'
 import ControllerBase from './ControllerBase'
 
 import { Request, Response } from 'express'

@@ -42,7 +42,10 @@ module.exports = {
     })
 
     registerHelper('isNotSensitive', (propName, meta, options) => {
-      return meta && meta.sensitive && !meta.sensitive.includes(propName) ? options.fn(this) : options.inverse(this)
+      if (!meta || !Array.isArray(meta.sensitive)) {
+        return options.fn(this)
+      }
+      return !meta.sensitive.includes(propName) ? options.fn(this) : options.inverse(this)
     })
 
     registerHelper('getUniqueValue', (val) => {

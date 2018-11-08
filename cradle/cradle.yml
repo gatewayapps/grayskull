@@ -1,3 +1,4 @@
 UserAccount: ./specs/UserAccount.yml#UserAccount
 Client: ./specs/Client.yml#Client
 UserClient: ./specs/UserClient.yml#UserClient
+Session: ./specs/Session.yml#Session

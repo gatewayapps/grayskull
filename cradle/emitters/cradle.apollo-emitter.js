@@ -42,7 +42,7 @@ module.exports = new cradle.EmitterOptions(
     verbose: true,
     onComplete: utils.lintAndPretty,
     isModelToplevel: (model) => {
-      return !['UserClient'].includes(model.Name)
+      return !['UserClient', 'Session'].includes(model.Name)
     },
     registerCustomHelpers: utils.registerHandleBarHelpers
   },

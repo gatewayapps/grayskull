@@ -3,6 +3,7 @@ import withCss from '@zeit/next-css'
 import withSass from '@zeit/next-sass'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
+import cookieParser = require('cookie-parser')
 import express from 'express'
 import next from 'next'
 import pathMatch from 'path-match'
@@ -23,7 +24,7 @@ const handle = app.getRequestHandler()
 
 app.prepare().then(() => {
   const server = express()
-
+  server.use(cookieParser(ConfigurationManager.Security.globalSecret))
   server.use(bodyParser.urlencoded())
   server.use(bodyParser.json())
 

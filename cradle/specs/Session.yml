@@ -1,0 +1,6 @@
+Session:
+  properties:
+    sessionId: string primary
+    refreshToken: string
+    createdAt: datetime default(NOW)
+    lastUsedAt: datetime default(NOW)

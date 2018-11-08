@@ -63,7 +63,7 @@ class AuthenticationService {
     return this.generateAndCacheAuthorizationCode(existingUser, sessionId)
   }
 
-  public async getAccessToken(grant_type: GrantType, client_id: number, client_secret: string, code: string | undefined, refresh_token: string | undefined): Promise<IAccessTokenResponse> {
+  public async getAccessToken(grant_type: GrantType, client_id: number, client_secret: string, code: string | undefined, refresh_token?: string | undefined): Promise<IAccessTokenResponse> {
     const client = await ClientService.validateClient(client_id, client_secret)
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
