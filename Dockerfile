@@ -16,6 +16,7 @@ COPY ./tsconfig.json ./tsconfig.json
 COPY --from=build /www/node_modules ./node_modules
 COPY --from=build /www/dist ./dist
 COPY --from=build /www/public/.next ./public/.next
+COPY --from=build /www/public/static ./public/static
 
 EXPOSE 3000
 CMD [ "npm", "start" ]
