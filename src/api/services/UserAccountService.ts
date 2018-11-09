@@ -21,18 +21,15 @@ class UserAccountService extends UserAccountServiceBase {
    * @param password
    */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
-    const PASSWORD_SALT_ROUNDS = 10
-
-    data.passwordHash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
+    data.passwordHash = await this.hashPassword(password)
+    data.lastPasswordChange = new Date()
     return super.createUserAccount(data)
   }
 
   public async changeUserPassword(emailAddress: string, password: string) {
-    const PASSWORD_SALT_ROUNDS = 10
+    const passwordHash = await this.hashPassword(password)
 
-    const passwordHash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
-
-    await db.UserAccount.update({ passwordHash }, { where: { emailAddress } })
+    await db.UserAccount.update({ passwordHash, lastPasswordChange: new Date() }, { where: { emailAddress } })
   }
 
   public async inviteAdmin(baseUrl: string) {
@@ -55,7 +52,7 @@ class UserAccountService extends UserAccountServiceBase {
     MailService.sendMail(emailAddress, `Password Reset Instructions`, body, 'admin@grayskull.io')
   }
 
-  public async inviteUser(emailAddress: string, client: ClientInstance, invitedById: number, baseUrl: string): Promise<void> {
+  public async inviteUser(emailAddress: string, client: ClientInstance, invitedById: number, baseUrl: string): Promise<UserAccountInstance> {
     // Verify we have valid client instance
     if (!client || !client.client_id) {
       throw new Error('Invalid client')
@@ -69,12 +66,12 @@ class UserAccountService extends UserAccountServiceBase {
 
     // Check to see if there is already a user
     const user = await this.getUserAccount({ emailAddress })
-    if (user && user.userAccountId) {
+    if (user && user.userAccountId && user.passwordHash) {
       // See if the user is already associated with the client
       const userClient = await UserClientService.getUserClient({ userAccountId: user.userAccountId, client_id: client.client_id })
       if (userClient) {
         // User is already associated with the client nothing else to do
-        return
+        return user
       }
       // Link the client to the user
       await UserClientService.createUserClient({
@@ -85,12 +82,28 @@ class UserAccountService extends UserAccountServiceBase {
       })
       // Send an email to the user to notify them of the new access
       this.sendNewClientAccess(user.emailAddress, client, invitedByUser)
-      return
+      return user
     }
 
-    // 3. Send an inviation to the user
+    // 3. Create a userAccount placeholder
+    let newUser = user
+    if (!newUser) {
+      newUser = await super.createUserAccount({
+        emailAddress,
+        isActive: false,
+        firstName: '',
+        lastName: '',
+        lastPasswordChange: new Date(0),
+        passwordHash: '',
+        phoneNumber: '',
+        profileImageUrl: '',
+      })
+    }
+
+    // 4. Send an inviation to the user
     const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, client.client_id, invitedByUser.userAccountId)
     this.sendInvitation(emailAddress, client.name, token, baseUrl, invitedByUser)
+    return newUser
   }
 
   public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; invitedById?: number }> {
@@ -114,9 +127,30 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async registerUser(data: IUserAccount, password: string, cpt: string) {
+    // 1. Parse the cpt
     const token = await this.processCPT(cpt)
-    const user = await this.createUserAccountWithPassword(data, password)
+    if (!token) {
+      throw new Error('Invalid CPT token')
+    }
 
+    // 2. Load the existing userAccount
+    let user: UserAccountInstance | null
+    const existingUser = await super.getUserAccount({ emailAddress: token.emailAddress })
+    if (existingUser) {
+      // Activate the existing user account and set password
+      data.passwordHash = await this.hashPassword(password)
+      data.lastPasswordChange = new Date()
+      data.isActive = true
+      user = await this.updateUserAccount({ emailAddress: existingUser.emailAddress }, data)
+    } else {
+      // Create a new user account since there is not already one existing
+      user = await this.createUserAccountWithPassword(data, password)
+    }
+    if (!user) {
+      throw new Error('User is missing')
+    }
+
+    // 3. Link the user to the client
     if (token.client && token.client.client_id) {
       await UserClientService.createUserClient({
         userAccountId: user.userAccountId!,
@@ -190,6 +224,12 @@ class UserAccountService extends UserAccountServiceBase {
     TokenCache.set(newToken, 1)
 
     return newToken
+  }
+
+  private hashPassword(password: string): Promise<string> {
+    const PASSWORD_SALT_ROUNDS = 10
+
+    return bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
   }
 }
 

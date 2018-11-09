@@ -17,8 +17,8 @@ export default class UserController extends ControllerBase {
         res.status(400).send({ success: false, message: 'Unable to verify client. Check your client_id and client_secret.' })
         return
       }
-      await UserAccountService.inviteUser(req.body.emailAddress, client, req.body.invitedBy, req.baseUrl)
-      res.send({ success: true })
+      const newUserAccount = await UserAccountService.inviteUser(req.body.emailAddress, client, req.body.invitedBy, req.baseUrl)
+      res.send({ success: true, userAccountId: newUserAccount.userAccountId })
     } catch (err) {
       res.status(400).send({ success: false, message: err.message })
     }

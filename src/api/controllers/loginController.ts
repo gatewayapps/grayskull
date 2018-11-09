@@ -44,12 +44,12 @@ export default class LoginController extends ControllerBase {
   public async processLoginRequest(req: Request, res: Response) {
     try {
       if ((await this.validateLoginRequest(req)) === false) {
-        res.status(400).send()
-        return
+        res.locals.error = { message: 'Invalid login request' }
+        return this.renderLoginPage(req, res)
       } else if (!req.body.sessionId) {
         console.log('Received auth post without a sessionId')
-        res.status(400).send()
-        return
+        res.locals.error = { message: 'Invalid login request' }
+        return this.renderLoginPage(req, res)
       } else {
         const authorizationCode = await AuthenticationService.authenticateUser(req.body.emailAddress, req.body.password, req.body.sessionId, parseInt(req.query.client_id, 10))
         if (authorizationCode) {
@@ -60,6 +60,8 @@ export default class LoginController extends ControllerBase {
           const queryString = queryParts.join('&')
           return res.redirect(`${req.query.redirect_uri}?${queryString}`)
         }
+        res.locals.error = { message: 'Login failed' }
+        return this.renderLoginPage(req, res)
       }
     } catch (err) {
       res.locals.error = { message: err.message }
