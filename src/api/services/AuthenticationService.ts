@@ -50,6 +50,10 @@ class AuthenticationService {
       throw new Error('Invalid email address/password combination')
     }
 
+    if (!existingUser.passwordHash || !existingUser.isActive) {
+      throw new Error('Your account is not active. Contact your system administrator.')
+    }
+
     const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash)
     if (!passwordMatch) {
       throw new Error('Invalid email address/password combination')
