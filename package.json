@@ -1,10 +1,10 @@
 {
   "name": "grayskull",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npm run copy-graphql",
+    "build": "tsc && npm run copy-graphql && next build ./public",
     "copy-graphql": "copyfiles -u 1 src/**/*.graphql dist",
     "watch": "tsc -w",
     "debug": "nodemon --inspect=0.0.0.0:9229 --ignore public --exec node -r ts-node/register src/main.ts",
