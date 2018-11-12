@@ -7,7 +7,6 @@ jobs:
     inputs:
       versionSpec: '10.x'
   - script: |
-      npm rebuild node-sass
       npm install
       npx tslint --project ./
       npx tsc
