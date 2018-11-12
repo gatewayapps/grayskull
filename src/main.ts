@@ -29,7 +29,7 @@ app.prepare().then(() => {
   server.use(getUserContext)
 
   server.use((req, res, nxt) => {
-    const portPart = ConfigurationManager.General.port === 80 ? '' : `:${ConfigurationManager.General.port}`
+    const portPart = !dev || ConfigurationManager.General.port === 80 ? '' : `:${ConfigurationManager.General.port}`
     req.baseUrl = `${req.protocol}://${req.hostname}${portPart}`
     nxt()
   })
