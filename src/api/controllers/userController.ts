@@ -52,7 +52,9 @@ export default class UserController extends ControllerBase {
       res.status(400).send()
     } else {
       // Decode the change password token, and set it's properties to res.locals
+      const oldLocals = res.locals
       res.locals = await UserAccountService.processCPT(req.query.cpt, false)
+      res.locals = {...oldLocals, ...res.locals}
       if (!res.locals.client) {
         res.status(400).send()
       } else {
