@@ -14,7 +14,7 @@ import UserClientService from './UserClientService'
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
 const NUMBER_REGEX = /\d/
-const SYMBOL_REGEX = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/
+const SYMBOL_REGEX = /[-!@#$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/
 
 type GrantType = 'authorization_code' | 'refresh_token'
 
