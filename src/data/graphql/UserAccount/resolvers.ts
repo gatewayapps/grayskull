@@ -1,3 +1,6 @@
+import AuthenticationService from '@services/AuthenticationService'
+import UserAccountService from '@services/UserAccountService'
+
 export default {
   Query: {
     userAccounts: (obj, args, context, info) => {
@@ -30,9 +33,16 @@ export default {
       // Insert your resetPassword implementation here
       throw new Error('resetPassword is not implemented')
     },
-    createUserAccount: (obj, args, context, info) => {
-      // Insert your createUserAccount implementation here
-      throw new Error('createUserAccount is not implemented')
+    registerUser: async (obj, args, context, info) => {
+      const { confirm, cpt, password, ...userInfo } = args.data
+
+      if (!UserAccountService.validateCPT(cpt)) {
+        throw new Error('CPT is not valid')
+      }
+
+      await AuthenticationService.validatePassword(password, confirm)
+      const { userAccount } = await UserAccountService.registerUser(userInfo, password, cpt)
+      return userAccount
     }
   },
   UserAccount: {}

@@ -17,6 +17,7 @@ UserAccount:
     profileImageUrl: string
     permissions: integer default(0)
     otpSecret: string?
+    otpEnabled: boolean default(false)
     isActive: boolean default(true)
     createdBy: integer?
     createdAt: datetime default(NOW)
@@ -34,7 +35,7 @@ UserAccount:
         response_type: string
         redirect_uri: string
     # Create User Account #
-    createUserAccount:
+    registerUser:
       returns: UserAccount
       arguments:
         password: string
@@ -42,6 +43,16 @@ UserAccount:
         cpt: string
         firstName:
         lastName:
+    # Register for Multifactor #
+    generateMfaKey:
+      returns: string
+      arguments:
+        userAccountId:
+    # Verify Multifactor Auth key #
+    verifyMfaKey:
+      returns: boolean
+      arguments:
+        token: string
     # Reset Password #
     resetPassword:
       returns: boolean

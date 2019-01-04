@@ -49,6 +49,10 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       allowNull: true,
       type: Sequelize.STRING
     },
+    otpEnabled: {
+      defaultValue: false,
+      type: Sequelize.BOOLEAN
+    },
     isActive: {
       defaultValue: true,
       type: Sequelize.BOOLEAN

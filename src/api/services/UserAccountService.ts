@@ -146,6 +146,7 @@ class UserAccountService extends UserAccountServiceBase {
       user = await this.updateUserAccount({ emailAddress: existingUser.emailAddress }, data)
     } else {
       // Create a new user account since there is not already one existing
+      data.emailAddress = token.emailAddress
       user = await this.createUserAccountWithPassword(data, password)
     }
     if (!user) {

@@ -11,6 +11,7 @@ export interface IUserAccount {
   profileImageUrl: string
   permissions?: number
   otpSecret?: string
+  otpEnabled?: boolean
   isActive?: boolean
   createdBy?: number
   createdAt?: Date
