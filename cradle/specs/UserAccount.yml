@@ -1,7 +1,9 @@
 UserAccount:
   meta:
     sensitive:
-      - 'passwordHash'
+      - passwordHash
+      - permissions
+      - otpSecret
   properties:
     userAccountId: integer primary auto(1,1)
     firstName: string(30)
@@ -13,6 +15,8 @@ UserAccount:
     passwordHash: string
     phoneNumber: string
     profileImageUrl: string
+    permissions: integer default(0)
+    otpSecret: string?
     isActive: boolean default(true)
     createdBy: integer?
     createdAt: datetime default(NOW)

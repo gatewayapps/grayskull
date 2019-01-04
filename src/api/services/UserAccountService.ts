@@ -1,4 +1,5 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { Permissions } from '@/utils/permissions'
 import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
@@ -22,6 +23,7 @@ class UserAccountService extends UserAccountServiceBase {
    */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     data.passwordHash = await this.hashPassword(password)
+    data.permissions = data.emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
     data.lastPasswordChange = new Date()
     return super.createUserAccount(data)
   }
@@ -155,6 +157,17 @@ class UserAccountService extends UserAccountServiceBase {
       await UserClientService.createUserClient({
         userAccountId: user.userAccountId!,
         client_id: token.client.client_id,
+        createdBy: token.invitedById || user.userAccountId!,
+        revoked: false,
+      })
+    }
+
+    // 4. Ensure the user is linked to the Grayskull Client
+    const grayskullUserClient = await UserClientService.getUserClient({ client_id: ConfigurationManager.General.grayskullClientId, userAccountId: user.userAccountId! })
+    if (!grayskullUserClient) {
+      await UserClientService.createUserClient({
+        userAccountId: user.userAccountId!,
+        client_id: ConfigurationManager.General.grayskullClientId,
         createdBy: token.invitedById || user.userAccountId!,
         revoked: false,
       })

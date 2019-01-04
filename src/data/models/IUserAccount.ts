@@ -9,6 +9,8 @@ export interface IUserAccount {
   passwordHash: string
   phoneNumber: string
   profileImageUrl: string
+  permissions?: number
+  otpSecret?: string
   isActive?: boolean
   createdBy?: number
   createdAt?: Date

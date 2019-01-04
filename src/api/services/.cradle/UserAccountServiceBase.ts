@@ -19,7 +19,7 @@ export default class UserAccountServiceBase {
     return await db.UserAccount.findAll({
       where,
       attributes: {
-        exclude: ['passwordHash']
+        exclude: ['passwordHash', 'permissions', 'otpSecret']
       },
       raw: true
     })
@@ -37,7 +37,7 @@ export default class UserAccountServiceBase {
     return await db.UserAccount.findOne({
       where: filter,
       attributes: {
-        exclude: ['passwordHash']
+        exclude: ['passwordHash', 'permissions', 'otpSecret']
       },
       raw: true
     })
