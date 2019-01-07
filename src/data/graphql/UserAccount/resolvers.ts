@@ -36,14 +36,14 @@ export default {
       throw new Error('resetPassword is not implemented')
     },
     registerUser: async (obj, args, context, info) => {
-      const { confirm, cpt, password, ...userInfo } = args.data
+      const { confirm, cpt, password, otpSecret, ...userInfo } = args.data
 
       if (!UserAccountService.validateCPT(cpt)) {
         throw new Error('CPT is not valid')
       }
 
       await AuthenticationService.validatePassword(password, confirm)
-      const { client } = await UserAccountService.registerUser(userInfo, password, cpt)
+      const { client } = await UserAccountService.registerUser(userInfo, password, cpt, otpSecret)
       return `/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.redirectUri)}`
     },
     generateMfaKey: (obj, args, context, info) => {

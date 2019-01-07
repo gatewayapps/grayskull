@@ -1,5 +1,6 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import { Permissions } from '@/utils/permissions'
+import { encrypt } from '@/utils/cipher'
 import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
@@ -23,7 +24,6 @@ class UserAccountService extends UserAccountServiceBase {
    */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     data.passwordHash = await this.hashPassword(password)
-    data.otpEnabled = data.otpSecret !== undefined && data.otpSecret.length > 0
     data.permissions = data.emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
     data.lastPasswordChange = new Date()
     return super.createUserAccount(data)
@@ -129,7 +129,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async registerUser(data: IUserAccount, password: string, cpt: string) {
+  public async registerUser(data: IUserAccount, password: string, cpt: string, otpSecret?: string) {
     // 1. Parse the cpt
     const token = await this.processCPT(cpt)
     if (!token) {
@@ -142,13 +142,20 @@ class UserAccountService extends UserAccountServiceBase {
     if (existingUser) {
       // Activate the existing user account and set password
       data.passwordHash = await this.hashPassword(password)
+      if (otpSecret !== undefined && otpSecret.length > 0) {
+        data.otpSecret = encrypt(otpSecret)
+        data.otpEnabled = true
+      }
       data.lastPasswordChange = new Date()
       data.isActive = true
-      data.otpEnabled = data.otpSecret !== undefined && data.otpSecret.length > 0
       user = await this.updateUserAccount({ emailAddress: existingUser.emailAddress }, data)
     } else {
       // Create a new user account since there is not already one existing
       data.emailAddress = token.emailAddress
+      if (otpSecret !== undefined && otpSecret.length > 0) {
+        data.otpSecret = encrypt(otpSecret)
+        data.otpEnabled = true
+      }
       user = await this.createUserAccountWithPassword(data, password)
     }
     if (!user) {
