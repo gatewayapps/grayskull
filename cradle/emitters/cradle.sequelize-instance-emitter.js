@@ -9,4 +9,7 @@ module.exports = new cradle.EmitterOptions('sequelize-instance', '@gatewayapps/c
   mode: 'schema',
   onFilesEmitted: utils.lintAndPretty,
   registerCustomHelpers: utils.registerHandleBarHelpers,
+  shouldEmit: (model) => {
+    return model.Meta !== undefined && model.Meta.topLevel
+  },
 })

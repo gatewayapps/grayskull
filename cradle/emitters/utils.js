@@ -24,7 +24,8 @@ module.exports = {
   },
   isFieldSensitive(model, fieldName) {
     if (!model.Meta || !model.Meta.sensitive) {
-      return true
+      console.log(fieldName + ' is sensitive')
+      return false
     }
     return model.Meta.sensitive.includes(fieldName)
   },

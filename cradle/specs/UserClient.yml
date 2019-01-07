@@ -1,4 +1,6 @@
 UserClient:
+  meta:
+    topLevel: true
   properties:
     userAccountId: integer unique('userClient')
     client_id: integer unique('userClient')

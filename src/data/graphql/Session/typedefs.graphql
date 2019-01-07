@@ -1,0 +1,6 @@
+type Session {
+	sessionId: String!
+	refreshToken: String!
+	createdAt: Date!
+	lastUsedAt: Date!
+}

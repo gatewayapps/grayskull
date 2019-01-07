@@ -16,15 +16,6 @@ type UserAccount {
 	modifiedAt: Date!
 }
 
-input LoginArgs {
-	emailAddress: String!
-	password: String!
-	fingrprint: String!
-	client_id: Int!
-	response_type: String!
-	redirect_uri: String!
-}
-
 input VerifyMfaKeyArgs {
 	secret: String!
 	token: String!
@@ -39,6 +30,17 @@ input ChangePasswordArgs {
 	password: String!
 	confirm: String!
 	cpt: String!
+}
+
+input LoginArgs {
+	emailAddress: String!
+	password: String!
+	otpToken: String
+	sessionId: String!
+	client_id: Int!
+	response_type: String!
+	redirect_uri: String!
+	state: String
 }
 
 input RegisterUserArgs {
@@ -138,17 +140,17 @@ input UserAccountUniqueFilter {
 }
 
 type Query {
-	userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]!
-	userAccountsMeta(filter: UserAccountFilter): UserAccountMeta
-	userAccount(where: UserAccountUniqueFilter): UserAccount
+	userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]! 
+	userAccountsMeta(filter: UserAccountFilter): UserAccountMeta 
+	userAccount(where: UserAccountUniqueFilter): UserAccount 
 }
 
 type Mutation {
-	login(data: LoginArgs!): Boolean
-	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
-	validatePassword(data: ValidatePasswordArgs!): Boolean
-	changePassword(data: ChangePasswordArgs!): Boolean
-	registerUser(data: RegisterUserArgs!): String
-	generateMfaKey(data: GenerateMfaKeyArgs!): String
-	resetPassword(data: ResetPasswordArgs!): Boolean
+	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
+	validatePassword(data: ValidatePasswordArgs!): Boolean 
+	changePassword(data: ChangePasswordArgs!): Boolean 
+	login(data: LoginArgs!): LoginResponse 
+	registerUser(data: RegisterUserArgs!): String 
+	generateMfaKey(data: GenerateMfaKeyArgs!): String 
+	resetPassword(data: ResetPasswordArgs!): Boolean 
 }

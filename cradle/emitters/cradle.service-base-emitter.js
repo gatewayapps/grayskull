@@ -8,4 +8,7 @@ module.exports = new cradle.EmitterOptions('service-base', '@gatewayapps/cradle-
   languageType: 'ts',
   onFilesEmitted: utils.lintAndPretty,
   registerCustomHelpers: utils.registerHandleBarHelpers,
+  shouldEmit: (model) => {
+    return model.Meta !== undefined && model.Meta.topLevel
+  },
 })

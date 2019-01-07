@@ -16,6 +16,12 @@ import UserClientService from './UserClientService'
 
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
+interface ICPTToken {
+  client: ClientInstance | { name: string; client_id?: number } | null
+  emailAddress: string
+  invitedById?: number
+}
+
 class UserAccountService extends UserAccountServiceBase {
   /**
    *
@@ -36,7 +42,11 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async inviteAdmin(baseUrl: string) {
-    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, ConfigurationManager.General.grayskullClientId)
+    const token = this.generateCPT(
+      ConfigurationManager.Security.adminEmailAddress,
+      ConfigurationManager.Security.invitationExpiresIn,
+      ConfigurationManager.General.grayskullClientId
+    )
     this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
   }
 
@@ -109,7 +119,7 @@ class UserAccountService extends UserAccountServiceBase {
     return newUser
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; invitedById?: number }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<ICPTToken> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     const invitedById = decoded.invitedById

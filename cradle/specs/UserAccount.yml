@@ -4,6 +4,7 @@ UserAccount:
       - passwordHash
       - permissions
       - otpSecret
+    topLevel: true
   properties:
     userAccountId: integer primary auto(1,1)
     firstName: string(30)
@@ -26,14 +27,16 @@ UserAccount:
   operations:
       # Login User #
     login:
-      returns: boolean
+      returns: LoginResponse
       arguments:
         emailAddress: string
         password: string
-        fingrprint: string
+        otpToken: string?
+        sessionId: string
         client_id: integer
         response_type: string
         redirect_uri: string
+        state: string?
     # Create User Account #
     registerUser:
       returns: string
