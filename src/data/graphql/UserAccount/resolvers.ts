@@ -52,6 +52,7 @@ export default {
           } else {
             return {
               success: authResult.success,
+              message: authResult.message,
               otpRequired: authResult.otpRequired,
             }
           }

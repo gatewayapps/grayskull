@@ -36,6 +36,7 @@ interface IAuthenticationCodeCacheResult {
 interface IAuthenticateUserResult {
   success: boolean
   code?: string
+  message?: string
   otpRequired?: boolean
 }
 
@@ -78,6 +79,7 @@ class AuthenticationService {
         return {
           success: false,
           otpRequired: true,
+          message: otpToken !== undefined && otpToken.length > 0 ? 'Invalid multi-factor authentication code' : ''
         }
       }
     }

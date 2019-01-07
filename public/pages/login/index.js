@@ -82,7 +82,7 @@ class Login extends React.PureComponent {
       if (data.login.success === true) {
         window.location.replace(data.login.redirectUrl)
       } else if (data.login.otpRequired === true) {
-        this.setState({ otpRequired: true })
+        this.setState({ otpRequired: true, message: data.login.message })
       } else {
         this.setState({ message: data.login.message })
       }
