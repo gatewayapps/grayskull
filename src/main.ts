@@ -84,7 +84,8 @@ async function ensureGrayskullClient(): Promise<void> {
       secret: ConfigurationManager.Security.globalSecret,
       logoImageUrl: '/static/grayskull.gif',
       url: ConfigurationManager.General.fallbackUrl,
-      redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`
+      redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`,
+      public: true
     })
   }
 }

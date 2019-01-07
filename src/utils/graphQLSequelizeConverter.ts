@@ -7,7 +7,7 @@ export function convertFilterToSequelizeWhere(filter: any): any {
 
   const finalWhere = Object.keys(filter).reduce((where, key) => {
     let val = filter[key]
-    if (!val) {
+    if (val === undefined) {
       return where
     }
 
@@ -60,7 +60,7 @@ const operatorMap = {
   notContains: Op.notLike,
   in: Op.in,
   startsWith: Op.like,
-  endsWith: Op.like,
+  endsWith: Op.like
 }
 
 function parseKey(key: string) {
@@ -69,6 +69,6 @@ function parseKey(key: string) {
   const fieldName = parts.join('_')
   return {
     fieldName,
-    operator,
+    operator
   }
 }

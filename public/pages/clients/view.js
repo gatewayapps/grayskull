@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
 import Primary from '../../layouts/primary'
-import LoadingIndicator from '../../components/LoadingIndicator';
-import ErrorMessage from '../../components/ErrorMessage';
+import LoadingIndicator from '../../components/LoadingIndicator'
+import ErrorMessage from '../../components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
   query SINGLE_CLIENT_QUERY($client_id: Int!) {
@@ -12,6 +12,7 @@ const SINGLE_CLIENT_QUERY = gql`
       client_id
       name
       logoImageUrl
+      public
       description
       url
       redirectUri
@@ -28,7 +29,7 @@ class ClientView extends PureComponent {
     console.log(this.props)
     return (
       <Primary>
-        <div className='container pt-4'>
+        <div className="container pt-4">
           <Query query={SINGLE_CLIENT_QUERY} variables={{ client_id: parseInt(this.props.query.id, 10) }}>
             {({ data, error, loading }) => {
               if (loading) return <LoadingIndicator />
@@ -38,10 +39,10 @@ class ClientView extends PureComponent {
               }
               const { client } = data
               return (
-                <div className='card'>
-                  <img className='card-img-top' src={client.logoImageUrl} alt={client.name} />
-                  <div className='card-body'>
-                    <h3 className='card-title'>{client.name}</h3>
+                <div className="card">
+                  <img className="card-img-top" src={client.logoImageUrl} alt={client.name} />
+                  <div className="card-body">
+                    <h3 className="card-title">{client.name}</h3>
                     <p>{client.description}</p>
                     <p>Url: {client.url}</p>
                     <p>Redirect Uri: {client.redirectUri}</p>
@@ -58,8 +59,8 @@ class ClientView extends PureComponent {
 
 ClientView.propTypes = {
   query: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-  }).isRequired,
+    id: PropTypes.string.isRequired
+  }).isRequired
 }
 
 export default ClientView

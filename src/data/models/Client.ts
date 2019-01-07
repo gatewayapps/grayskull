@@ -28,6 +28,10 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     url: {
       type: Sequelize.STRING
     },
+    public: {
+      allowNull: true,
+      type: Sequelize.BOOLEAN
+    },
     redirectUri: {
       type: Sequelize.STRING
     },
