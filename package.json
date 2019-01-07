@@ -95,6 +95,7 @@
     "react-dom": "^16.5.2",
     "sequelize": "^4.39.0",
     "tsconfig-paths": "^3.6.0",
-    "ua-parser-js": "^0.7.18"
+    "ua-parser-js": "^0.7.18",
+    "url-parse": "^1.4.4"
   }
 }

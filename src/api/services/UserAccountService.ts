@@ -23,6 +23,7 @@ class UserAccountService extends UserAccountServiceBase {
    */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     data.passwordHash = await this.hashPassword(password)
+    data.otpEnabled = data.otpSecret !== undefined && data.otpSecret.length > 0
     data.permissions = data.emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
     data.lastPasswordChange = new Date()
     return super.createUserAccount(data)
@@ -143,6 +144,7 @@ class UserAccountService extends UserAccountServiceBase {
       data.passwordHash = await this.hashPassword(password)
       data.lastPasswordChange = new Date()
       data.isActive = true
+      data.otpEnabled = data.otpSecret !== undefined && data.otpSecret.length > 0
       user = await this.updateUserAccount({ emailAddress: existingUser.emailAddress }, data)
     } else {
       // Create a new user account since there is not already one existing

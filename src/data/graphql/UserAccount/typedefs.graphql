@@ -26,6 +26,7 @@ input LoginArgs {
 }
 
 input VerifyMfaKeyArgs {
+	secret: String!
 	token: String!
 }
 
@@ -40,20 +41,21 @@ input ChangePasswordArgs {
 	cpt: String!
 }
 
-input GenerateMfaKeyArgs {
-	userAccountId: Int!
-}
-
-input ResetPasswordArgs {
-	emailAddress: String!
-}
-
 input RegisterUserArgs {
 	password: String!
 	confirm: String!
 	cpt: String!
 	firstName: String!
 	lastName: String!
+	otpSecret: String
+}
+
+input GenerateMfaKeyArgs {
+	emailAddress: String!
+}
+
+input ResetPasswordArgs {
+	emailAddress: String!
 }
 
 
@@ -146,7 +148,7 @@ type Mutation {
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
 	validatePassword(data: ValidatePasswordArgs!): Boolean
 	changePassword(data: ChangePasswordArgs!): Boolean
+	registerUser(data: RegisterUserArgs!): String
 	generateMfaKey(data: GenerateMfaKeyArgs!): String
 	resetPassword(data: ResetPasswordArgs!): Boolean
-	registerUser(data: RegisterUserArgs!): UserAccount
 }

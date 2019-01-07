@@ -1,5 +1,7 @@
+import ConfigurationManager from '@/config/ConfigurationManager'
 import AuthenticationService from '@services/AuthenticationService'
 import UserAccountService from '@services/UserAccountService'
+import * as otplib from 'otplib'
 
 export default {
   Query: {
@@ -41,8 +43,15 @@ export default {
       }
 
       await AuthenticationService.validatePassword(password, confirm)
-      const { userAccount } = await UserAccountService.registerUser(userInfo, password, cpt)
-      return userAccount
+      const { client } = await UserAccountService.registerUser(userInfo, password, cpt)
+      return `/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.redirectUri)}`
+    },
+    generateMfaKey: (obj, args, context, info) => {
+      const secret = otplib.authenticator.generateSecret()
+      return otplib.authenticator.keyuri(args.data.emailAddress, ConfigurationManager.General.realmName, secret)
+    },
+    verifyMfaKey: (obj, args, context, info) => {
+      return otplib.authenticator.verify(args.data)
     }
   },
   UserAccount: {}

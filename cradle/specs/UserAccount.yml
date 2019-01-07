@@ -36,22 +36,24 @@ UserAccount:
         redirect_uri: string
     # Create User Account #
     registerUser:
-      returns: UserAccount
+      returns: string
       arguments:
         password: string
         confirm: string
         cpt: string
         firstName:
         lastName:
+        otpSecret:
     # Register for Multifactor #
     generateMfaKey:
       returns: string
       arguments:
-        userAccountId:
+        emailAddress:
     # Verify Multifactor Auth key #
     verifyMfaKey:
       returns: boolean
       arguments:
+        secret: string
         token: string
     # Reset Password #
     resetPassword:
