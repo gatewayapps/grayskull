@@ -3,7 +3,12 @@ import ClientService from '@services/ClientService'
 export default {
   Query: {
     clients: (obj, args, context, info) => {
-      return ClientService.getClients(args.where)
+      console.log(context.user)
+      if (context.user) {
+        return ClientService.getClients(args.where)
+      } else {
+        return ClientService.getPublicClients(args.where)
+      }
     },
     clientsMeta: (obj, args, context, info) => {
       // Insert your clientsMeta implementation here

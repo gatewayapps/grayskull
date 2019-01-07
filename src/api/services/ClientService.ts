@@ -5,6 +5,7 @@ import ClientServiceBase from '@services/ClientServiceBase'
 import UserAccountService from '@services/UserAccountService'
 import UserClientService from '@services/UserClientService'
 import crypto from 'crypto'
+import { IClientFilter } from '@/interfaces/graphql/IClient'
 
 class ClientService extends ClientServiceBase {
   public async createClient(data: IClient, userContext?: IUserAccount): Promise<ClientInstance> {
@@ -20,10 +21,19 @@ class ClientService extends ClientServiceBase {
       await UserClientService.createUserClient({
         client_id: client.client_id!,
         userAccountId: userContext.userAccountId!,
-        createdBy: userContext.userAccountId!,
+        createdBy: userContext.userAccountId!
       })
     }
     return client
+  }
+
+  public async getPublicClients(filter?: IClientFilter) {
+    if (filter) {
+      filter.public_equals = true
+    } else {
+      filter = { public_equals: true }
+    }
+    return super.getClients(filter)
   }
 
   public async validateClient(client_id: number, secret: string): Promise<ClientInstance | null> {

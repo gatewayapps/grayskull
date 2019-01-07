@@ -5,6 +5,7 @@ export interface IClient {
   description?: string
   secret: string
   url: string
+  public?: boolean
   redirectUri: string
   isActive?: boolean
   createdBy?: number

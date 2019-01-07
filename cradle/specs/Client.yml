@@ -9,6 +9,7 @@ Client:
     description: string(500)?
     secret: string
     url: string
+    public: boolean? default(false)
     redirectUri: string
     isActive: boolean default(true)
     createdBy: integer?
@@ -25,6 +26,7 @@ Client:
         name:
         logoImageUrl:
         description:
+        public: 
         secret:
         url:
         redirectUri:
@@ -36,6 +38,7 @@ Client:
         name:
         logoImageUrl:
         description:
+        public: 
         url:
         redirectUri:
         isActive:

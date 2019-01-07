@@ -19,15 +19,15 @@ const ALL_CLIENTS_QUERY = gql`
 const ClientsIndexPage = () => {
   return (
     <Primary>
-      <div className='container pt-4'>
-        <div className='row'>
-          <div className='col'>
+      <div className="container pt-4">
+        <div className="row">
+          <div className="col">
             <h1>Clients</h1>
           </div>
-          <div className='col-auto'>
-            <Link href='/clients/add'>
-              <a className='btn btn-outline-primary'>
-                <i className='fal fa-plus' /> Add Client
+          <div className="col-auto">
+            <Link href="/clients/add">
+              <a className="btn btn-outline-primary">
+                <i className="fal fa-plus" /> Add Client
               </a>
             </Link>
           </div>
@@ -40,19 +40,21 @@ const ClientsIndexPage = () => {
               return <p>No Clients found</p>
             }
             return (
-              <table className='table table-hover'>
+              <table className="table table-hover">
                 <thead>
                   <tr>
                     <th>Name</th>
                     <th>Url</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
                   {data.clients.map((client) => (
                     <tr key={client.client_id}>
                       <td>{client.name}</td>
-                      <td><a href={client.url}>{client.url}</a></td>
+                      <td>
+                        <a href={client.url}>{client.url}</a>
+                      </td>
                       <td>
                         <Link href={{ pathname: '/clients/view', query: { id: client.client_id } }}>
                           <a>View</a>

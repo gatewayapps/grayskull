@@ -29,6 +29,8 @@ export interface IClientFilter {
   url_endsWith?: string
   url_equals?: string
   url_notEquals?: string
+  public_equals?: boolean
+  public_notEquals?: boolean
   redirectUri_contains?: string
   redirectUri_startsWith?: string
   redirectUri_endsWith?: string
