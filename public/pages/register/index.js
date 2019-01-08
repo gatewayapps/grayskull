@@ -27,14 +27,7 @@ const GET_CONFIGURATION_QUERY = gql`
 
 const REGISTER_USER_MUTATION = gql`
   mutation REGISTER_USER_MUTATION($cpt: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
-    registerUser(data: {
-      cpt: $cpt,
-      firstName: $firstName,
-      lastName: $lastName,
-      password: $password,
-      confirm: $confirm,
-      otpSecret: $otpSecret
-    })
+    registerUser(data: { cpt: $cpt, firstName: $firstName, lastName: $lastName, password: $password, confirm: $confirm, otpSecret: $otpSecret })
   }
 `
 
@@ -56,7 +49,7 @@ class Register extends PureComponent {
         lastName: '',
         password: '',
         confirm: '',
-        otpSecret: undefined,
+        otpSecret: undefined
       },
       emailAddress: props.emailAddress,
       requireMfaVerification: false,
@@ -94,8 +87,8 @@ class Register extends PureComponent {
         ...prevState,
         data: {
           ...prevState.data,
-          [name]: value,
-        },
+          [name]: value
+        }
       }
     })
   }
@@ -106,7 +99,7 @@ class Register extends PureComponent {
         ...prevState,
         data: {
           ...prevState.data,
-          otpSecret,
+          otpSecret
         }
       }
     })
@@ -123,7 +116,7 @@ class Register extends PureComponent {
         if (data && data.registerUser) {
           window.location.replace(data.registerUser)
         }
-        break;
+        break
     }
   }
 
@@ -137,7 +130,7 @@ class Register extends PureComponent {
         <Query query={GET_CONFIGURATION_QUERY}>
           {({ data, loading, error }) => {
             if (loading) {
-              return (<LoadingIndicator />)
+              return <LoadingIndicator />
             }
 
             const { configuration } = data
@@ -146,66 +139,62 @@ class Register extends PureComponent {
               <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
                 {(registerUser, { loading, error }) => {
                   return (
-                    <div className="container pt-4">
-                      <div className="row">
-                        <div className="col col-md-8 offset-md-2">
-                          <div className="card">
-                            <div className="card-header">
-                              Register for {this.props.client.name}
-                            </div>
-                            <div className="card-body">
-                              {error && <div className="alert alert-danger">{error.message}</div>}
-                              <div className="form-group row">
-                                <label
-                                  className="col-sm-12 col-md-3 col-form-label"
-                                  htmlFor="emailAddress"
-                                >
-                                  E-mail Address
-                                </label>
-                                <div className="col-sm-12 col-md-9">
-                                  <input
-                                    type="text"
-                                    readOnly
-                                    className="form-control-plaintext"
-                                    name="emailAddress"
-                                    value={this.state.emailAddress}
-                                    onChange={this.handleChange}
-                                  />
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                      }}>
+                      <div className="container pt-4">
+                        <div className="row">
+                          <div className="col col-md-8 offset-md-2">
+                            <div className="card">
+                              <div className="card-header">Register for {this.props.client.name}</div>
+                              <div className="card-body">
+                                {error && <div className="alert alert-danger">{error.message}</div>}
+                                <div className="form-group row">
+                                  <label className="col-sm-12 col-md-3 col-form-label" htmlFor="emailAddress">
+                                    E-mail Address
+                                  </label>
+                                  <div className="col-sm-12 col-md-9">
+                                    <input
+                                      type="text"
+                                      readOnly
+                                      className="form-control-plaintext"
+                                      name="emailAddress"
+                                      value={this.state.emailAddress}
+                                      onChange={this.handleChange}
+                                    />
+                                  </div>
                                 </div>
+                                {this.state.step === RegistrationSteps.UserData && (
+                                  <RegistrationForm configuration={configuration} data={this.state.data} onChange={this.onFormValueChanged} />
+                                )}
+                                {this.state.step === RegistrationSteps.Multifactor && (
+                                  <MultiFactorSetup
+                                    emailAddress={this.state.emailAddress}
+                                    required={configuration.multifactorRequired}
+                                    onCancel={() => this.setRequireMfaVerification(false)}
+                                    onEnabled={() => this.setRequireMfaVerification(true)}
+                                    onVerified={this.onMfaVerified}
+                                  />
+                                )}
                               </div>
-                              {this.state.step === RegistrationSteps.UserData && (
-                                <RegistrationForm
-                                  configuration={configuration}
-                                  data={this.state.data}
-                                  onChange={this.onFormValueChanged}
-                                />
-                              )}
-                              {this.state.step === RegistrationSteps.Multifactor && (
-                                <MultiFactorSetup
-                                  emailAddress={this.state.emailAddress}
-                                  required={configuration.multifactorRequired}
-                                  onCancel={() => this.setRequireMfaVerification(false)}
-                                  onEnabled={() => this.setRequireMfaVerification(true)}
-                                  onVerified={this.onMfaVerified}
-                                />
-                              )}
-                            </div>
-                            <div className="card-footer">
-                              <div className="btn-toolbar float-right">
-                                <button
-                                  className="btn btn-info"
-                                  disabled={!this.isValid(configuration) || loading}
-                                  onClick={() => this.onSubmitClick(registerUser)}
-                                >
-                                  {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
-                                </button>
+                              <div className="card-footer">
+                                <div className="btn-toolbar float-right">
+                                  <button
+                                    type="submit"
+                                    className="btn btn-info"
+                                    disabled={!this.isValid(configuration) || loading}
+                                    onClick={() => this.onSubmitClick(registerUser)}>
+                                    {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
+                                  </button>
+                                </div>
+                                <div className="clearfix" />
                               </div>
-                              <div className="clearfix" />
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </form>
                   )
                 }}
               </Mutation>

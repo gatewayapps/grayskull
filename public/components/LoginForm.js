@@ -96,56 +96,61 @@ class LoginForm extends PureComponent {
     return (
       <Mutation mutation={LOGIN_MUTATION}>
         {(login, { error, loading }) => (
-          <div className="card">
-            <div className="card-header">Login to {this.props.client.name}</div>
-            <div className="card-body">
-              <div className="row">
-                <div className="col-3">{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
-                <div className="col-9">
-                  {!this.state.otpRequired && (
-                    <>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+            }}>
+            <div className="card">
+              <div className="card-header">Login to {this.props.client.name}</div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-3">{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
+                  <div className="col-9">
+                    {!this.state.otpRequired && (
+                      <>
+                        <div className="form-group">
+                          <label htmlFor="name">E-mail Address:</label>
+                          <input type="email" className="form-control" name="emailAddress" value={this.state.emailAddress} onChange={this.handleChange} />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="password">Password:</label>
+                          <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
+                        </div>
+                      </>
+                    )}
+                    {this.state.otpRequired && (
                       <div className="form-group">
-                        <label htmlFor="name">E-mail Address:</label>
-                        <input type="email" className="form-control" name="emailAddress" value={this.state.emailAddress} onChange={this.handleChange} />
+                        <label htmlFor="otpToken">Multi-Factor Authentication Code:</label>
+                        <input type="text" className="form-control" name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
+                        {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
+                        <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                          {(sendBackupCode, { loading }) => (
+                            <button className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
+                              {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
+                            </button>
+                          )}
+                        </Mutation>
                       </div>
-                      <div className="form-group">
-                        <label htmlFor="password">Password:</label>
-                        <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
-                      </div>
-                    </>
-                  )}
-                  {this.state.otpRequired && (
-                    <div className="form-group">
-                      <label htmlFor="otpToken">Multi-Factor Authentication Code:</label>
-                      <input type="text" className="form-control" name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
-                      {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
-                      <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
-                        {(sendBackupCode, { loading }) => (
-                          <button className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
-                            {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
-                          </button>
-                        )}
-                      </Mutation>
-                    </div>
-                  )}
-                  {this.state.message && <div className="alert alert-info">{this.state.message}</div>}
-                  {error && error.message && <div className="alert alert-danger">{error.message}</div>}
+                    )}
+                    {this.state.message && <div className="alert alert-info">{this.state.message}</div>}
+                    {error && error.message && <div className="alert alert-danger">{error.message}</div>}
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer">
+                <div className="btn-toolbar float-left">
+                  <a href="/resetPassword" className="btn btn-link">
+                    Forgot Password
+                  </a>
+                </div>
+                <div className="btn-toolbar float-right">
+                  <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
+                    <i className="fal fa-sign-in" /> Login
+                  </button>
                 </div>
               </div>
             </div>
-            <div className="card-footer">
-              <div className="btn-toolbar float-left">
-                <a href="/resetPassword" className="btn btn-link">
-                  Forgot Password
-                </a>
-              </div>
-              <div className="btn-toolbar float-right">
-                <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
-                  <i className="fal fa-sign-in" /> Login
-                </button>
-              </div>
-            </div>
-          </div>
+          </form>
         )}
       </Mutation>
     )
