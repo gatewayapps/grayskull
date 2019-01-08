@@ -5,6 +5,7 @@ import Primary from '../../layouts/primary'
 import LoadingIndicator from '../../components/LoadingIndicator'
 import MultiFactorSetup from '../../components/MultiFactorSetup'
 import RegistrationForm from '../../components/RegistrationForm'
+import { validatePassword } from '../../utils/passwordComplexity'
 
 const RegistrationSteps = {
   UserData: 1,
@@ -69,10 +70,12 @@ class Register extends PureComponent {
         if (!this.state.data.firstName || !this.state.data.lastName || !this.state.data.password || !this.state.data.confirm) {
           return false
         }
+        if (!validatePassword(this.state.data.password, configuration)) {
+          return false
+        }
         if (this.state.data.password !== this.state.data.confirm) {
           return false
         }
-        // TODO: Add Password Complexity Verification to UI
         break
 
       case RegistrationSteps.Multifactor:
@@ -172,6 +175,7 @@ class Register extends PureComponent {
                               </div>
                               {this.state.step === RegistrationSteps.UserData && (
                                 <RegistrationForm
+                                  configuration={configuration}
                                   data={this.state.data}
                                   onChange={this.onFormValueChanged}
                                 />
