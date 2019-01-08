@@ -1,7 +1,9 @@
 jobs:
 - job: Test
   pool:
-    vmImage: 'ubuntu-16.04'
+    name: default
+    demands:
+      agent.name -equals ubuntu-build-server  
   steps:
   - task: NodeTool@0 
     inputs:
