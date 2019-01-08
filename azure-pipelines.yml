@@ -12,3 +12,5 @@ jobs:
       npm install
       npx tslint --project ./
       npx tsc
+
+      
