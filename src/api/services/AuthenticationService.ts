@@ -12,8 +12,8 @@ import NodeCache from 'node-cache'
 import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
-import MailService from './MailService';
-import { ReflectionObject } from 'protobufjs';
+import MailService from './MailService'
+import { ReflectionObject } from 'protobufjs'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -49,7 +49,7 @@ interface IRefreshTokenPayload {
 }
 
 otplib.authenticator.options = {
-  window: 4,
+  window: 4
 }
 
 class AuthenticationService {
@@ -100,7 +100,7 @@ class AuthenticationService {
     const authCode = this.generateAndCacheAuthorizationCode(existingUser, sessionId)
     return {
       success: true,
-      code: authCode,
+      code: authCode
     }
   }
 
@@ -214,11 +214,11 @@ class AuthenticationService {
     const client = await ClientService.getClient({ client_id })
     if (client) {
       return (
-        !client.url ||
+        !client.baseUrl ||
         redirectUri
           .toLowerCase()
           .trim()
-          .startsWith(client.url.toLowerCase().trim())
+          .startsWith(client.baseUrl.toLowerCase().trim())
       )
     } else {
       return false

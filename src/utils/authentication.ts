@@ -25,10 +25,10 @@ export function generateLoginUrl(protocol: string, hostname: string | undefined,
   const query = [
     `client_id=${ConfigurationManager.General.grayskullClientId}`,
     `response_type=code`,
-    `redirect_uri=${encodeURIComponent(`${protocol}://${hostname}/users/signin`)}`,
+    `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General.fallbackUrl}/signin`)}`,
     `state=${state}`
   ]
-  return `${ConfigurationManager.General.fallbackUrl}/auth?${query.join('&')}`
+  return `/auth?${query.join('&')}`
 }
 
 export function generateState(returnPath: string): string {
