@@ -33,6 +33,12 @@ const LOGIN_MUTATION = gql`
   }
 `
 
+const SEND_BACKUP_CODE_MUTATION = gql`
+  mutation SEND_BACKUP_CODE_MUTATION($emailAddress: String!) {
+    sendBackupCode(data: { emailAddress: $emailAddress })
+  }
+`
+
 class LoginForm extends PureComponent {
   state = {
     emailAddress: '',
@@ -41,6 +47,7 @@ class LoginForm extends PureComponent {
     sessionId: '',
     otpRequired: false,
     message: undefined,
+    backupCodeSent: false,
   }
 
   async componentDidMount() {
@@ -74,6 +81,13 @@ class LoginForm extends PureComponent {
 
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value })
+  }
+
+  onSendBackupCode = async (sendBackupCode) => {
+    const { data } = await sendBackupCode()
+    if (data && data.sendBackupCode) {
+      this.setState({ backupCodeSent: true })
+    }
   }
 
   render() {
@@ -126,6 +140,23 @@ class LoginForm extends PureComponent {
                         value={this.state.otpToken}
                         onChange={this.handleChange}
                       />
+                      {this.state.backupCodeSent && (
+                        <div>
+                          A backup code has been sent to your email address.
+                        </div>
+                      )}
+                      <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                        {(sendBackupCode, { loading }) => (
+                          <button
+                            className='btn btn-link pl-0'
+                            disabled={loading}
+                            onClick={() => this.onSendBackupCode(sendBackupCode)}
+                          >
+                            {this.state.backupCodeSent ? 'Send new backup code' : 'I don\'t have access to my authenticator right now'}
+                          </button>
+                        )}
+                      </Mutation>
+
                     </div>
                   )}
                   {this.state.message && (<div className="alert alert-info">{this.state.message}</div>)}
@@ -164,7 +195,7 @@ LoginForm.propTypes = {
   }).isRequired,
   responseType: PropTypes.string.isRequired,
   redirectUri: PropTypes.string.isRequired,
-  state: PropTypes.string.isRequired,
+  state: PropTypes.string,
 }
 
 export default LoginForm

@@ -21,6 +21,10 @@ input VerifyMfaKeyArgs {
 	token: String!
 }
 
+input SendBackupCodeArgs {
+	emailAddress: String!
+}
+
 input ValidatePasswordArgs {
 	password: String!
 	confirm: String!
@@ -147,6 +151,7 @@ type Query {
 
 type Mutation {
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
+	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
 	changePassword(data: ChangePasswordArgs!): Boolean 
 	login(data: LoginArgs!): LoginResponse 

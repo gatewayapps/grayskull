@@ -89,6 +89,9 @@ export default {
     },
     verifyMfaKey: (obj, args, context, info) => {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
+    },
+    sendBackupCode: async (obj, args, context, info) => {
+      return await AuthenticationService.sendBackupCode(args.data.emailAddress)
     }
   },
   UserAccount: {}

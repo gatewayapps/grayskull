@@ -62,7 +62,7 @@ class UserAccountService extends UserAccountServiceBase {
     This link will expire in ${relativeTime}.
     `
 
-    MailService.sendMail(emailAddress, `Password Reset Instructions`, body, 'admin@grayskull.io')
+    MailService.sendMail(emailAddress, `Password Reset Instructions`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
   public async inviteUser(emailAddress: string, client: ClientInstance, invitedById: number, baseUrl: string): Promise<UserAccountInstance> {

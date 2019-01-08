@@ -12,6 +12,8 @@ import NodeCache from 'node-cache'
 import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
+import MailService from './MailService';
+import { ReflectionObject } from 'protobufjs';
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -76,12 +78,18 @@ class AuthenticationService {
       const otpSecret = decrypt(existingUser.otpSecret)
 
       if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken)) {
-        return {
-          success: false,
-          otpRequired: true,
-          message: otpToken !== undefined && otpToken.length > 0 ? 'Invalid multi-factor authentication code' : ''
+        const backupCode = this.localCache.get<string>(existingUser.emailAddress)
+
+        if (!backupCode || backupCode !== otpToken) {
+          return {
+            success: false,
+            otpRequired: true,
+            message: otpToken !== undefined && otpToken.length > 0 ? 'Invalid multi-factor authentication code' : ''
+          }
         }
       }
+
+      this.localCache.del(existingUser.emailAddress)
     }
 
     const userClient = await UserClientService.getUserClient({ userAccountId: existingUser.userAccountId!, client_id: clientId })
@@ -116,7 +124,7 @@ class AuthenticationService {
           throw new Error(`code is missing`)
         }
 
-        const authCodeCacheResult = await this.getAuthorizationCodeFromCache(code)
+        const authCodeCacheResult = this.localCache.get<IAuthenticationCodeCacheResult>(code)
         if (!authCodeCacheResult) {
           throw new Error(`authorization_code has expired`)
         }
@@ -168,6 +176,24 @@ class AuthenticationService {
       session_id,
       token_type: 'Bearer'
     }
+  }
+
+  public async sendBackupCode(emailAddress: string): Promise<boolean> {
+    const user = await UserAccountService.getUserAccountWithSensitiveData({ emailAddress })
+    if (!user || !user.otpEnabled || !user.otpSecret) {
+      return false
+    }
+
+    const otpSecret = decrypt(user.otpSecret)
+    if (!otpSecret) {
+      return false
+    }
+
+    const backupCode = otplib.authenticator.generate(otpSecret)
+    this.localCache.set(user.emailAddress, backupCode, 16 * 60)
+    const body = `Your login code is: ${backupCode}<br/><br/>This code will expire in 15 minutes.`
+    MailService.sendMail(user.emailAddress, 'Login Code', body, ConfigurationManager.Security.adminEmailAddress)
+    return true
   }
 
   public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
@@ -294,18 +320,6 @@ class AuthenticationService {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     this.localCache.set(authorizationCode, { sessionId, userAccount }, 120)
     return authorizationCode
-  }
-
-  private getAuthorizationCodeFromCache(code: string): Promise<IAuthenticationCodeCacheResult | undefined> {
-    return new Promise((resolve, reject) => {
-      this.localCache.get<IAuthenticationCodeCacheResult>(code, (err, cacheResult) => {
-        if (err) {
-          return reject(err)
-        } else {
-          return resolve(cacheResult)
-        }
-      })
-    })
   }
 
   private verifyRefreshToken(client: ClientInstance, token: string): Promise<any> {
