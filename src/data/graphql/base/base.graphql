@@ -1,1 +1,15 @@
 scalar Date
+
+type Configuration {
+  multifactorRequired: Boolean!
+  passwordRequireLowercase: Boolean!
+  passwordRequireUppercase: Boolean!
+  passwordRequireNumber: Boolean!
+  passwordRequireSymbol: Boolean!
+  passwordMinimumLength: Int!
+  realmName: String!
+}
+
+type Query {
+  configuration: Configuration!
+}

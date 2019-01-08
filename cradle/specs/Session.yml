@@ -1,4 +1,6 @@
 Session:
+  meta:
+    topLevel: true
   properties:
     sessionId: string primary
     refreshToken: string

@@ -1,4 +1,6 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { Permissions } from '@/utils/permissions'
+import { encrypt } from '@/utils/cipher'
 import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
@@ -14,6 +16,12 @@ import UserClientService from './UserClientService'
 
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
+interface ICPTToken {
+  client: ClientInstance | { name: string; client_id?: number } | null
+  emailAddress: string
+  invitedById?: number
+}
+
 class UserAccountService extends UserAccountServiceBase {
   /**
    *
@@ -22,6 +30,7 @@ class UserAccountService extends UserAccountServiceBase {
    */
   public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
     data.passwordHash = await this.hashPassword(password)
+    data.permissions = data.emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
     data.lastPasswordChange = new Date()
     return super.createUserAccount(data)
   }
@@ -33,7 +42,11 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async inviteAdmin(baseUrl: string) {
-    const token = this.generateCPT(ConfigurationManager.Security.adminEmailAddress, ConfigurationManager.Security.invitationExpiresIn, ConfigurationManager.General.grayskullClientId)
+    const token = this.generateCPT(
+      ConfigurationManager.Security.adminEmailAddress,
+      ConfigurationManager.Security.invitationExpiresIn,
+      ConfigurationManager.General.grayskullClientId
+    )
     this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
   }
 
@@ -49,7 +62,7 @@ class UserAccountService extends UserAccountServiceBase {
     This link will expire in ${relativeTime}.
     `
 
-    MailService.sendMail(emailAddress, `Password Reset Instructions`, body, 'admin@grayskull.io')
+    MailService.sendMail(emailAddress, `Password Reset Instructions`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
   public async inviteUser(emailAddress: string, client: ClientInstance, invitedById: number, baseUrl: string): Promise<UserAccountInstance> {
@@ -106,7 +119,7 @@ class UserAccountService extends UserAccountServiceBase {
     return newUser
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<{ client: ClientInstance | { name: string; client_id?: number } | null; emailAddress: string; invitedById?: number }> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<ICPTToken> {
     const decoded = this.decodeCPT(cpt)
     const emailAddress = decoded.emailAddress
     const invitedById = decoded.invitedById
@@ -126,7 +139,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async registerUser(data: IUserAccount, password: string, cpt: string) {
+  public async registerUser(data: IUserAccount, password: string, cpt: string, otpSecret?: string) {
     // 1. Parse the cpt
     const token = await this.processCPT(cpt)
     if (!token) {
@@ -139,11 +152,20 @@ class UserAccountService extends UserAccountServiceBase {
     if (existingUser) {
       // Activate the existing user account and set password
       data.passwordHash = await this.hashPassword(password)
+      if (otpSecret !== undefined && otpSecret.length > 0) {
+        data.otpSecret = encrypt(otpSecret)
+        data.otpEnabled = true
+      }
       data.lastPasswordChange = new Date()
       data.isActive = true
       user = await this.updateUserAccount({ emailAddress: existingUser.emailAddress }, data)
     } else {
       // Create a new user account since there is not already one existing
+      data.emailAddress = token.emailAddress
+      if (otpSecret !== undefined && otpSecret.length > 0) {
+        data.otpSecret = encrypt(otpSecret)
+        data.otpEnabled = true
+      }
       user = await this.createUserAccountWithPassword(data, password)
     }
     if (!user) {
@@ -155,6 +177,17 @@ class UserAccountService extends UserAccountServiceBase {
       await UserClientService.createUserClient({
         userAccountId: user.userAccountId!,
         client_id: token.client.client_id,
+        createdBy: token.invitedById || user.userAccountId!,
+        revoked: false,
+      })
+    }
+
+    // 4. Ensure the user is linked to the Grayskull Client
+    const grayskullUserClient = await UserClientService.getUserClient({ client_id: ConfigurationManager.General.grayskullClientId, userAccountId: user.userAccountId! })
+    if (!grayskullUserClient) {
+      await UserClientService.createUserClient({
+        userAccountId: user.userAccountId!,
+        client_id: ConfigurationManager.General.grayskullClientId,
         createdBy: token.invitedById || user.userAccountId!,
         revoked: false,
       })

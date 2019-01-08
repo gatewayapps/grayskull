@@ -1,7 +1,10 @@
 UserAccount:
   meta:
     sensitive:
-      - 'passwordHash'
+      - passwordHash
+      - permissions
+      - otpSecret
+    topLevel: true
   properties:
     userAccountId: integer primary auto(1,1)
     firstName: string(30)
@@ -13,32 +16,53 @@ UserAccount:
     passwordHash: string
     phoneNumber: string
     profileImageUrl: string
+    permissions: integer default(0)
+    otpSecret: string?
+    otpEnabled: boolean default(false)
     isActive: boolean default(true)
     createdBy: integer?
     createdAt: datetime default(NOW)
     modifiedBy: integer?
     modifiedAt: datetime default(NOW)
   operations:
-      # Login User #
+    # Login User #
     login:
-      returns: boolean
+      returns: LoginResponse
       arguments:
         emailAddress: string
         password: string
-        fingrprint: string
+        otpToken: string?
+        sessionId: string
         client_id: integer
         response_type: string
         redirect_uri: string
+        state: string?
     # Create User Account #
-    createUserAccount:
-      returns: UserAccount
+    registerUser:
+      returns: string
       arguments:
         password: string
         confirm: string
         cpt: string
         firstName:
         lastName:
+        otpSecret:
+    # Register for Multifactor #
+    generateMfaKey:
+      returns: string
+      arguments:
+        emailAddress:
+    # Verify Multifactor Auth key #
+    verifyMfaKey:
+      returns: boolean
+      arguments:
+        secret: string
+        token: string
     # Reset Password #
+    sendBackupCode:
+      returns: boolean
+      arguments:
+        emailAddress: string
     resetPassword:
       returns: boolean
       arguments:

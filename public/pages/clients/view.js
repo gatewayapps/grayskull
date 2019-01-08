@@ -26,7 +26,6 @@ class ClientView extends PureComponent {
   }
 
   render() {
-    console.log(this.props)
     return (
       <Primary>
         <div className="container pt-4">

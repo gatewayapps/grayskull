@@ -99,6 +99,12 @@ input ClientFilter {
 	modifiedAt_greaterThan: Date
 	modifiedAt_equals: Date
 	modifiedAt_notEquals: Date
+	createdByUser_equals: ID
+	createdByUser_notEquals: ID
+	createdByUser_in: [ID]
+	modifiedByUser_equals: ID
+	modifiedByUser_notEquals: ID
+	modifiedByUser_in: [ID]
 }
 
 input ClientUniqueFilter {
@@ -106,12 +112,12 @@ input ClientUniqueFilter {
 }
 
 type Query {
-	clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
-	clientsMeta(filter: ClientFilter): ClientMeta
-	client(where: ClientUniqueFilter): Client
+	clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]! 
+	clientsMeta(filter: ClientFilter): ClientMeta 
+	client(where: ClientUniqueFilter): Client 
 }
 
 type Mutation {
-	createClient(data: CreateClientArgs!): Client
-	updateClient(data: UpdateClientArgs!): Client
+	createClient(data: CreateClientArgs!): Client 
+	updateClient(data: UpdateClientArgs!): Client 
 }

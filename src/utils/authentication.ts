@@ -22,7 +22,12 @@ export function generateLoginUrl(protocol: string, hostname: string | undefined,
 
   hostname = hostname || `localhost:${ConfigurationManager.General.port}`
 
-  const query = [`client_id=${ConfigurationManager.General.grayskullClientId}`, `response_type=code`, `redirect_uri=${encodeURIComponent(`${protocol}://${hostname}/users/signin`)}`, `state=${state}`]
+  const query = [
+    `client_id=${ConfigurationManager.General.grayskullClientId}`,
+    `response_type=code`,
+    `redirect_uri=${encodeURIComponent(`${protocol}://${hostname}/users/signin`)}`,
+    `state=${state}`
+  ]
   return `${ConfigurationManager.General.fallbackUrl}/auth?${query.join('&')}`
 }
 

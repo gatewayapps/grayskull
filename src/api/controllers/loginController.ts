@@ -2,12 +2,10 @@ import ConfigurationManager from '@/config/ConfigurationManager'
 import { query, queryMustEqual } from '@decorators/paramDecorator'
 import { HttpMethod, route } from '@decorators/routeDecorator'
 import AuthenticationService from '@services/AuthenticationService'
-import ClientService from '@services/ClientService'
 import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
 import { setAuthCookies, decodeState } from '@/utils/authentication'
-import { access } from 'fs';
 import SessionService from '@services/SessionService';
 
 export default class LoginController extends ControllerBase {
@@ -35,37 +33,6 @@ export default class LoginController extends ControllerBase {
       return
     } else {
       return this.next.render(req, res, '/login', req.query)
-    }
-  }
-
-  @route(HttpMethod.POST, '/auth')
-  @query('client_id', 'response_type', 'redirect_uri')
-  @queryMustEqual('response_type', 'code')
-  public async processLoginRequest(req: Request, res: Response) {
-    try {
-      if ((await this.validateLoginRequest(req)) === false) {
-        res.locals.error = { message: 'Invalid login request' }
-        return this.renderLoginPage(req, res)
-      } else if (!req.body.sessionId) {
-        console.log('Received auth post without a sessionId')
-        res.locals.error = { message: 'Invalid login request' }
-        return this.renderLoginPage(req, res)
-      } else {
-        const authorizationCode = await AuthenticationService.authenticateUser(req.body.emailAddress, req.body.password, req.body.sessionId, parseInt(req.query.client_id, 10))
-        if (authorizationCode) {
-          const queryParts = [`code=${authorizationCode}`]
-          if (req.query.state) {
-            queryParts.push(`state=${req.query.state}`)
-          }
-          const queryString = queryParts.join('&')
-          return res.redirect(`${req.query.redirect_uri}?${queryString}`)
-        }
-        res.locals.error = { message: 'Login failed' }
-        return this.renderLoginPage(req, res)
-      }
-    } catch (err) {
-      res.locals.error = { message: err.message }
-      return this.renderLoginPage(req, res)
     }
   }
 

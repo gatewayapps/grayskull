@@ -1,0 +1,8 @@
+LoginResponse:
+  meta:
+    topLevel: false
+  properties:
+    success: boolean
+    message: string?
+    otpRequired: boolean?
+    redirectUrl: string?

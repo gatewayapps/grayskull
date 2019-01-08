@@ -2,6 +2,7 @@ Client:
   meta:
     sensitive:
       - secret
+    topLevel: true
   properties:
     client_id: integer primary auto(1,1)
     name: string(50)

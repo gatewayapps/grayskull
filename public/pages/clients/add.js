@@ -50,9 +50,7 @@ class ClientAddPage extends PureComponent {
       ...this.state.client,
       secret
     }
-    console.log(data)
     const res = await createClient({ variables: { data } })
-    console.log(res)
     if (res.data && res.data.createClient) {
       this.setState({
         result: {

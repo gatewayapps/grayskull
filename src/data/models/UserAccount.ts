@@ -41,6 +41,18 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     profileImageUrl: {
       type: Sequelize.STRING
     },
+    permissions: {
+      defaultValue: 0,
+      type: Sequelize.INTEGER
+    },
+    otpSecret: {
+      allowNull: true,
+      type: Sequelize.STRING
+    },
+    otpEnabled: {
+      defaultValue: false,
+      type: Sequelize.BOOLEAN
+    },
     isActive: {
       defaultValue: true,
       type: Sequelize.BOOLEAN

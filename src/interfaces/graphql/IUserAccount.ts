@@ -44,6 +44,8 @@ export interface IUserAccountFilter {
   profileImageUrl_endsWith?: string
   profileImageUrl_equals?: string
   profileImageUrl_notEquals?: string
+  otpEnabled_equals?: boolean
+  otpEnabled_notEquals?: boolean
   isActive_equals?: boolean
   isActive_notEquals?: boolean
   createdBy_lessThan?: number
