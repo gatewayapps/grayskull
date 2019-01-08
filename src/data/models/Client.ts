@@ -25,7 +25,10 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     secret: {
       type: Sequelize.STRING
     },
-    url: {
+    baseUrl: {
+      type: Sequelize.STRING
+    },
+    homePageUrl: {
       type: Sequelize.STRING
     },
     public: {
