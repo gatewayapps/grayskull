@@ -3,7 +3,6 @@ import ClientService from '@services/ClientService'
 export default {
   Query: {
     clients: (obj, args, context, info) => {
-      console.log(context.user)
       if (context.user) {
         return ClientService.getClients(args.where)
       } else {
