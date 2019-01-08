@@ -14,7 +14,7 @@ const SINGLE_CLIENT_QUERY = gql`
       logoImageUrl
       public
       description
-      url
+      homePageUrl
       redirectUri
     }
   }
@@ -43,7 +43,7 @@ class ClientView extends PureComponent {
                   <div className="card-body">
                     <h3 className="card-title">{client.name}</h3>
                     <p>{client.description}</p>
-                    <p>Url: {client.url}</p>
+                    <p>Url: {client.homePageUrl}</p>
                     <p>Redirect Uri: {client.redirectUri}</p>
                   </div>
                 </div>

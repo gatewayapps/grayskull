@@ -2,16 +2,16 @@ import gql from 'graphql-tag'
 import Link from 'next/link'
 import React from 'react'
 import { Query } from 'react-apollo'
-import Primary from '../../layouts/primary'
-import ErrorMessage from '../../components/ErrorMessage'
-import LoadingIndicator from '../../components/LoadingIndicator'
+import Primary from '../../../layouts/primary'
+import ErrorMessage from '../../../components/ErrorMessage'
+import LoadingIndicator from '../../../components/LoadingIndicator'
 
 const ALL_CLIENTS_QUERY = gql`
   query ALL_CLIENTS_QUERY {
     clients {
       client_id
       name
-      url
+      homePageUrl
     }
   }
 `
@@ -53,7 +53,7 @@ const ClientsIndexPage = () => {
                     <tr key={client.client_id}>
                       <td>{client.name}</td>
                       <td>
-                        <a href={client.url}>{client.url}</a>
+                        <a href={client.homePageUrl}>{client.homePageUrl}</a>
                       </td>
                       <td>
                         <Link href={{ pathname: '/clients/view', query: { id: client.client_id } }}>
