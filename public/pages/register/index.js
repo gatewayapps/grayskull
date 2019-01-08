@@ -1,7 +1,8 @@
 import gql from 'graphql-tag'
 import React, { PureComponent } from 'react'
-import { Mutation } from 'react-apollo'
+import { Mutation, Query } from 'react-apollo'
 import Primary from '../../layouts/primary'
+import LoadingIndicator from '../../components/LoadingIndicator'
 import MultiFactorSetup from '../../components/MultiFactorSetup'
 import RegistrationForm from '../../components/RegistrationForm'
 
@@ -9,6 +10,19 @@ const RegistrationSteps = {
   UserData: 1,
   Multifactor: 2
 }
+
+const GET_CONFIGURATION_QUERY = gql`
+  query GET_CONFIGURATION_QUERY {
+    configuration {
+      multifactorRequired
+      passwordRequireNumber
+      passwordRequireSymbol
+      passwordRequireLowercase
+      passwordRequireUppercase
+      passwordMinimumLength
+    }
+  }
+`
 
 const REGISTER_USER_MUTATION = gql`
   mutation REGISTER_USER_MUTATION($cpt: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
@@ -25,26 +39,31 @@ const REGISTER_USER_MUTATION = gql`
 
 class Register extends PureComponent {
   static getInitialProps = async ({ req, query, res }) => {
-    return { data: req.body, query, emailAddress: res.locals.emailAddress, ...res.locals }
+    return {
+      query,
+      ...res.locals
+    }
   }
 
   constructor(props) {
     super(props)
     this.state = {
-      emailAddress: props.emailAddress,
+      configuration: {},
       data: {
-        cpt: this.props.query.cpt,
+        cpt: props.query.cpt,
         firstName: '',
         lastName: '',
         password: '',
         confirm: '',
         otpSecret: undefined,
       },
+      emailAddress: props.emailAddress,
+      requireMfaVerification: false,
       step: RegistrationSteps.UserData
     }
   }
 
-  isValid = () => {
+  isValid = (configuration) => {
     switch (this.state.step) {
       case RegistrationSteps.UserData:
         if (!this.state.data.firstName || !this.state.data.lastName || !this.state.data.password || !this.state.data.confirm) {
@@ -57,7 +76,9 @@ class Register extends PureComponent {
         break
 
       case RegistrationSteps.Multifactor:
-        // TODO: Check if MFA requried and otpSecret has been set
+        if ((this.state.requireMfaVerification || configuration.multifactorRequired) && !this.state.data.otpSecret) {
+          return false
+        }
         break
     }
 
@@ -103,71 +124,90 @@ class Register extends PureComponent {
     }
   }
 
+  setRequireMfaVerification = (enabled) => {
+    this.setState({ requireMfaVerification: enabled })
+  }
+
   render() {
     return (
       <Primary>
-        <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
-          {(registerUser, { loading, error }) => {
+        <Query query={GET_CONFIGURATION_QUERY}>
+          {({ data, loading, error }) => {
+            if (loading) {
+              return (<LoadingIndicator />)
+            }
+
+            const { configuration } = data
+
             return (
-              <div>
-                <div className="container pt-4">
-                  <div className="row">
-                    <div className="col col-md-8 offset-md-2">
-                      <div className="card">
-                        <div className="card-header">Register for {this.props.client.name}</div>
-                        <div className="card-body">
-                          {error && <div className="alert alert-danger">{error.message}</div>}
-                          <div className="form-group row">
-                            <label
-                              className="col-sm-12 col-md-3 col-form-label"
-                              htmlFor="emailAddress"
-                            >
-                              E-mail Address
-                            </label>
-                            <div className="col-sm-12 col-md-9">
-                              <input
-                                type="text"
-                                readOnly
-                                className="form-control-plaintext"
-                                name="emailAddress"
-                                value={this.state.emailAddress}
-                                onChange={this.handleChange}
-                              />
+              <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
+                {(registerUser, { loading, error }) => {
+                  return (
+                    <div className="container pt-4">
+                      <div className="row">
+                        <div className="col col-md-8 offset-md-2">
+                          <div className="card">
+                            <div className="card-header">
+                              Register for {this.props.client.name}
+                            </div>
+                            <div className="card-body">
+                              {error && <div className="alert alert-danger">{error.message}</div>}
+                              <div className="form-group row">
+                                <label
+                                  className="col-sm-12 col-md-3 col-form-label"
+                                  htmlFor="emailAddress"
+                                >
+                                  E-mail Address
+                                </label>
+                                <div className="col-sm-12 col-md-9">
+                                  <input
+                                    type="text"
+                                    readOnly
+                                    className="form-control-plaintext"
+                                    name="emailAddress"
+                                    value={this.state.emailAddress}
+                                    onChange={this.handleChange}
+                                  />
+                                </div>
+                              </div>
+                              {this.state.step === RegistrationSteps.UserData && (
+                                <RegistrationForm
+                                  data={this.state.data}
+                                  onChange={this.onFormValueChanged}
+                                />
+                              )}
+                              {this.state.step === RegistrationSteps.Multifactor && (
+                                <MultiFactorSetup
+                                  emailAddress={this.state.emailAddress}
+                                  required={configuration.multifactorRequired}
+                                  onCancel={() => this.setRequireMfaVerification(false)}
+                                  onEnabled={() => this.setRequireMfaVerification(true)}
+                                  onVerified={this.onMfaVerified}
+                                />
+                              )}
+                            </div>
+                            <div className="card-footer">
+                              <div className="btn-toolbar float-right">
+                                <button
+                                  className="btn btn-info"
+                                  disabled={!this.isValid(configuration) || loading}
+                                  onClick={() => this.onSubmitClick(registerUser)}
+                                >
+                                  {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
+                                </button>
+                              </div>
+                              <div className="clearfix" />
                             </div>
                           </div>
-                          {this.state.step === RegistrationSteps.UserData && (
-                            <RegistrationForm
-                              data={this.state.data}
-                              onChange={this.onFormValueChanged}
-                            />
-                          )}
-                          {this.state.step === RegistrationSteps.Multifactor && (
-                            <MultiFactorSetup
-                              emailAddress={this.state.emailAddress}
-                              onVerified={this.onMfaVerified}
-                            />
-                          )}
-                        </div>
-                        <div className="card-footer">
-                          <div className="btn-toolbar float-right">
-                            <button
-                              className="btn btn-info"
-                              disabled={!this.isValid() || loading}
-                              onClick={() => this.onSubmitClick(registerUser)}
-                            >
-                              {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
-                            </button>
-                          </div>
-                          <div className="clearfix" />
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
+                  )
+                }}
+              </Mutation>
             )
           }}
-        </Mutation>
+        </Query>
       </Primary>
     )
   }

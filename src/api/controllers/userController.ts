@@ -27,10 +27,6 @@ export default class UserController extends ControllerBase {
   @route(HttpMethod.GET, '/register')
   @query('cpt')
   public async getRegisterPage(req: Request, res: Response) {
-    return this.renderRegisterPage(req, res)
-  }
-
-  private async renderRegisterPage(req: Request, res: Response) {
     if (!UserAccountService.validateCPT(req.query.cpt)) {
       res.status(400).send()
     } else {

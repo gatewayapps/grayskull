@@ -35,6 +35,25 @@ class MultiFactorSetup extends PureComponent {
     }
   }
 
+  cancelSetup = () => {
+    if (this.props.required) {
+      return
+    }
+
+    this.setState({
+      keyUri: '',
+      otpSecret: '',
+      qrcodeImage: '',
+      token: '',
+      isVerified: false,
+      showSecret: false,
+    }, () => {
+      if (this.props.onCancel) {
+        this.props.onCancel()
+      }
+    })
+  }
+
   handleTokenChanged = (e) => {
     this.setState({ token: e.target.value })
   }
@@ -59,6 +78,10 @@ class MultiFactorSetup extends PureComponent {
           token: '',
           isVerified: false,
           showSecret: false,
+        }, () => {
+          if (this.props.onEnabled) {
+            this.props.onEnabled()
+          }
         })
       })
     }
@@ -93,6 +116,9 @@ class MultiFactorSetup extends PureComponent {
   renderVerify = (client) => {
     return (
       <div>
+        {this.props.required && (
+          <p>Multi-factor authentication is required to complete account registration.</p>
+        )}
         <ol>
           <li>Install an "authenticator" app from the app store on your phone.</li>
           <li>Open the app.</li>
@@ -125,16 +151,26 @@ class MultiFactorSetup extends PureComponent {
                   onChange={this.handleTokenChanged}
                 />
               </p>
-              <button
-                className='btn btn-primary'
-                onClick={() => this.verifyToken(client)}
-              >
-                Verify Code
-              </button>
+              <div>
+                <button
+                  className='btn btn-primary'
+                  onClick={() => this.verifyToken(client)}
+                >
+                  Verify Code
+                </button>
+                {!this.required && (
+                  <button
+                    className='btn btn-link'
+                    onClick={this.cancelSetup}
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
             </li>
           )}
           {this.state.isVerified && (
-            <li>Authentication code verifed!</li>
+            <li>Authentication code verified!</li>
           )}
         </ol>
       </div>
@@ -148,12 +184,17 @@ class MultiFactorSetup extends PureComponent {
   render() {
     return (
       <ApolloConsumer>
-        {apolloClient => (
-          <div>
-            <h5>Multi-Factor Authentication</h5>
-            {this.state.keyUri ? this.renderVerify(apolloClient) : this.renderEnable(apolloClient)}
-          </div>
-        )}
+        {(apolloClient) => {
+          if (this.props.required === true && !this.state.keyUri) {
+            this.generateSecret(apolloClient)
+          }
+          return (
+            <div>
+              <h5>Multi-Factor Authentication</h5>
+              {this.state.keyUri ? this.renderVerify(apolloClient) : this.renderEnable(apolloClient)}
+            </div>
+          )
+        }}
       </ApolloConsumer>
     )
   }
@@ -162,6 +203,8 @@ class MultiFactorSetup extends PureComponent {
 MultiFactorSetup.propTypes = {
   emailAddress: PropTypes.string.isRequired,
   required: PropTypes.bool,
+  onCancel: PropTypes.func,
+  onEnabled: PropTypes.func,
   onVerified: PropTypes.func.isRequired,
 }
 
