@@ -91,7 +91,7 @@ class UserAccountService extends UserAccountServiceBase {
         userAccountId: user.userAccountId,
         client_id: client.client_id,
         createdBy: invitedByUser.userAccountId,
-        revoked: false,
+        revoked: false
       })
       // Send an email to the user to notify them of the new access
       this.sendNewClientAccess(user.emailAddress, client, invitedByUser)
@@ -109,7 +109,7 @@ class UserAccountService extends UserAccountServiceBase {
         lastPasswordChange: new Date(0),
         passwordHash: '',
         phoneNumber: '',
-        profileImageUrl: '',
+        profileImageUrl: ''
       })
     }
 
@@ -178,7 +178,7 @@ class UserAccountService extends UserAccountServiceBase {
         userAccountId: user.userAccountId!,
         client_id: token.client.client_id,
         createdBy: token.invitedById || user.userAccountId!,
-        revoked: false,
+        revoked: false
       })
     }
 
@@ -189,14 +189,14 @@ class UserAccountService extends UserAccountServiceBase {
         userAccountId: user.userAccountId!,
         client_id: ConfigurationManager.General.grayskullClientId,
         createdBy: token.invitedById || user.userAccountId!,
-        revoked: false,
+        revoked: false
       })
     }
 
     const client = token.client!.client_id ? await ClientService.getClient({ client_id: token.client!.client_id! }) : await ClientService.getClient({ client_id: 1 })
     return {
       client,
-      userAccount: user,
+      userAccount: user
     }
   }
 
@@ -220,7 +220,7 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance) {
-    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.url}">${client.name}</a>.`
+    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl}">${client.name}</a>.`
     MailService.sendMail(emailAddress, `${client.name} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
@@ -229,9 +229,7 @@ class UserAccountService extends UserAccountServiceBase {
       .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
       .fromNow(true)
 
-    const invitedByMessage = invitedByUser
-      ? `<p>${invitedByUser.firstName} ${invitedByUser.lastName} has invited you to start using ${clientName}.</p>`
-      : ''
+    const invitedByMessage = invitedByUser ? `<p>${invitedByUser.firstName} ${invitedByUser.lastName} has invited you to start using ${clientName}.</p>` : ''
 
     const body = `${invitedByMessage}<p>Please click the following link to accept your invitation to register for ${clientName}
     <a href='${baseUrl}/register?cpt=${token}' target='_blank'>Register</a></p>
@@ -246,7 +244,7 @@ class UserAccountService extends UserAccountServiceBase {
       {
         emailAddress,
         client_id,
-        invitedById,
+        invitedById
       },
       ConfigurationManager.Security.globalSecret,
       {

@@ -24,11 +24,16 @@ export interface IClientFilter {
   description_endsWith?: string
   description_equals?: string
   description_notEquals?: string
-  url_contains?: string
-  url_startsWith?: string
-  url_endsWith?: string
-  url_equals?: string
-  url_notEquals?: string
+  baseUrl_contains?: string
+  baseUrl_startsWith?: string
+  baseUrl_endsWith?: string
+  baseUrl_equals?: string
+  baseUrl_notEquals?: string
+  homePageUrl_contains?: string
+  homePageUrl_startsWith?: string
+  homePageUrl_endsWith?: string
+  homePageUrl_equals?: string
+  homePageUrl_notEquals?: string
   public_equals?: boolean
   public_notEquals?: boolean
   redirectUri_contains?: string

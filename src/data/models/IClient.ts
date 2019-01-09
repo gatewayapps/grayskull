@@ -4,7 +4,8 @@ export interface IClient {
   logoImageUrl?: string
   description?: string
   secret: string
-  url: string
+  baseUrl: string
+  homePageUrl: string
   public?: boolean
   redirectUri: string
   isActive?: boolean

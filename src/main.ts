@@ -13,6 +13,7 @@ import ClientService from './api/services/ClientService'
 import UserAccountService from './api/services/UserAccountService'
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
+import { generateLoginUrl } from './utils/authentication'
 import { getUserContext } from './middleware/authentication'
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -52,6 +53,15 @@ app.prepare().then(() => {
   const routeControllers = [new LoginController(app), new UserController(app)]
   routeControllers.forEach((c) => c.registerRoutes(server))
 
+  server.all('/admin$|/admin/*|/home$|/home/*', (req, res, next) => {
+    if (!req.user) {
+      const url = generateLoginUrl(req.protocol, req.hostname, { returnUrl: req.originalUrl })
+      res.redirect(url)
+    } else {
+      next()
+    }
+  })
+
   server.get('*', (req, res) => {
     return handle(req, res)
   })
@@ -83,7 +93,8 @@ async function ensureGrayskullClient(): Promise<void> {
       name: ConfigurationManager.General.realmName,
       secret: ConfigurationManager.Security.globalSecret,
       logoImageUrl: '/static/grayskull.gif',
-      url: ConfigurationManager.General.fallbackUrl,
+      baseUrl: ConfigurationManager.General.fallbackUrl,
+      homePageUrl: `${ConfigurationManager.General.fallbackUrl}/home`,
       redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`,
       public: true
     })

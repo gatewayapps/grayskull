@@ -77,7 +77,15 @@ class ClientAddPage extends PureComponent {
                         Name
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <input type="text" className="form-control" name="name" value={this.state.client.name} onChange={this.handleChange} required readOnly={this.state.result !== undefined} />
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="name"
+                          value={this.state.client.name}
+                          onChange={this.handleChange}
+                          required
+                          readOnly={this.state.result !== undefined}
+                        />
                       </div>
                     </div>
                     <div className="form-group row">
@@ -85,7 +93,15 @@ class ClientAddPage extends PureComponent {
                         Logo Image Url
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <input type="url" className="form-control" name="logoImageUrl" value={this.state.client.logoImageUrl} onChange={this.handleChange} required readOnly={this.state.result !== undefined} />
+                        <input
+                          type="url"
+                          className="form-control"
+                          name="logoImageUrl"
+                          value={this.state.client.logoImageUrl}
+                          onChange={this.handleChange}
+                          required
+                          readOnly={this.state.result !== undefined}
+                        />
                       </div>
                     </div>
                     <div className="form-group row">
@@ -93,7 +109,31 @@ class ClientAddPage extends PureComponent {
                         Base Url
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <input type="url" className="form-control" name="url" value={this.state.client.url} onChange={this.handleChange} required readOnly={this.state.result !== undefined} />
+                        <input
+                          type="url"
+                          className="form-control"
+                          name="baseUrl"
+                          value={this.state.client.baseUrl}
+                          onChange={this.handleChange}
+                          required
+                          readOnly={this.state.result !== undefined}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="url">
+                        Home Page Url
+                      </label>
+                      <div className="col-sm-12 col-md-9">
+                        <input
+                          type="url"
+                          className="form-control"
+                          name="homePageUrl"
+                          value={this.state.client.homePageUrl}
+                          onChange={this.handleChange}
+                          required
+                          readOnly={this.state.result !== undefined}
+                        />
                       </div>
                     </div>
                     <div className="form-group row">
@@ -101,7 +141,16 @@ class ClientAddPage extends PureComponent {
                         Fallback Redirect Url
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <input type="url" className="form-control" name="redirectUri" value={this.state.client.redirectUri} onChange={this.handleChange} aria-describedby="redirectUriHelpBlock" required readOnly={this.state.result !== undefined} />
+                        <input
+                          type="url"
+                          className="form-control"
+                          name="redirectUri"
+                          value={this.state.client.redirectUri}
+                          onChange={this.handleChange}
+                          aria-describedby="redirectUriHelpBlock"
+                          required
+                          readOnly={this.state.result !== undefined}
+                        />
                         <div id="redirectUriHelpBlock" className="small form-text text-muted">
                           This for redirecting back to your app following new user registration.
                         </div>
@@ -112,12 +161,26 @@ class ClientAddPage extends PureComponent {
                         Description
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <textarea className="form-control" name="description" value={this.state.client.description} onChange={this.handleChange} readOnly={this.state.result !== undefined} />
+                        <textarea
+                          className="form-control"
+                          name="description"
+                          value={this.state.client.description}
+                          onChange={this.handleChange}
+                          readOnly={this.state.result !== undefined}
+                        />
                       </div>
                     </div>
                     <div className="form-group">
                       <div className="form-check">
-                        <input className="form-check-input" type="checkbox" id="public" name="public" value={this.state.client.public} onChange={this.handleChange} readOnly={this.state.result !== undefined} />
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="public"
+                          name="public"
+                          value={this.state.client.public}
+                          onChange={this.handleChange}
+                          readOnly={this.state.result !== undefined}
+                        />
                         <label className="form-check-label" htmlFor="public">
                           Publicly visible
                         </label>
@@ -126,7 +189,10 @@ class ClientAddPage extends PureComponent {
 
                     {this.state.result && (
                       <div className="alert alert-success">
-                        <p>Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is the only time the client_secret will be visible.</p>
+                        <p>
+                          Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is
+                          the only time the client_secret will be visible.
+                        </p>
                         <div>
                           <strong>Client Id:</strong> {this.state.result.client_id}
                         </div>

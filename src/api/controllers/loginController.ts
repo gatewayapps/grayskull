@@ -6,7 +6,7 @@ import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
 import { setAuthCookies, decodeState } from '@/utils/authentication'
-import SessionService from '@services/SessionService';
+import SessionService from '@services/SessionService'
 
 export default class LoginController extends ControllerBase {
   @route(HttpMethod.POST, '/access_token')
@@ -88,10 +88,12 @@ export default class LoginController extends ControllerBase {
   public async getSignin(req: Request, res: Response) {
     try {
       // 1. Get accessToken via AuthenticationService
-      const accessToken = await AuthenticationService.getAccessToken('authorization_code',
+      const accessToken = await AuthenticationService.getAccessToken(
+        'authorization_code',
         ConfigurationManager.General.grayskullClientId,
         ConfigurationManager.Security.globalSecret,
-        req.query.code)
+        req.query.code
+      )
 
       if (!accessToken.session_id) {
         throw new Error('Session not found')
@@ -106,7 +108,7 @@ export default class LoginController extends ControllerBase {
 
       // 4. Redirect to returnUrl or home page
       const state = decodeState(req.query.state)
-      const returnPath = state && state.returnPath ? state.returnPath : '/'
+      const returnPath = state && state.returnPath ? state.returnPath : '/home'
       res.redirect(returnPath)
     } catch (err) {
       console.error(err)
