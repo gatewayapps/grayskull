@@ -3,7 +3,7 @@ UserClient:
     topLevel: true
   properties:
     userAccountId: integer unique('userClient')
-    client_id: uniqueidentifier unique('userClient')
+    client_id: string(50) unique('userClient')
     createdBy: integer
     createdAt: datetime default(NOW)
     revoked: boolean default(false)

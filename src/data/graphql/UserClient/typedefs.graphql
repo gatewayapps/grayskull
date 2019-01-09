@@ -1,6 +1,6 @@
 type UserClient {
 	userAccountId: Int!
-	client_id: ID!
+	client_id: String!
 	createdBy: Int!
 	createdAt: Date!
 	revoked: Boolean!

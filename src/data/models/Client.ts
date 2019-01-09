@@ -8,8 +8,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IClient> = {
     client_id: {
       primaryKey: true,
-      defaultValue: Sequelize.UUIDV4,
-      type: Sequelize.UUID
+      type: Sequelize.STRING(50)
     },
     name: {
       type: Sequelize.STRING(50)

@@ -9,7 +9,9 @@ export interface IUserClientFilter {
   userAccountId_greaterThan?: number
   userAccountId_equals?: number
   userAccountId_notEquals?: number
-  client_id_in?: [string]
+  client_id_contains?: string
+  client_id_startsWith?: string
+  client_id_endsWith?: string
   client_id_equals?: string
   client_id_notEquals?: string
   createdBy_lessThan?: number

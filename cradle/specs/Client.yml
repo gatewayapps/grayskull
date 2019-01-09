@@ -4,7 +4,7 @@ Client:
       - secret
     topLevel: true
   properties:
-    client_id: uniqueidentifier primary
+    client_id: string(50) primary
     name: string(50)
     logoImageUrl: string?
     description: string(500)?
@@ -25,6 +25,7 @@ Client:
     createClient:
       returns: Client
       arguments:
+        client_id:
         name:
         logoImageUrl:
         description:

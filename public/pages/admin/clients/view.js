@@ -7,7 +7,7 @@ import LoadingIndicator from '../../../components/LoadingIndicator'
 import ErrorMessage from '../../../components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
-  query SINGLE_CLIENT_QUERY($client_id: ID!) {
+  query SINGLE_CLIENT_QUERY($client_id: String!) {
     client(where: { client_id: $client_id }) {
       client_id
       name

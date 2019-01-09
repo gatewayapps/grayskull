@@ -5,7 +5,9 @@ export interface IClientMeta {
 export interface IClientFilter {
   or?: [IClientFilter]
   and?: [IClientFilter]
-  client_id_in?: [string]
+  client_id_contains?: string
+  client_id_startsWith?: string
+  client_id_endsWith?: string
   client_id_equals?: string
   client_id_notEquals?: string
   name_contains?: string

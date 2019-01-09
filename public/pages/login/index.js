@@ -7,7 +7,7 @@ import LoginForm from '../../components/LoginForm'
 import Primary from '../../layouts/primary'
 
 const GET_CLIENT_QUERY = gql`
-  query GET_CLIENT($client_id: ID!) {
+  query GET_CLIENT($client_id: String!) {
     client(where: { client_id: $client_id }) {
       client_id
       name

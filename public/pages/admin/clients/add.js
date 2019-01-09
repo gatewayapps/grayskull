@@ -1,8 +1,9 @@
 import gql from 'graphql-tag'
+import debounce from 'lodash/debounce'
 import Link from 'next/link'
-import Router from 'next/router'
 import React, { PureComponent } from 'react'
-import { Mutation } from 'react-apollo'
+import { ApolloConsumer, Mutation } from 'react-apollo'
+import uuid from 'uuid/v4'
 import ErrorMessage from '../../../components/ErrorMessage'
 import Primary from '../../../layouts/primary'
 import generateSecret from '../../../utils/generateSecret'
@@ -16,9 +17,18 @@ const CREATE_CLIENT_MUTATION = gql`
   }
 `
 
+const CHECK_CLIENT_ID_QUERY = gql`
+  query CHECK_CLIENT_ID_QUERY($client_id: String!) {
+    client(where: { client_id: $client_id }) {
+      client_id
+    }
+  }
+`
+
 class ClientAddPage extends PureComponent {
   state = {
     client: {
+      client_id: uuid(),
       name: '',
       logoImageUrl: '',
       description: '',
@@ -28,7 +38,31 @@ class ClientAddPage extends PureComponent {
       redirectUri: '',
       isActive: true
     },
+    clientIdValid: true,
     result: undefined
+  }
+
+  checkClientId = debounce(async (apolloClient) => {
+    if (!this.state.client.client_id) {
+      this.setState({ clientIdValid: false })
+      return
+    }
+    const { data } = await apolloClient.query({
+      query: CHECK_CLIENT_ID_QUERY,
+      variables: { client_id: this.state.client.client_id },
+      fetchPolicy: 'network-only',
+    })
+    console.log(data)
+    if (data && data.client) {
+      this.setState({ clientIdValid: false })
+    } else {
+      this.setState({ clientIdValid: true })
+    }
+  }, 300)
+
+  handleClientIdChange = (evt, apolloClient) => {
+    this.handleChange(evt)
+    this.checkClientId(apolloClient)
   }
 
   handleChange = (evt) => {
@@ -73,6 +107,30 @@ class ClientAddPage extends PureComponent {
                   <div className="card-header">Create Client</div>
                   <div className="card-body">
                     <ErrorMessage error={error} />
+                    <div className="form-group row">
+                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="client_id">
+                        Client ID
+                      </label>
+                      <div className="col-sm-12 col-md-9">
+                        <ApolloConsumer>
+                          {(apolloClient) => (
+                            <input
+                              type="text"
+                              className={`form-control ${this.state.clientIdValid ? 'is-valid' : 'is-invalid'}`}
+                              name="client_id"
+                              value={this.state.client.client_id}
+                              onChange={(e) => this.handleClientIdChange(e, apolloClient)}
+                              required
+                              readOnly={this.state.result !== undefined}
+                              aria-describedby='clientIdHelpBlock'
+                            />
+                          )}
+                        </ApolloConsumer>
+                        <div id="clientIdHelpBlock" className="small form-text text-muted">
+                          We recommend using the generated GUID but you can customize the Client ID if you want as long as the value is unique.
+                        </div>
+                      </div>
+                    </div>
                     <div className="form-group row">
                       <label className="col-sm-12 col-md-3 col-form-label" htmlFor="name">
                         Name
@@ -206,7 +264,7 @@ class ClientAddPage extends PureComponent {
                   {!this.state.result && (
                     <div className="card-footer clearfix">
                       <div className="btn-toolbar float-right">
-                        <Link href="/clients">
+                        <Link href="/admin/clients">
                           <a className="btn btn-outline-secondary mr-3">
                             <i className="fal fa-times" /> Cancel
                           </a>

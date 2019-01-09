@@ -10,7 +10,7 @@ const LOGIN_MUTATION = gql`
     $password: String!
     $otpToken: String
     $sessionId: String!
-    $client_id: ID!
+    $client_id: String!
     $response_type: String!
     $redirect_uri: String!
     $state: String

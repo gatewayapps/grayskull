@@ -12,8 +12,7 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
     },
     client_id: {
       unique: 'userClient',
-      defaultValue: Sequelize.UUIDV4,
-      type: Sequelize.UUID
+      type: Sequelize.STRING(50)
     },
     createdBy: {
       type: Sequelize.INTEGER
