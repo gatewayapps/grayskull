@@ -35,3 +35,14 @@ services:
       - "CLIENT_BASE_URL=http://justin.gatewayapps.net:5000"
     ports:
       - "5000:5000"
+  passportClient:
+    image: node:8-slim
+    command: bash -c "cd /www && npm install && npm start"
+    volumes:
+      - ./examples/passportClient:/www
+      - /www/node_modules
+    environment:
+      - "AUTH_SERVER_BASE_URL=http://localhost:3000"
+      - "CLIENT_BASE_URL=http://localhost:5001"
+    ports:
+      - "5001:5001"
