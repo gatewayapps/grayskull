@@ -3,3 +3,9 @@ Client: ./specs/Client.yml#Client
 UserClient: ./specs/UserClient.yml#UserClient
 Session: ./specs/Session.yml#Session
 LoginResponse: ./specs/LoginResponse.yml#LoginResponse
+
+ServerConfiguration: ./specs/Configuration.yml#ServerConfiguration
+DatabaseConfiguration: ./specs/Configuration.yml#DatabaseConfiguration
+MailConfiguration: ./specs/Configuration.yml#MailConfiguration
+SecurityConfiguration: ./specs/Configuration.yml#SecurityConfiguration
+Configuration: ./specs/Configuration.yml#Configuration
