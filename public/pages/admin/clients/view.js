@@ -7,15 +7,16 @@ import LoadingIndicator from '../../../components/LoadingIndicator'
 import ErrorMessage from '../../../components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
-  query SINGLE_CLIENT_QUERY($client_id: Int!) {
+  query SINGLE_CLIENT_QUERY($client_id: String!) {
     client(where: { client_id: $client_id }) {
       client_id
       name
       logoImageUrl
       public
       description
+      baseUrl
       homePageUrl
-      redirectUri
+      redirectUris
     }
   }
 `
@@ -29,7 +30,7 @@ class ClientView extends PureComponent {
     return (
       <Primary>
         <div className="container pt-4">
-          <Query query={SINGLE_CLIENT_QUERY} variables={{ client_id: parseInt(this.props.query.id, 10) }}>
+          <Query query={SINGLE_CLIENT_QUERY} variables={{ client_id: this.props.query.id }}>
             {({ data, error, loading }) => {
               if (loading) return <LoadingIndicator />
               if (error) return <ErrorMessage error={error} />
@@ -43,8 +44,9 @@ class ClientView extends PureComponent {
                   <div className="card-body">
                     <h3 className="card-title">{client.name}</h3>
                     <p>{client.description}</p>
-                    <p>Url: {client.homePageUrl}</p>
-                    <p>Redirect Uri: {client.redirectUri}</p>
+                    <p>Base Url: {client.baseUrl}</p>
+                    <p>Home Page Url: {client.homePageUrl || client.baseUrl}</p>
+                    <p>Redirect Uri: {JSON.parse(client.redirectUris).join(', ')}</p>
                   </div>
                 </div>
               )

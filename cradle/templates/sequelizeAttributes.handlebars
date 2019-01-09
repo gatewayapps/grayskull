@@ -12,7 +12,11 @@ export interface I{{Name}} {
   {{prop.Name}}?: I{{prop.ModelName}}
   {{/isObject}}
   {{#isBaseDataType prop}}
+  {{#ifEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}?: string
+  {{else}}
   {{prop.Name}}?: {{prop.TypeName}}
+  {{/ifEquals}}
   {{/isBaseDataType}}
   {{else}}
   {{#isArray TypeName}}
@@ -26,7 +30,11 @@ export interface I{{Name}} {
   {{prop.Name}}: I{{prop.ModelName}}
   {{/isObject}}
   {{#isBaseDataType prop}}
+  {{#ifEquals prop.TypeName 'UniqueIdentifier'}}
+  {{prop.Name}}{{#if prop.Autogenerate}}?{{else hasDefaultValue prop}}?{{/if}}: string
+  {{else}}
   {{prop.Name}}{{#if prop.Autogenerate}}?{{else hasDefaultValue prop}}?{{/if}}: {{prop.TypeName}}
+  {{/ifEquals}}
   {{/isBaseDataType}}
   {{/if}}
   {{/each}}

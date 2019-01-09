@@ -5,10 +5,14 @@ import ClientServiceBase from '@services/ClientServiceBase'
 import UserAccountService from '@services/UserAccountService'
 import UserClientService from '@services/UserClientService'
 import crypto from 'crypto'
+import uuid from 'uuid/v4'
 import { IClientFilter } from '@/interfaces/graphql/IClient'
 
 class ClientService extends ClientServiceBase {
   public async createClient(data: IClient, userContext?: IUserAccount): Promise<ClientInstance> {
+    if (!data.client_id) {
+      data.client_id = uuid()
+    }
     if (!data.secret) {
       data.secret = crypto.randomBytes(32).toString('hex')
     }
@@ -19,7 +23,7 @@ class ClientService extends ClientServiceBase {
     const client = await super.createClient(data)
     if (userContext) {
       await UserClientService.createUserClient({
-        client_id: client.client_id!,
+        client_id: client.client_id,
         userAccountId: userContext.userAccountId!,
         createdBy: userContext.userAccountId!
       })
@@ -36,7 +40,7 @@ class ClientService extends ClientServiceBase {
     return super.getClients(filter)
   }
 
-  public async validateClient(client_id: number, secret: string): Promise<ClientInstance | null> {
+  public async validateClient(client_id: string, secret: string): Promise<ClientInstance | null> {
     const client = await super.getClientWithSensitiveData({ client_id })
     if (client && client.secret === secret) {
       return client

@@ -5,10 +5,11 @@ export interface IClientMeta {
 export interface IClientFilter {
   or?: [IClientFilter]
   and?: [IClientFilter]
-  client_id_lessThan?: number
-  client_id_greaterThan?: number
-  client_id_equals?: number
-  client_id_notEquals?: number
+  client_id_contains?: string
+  client_id_startsWith?: string
+  client_id_endsWith?: string
+  client_id_equals?: string
+  client_id_notEquals?: string
   name_contains?: string
   name_startsWith?: string
   name_endsWith?: string
@@ -34,13 +35,13 @@ export interface IClientFilter {
   homePageUrl_endsWith?: string
   homePageUrl_equals?: string
   homePageUrl_notEquals?: string
+  redirectUris_contains?: string
+  redirectUris_startsWith?: string
+  redirectUris_endsWith?: string
+  redirectUris_equals?: string
+  redirectUris_notEquals?: string
   public_equals?: boolean
   public_notEquals?: boolean
-  redirectUri_contains?: string
-  redirectUri_startsWith?: string
-  redirectUri_endsWith?: string
-  redirectUri_equals?: string
-  redirectUri_notEquals?: string
   isActive_equals?: boolean
   isActive_notEquals?: boolean
   createdBy_lessThan?: number
@@ -62,5 +63,5 @@ export interface IClientFilter {
 }
 
 export interface IClientUniqueFilter {
-  client_id?: number
+  client_id?: string
 }

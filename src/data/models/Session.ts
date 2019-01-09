@@ -11,7 +11,7 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING
     },
     refreshToken: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(1000)
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
@@ -22,7 +22,7 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<SessionInstance, ISession>('Session', attributes)
+  return sequelize.define<SessionInstance, ISession>('Session', attributes, { timestamps: false })
 }
 
 export default SessionFactory

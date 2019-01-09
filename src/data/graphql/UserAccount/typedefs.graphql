@@ -41,7 +41,7 @@ input LoginArgs {
 	password: String!
 	otpToken: String
 	sessionId: String!
-	client_id: Int!
+	client_id: String!
 	response_type: String!
 	redirect_uri: String!
 	state: String

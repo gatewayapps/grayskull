@@ -17,7 +17,7 @@ import UserClientService from './UserClientService'
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
 interface ICPTToken {
-  client: ClientInstance | { name: string; client_id?: number } | null
+  client: ClientInstance | { name: string; client_id: string } | null
   emailAddress: string
   invitedById?: number
 }
@@ -193,7 +193,10 @@ class UserAccountService extends UserAccountServiceBase {
       })
     }
 
-    const client = token.client!.client_id ? await ClientService.getClient({ client_id: token.client!.client_id! }) : await ClientService.getClient({ client_id: 1 })
+    const client = token.client!.client_id
+      ? await ClientService.getClient({ client_id: token.client!.client_id! })
+      : await ClientService.getClient({ client_id: ConfigurationManager.General.grayskullClientId })
+
     return {
       client,
       userAccount: user
@@ -220,7 +223,7 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance) {
-    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl}">${client.name}</a>.`
+    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
     MailService.sendMail(emailAddress, `${client.name} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
@@ -239,7 +242,7 @@ class UserAccountService extends UserAccountServiceBase {
     MailService.sendMail(emailAddress, `${clientName} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 
-  private generateCPT(emailAddress: string, expiresIn: number, client_id?: number, invitedById?: number): string {
+  private generateCPT(emailAddress: string, expiresIn: number, client_id?: string, invitedById?: number): string {
     const newToken = jwt.sign(
       {
         emailAddress,

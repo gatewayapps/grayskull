@@ -11,6 +11,7 @@ const ALL_CLIENTS_QUERY = gql`
     clients {
       client_id
       name
+      baseUrl
       homePageUrl
     }
   }
@@ -53,7 +54,7 @@ const ClientsIndexPage = () => {
                     <tr key={client.client_id}>
                       <td>{client.name}</td>
                       <td>
-                        <a href={client.homePageUrl}>{client.homePageUrl}</a>
+                        <a href={client.homePageUrl || client.baseUrl}>{client.homePageUrl || client.baseUrl}</a>
                       </td>
                       <td>
                         <Link href={{ pathname: '/admin/clients/view', query: { id: client.client_id } }}>

@@ -12,7 +12,7 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
     },
     client_id: {
       unique: 'userClient',
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING(50)
     },
     createdBy: {
       type: Sequelize.INTEGER
@@ -34,7 +34,7 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<UserClientInstance, IUserClient>('UserClient', attributes)
+  return sequelize.define<UserClientInstance, IUserClient>('UserClient', attributes, { timestamps: false })
 }
 
 export default UserClientFactory

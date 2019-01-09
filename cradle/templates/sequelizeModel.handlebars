@@ -31,7 +31,7 @@ function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
     {{#isBaseDataType prop}}
     {{prop.Name}}: {
       allowNull: true,
-      type: Sequelize.{{prop.TypeName}}
+      type: Sequelize.{{prop.TypeName}}{{#if prop.MaximumLength}}({{prop.MaximumLength}}){{/if}}
     },
     {{/isBaseDataType}}
     {{else}}
@@ -59,13 +59,13 @@ function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
       {{#hasDefaultValue prop}}
       defaultValue: {{{prop.DefaultValue}}},
       {{/hasDefaultValue}}
-      type: Sequelize.{{prop.TypeName}}
+      type: Sequelize.{{prop.TypeName}}{{#if prop.MaximumLength}}({{prop.MaximumLength}}){{/if}}
     },
     {{/isBaseDataType}}
     {{/if}}
     {{/each}}
   }
-  return sequelize.define<{{Name}}Instance, I{{Name}}>('{{Name}}', attributes)
+  return sequelize.define<{{Name}}Instance, I{{Name}}>('{{Name}}', attributes, { timestamps: false })
 }
 
 export default {{Name}}Factory

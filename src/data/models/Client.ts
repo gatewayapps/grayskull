@@ -8,11 +8,10 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IClient> = {
     client_id: {
       primaryKey: true,
-      autoIncrement: true,
-      type: Sequelize.INTEGER
+      type: Sequelize.STRING(50)
     },
     name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(50)
     },
     logoImageUrl: {
       allowNull: true,
@@ -20,7 +19,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     },
     description: {
       allowNull: true,
-      type: Sequelize.STRING
+      type: Sequelize.STRING(500)
     },
     secret: {
       type: Sequelize.STRING
@@ -29,14 +28,15 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING
     },
     homePageUrl: {
+      allowNull: true,
       type: Sequelize.STRING
+    },
+    redirectUris: {
+      type: Sequelize.STRING(1000)
     },
     public: {
       allowNull: true,
       type: Sequelize.BOOLEAN
-    },
-    redirectUri: {
-      type: Sequelize.STRING
     },
     isActive: {
       defaultValue: true,
@@ -59,7 +59,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<ClientInstance, IClient>('Client', attributes)
+  return sequelize.define<ClientInstance, IClient>('Client', attributes, { timestamps: false })
 }
 
 export default ClientFactory

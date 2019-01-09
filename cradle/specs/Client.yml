@@ -4,15 +4,15 @@ Client:
       - secret
     topLevel: true
   properties:
-    client_id: integer primary auto(1,1)
+    client_id: string(50) primary
     name: string(50)
     logoImageUrl: string?
     description: string(500)?
     secret: string
     baseUrl: string
-    homePageUrl: string
+    homePageUrl: string?
+    redirectUris: string(1000)
     public: boolean? default(false)
-    redirectUri: string
     isActive: boolean default(true)
     createdBy: integer?
     createdAt: datetime default(NOW)
@@ -25,6 +25,7 @@ Client:
     createClient:
       returns: Client
       arguments:
+        client_id:
         name:
         logoImageUrl:
         description:
@@ -32,7 +33,7 @@ Client:
         secret:
         baseUrl:
         homePageUrl:
-        redirectUri:
+        redirectUris:
         isActive:
     updateClient:
       returns: Client
@@ -44,7 +45,7 @@ Client:
         public: 
         baseUrl:
         homePageUrl:
-        redirectUri:
+        redirectUris:
         isActive:
 
 

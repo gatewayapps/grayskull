@@ -1,18 +1,28 @@
 import React from 'react'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
+import styled from 'styled-components'
 import Primary from '../layouts/primary'
 import LoadingIndicator from '../components/LoadingIndicator'
-import Link from 'next/link'
 const ALL_CLIENTS_QUERY = gql`
   query ALL_CLIENTS_QUERY {
     clients {
       client_id
       name
+      baseUrl
       homePageUrl
       logoImageUrl
-      redirectUri
     }
+  }
+`
+
+const ClientLink = styled.a`
+  display: block;
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
   }
 `
 
@@ -36,14 +46,14 @@ const index = () => {
                   return data.clients.map((client) => {
                     return (
                       <div style={{ cursor: 'pointer' }} key={client.client_id} className="col-6 col-md-3">
-                        <Link href={client.homePageUrl}>
+                        <ClientLink href={client.homePageUrl || client.baseUrl}>
                           <div className="card">
                             <div className="card-body">
                               <img src={client.logoImageUrl} className="img-fluid w-100" />
                               <div className="w-100 text-center">{client.name}</div>
                             </div>
                           </div>
-                        </Link>
+                        </ClientLink>
                       </div>
                     )
                   })
