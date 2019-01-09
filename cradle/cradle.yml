@@ -5,3 +5,8 @@ RegisterUserResponse: ./specs/RegisterUserResponse.yml#RegisterUserResponse
 UserAccount: ./specs/UserAccount.yml#UserAccount
 UserClient: ./specs/UserClient.yml#UserClient
 Session: ./specs/Session.yml#Session
+ServerConfiguration: ./specs/Configuration.yml#ServerConfiguration
+DatabaseConfiguration: ./specs/Configuration.yml#DatabaseConfiguration
+MailConfiguration: ./specs/Configuration.yml#MailConfiguration
+SecurityConfiguration: ./specs/Configuration.yml#SecurityConfiguration
+Configuration: ./specs/Configuration.yml#Configuration

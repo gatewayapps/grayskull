@@ -1,0 +1,57 @@
+ServerConfiguration:
+  meta:
+    topLevel: false
+  properties:
+    baseUrl: string(1024)
+    realmName: string(512)
+
+DatabaseConfiguration:
+  meta:
+    topLevel: false
+  properties:
+    provider: string
+    adminUsername: string
+    adminPassword: string
+    serverAddress: string
+    serverPort: integer
+    databaseName: string
+
+MailConfiguration:
+  meta:
+    topLevel: false
+  properties:
+    serverAddress: string
+    username: string
+    password: string
+    sslEnabled: boolean
+    port: integer
+
+SecurityConfiguration:
+  meta:
+    topLevel: false
+  properties:
+    maxLoginAttemptsPerMinute: integer
+    maxPasswordAge: integer
+    passwordRequiresLowercase: boolean
+    passwordRequiresUppercase: boolean
+    passwordRequiresNumber: boolean
+    passwordRequiresSymbol: boolean
+    passwordMinimumLength: integer
+    multifactorRequired: boolean
+    invitationExpirationSeconds: integer
+    accessTokenExpirationSeconds: integer
+
+
+Configuration:
+  meta:
+    topLevel: false
+  properties:
+    Security:
+      modelRef: SecurityConfiguration
+    Mail:
+      modelRef: MailConfiguration
+    Database:
+      modelRef: DatabaseConfiguration
+    Server:
+      modelRef: ServerConfiguration
+

@@ -1,0 +1,6 @@
+type Configuration {
+	Security: SecurityConfiguration
+	Mail: MailConfiguration
+	Database: DatabaseConfiguration
+	Server: ServerConfiguration
+}
