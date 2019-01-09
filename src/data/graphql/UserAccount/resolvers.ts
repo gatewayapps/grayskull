@@ -82,7 +82,10 @@ export default {
 
       await AuthenticationService.validatePassword(password, confirm)
       const { client } = await UserAccountService.registerUser(userInfo, password, cpt, otpSecret)
-      return `/auth?client_id=${client!.client_id}&response_type=code&redirect_uri=${escape(client!.redirectUri)}`
+      if (!client) {
+        throw new Error('Invalid client')
+      }
+      return client.homePageUrl || client.baseUrl
     },
     generateMfaKey: (obj, args, context, info) => {
       return AuthenticationService.generateOtpSecret(args.data.emailAddress)

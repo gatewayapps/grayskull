@@ -28,14 +28,15 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING
     },
     homePageUrl: {
+      allowNull: true,
       type: Sequelize.STRING
+    },
+    redirectUris: {
+      type: Sequelize.STRING(1000)
     },
     public: {
       allowNull: true,
       type: Sequelize.BOOLEAN
-    },
-    redirectUri: {
-      type: Sequelize.STRING
     },
     isActive: {
       defaultValue: true,

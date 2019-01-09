@@ -5,9 +5,9 @@ export interface IClient {
   description?: string
   secret: string
   baseUrl: string
-  homePageUrl: string
+  homePageUrl?: string
+  redirectUris: string
   public?: boolean
-  redirectUri: string
   isActive?: boolean
   createdBy?: number
   createdAt?: Date

@@ -9,9 +9,9 @@ const ALL_CLIENTS_QUERY = gql`
     clients {
       client_id
       name
+      baseUrl
       homePageUrl
       logoImageUrl
-      redirectUri
     }
   }
 `
@@ -46,7 +46,7 @@ const index = () => {
                   return data.clients.map((client) => {
                     return (
                       <div style={{ cursor: 'pointer' }} key={client.client_id} className="col-6 col-md-3">
-                        <ClientLink href={client.homePageUrl}>
+                        <ClientLink href={client.homePageUrl || client.baseUrl}>
                           <div className="card">
                             <div className="card-body">
                               <img src={client.logoImageUrl} className="img-fluid w-100" />

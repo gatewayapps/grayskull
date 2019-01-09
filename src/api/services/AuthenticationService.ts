@@ -214,11 +214,10 @@ class AuthenticationService {
     const client = await ClientService.getClient({ client_id })
     if (client) {
       return (
-        !client.baseUrl ||
-        redirectUri
-          .toLowerCase()
-          .trim()
-          .startsWith(client.baseUrl.toLowerCase().trim())
+        !client.redirectUris ||
+        JSON.parse(client.redirectUris)
+          .map((r) => r.toLowerCase().trim())
+          .includes(redirectUri.toLowerCase().trim())
       )
     } else {
       return false

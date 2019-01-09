@@ -10,9 +10,9 @@ Client:
     description: string(500)?
     secret: string
     baseUrl: string
-    homePageUrl: string
+    homePageUrl: string?
+    redirectUris: string(1000)
     public: boolean? default(false)
-    redirectUri: string
     isActive: boolean default(true)
     createdBy: integer?
     createdAt: datetime default(NOW)
@@ -33,7 +33,7 @@ Client:
         secret:
         baseUrl:
         homePageUrl:
-        redirectUri:
+        redirectUris:
         isActive:
     updateClient:
       returns: Client
@@ -45,7 +45,7 @@ Client:
         public: 
         baseUrl:
         homePageUrl:
-        redirectUri:
+        redirectUris:
         isActive:
 
 

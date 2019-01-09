@@ -4,9 +4,9 @@ type Client {
 	logoImageUrl: String
 	description: String
 	baseUrl: String!
-	homePageUrl: String!
+	homePageUrl: String
+	redirectUris: String!
 	public: Boolean
-	redirectUri: String!
 	isActive: Boolean!
 	createdBy: Int
 	createdAt: Date!
@@ -24,8 +24,8 @@ input CreateClientArgs {
 	public: Boolean
 	secret: String!
 	baseUrl: String!
-	homePageUrl: String!
-	redirectUri: String!
+	homePageUrl: String
+	redirectUris: String!
 	isActive: Boolean!
 }
 
@@ -36,8 +36,8 @@ input UpdateClientArgs {
 	description: String
 	public: Boolean
 	baseUrl: String!
-	homePageUrl: String!
-	redirectUri: String!
+	homePageUrl: String
+	redirectUris: String!
 	isActive: Boolean!
 }
 
@@ -85,14 +85,14 @@ input ClientFilter {
 	homePageUrl_endsWith: String
 	homePageUrl_equals: String
 	homePageUrl_notEquals: String
+	redirectUris_contains: String
+	redirectUris_notContains: String
+	redirectUris_startsWith: String
+	redirectUris_endsWith: String
+	redirectUris_equals: String
+	redirectUris_notEquals: String
 	public_equals: Boolean
 	public_notEquals: Boolean
-	redirectUri_contains: String
-	redirectUri_notContains: String
-	redirectUri_startsWith: String
-	redirectUri_endsWith: String
-	redirectUri_equals: String
-	redirectUri_notEquals: String
 	isActive_equals: Boolean
 	isActive_notEquals: Boolean
 	createdBy_lessThan: Int

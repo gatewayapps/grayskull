@@ -35,7 +35,7 @@ class ClientAddPage extends PureComponent {
       baseUrl: '',
       homePageUrl: '',
       public: true,
-      redirectUri: '',
+      redirectUris: [{ key: uuid(), value: '' }],
       isActive: true
     },
     clientIdValid: true,
@@ -65,6 +65,41 @@ class ClientAddPage extends PureComponent {
     this.checkClientId(apolloClient)
   }
 
+  addRedirectUri = () => {
+    this.setState((prevState) => ({
+      ...prevState,
+      client: {
+        ...prevState.client,
+        redirectUris: prevState.client.redirectUris.concat({ key: uuid(), value: '' })
+      }
+    }))
+  }
+
+  removeRedirectUri = (key) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      client: {
+        ...prevState.client,
+        redirectUris: prevState.client.redirectUris.length === 1 ? prevState.client.redirectUris : prevState.client.redirectUris.filter((r) => r.key !== key)
+      }
+    }))
+  }
+
+  handleRedirectUriChange = (key, value) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      client: {
+        ...prevState.client,
+        redirectUris: prevState.client.redirectUris.map((r) => {
+          if (r.key === key) {
+            r.value = value
+          }
+          return r
+        })
+      }
+    }))
+  }
+
   handleChange = (evt) => {
     const { name, value } = evt.target
 
@@ -83,6 +118,7 @@ class ClientAddPage extends PureComponent {
     const secret = generateSecret()
     const data = {
       ...this.state.client,
+      redirectUris: JSON.stringify(this.state.client.redirectUris.map((r) => r.value)),
       secret
     }
     const res = await createClient({ variables: { data } })
@@ -176,7 +212,11 @@ class ClientAddPage extends PureComponent {
                           onChange={this.handleChange}
                           required
                           readOnly={this.state.result !== undefined}
+                          aria-describedby='baseUrlHelpBlock'
                         />
+                        <div id="baseUrlHelpBlock" className="small form-text text-muted">
+                          The base url for the client application
+                        </div>
                       </div>
                     </div>
                     <div className="form-group row">
@@ -190,29 +230,40 @@ class ClientAddPage extends PureComponent {
                           name="homePageUrl"
                           value={this.state.client.homePageUrl}
                           onChange={this.handleChange}
-                          required
                           readOnly={this.state.result !== undefined}
+                          aria-describedby='homePageUrlHelpBlock'
                         />
+                        <div id="homePageUrlHelpBlock" className="small form-text text-muted">
+                          The url for the home page of the client application. You can leave this blank if the home page is the same as the Base Url.
+                      </div>
                       </div>
                     </div>
                     <div className="form-group row">
                       <label className="col-sm-12 col-md-3 col-form-label" htmlFor="redirectUri">
-                        Fallback Redirect Url
+                        Redirect URI(s)
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <input
-                          type="url"
-                          className="form-control"
-                          name="redirectUri"
-                          value={this.state.client.redirectUri}
-                          onChange={this.handleChange}
-                          aria-describedby="redirectUriHelpBlock"
-                          required
-                          readOnly={this.state.result !== undefined}
-                        />
-                        <div id="redirectUriHelpBlock" className="small form-text text-muted">
-                          This for redirecting back to your app following new user registration.
-                        </div>
+                        {this.state.client.redirectUris.map((redirectUri) => (
+                          <div key={redirectUri.key} className='input-group mb-2'>
+                            <input
+                              type='url'
+                              className='form-control'
+                              name={`redirectUris-${redirectUri.key}`}
+                              onChange={(e) => this.handleRedirectUriChange(redirectUri.key, e.target.value)}
+                              required
+                              readOnly={this.state.result !== undefined}
+                              value={redirectUri.value}
+                            />
+                            <div className='input-group-append'>
+                              <button className='btn btn-outline-danger' type='button' onClick={() => this.removeRedirectUri(redirectUri.key)}>
+                                <i className='fal fa-fw fa-trash' />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                        <button className='btn btn-link btn-sm' onClick={this.addRedirectUri} type='button'>
+                          Add another redirect uri
+                        </button>
                       </div>
                     </div>
                     <div className="form-group row">

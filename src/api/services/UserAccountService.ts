@@ -223,7 +223,7 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance) {
-    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl}">${client.name}</a>.`
+    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
     MailService.sendMail(emailAddress, `${client.name} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
   }
 

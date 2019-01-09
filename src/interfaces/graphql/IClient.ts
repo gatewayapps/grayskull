@@ -35,13 +35,13 @@ export interface IClientFilter {
   homePageUrl_endsWith?: string
   homePageUrl_equals?: string
   homePageUrl_notEquals?: string
+  redirectUris_contains?: string
+  redirectUris_startsWith?: string
+  redirectUris_endsWith?: string
+  redirectUris_equals?: string
+  redirectUris_notEquals?: string
   public_equals?: boolean
   public_notEquals?: boolean
-  redirectUri_contains?: string
-  redirectUri_startsWith?: string
-  redirectUri_endsWith?: string
-  redirectUri_equals?: string
-  redirectUri_notEquals?: string
   isActive_equals?: boolean
   isActive_notEquals?: boolean
   createdBy_lessThan?: number
