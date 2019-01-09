@@ -25,7 +25,7 @@ const ClientsIndexPage = () => {
             <h1>Clients</h1>
           </div>
           <div className="col-auto">
-            <Link href="/clients/add">
+            <Link href="/admin/clients/add">
               <a className="btn btn-outline-primary">
                 <i className="fal fa-plus" /> Add Client
               </a>
@@ -56,7 +56,7 @@ const ClientsIndexPage = () => {
                         <a href={client.homePageUrl}>{client.homePageUrl}</a>
                       </td>
                       <td>
-                        <Link href={{ pathname: '/clients/view', query: { id: client.client_id } }}>
+                        <Link href={{ pathname: '/admin/clients/view', query: { id: client.client_id } }}>
                           <a>View</a>
                         </Link>
                       </td>
