@@ -53,7 +53,7 @@ app.prepare().then(() => {
   const routeControllers = [new LoginController(app), new UserController(app)]
   routeControllers.forEach((c) => c.registerRoutes(server))
 
-  server.all('/admin$|/admin/*|/home$|/home/*', (req, res, next) => {
+  server.all('^/admin$|^/admin/*|^/home$|^/home/*', (req, res, next) => {
     if (!req.user) {
       const url = generateLoginUrl(req.protocol, req.hostname, { returnUrl: req.originalUrl })
       res.redirect(url)

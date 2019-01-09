@@ -2,9 +2,9 @@ import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
-import Primary from '../../layouts/primary'
-import LoadingIndicator from '../../components/LoadingIndicator'
-import ErrorMessage from '../../components/ErrorMessage'
+import Primary from '../../../layouts/primary'
+import LoadingIndicator from '../../../components/LoadingIndicator'
+import ErrorMessage from '../../../components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
   query SINGLE_CLIENT_QUERY($client_id: Int!) {

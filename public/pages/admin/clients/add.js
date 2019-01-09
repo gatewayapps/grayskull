@@ -3,9 +3,9 @@ import Link from 'next/link'
 import Router from 'next/router'
 import React, { PureComponent } from 'react'
 import { Mutation } from 'react-apollo'
-import ErrorMessage from '../../components/ErrorMessage'
-import Primary from '../../layouts/primary'
-import generateSecret from '../../utils/generateSecret'
+import ErrorMessage from '../../../components/ErrorMessage'
+import Primary from '../../../layouts/primary'
+import generateSecret from '../../../utils/generateSecret'
 import { ALL_CLIENTS_QUERY } from './index'
 
 const CREATE_CLIENT_MUTATION = gql`
@@ -22,7 +22,8 @@ class ClientAddPage extends PureComponent {
       name: '',
       logoImageUrl: '',
       description: '',
-      url: '',
+      baseUrl: '',
+      homePageUrl: '',
       public: true,
       redirectUri: '',
       isActive: true
