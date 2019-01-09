@@ -162,7 +162,7 @@ class ClientAddPage extends PureComponent {
                         {!this.state.customizeClientId && (
                           <>
                             <span className='py-2' style={{ verticalAlign: 'middle' }}>{this.state.client.client_id}</span>
-                            <button type='button' className='btn btn-link' onClick={this.toggleCustomize}>
+                            <button type='button' className='btn btn-link btn-sm' onClick={this.toggleCustomize}>
                               Customize
                             </button>
                           </>
@@ -185,7 +185,7 @@ class ClientAddPage extends PureComponent {
                           </ApolloConsumer>
                         )}
                         <div id="clientIdHelpBlock" className="small form-text text-muted">
-                          We recommend using the generated GUID but you can customize the Client ID if you want as long as the value is unique.
+                          We recommend using the generated Client ID but you can customize it as long as the value is unique.
                         </div>
                       </div>
                     </div>
