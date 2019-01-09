@@ -33,7 +33,7 @@ UserAccount:
         password: string
         otpToken: string?
         sessionId: string
-        client_id: integer
+        client_id: uniqueidentifier
         response_type: string
         redirect_uri: string
         state: string?

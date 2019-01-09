@@ -1,5 +1,5 @@
 export interface IClient {
-  client_id?: number
+  client_id: string
   name: string
   logoImageUrl?: string
   description?: string

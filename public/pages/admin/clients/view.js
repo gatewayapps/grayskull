@@ -7,7 +7,7 @@ import LoadingIndicator from '../../../components/LoadingIndicator'
 import ErrorMessage from '../../../components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
-  query SINGLE_CLIENT_QUERY($client_id: Int!) {
+  query SINGLE_CLIENT_QUERY($client_id: ID!) {
     client(where: { client_id: $client_id }) {
       client_id
       name
@@ -29,7 +29,7 @@ class ClientView extends PureComponent {
     return (
       <Primary>
         <div className="container pt-4">
-          <Query query={SINGLE_CLIENT_QUERY} variables={{ client_id: parseInt(this.props.query.id, 10) }}>
+          <Query query={SINGLE_CLIENT_QUERY} variables={{ client_id: this.props.query.id }}>
             {({ data, error, loading }) => {
               if (loading) return <LoadingIndicator />
               if (error) return <ErrorMessage error={error} />

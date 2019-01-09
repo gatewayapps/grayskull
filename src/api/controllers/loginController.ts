@@ -118,7 +118,7 @@ export default class LoginController extends ControllerBase {
   }
 
   private async validateLoginRequest(req: Request): Promise<boolean> {
-    const validated = await AuthenticationService.validateRedirectUri(parseInt(req.query.client_id, 10), req.query.redirect_uri)
+    const validated = await AuthenticationService.validateRedirectUri(req.query.client_id, req.query.redirect_uri)
     return validated
   }
 }

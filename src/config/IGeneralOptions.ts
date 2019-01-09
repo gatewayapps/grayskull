@@ -1,5 +1,5 @@
 export interface IGeneralOptions {
-  grayskullClientId: number
+  grayskullClientId: string
   realmName: string
   port: number
   fallbackUrl: string

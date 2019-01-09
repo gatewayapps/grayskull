@@ -1,6 +1,6 @@
 module.exports = {
   General: {
-    grayskullClientId: 1,
+    grayskullClientId: 'b6b781da-3e99-456b-856c-97e10a6424e6',
     port: 3000,
     realmName: 'Grayskull',
     databaseConnectionString: 'postgres://root:pass@127.0.0.1:5432/grayskull',

@@ -4,7 +4,7 @@ Client:
       - secret
     topLevel: true
   properties:
-    client_id: integer primary auto(1,1)
+    client_id: uniqueidentifier primary
     name: string(50)
     logoImageUrl: string?
     description: string(500)?

@@ -7,7 +7,7 @@ import LoginForm from '../../components/LoginForm'
 import Primary from '../../layouts/primary'
 
 const GET_CLIENT_QUERY = gql`
-  query GET_CLIENT($client_id: Int!) {
+  query GET_CLIENT($client_id: ID!) {
     client(where: { client_id: $client_id }) {
       client_id
       name
@@ -25,7 +25,7 @@ class Login extends React.PureComponent {
   render() {
     return (
       <Primary>
-        <Query fetchPolicy="" query={GET_CLIENT_QUERY} variables={{ client_id: parseInt(this.props.query.client_id) }}>
+        <Query fetchPolicy="" query={GET_CLIENT_QUERY} variables={{ client_id: this.props.query.client_id }}>
           {({ loading, error, data }) => {
             if (loading) {
               return <LoadingIndicator />

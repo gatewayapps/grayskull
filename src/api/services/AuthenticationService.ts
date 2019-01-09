@@ -43,7 +43,7 @@ interface IAuthenticateUserResult {
 }
 
 interface IRefreshTokenPayload {
-  client_id: number
+  client_id: string
   session_id: string
   userAccountId: number
 }
@@ -58,7 +58,7 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
-  public async authenticateUser(emailAddress: string, password: string, sessionId: string, clientId: number, otpToken?: string): Promise<IAuthenticateUserResult> {
+  public async authenticateUser(emailAddress: string, password: string, sessionId: string, clientId: string, otpToken?: string): Promise<IAuthenticateUserResult> {
     const existingUser = await UserAccountService.getUserAccountWithSensitiveData({ emailAddress })
 
     if (!existingUser) {
@@ -109,7 +109,7 @@ class AuthenticationService {
     return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.General.realmName, secret)
   }
 
-  public async getAccessToken(grant_type: GrantType, client_id: number, client_secret: string, code?: string, refresh_token?: string): Promise<IAccessTokenResponse> {
+  public async getAccessToken(grant_type: GrantType, client_id: string, client_secret: string, code?: string, refresh_token?: string): Promise<IAccessTokenResponse> {
     const client = await ClientService.validateClient(client_id, client_secret)
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
@@ -210,7 +210,7 @@ class AuthenticationService {
     return false
   }
 
-  public async validateRedirectUri(client_id: number, redirectUri: string): Promise<boolean> {
+  public async validateRedirectUri(client_id: string, redirectUri: string): Promise<boolean> {
     const client = await ClientService.getClient({ client_id })
     if (client) {
       return (

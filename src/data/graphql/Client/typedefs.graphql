@@ -1,5 +1,5 @@
 type Client {
-	client_id: Int!
+	client_id: ID!
 	name: String!
 	logoImageUrl: String
 	description: String
@@ -29,7 +29,7 @@ input CreateClientArgs {
 }
 
 input UpdateClientArgs {
-	client_id: Int!
+	client_id: ID!
 	name: String!
 	logoImageUrl: String
 	description: String
@@ -48,10 +48,9 @@ type ClientMeta {
 input ClientFilter {
   or: [ClientFilter!]
   and: [ClientFilter!]
-	client_id_lessThan: Int
-	client_id_greaterThan: Int
-	client_id_equals: Int
-	client_id_notEquals: Int
+	client_id_in: [ID]
+	client_id_equals: ID
+	client_id_notEquals: ID
 	name_contains: String
 	name_notContains: String
 	name_startsWith: String
@@ -117,7 +116,7 @@ input ClientFilter {
 }
 
 input ClientUniqueFilter {
-	client_id: Int
+	client_id: ID
 }
 
 type Query {

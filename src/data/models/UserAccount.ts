@@ -12,10 +12,10 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.INTEGER
     },
     firstName: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(30)
     },
     lastName: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(30)
     },
     emailAddress: {
       unique: true,
@@ -74,7 +74,7 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes)
+  return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes, { timestamps: false })
 }
 
 export default UserAccountFactory

@@ -9,10 +9,9 @@ export interface IUserClientFilter {
   userAccountId_greaterThan?: number
   userAccountId_equals?: number
   userAccountId_notEquals?: number
-  client_id_lessThan?: number
-  client_id_greaterThan?: number
-  client_id_equals?: number
-  client_id_notEquals?: number
+  client_id_in?: [string]
+  client_id_equals?: string
+  client_id_notEquals?: string
   createdBy_lessThan?: number
   createdBy_greaterThan?: number
   createdBy_equals?: number
@@ -35,5 +34,5 @@ export interface IUserClientFilter {
 
 export interface IUserClientUniqueFilter {
   userAccountId?: number
-  client_id?: number
+  client_id?: string
 }
