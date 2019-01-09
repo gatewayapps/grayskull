@@ -38,6 +38,7 @@ class ClientAddPage extends PureComponent {
       redirectUris: [{ key: uuid(), value: '' }],
       isActive: true
     },
+    customizeClientId: false,
     clientIdValid: true,
     result: undefined
   }
@@ -115,6 +116,9 @@ class ClientAddPage extends PureComponent {
 
   submitClient = async (evt, createClient) => {
     evt.preventDefault()
+    if (!this.state.clientIdValid || !this.state.client.redirectUris || this.state.client.redirectUris.length === 0) {
+      return
+    }
     const secret = generateSecret()
     const data = {
       ...this.state.client,
@@ -130,6 +134,13 @@ class ClientAddPage extends PureComponent {
         }
       })
     }
+  }
+
+  toggleCustomize = () => {
+    this.setState((prevState) => ({
+      ...prevState,
+      customizeClientId: !prevState.customizeClientId,
+    }))
   }
 
   render() {
@@ -148,20 +159,31 @@ class ClientAddPage extends PureComponent {
                         Client ID
                       </label>
                       <div className="col-sm-12 col-md-9">
-                        <ApolloConsumer>
-                          {(apolloClient) => (
-                            <input
-                              type="text"
-                              className={`form-control ${this.state.clientIdValid ? 'is-valid' : 'is-invalid'}`}
-                              name="client_id"
-                              value={this.state.client.client_id}
-                              onChange={(e) => this.handleClientIdChange(e, apolloClient)}
-                              required
-                              readOnly={this.state.result !== undefined}
-                              aria-describedby='clientIdHelpBlock'
-                            />
-                          )}
-                        </ApolloConsumer>
+                        {!this.state.customizeClientId && (
+                          <>
+                            <span className='py-2' style={{ verticalAlign: 'middle' }}>{this.state.client.client_id}</span>
+                            <button type='button' className='btn btn-link' onClick={this.toggleCustomize}>
+                              Customize
+                            </button>
+                          </>
+                        )}
+                        {this.state.customizeClientId && (
+                          <ApolloConsumer>
+                            {(apolloClient) => (
+                              <input
+                                type="text"
+                                className={`form-control ${this.state.clientIdValid ? 'is-valid' : 'is-invalid'}`}
+                                name="client_id"
+                                value={this.state.client.client_id}
+                                onChange={(e) => this.handleClientIdChange(e, apolloClient)}
+                                required
+                                readOnly={this.state.result !== undefined}
+                                aria-describedby='clientIdHelpBlock'
+                                autoFocus
+                              />
+                            )}
+                          </ApolloConsumer>
+                        )}
                         <div id="clientIdHelpBlock" className="small form-text text-muted">
                           We recommend using the generated GUID but you can customize the Client ID if you want as long as the value is unique.
                         </div>
@@ -180,6 +202,7 @@ class ClientAddPage extends PureComponent {
                           onChange={this.handleChange}
                           required
                           readOnly={this.state.result !== undefined}
+                          autoFocus
                         />
                       </div>
                     </div>
@@ -320,7 +343,7 @@ class ClientAddPage extends PureComponent {
                             <i className="fal fa-times" /> Cancel
                           </a>
                         </Link>
-                        <button className="btn btn-success" type="submit" disabled={loading}>
+                        <button className="btn btn-success" type="submit" disabled={loading || !this.state.clientIdValid}>
                           <i className="fal fa-save" /> Create
                         </button>
                       </div>
