@@ -29,6 +29,8 @@ MailConfiguration:
 SecurityConfiguration:
   meta:
     topLevel: false
+    sensitive:
+      - globalSecret
   properties:
     maxLoginAttemptsPerMinute: integer
     maxPasswordAge: integer
@@ -40,6 +42,7 @@ SecurityConfiguration:
     multifactorRequired: boolean
     invitationExpirationSeconds: integer
     accessTokenExpirationSeconds: integer
+    globalSecret: string
 
 
 Configuration:
