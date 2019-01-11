@@ -1,7 +1,4 @@
-import Header from '../components/Header'
-//import './theme.css'
-import 'bootstrap/scss/bootstrap.scss'
-import Head from 'next/head'
+import 'bootswatch/dist/materia/bootstrap.css'
 
 export default class extends React.Component {
   render() {
