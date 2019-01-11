@@ -5,7 +5,6 @@ import Primary from '../../layouts/primary'
 import LoadingIndicator from '../../components/LoadingIndicator'
 import MultiFactorSetup from '../../components/MultiFactorSetup'
 import RegistrationForm from '../../components/RegistrationForm'
-import { validatePassword } from '../../utils/passwordComplexity'
 
 const RegistrationSteps = {
   UserData: 1,
@@ -55,6 +54,7 @@ class Register extends PureComponent {
         confirm: '',
         otpSecret: undefined
       },
+      userDataValid: false,
       requireMfaVerification: false,
       step: RegistrationSteps.UserData
     }
@@ -63,16 +63,7 @@ class Register extends PureComponent {
   isValid = (configuration) => {
     switch (this.state.step) {
       case RegistrationSteps.UserData:
-        if (!this.state.data.emailAddress || !this.state.data.firstName || !this.state.data.lastName || !this.state.data.password || !this.state.data.confirm) {
-          return false
-        }
-        if (!validatePassword(this.state.data.password, configuration)) {
-          return false
-        }
-        if (this.state.data.password !== this.state.data.confirm) {
-          return false
-        }
-        break
+        return this.state.userDataValid
 
       case RegistrationSteps.Multifactor:
         if ((this.state.requireMfaVerification || configuration.multifactorRequired) && !this.state.data.otpSecret) {
@@ -94,6 +85,10 @@ class Register extends PureComponent {
         }
       }
     })
+  }
+
+  onFormValidated = (isValid) => {
+    this.setState({ userDataValid: isValid })
   }
 
   onMfaVerified = (otpSecret) => {
@@ -144,56 +139,52 @@ class Register extends PureComponent {
 
             return (
               <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
-                {(registerUser, { loading, error }) => {
-                  return (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault()
-                      }}>
-                      <div className='container pt-4'>
-                        <div className='row'>
-                          <div className='col col-md-8 offset-md-2'>
-                            <div className='card'>
-                              <div className='card-header'>Register for {configuration.realmName}</div>
-                              <div className='card-body'>
-                                {error && <div className='alert alert-danger'>{error.message}</div>}
-                                {this.state.error && <div className='alert alert-danger'>{this.state.error}</div>}
-                                {this.state.step === RegistrationSteps.UserData && (
-                                  <RegistrationForm
-                                    configuration={configuration}
-                                    data={this.state.data}
-                                    onChange={this.onFormValueChanged}
-                                  />
-                                )}
-                                {this.state.step === RegistrationSteps.Multifactor && (
-                                  <MultiFactorSetup
-                                    emailAddress={this.state.data.emailAddress}
-                                    required={configuration.multifactorRequired}
-                                    onCancel={() => this.setRequireMfaVerification(false)}
-                                    onEnabled={() => this.setRequireMfaVerification(true)}
-                                    onVerified={this.onMfaVerified}
-                                  />
-                                )}
+                {(registerUser, { loading, error }) => (
+                  <form onSubmit={(e) => { e.preventDefault() }}>
+                    <div className='container pt-4'>
+                      <div className='row'>
+                        <div className='col col-md-8 offset-md-2'>
+                          <div className='card'>
+                            <div className='card-header'>Register for {configuration.realmName}</div>
+                            <div className='card-body'>
+                              {error && <div className='alert alert-danger'>{error.message}</div>}
+                              {this.state.error && <div className='alert alert-danger'>{this.state.error}</div>}
+                              {this.state.step === RegistrationSteps.UserData && (
+                                <RegistrationForm
+                                  configuration={configuration}
+                                  data={this.state.data}
+                                  onChange={this.onFormValueChanged}
+                                  onValidated={this.onFormValidated}
+                                />
+                              )}
+                              {this.state.step === RegistrationSteps.Multifactor && (
+                                <MultiFactorSetup
+                                  emailAddress={this.state.data.emailAddress}
+                                  required={configuration.multifactorRequired}
+                                  onCancel={() => this.setRequireMfaVerification(false)}
+                                  onEnabled={() => this.setRequireMfaVerification(true)}
+                                  onVerified={this.onMfaVerified}
+                                />
+                              )}
+                            </div>
+                            <div className='card-footer'>
+                              <div className='btn-toolbar float-right'>
+                                <button
+                                  type='submit'
+                                  className='btn btn-primary'
+                                  disabled={!this.isValid(configuration)}
+                                  onClick={() => this.onSubmitClick(registerUser)}>
+                                  {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
+                                </button>
                               </div>
-                              <div className='card-footer'>
-                                <div className='btn-toolbar float-right'>
-                                  <button
-                                    type='submit'
-                                    className='btn btn-primary'
-                                    disabled={!this.isValid(configuration) || loading}
-                                    onClick={() => this.onSubmitClick(registerUser)}>
-                                    {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
-                                  </button>
-                                </div>
-                                <div className='clearfix' />
-                              </div>
+                              <div className='clearfix' />
                             </div>
                           </div>
                         </div>
                       </div>
-                    </form>
-                  )
-                }}
+                    </div>
+                  </form>
+                )}
               </Mutation>
             )
           }}
