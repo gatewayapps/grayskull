@@ -20,6 +20,7 @@ class RegistrationForm extends PureComponent {
             <input
               id='emailAddress'
               autoComplete='username'
+              autoFocus
               type='email'
               className='form-control'
               name='emailAddress'
@@ -83,12 +84,14 @@ class RegistrationForm extends PureComponent {
               onChange={this.handleChange}
             />
             {!validatePassword(this.props.data.password, this.props.configuration) && (
-              <div id='passwordHelpBlock' className='alert alert-info mt-2 mb-0'>
-                <div className='alert-heading'>Password requirements</div>
-                <PasswordComplexity
-                  configuration={this.props.configuration}
-                  password={this.props.data.password}
-                />
+              <div id='passwordHelpBlock' className='card border-info mt-2'>
+                <div className='card-header'>Password requirements</div>
+                <div className='card-body'>
+                  <PasswordComplexity
+                    configuration={this.props.configuration}
+                    password={this.props.data.password}
+                  />
+                </div>
               </div>
             )}
           </div>

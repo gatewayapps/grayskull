@@ -116,8 +116,12 @@ class Register extends PureComponent {
 
       case RegistrationSteps.Multifactor:
         const { data } = await registerUser()
-        if (data && data.registerUser && data.registerUser.success) {
-          window.location.replace('/home')
+        if (data && data.registerUser) {
+          if (data.registerUser.success) {
+            window.location.replace('/home')
+          } else {
+            this.setState({ error: data.registerUser.error })
+          }
         }
         break
     }
@@ -146,16 +150,20 @@ class Register extends PureComponent {
                       onSubmit={(e) => {
                         e.preventDefault()
                       }}>
-                      <div className="container pt-4">
-                        <div className="row">
-                          <div className="col col-md-8 offset-md-2">
-                            <div className="card">
-                              <div className="card-header">Register for {configuration.realmName}</div>
-                              <div className="card-body">
-                                {error && <div className="alert alert-danger">{error.message}</div>}
-
+                      <div className='container pt-4'>
+                        <div className='row'>
+                          <div className='col col-md-8 offset-md-2'>
+                            <div className='card'>
+                              <div className='card-header'>Register for {configuration.realmName}</div>
+                              <div className='card-body'>
+                                {error && <div className='alert alert-danger'>{error.message}</div>}
+                                {this.state.error && <div className='alert alert-danger'>{this.state.error}</div>}
                                 {this.state.step === RegistrationSteps.UserData && (
-                                  <RegistrationForm configuration={configuration} data={this.state.data} onChange={this.onFormValueChanged} />
+                                  <RegistrationForm
+                                    configuration={configuration}
+                                    data={this.state.data}
+                                    onChange={this.onFormValueChanged}
+                                  />
                                 )}
                                 {this.state.step === RegistrationSteps.Multifactor && (
                                   <MultiFactorSetup
@@ -167,17 +175,17 @@ class Register extends PureComponent {
                                   />
                                 )}
                               </div>
-                              <div className="card-footer">
-                                <div className="btn-toolbar float-right">
+                              <div className='card-footer'>
+                                <div className='btn-toolbar float-right'>
                                   <button
-                                    type="submit"
-                                    className="btn btn-info"
+                                    type='submit'
+                                    className='btn btn-primary'
                                     disabled={!this.isValid(configuration) || loading}
                                     onClick={() => this.onSubmitClick(registerUser)}>
                                     {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
                                   </button>
                                 </div>
-                                <div className="clearfix" />
+                                <div className='clearfix' />
                               </div>
                             </div>
                           </div>
