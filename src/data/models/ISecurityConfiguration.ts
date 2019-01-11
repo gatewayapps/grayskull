@@ -9,4 +9,5 @@ export interface ISecurityConfiguration {
   multifactorRequired: boolean
   invitationExpirationSeconds: number
   accessTokenExpirationSeconds: number
+  globalSecret: string
 }
