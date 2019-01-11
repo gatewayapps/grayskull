@@ -1,4 +1,5 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { GrayskullError, GrayskullErrorCode } from '@/GrayskullError'
 import { Permissions } from '@/utils/permissions'
 import { encrypt } from '@/utils/cipher'
 import db from '@data/context'
@@ -10,9 +11,14 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
 import Cache from 'node-cache'
+import { Transaction } from 'sequelize'
+import uuid from 'uuid/v4'
 import ClientService from './ClientService'
+import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
 import UserClientService from './UserClientService'
+import { IUserClient } from '@data/models/IUserClient';
+import { IEmailAddress } from '@data/models/IEmailAddress';
 
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
@@ -28,11 +34,15 @@ class UserAccountService extends UserAccountServiceBase {
    * @param data
    * @param password
    */
-  public async createUserAccountWithPassword(data: IUserAccount, password: string): Promise<UserAccountInstance> {
+  public async createUserAccountWithPassword(data: IUserAccount, password: string, transaction?: Transaction): Promise<UserAccountInstance> {
+    data.userAccountId = uuid()
     data.passwordHash = await this.hashPassword(password)
-    data.permissions = data.emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
     data.lastPasswordChange = new Date()
-    return super.createUserAccount(data)
+    if (data.otpSecret !== undefined && data.otpSecret.length > 0) {
+      data.otpSecret = encrypt(data.otpSecret)
+      data.otpEnabled = true
+    }
+    return super.createUserAccount(data, undefined, transaction)
   }
 
   public async changeUserPassword(emailAddress: string, password: string) {
@@ -50,6 +60,22 @@ class UserAccountService extends UserAccountServiceBase {
     this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
   }
 
+  public async getUserAccountByEmailAddress(emailAddress: string): Promise<UserAccountInstance | null> {
+    const email = await EmailAddressService.getEmailAddress({ emailAddress })
+    if (!email) {
+      return null
+    }
+    return super.getUserAccount({ userAccountId: email.userAccountId })
+  }
+
+  public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string): Promise<UserAccountInstance | null> {
+    const email = await EmailAddressService.getEmailAddress({ emailAddress })
+    if (!email) {
+      return null
+    }
+    return super.getUserAccountWithSensitiveData({ userAccountId: email.userAccountId })
+  }
+
   public async sendResetPasswordMessage(emailAddress: string, baseUrl: string) {
     const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, undefined)
     const relativeTime = moment()
@@ -63,60 +89,6 @@ class UserAccountService extends UserAccountServiceBase {
     `
 
     MailService.sendMail(emailAddress, `Password Reset Instructions`, body, ConfigurationManager.Security.adminEmailAddress)
-  }
-
-  public async inviteUser(emailAddress: string, client: ClientInstance, invitedById: number, baseUrl: string): Promise<UserAccountInstance> {
-    // Verify we have valid client instance
-    if (!client || !client.client_id) {
-      throw new Error('Invalid client')
-    }
-
-    // Lookup the user who is inviting the new user
-    const invitedByUser = await this.getUserAccount({ userAccountId: invitedById })
-    if (!invitedByUser || !invitedByUser.userAccountId) {
-      throw new Error('invitedBy user account not found')
-    }
-
-    // Check to see if there is already a user
-    const user = await this.getUserAccount({ emailAddress })
-    if (user && user.userAccountId && user.passwordHash) {
-      // See if the user is already associated with the client
-      const userClient = await UserClientService.getUserClient({ userAccountId: user.userAccountId, client_id: client.client_id })
-      if (userClient) {
-        // User is already associated with the client nothing else to do
-        return user
-      }
-      // Link the client to the user
-      await UserClientService.createUserClient({
-        userAccountId: user.userAccountId,
-        client_id: client.client_id,
-        createdBy: invitedByUser.userAccountId,
-        revoked: false
-      })
-      // Send an email to the user to notify them of the new access
-      this.sendNewClientAccess(user.emailAddress, client, invitedByUser)
-      return user
-    }
-
-    // 3. Create a userAccount placeholder
-    let newUser = user
-    if (!newUser) {
-      newUser = await super.createUserAccount({
-        emailAddress,
-        isActive: false,
-        firstName: '',
-        lastName: '',
-        lastPasswordChange: new Date(0),
-        passwordHash: '',
-        phoneNumber: '',
-        profileImageUrl: ''
-      })
-    }
-
-    // 4. Send an inviation to the user
-    const token = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, client.client_id, invitedByUser.userAccountId)
-    this.sendInvitation(emailAddress, client.name, token, baseUrl, invitedByUser)
-    return newUser
   }
 
   public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<ICPTToken> {
@@ -139,67 +111,44 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async registerUser(data: IUserAccount, password: string, cpt: string, otpSecret?: string) {
-    // 1. Parse the cpt
-    const token = await this.processCPT(cpt)
-    if (!token) {
-      throw new Error('Invalid CPT token')
+  public async registerUser(data: IUserAccount, emailAddress: string, password: string): Promise<UserAccountInstance> {
+    // 1. Verify that a user has not already been registered with this email address
+    const existingEmailAddress = await EmailAddressService.getEmailAddress({ emailAddress })
+    if (existingEmailAddress) {
+      throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
     }
 
-    // 2. Load the existing userAccount
-    let user: UserAccountInstance | null
-    const existingUser = await super.getUserAccount({ emailAddress: token.emailAddress })
-    if (existingUser) {
-      // Activate the existing user account and set password
-      data.passwordHash = await this.hashPassword(password)
-      if (otpSecret !== undefined && otpSecret.length > 0) {
-        data.otpSecret = encrypt(otpSecret)
-        data.otpEnabled = true
-      }
-      data.lastPasswordChange = new Date()
-      data.isActive = true
-      user = await this.updateUserAccount({ emailAddress: existingUser.emailAddress }, data)
-    } else {
-      // Create a new user account since there is not already one existing
-      data.emailAddress = token.emailAddress
-      if (otpSecret !== undefined && otpSecret.length > 0) {
-        data.otpSecret = encrypt(otpSecret)
-        data.otpEnabled = true
-      }
-      user = await this.createUserAccountWithPassword(data, password)
-    }
-    if (!user) {
-      throw new Error('User is missing')
-    }
+    // 2. Start a transaction
+    const trx = await db.sequelize.transaction()
 
-    // 3. Link the user to the client
-    if (token.client && token.client.client_id) {
-      await UserClientService.createUserClient({
+    try {
+      // 3. Create the user account
+      data.permissions = emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
+      const user = await this.createUserAccountWithPassword(data, password, trx)
+
+      // 4. Create the user account email
+      const emailAddressData: IEmailAddress = {
         userAccountId: user.userAccountId!,
-        client_id: token.client.client_id,
-        createdBy: token.invitedById || user.userAccountId!,
-        revoked: false
-      })
-    }
+        emailAddress: emailAddress,
+        primary: true
+      }
+      await EmailAddressService.createEmailAddress(emailAddressData, user, trx)
 
-    // 4. Ensure the user is linked to the Grayskull Client
-    const grayskullUserClient = await UserClientService.getUserClient({ client_id: ConfigurationManager.General.grayskullClientId, userAccountId: user.userAccountId! })
-    if (!grayskullUserClient) {
-      await UserClientService.createUserClient({
-        userAccountId: user.userAccountId!,
+      // 5. Create a UserClient for Grayskull
+      const userClientData: IUserClient = {
         client_id: ConfigurationManager.General.grayskullClientId,
-        createdBy: token.invitedById || user.userAccountId!,
-        revoked: false
-      })
-    }
+        userAccountId: user.userAccountId!,
+        createdBy: user.userAccountId!,
+      }
+      await UserClientService.createUserClient(userClientData, user, trx)
 
-    const client = token.client!.client_id
-      ? await ClientService.getClient({ client_id: token.client!.client_id! })
-      : await ClientService.getClient({ client_id: ConfigurationManager.General.grayskullClientId })
+      // 6. Commit the transaction
+      await trx.commit()
 
-    return {
-      client,
-      userAccount: user
+      return user
+    } catch (err) {
+      await trx.rollback()
+      throw err
     }
   }
 

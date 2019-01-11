@@ -4,5 +4,10 @@ Session:
   properties:
     sessionId: string primary
     refreshToken: string(1000)
-    createdAt: datetime default(NOW)
     lastUsedAt: datetime default(NOW)
+    createdBy: uniqueidentifier?
+    createdAt: datetime default(NOW)
+    updatedBy: uniqueidentifier?
+    updatedAt: datetime default(NOW)
+    deletedBy: uniqueidentifier?
+    deletedAt: datetime?

@@ -74,7 +74,7 @@ export default class LoginController extends ControllerBase {
       }
       return this.next.render(req, res, '/resetPassword/changePassword', req.query)
     } else {
-      const userAccount = await UserAccountService.getUserAccount({ emailAddress: req.body.emailAddress })
+      const userAccount = await UserAccountService.getUserAccountByEmailAddress(req.body.emailAddress)
       if (userAccount) {
         await UserAccountService.sendResetPasswordMessage(req.body.emailAddress, req.baseUrl)
       }

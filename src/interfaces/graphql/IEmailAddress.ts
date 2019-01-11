@@ -1,27 +1,25 @@
-export interface IUserClientMeta {
+export interface IEmailAddressMeta {
   count: number
 }
 
-export interface IUserClientFilter {
-  or?: [IUserClientFilter]
-  and?: [IUserClientFilter]
+export interface IEmailAddressFilter {
+  or?: [IEmailAddressFilter]
+  and?: [IEmailAddressFilter]
+  emailAddressId_in?: [string]
+  emailAddressId_equals?: string
+  emailAddressId_notEquals?: string
   userAccountId_in?: [string]
   userAccountId_equals?: string
   userAccountId_notEquals?: string
-  client_id_contains?: string
-  client_id_startsWith?: string
-  client_id_endsWith?: string
-  client_id_equals?: string
-  client_id_notEquals?: string
-  revoked_equals?: boolean
-  revoked_notEquals?: boolean
-  revokedBy_in?: [string]
-  revokedBy_equals?: string
-  revokedBy_notEquals?: string
-  RevokedAt_lessThan?: Date
-  RevokedAt_greaterThan?: Date
-  RevokedAt_equals?: Date
-  RevokedAt_notEquals?: Date
+  emailAddress_contains?: string
+  emailAddress_startsWith?: string
+  emailAddress_endsWith?: string
+  emailAddress_equals?: string
+  emailAddress_notEquals?: string
+  verified_equals?: boolean
+  verified_notEquals?: boolean
+  primary_equals?: boolean
+  primary_notEquals?: boolean
   createdBy_in?: [string]
   createdBy_equals?: string
   createdBy_notEquals?: string
@@ -45,7 +43,7 @@ export interface IUserClientFilter {
   deletedAt_notEquals?: Date
 }
 
-export interface IUserClientUniqueFilter {
-  userAccountId?: string
-  client_id?: string
+export interface IEmailAddressUniqueFilter {
+  emailAddressId?: string
+  emailAddress?: string
 }

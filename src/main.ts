@@ -6,11 +6,9 @@ import bodyParser from 'body-parser'
 import cookieParser = require('cookie-parser')
 import express from 'express'
 import next from 'next'
-import pathMatch from 'path-match'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import ClientService from './api/services/ClientService'
-import UserAccountService from './api/services/UserAccountService'
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 import { generateLoginUrl } from './utils/authentication'
@@ -70,7 +68,6 @@ app.prepare().then(() => {
   db.sequelize
     .sync()
     .then(ensureGrayskullClient)
-    .then(ensureAdmin)
     .then(() => {
       /* eslint-disable no-console */
       server.listen(ConfigurationManager.General.port || 3000, (err) => {
@@ -98,12 +95,5 @@ async function ensureGrayskullClient(): Promise<void> {
       redirectUris: JSON.stringify([`${ConfigurationManager.General.fallbackUrl}/signin`]),
       public: true
     })
-  }
-}
-
-async function ensureAdmin(): Promise<void> {
-  const user = await UserAccountService.getUserAccount({ emailAddress: ConfigurationManager.Security.adminEmailAddress })
-  if (!user) {
-    UserAccountService.inviteAdmin(ConfigurationManager.General.fallbackUrl)
   }
 }

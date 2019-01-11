@@ -2,15 +2,12 @@ UserAccount:
   meta:
     sensitive:
       - passwordHash
-      - permissions
       - otpSecret
     topLevel: true
   properties:
-    userAccountId: integer primary auto(1,1)
+    userAccountId: uniqueidentifier primary default('new_uuid')
     firstName: string(30)
     lastName: string(30)
-    emailAddress: string unique
-    emailVerified: boolean default(false)
     lastActive: datetime default(NOW)
     lastPasswordChange: datetime
     passwordHash: string
@@ -20,10 +17,14 @@ UserAccount:
     otpSecret: string?
     otpEnabled: boolean default(false)
     isActive: boolean default(true)
-    createdBy: integer?
+    createdBy: uniqueidentifier?
     createdAt: datetime default(NOW)
-    modifiedBy: integer?
-    modifiedAt: datetime default(NOW)
+    updatedBy: uniqueidentifier?
+    updatedAt: datetime default(NOW)
+    deletedBy: uniqueidentifier?
+    deletedAt: datetime?
+  references:
+    emailAddresses: multiple of EmailAddress
   operations:
     # Login User #
     login:
@@ -39,19 +40,20 @@ UserAccount:
         state: string?
     # Create User Account #
     registerUser:
-      returns: string
+      returns: RegisterUserResponse
       arguments:
+        emailAddress: string
         password: string
         confirm: string
-        cpt: string
         firstName:
         lastName:
         otpSecret:
+        client_id: string?
     # Register for Multifactor #
     generateMfaKey:
       returns: string
       arguments:
-        emailAddress:
+        emailAddress: string
     # Verify Multifactor Auth key #
     verifyMfaKey:
       returns: boolean
@@ -66,7 +68,7 @@ UserAccount:
     resetPassword:
       returns: boolean
       arguments:
-        emailAddress:
+        emailAddress: string
     # Validate a Password #
     validatePassword:
       returns: boolean

@@ -65,7 +65,10 @@ function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
     {{/if}}
     {{/each}}
   }
-  return sequelize.define<{{Name}}Instance, I{{Name}}>('{{Name}}', attributes, { timestamps: false })
+  return sequelize.define<{{Name}}Instance, I{{Name}}>('{{Name}}', attributes, {
+    timestamps: true,
+    paranoid: true,
+  })
 }
 
 export default {{Name}}Factory

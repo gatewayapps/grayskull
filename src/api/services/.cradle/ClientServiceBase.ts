@@ -2,68 +2,89 @@ import { IClientMeta, IClientFilter, IClientUniqueFilter } from '@/interfaces/gr
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { IClient } from '@data/models/IClient'
+import { IUserAccount } from '@data/models/IUserAccount'
 import { ClientInstance } from '@data/models/Client'
-import { AnyWhereOptions } from 'sequelize'
+import { AnyWhereOptions, Transaction } from 'sequelize'
 
 export default class ClientServiceBase {
-  public async clientsMeta(filter?: IClientFilter): Promise<IClientMeta> {
+  public async clientsMeta(filter?: IClientFilter, transaction?: Transaction): Promise<IClientMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.Client.count({ where })
+    const count = await db.Client.count({ where, transaction })
     return {
       count
     }
   }
 
-  public async getClients(filter?: IClientFilter): Promise<ClientInstance[]> {
+  public async getClients(filter?: IClientFilter, transaction?: Transaction): Promise<ClientInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await db.Client.findAll({
       where,
       attributes: {
         exclude: ['secret']
       },
-      raw: true
+      raw: true,
+      transaction
     })
   }
 
-  public async getClientsWithSensitiveData(filter?: IClientFilter): Promise<ClientInstance[]> {
+  public async getClientsWithSensitiveData(filter?: IClientFilter, transaction?: Transaction): Promise<ClientInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await db.Client.findAll({
       where,
-      raw: true
+      raw: true,
+      transaction
     })
   }
 
-  public async getClient(filter: IClientUniqueFilter): Promise<ClientInstance | null> {
+  public async getClient(filter: IClientUniqueFilter, transaction?: Transaction): Promise<ClientInstance | null> {
     return await db.Client.findOne({
       where: filter,
       attributes: {
         exclude: ['secret']
       },
-      raw: true
+      raw: true,
+      transaction
     })
   }
 
-  public async getClientWithSensitiveData(filter: IClientUniqueFilter): Promise<ClientInstance | null> {
+  public async getClientWithSensitiveData(filter: IClientUniqueFilter, transaction?: Transaction): Promise<ClientInstance | null> {
     return await db.Client.findOne({
       where: filter,
-      raw: true
+      raw: true,
+      transaction
     })
   }
 
-  public async createClient(data: IClient): Promise<ClientInstance> {
-    return await db.Client.create(data, { returning: true, raw: true })
+  public async createClient(data: IClient, userContext?: IUserAccount, transaction?: Transaction): Promise<ClientInstance> {
+    if (userContext) {
+      data.createdBy = userContext.userAccountId
+      data.updatedBy = userContext.userAccountId
+    }
+    return await db.Client.create(data, { returning: true, raw: true, transaction })
   }
 
-  public async deleteClient(filter: IClientUniqueFilter): Promise<number> {
-    return await db.Client.destroy({
-      where: filter as AnyWhereOptions
+  public async deleteClient(filter: IClientUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+    const data: Partial<IClient> = {
+      deletedAt: new Date()
+    }
+    if (userContext) {
+      data.deletedBy = userContext.userAccountId
+    }
+    const [affectedCount] = await db.Client.update(data, {
+      where: filter as AnyWhereOptions,
+      transaction
     })
+    return affectedCount > 0
   }
 
-  public async updateClient(filter: IClientUniqueFilter, data: IClient): Promise<ClientInstance | null> {
+  public async updateClient(filter: IClientUniqueFilter, data: IClient, userContext?: IUserAccount, transaction?: Transaction): Promise<ClientInstance | null> {
+    if (userContext) {
+      data.updatedBy = userContext.userAccountId
+    }
     return await db.Client.update(data, {
       where: filter as AnyWhereOptions,
-      returning: true
+      returning: true,
+      transaction
     }).then(() => this.getClient(filter))
   }
 }

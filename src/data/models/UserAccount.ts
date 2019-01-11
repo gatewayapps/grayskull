@@ -8,22 +8,14 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IUserAccount> = {
     userAccountId: {
       primaryKey: true,
-      autoIncrement: true,
-      type: Sequelize.INTEGER
+      defaultValue: Sequelize.UUIDV4,
+      type: Sequelize.UUID
     },
     firstName: {
       type: Sequelize.STRING(30)
     },
     lastName: {
       type: Sequelize.STRING(30)
-    },
-    emailAddress: {
-      unique: true,
-      type: Sequelize.STRING
-    },
-    emailVerified: {
-      defaultValue: false,
-      type: Sequelize.BOOLEAN
     },
     lastActive: {
       defaultValue: Sequelize.NOW,
@@ -59,22 +51,33 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     },
     createdBy: {
       allowNull: true,
-      type: Sequelize.INTEGER
+      type: Sequelize.UUID
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
       type: Sequelize.DATE
     },
-    modifiedBy: {
+    updatedBy: {
       allowNull: true,
-      type: Sequelize.INTEGER
+      type: Sequelize.UUID
     },
-    modifiedAt: {
+    updatedAt: {
       defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    deletedBy: {
+      allowNull: true,
+      type: Sequelize.UUID
+    },
+    deletedAt: {
+      allowNull: true,
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes, { timestamps: false })
+  return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes, {
+    timestamps: true,
+    paranoid: true
+  })
 }
 
 export default UserAccountFactory

@@ -21,13 +21,17 @@ const GET_CONFIGURATION_QUERY = gql`
       passwordRequireLowercase
       passwordRequireUppercase
       passwordMinimumLength
+      realmName
     }
   }
 `
 
 const REGISTER_USER_MUTATION = gql`
-  mutation REGISTER_USER_MUTATION($cpt: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
-    registerUser(data: { cpt: $cpt, firstName: $firstName, lastName: $lastName, password: $password, confirm: $confirm, otpSecret: $otpSecret })
+  mutation REGISTER_USER_MUTATION($emailAddress: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
+    registerUser(data: { emailAddress: $emailAddress, firstName: $firstName, lastName: $lastName, password: $password, confirm: $confirm, otpSecret: $otpSecret }) {
+      success
+      error
+    }
   }
 `
 
@@ -44,14 +48,13 @@ class Register extends PureComponent {
     this.state = {
       configuration: {},
       data: {
-        cpt: props.query.cpt,
+        emailAddress: '',
         firstName: '',
         lastName: '',
         password: '',
         confirm: '',
         otpSecret: undefined
       },
-      emailAddress: props.emailAddress,
       requireMfaVerification: false,
       step: RegistrationSteps.UserData
     }
@@ -60,7 +63,7 @@ class Register extends PureComponent {
   isValid = (configuration) => {
     switch (this.state.step) {
       case RegistrationSteps.UserData:
-        if (!this.state.data.firstName || !this.state.data.lastName || !this.state.data.password || !this.state.data.confirm) {
+        if (!this.state.data.emailAddress || !this.state.data.firstName || !this.state.data.lastName || !this.state.data.password || !this.state.data.confirm) {
           return false
         }
         if (!validatePassword(this.state.data.password, configuration)) {
@@ -113,8 +116,8 @@ class Register extends PureComponent {
 
       case RegistrationSteps.Multifactor:
         const { data } = await registerUser()
-        if (data && data.registerUser) {
-          window.location.replace(data.registerUser)
+        if (data && data.registerUser && data.registerUser.success) {
+          window.location.replace('/home')
         }
         break
     }
@@ -147,30 +150,16 @@ class Register extends PureComponent {
                         <div className="row">
                           <div className="col col-md-8 offset-md-2">
                             <div className="card">
-                              <div className="card-header">Register for {this.props.client.name}</div>
+                              <div className="card-header">Register for {configuration.realmName}</div>
                               <div className="card-body">
                                 {error && <div className="alert alert-danger">{error.message}</div>}
-                                <div className="form-group row">
-                                  <label className="col-sm-12 col-md-3 col-form-label" htmlFor="emailAddress">
-                                    E-mail Address
-                                  </label>
-                                  <div className="col-sm-12 col-md-9">
-                                    <input
-                                      type="text"
-                                      readOnly
-                                      className="form-control-plaintext"
-                                      name="emailAddress"
-                                      value={this.state.emailAddress}
-                                      onChange={this.handleChange}
-                                    />
-                                  </div>
-                                </div>
+
                                 {this.state.step === RegistrationSteps.UserData && (
                                   <RegistrationForm configuration={configuration} data={this.state.data} onChange={this.onFormValueChanged} />
                                 )}
                                 {this.state.step === RegistrationSteps.Multifactor && (
                                   <MultiFactorSetup
-                                    emailAddress={this.state.emailAddress}
+                                    emailAddress={this.state.data.emailAddress}
                                     required={configuration.multifactorRequired}
                                     onCancel={() => this.setRequireMfaVerification(false)}
                                     onEnabled={() => this.setRequireMfaVerification(true)}

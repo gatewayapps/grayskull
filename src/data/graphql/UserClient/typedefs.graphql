@@ -1,9 +1,13 @@
 type UserClient {
-	userAccountId: Int!
+	userAccountId: ID!
 	client_id: String!
-	createdBy: Int!
-	createdAt: Date!
 	revoked: Boolean!
-	revokedBy: Int
+	revokedBy: ID
 	RevokedAt: Date
+	createdBy: ID
+	createdAt: Date!
+	updatedBy: ID
+	updatedAt: Date!
+	deletedBy: ID
+	deletedAt: Date
 }

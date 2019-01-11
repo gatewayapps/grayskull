@@ -12,52 +12,72 @@ class RegistrationForm extends PureComponent {
     return (
       <div>
         <h5>User Profile</h5>
-        <div className="form-group row mt-5">
+        <div className='form-group row'>
+          <label className='col-sm-12 col-md-3 col-form-label' htmlFor='emailAddress'>
+            E-mail Address
+          </label>
+          <div className='col-sm-12 col-md-9'>
+            <input
+              id='emailAddress'
+              autoComplete='username'
+              type='email'
+              className='form-control'
+              name='emailAddress'
+              value={this.props.data.emailAddress}
+              onChange={this.handleChange}
+            />
+          </div>
+        </div>
+        <div className='form-group row mt-5'>
           <label
-            className="col-sm-12 col-md-3 col-form-label"
-            htmlFor="firstName"
+            className='col-sm-12 col-md-3 col-form-label'
+            htmlFor='firstName'
           >
             First Name
           </label>
-          <div className="col-sm-12 col-md-9">
+          <div className='col-sm-12 col-md-9'>
             <input
-              type="text"
-              className="form-control"
-              name="firstName"
+              id='firstName'
+              type='text'
+              className='form-control'
+              name='firstName'
               value={this.props.data.firstName}
               onChange={this.handleChange}
             />
           </div>
         </div>
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-12 col-md-3 col-form-label"
-            htmlFor="lastName"
+            className='col-sm-12 col-md-3 col-form-label'
+            htmlFor='lastName'
           >
             Last Name
           </label>
-          <div className="col-sm-12 col-md-9">
+          <div className='col-sm-12 col-md-9'>
             <input
-              type="text"
-              className="form-control"
-              name="lastName"
+              id='lastName'
+              type='text'
+              className='form-control'
+              name='lastName'
               value={this.props.data.lastName}
               onChange={this.handleChange}
             />
           </div>
         </div>
-        <div className="form-group row mt-5">
+        <div className='form-group row mt-5'>
           <label
-            className="col-sm-12 col-md-3 col-form-label"
-            htmlFor="password"
+            className='col-sm-12 col-md-3 col-form-label'
+            htmlFor='password'
           >
             Password
           </label>
-          <div className="col-sm-12 col-md-9">
+          <div className='col-sm-12 col-md-9'>
             <input
-              type="password"
-              className="form-control"
-              name="password"
+              id='password'
+              autoComplete='new-password'
+              type='password'
+              className='form-control'
+              name='password'
               aria-describedby='passwordHelpBlock'
               value={this.props.data.password}
               onChange={this.handleChange}
@@ -73,18 +93,20 @@ class RegistrationForm extends PureComponent {
             )}
           </div>
         </div>
-        <div className="form-group row">
+        <div className='form-group row'>
           <label
-            className="col-sm-12 col-md-3 col-form-label"
-            htmlFor="confirm"
+            className='col-sm-12 col-md-3 col-form-label'
+            htmlFor='confirm'
           >
             Confirm
           </label>
-          <div className="col-sm-12 col-md-9">
+          <div className='col-sm-12 col-md-9'>
             <input
-              type="password"
-              className="form-control"
-              name="confirm"
+              id='confirm'
+              type='password'
+              autoComplete='new-password'
+              className='form-control'
+              name='confirm'
               aria-describedby='confirmHelpBlock'
               value={this.props.data.confirm}
               onChange={this.handleChange}
