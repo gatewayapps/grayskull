@@ -1,11 +1,9 @@
+import Bluebird from 'bluebird'
 import { IConfiguration } from '@data/models/IConfiguration'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import cookieParser = require('cookie-parser')
 import express from 'express'
-import next from 'next'
-import withCss from '@zeit/next-css'
-import withSass from '@zeit/next-sass'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import ClientService from './api/services/ClientService'
@@ -15,22 +13,44 @@ import { schema } from './data/graphql/graphql'
 import { generateLoginUrl } from './utils/authentication'
 import { getUserContext } from './middleware/authentication'
 import db from '@data/context'
+import { Server } from 'http'
+import next from 'next'
+import withCss from '@zeit/next-css'
+import withSass from '@zeit/next-sass'
+
+const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
+
+const decache = require('decache')
+
+let REALM_INSTANCE: RealmInstance
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
-const app = next({ dev: IS_DEVELOPMENT, dir: './public', conf: withSass(withCss()) })
-const handle = app.getRequestHandler()
 
 export class RealmInstance {
-  private config: IConfiguration
+  private config?: IConfiguration
   private server!: express.Application
+  private httpServer!: Server
+  private app: next.Server
   private apolloServer!: ApolloServer
   private hostname: string
+  private handle: any
 
-  constructor(config: IConfiguration) {
+  private static instance: RealmInstance
+  public static getInstance() {
+    return RealmInstance.instance
+  }
+
+  constructor(config?: IConfiguration) {
+    RealmInstance.instance = this
     this.config = config
     this.initializeServer()
     this.initializeApolloServer()
+    const withCss = require('@zeit/next-css')
+    const withSass = require('@zeit/next-sass')
+    const NEXT_CONFIG = withSass(withCss())
+    this.app = next({ dev: IS_DEVELOPMENT, dir: './public', conf: NEXT_CONFIG })
+    this.handle = this.app.getRequestHandler()
 
     this.hostname = this.config ? `${this.config.Server!.baseUrl}` : 'http://localhost'
 
@@ -43,6 +63,30 @@ export class RealmInstance {
         this.startServer()
       })
     }
+  }
+
+  public stopServer() {
+    this.httpServer.close()
+    this.flushModules()
+
+    return this.app.close().then(() => {
+      delete this.config
+      delete this.server
+      delete this.httpServer
+      delete this.app
+      delete this.apolloServer
+      delete this.hostname
+
+      this.requireModules()
+    })
+  }
+
+  private flushModules() {
+    NEXT_MODULES.forEach((moduleName) => decache(moduleName))
+  }
+
+  private requireModules() {
+    NEXT_MODULES.forEach((moduleName) => require(moduleName))
   }
 
   private initializeServer() {
@@ -74,7 +118,7 @@ export class RealmInstance {
   }
 
   private startServer() {
-    this.server.listen(HTTP_PORT, (err: Error) => {
+    this.httpServer = this.server.listen(HTTP_PORT, (err: Error) => {
       if (err) {
         throw err
       }
@@ -84,10 +128,19 @@ export class RealmInstance {
   }
 
   private async configureOobeServer() {
-    await app.prepare()
+    await this.app.prepare()
 
     this.server.all('/oobe/?*|/static/*|/_next*', (req, res) => {
-      return handle(req, res)
+      return this.handle(req, res)
+    })
+
+    this.server.all('/restart', (req, res) => {
+      this.stopServer().then(() => {
+        new RealmInstance(undefined)
+        Bluebird.delay(10000).then(() => {
+          res.redirect('/oobe')
+        })
+      })
     })
 
     this.server.get('*', (req, res) => {
@@ -96,7 +149,7 @@ export class RealmInstance {
   }
 
   private async configureServer() {
-    await app.prepare()
+    await this.app.prepare()
 
     this.server.use((req, res, nxt) => {
       req.baseUrl = `${req.protocol}://${req.hostname}${IS_DEVELOPMENT ? ':3000' : ''}`
@@ -104,7 +157,7 @@ export class RealmInstance {
     })
 
     // Server-side
-    const routeControllers = [new LoginController(app), new UserController(app)]
+    const routeControllers = [new LoginController(this.app), new UserController(this.app)]
     routeControllers.forEach((c) => c.registerRoutes(this.server))
 
     this.server.all('^/admin$|^/admin/*|^/home$|^/home/*', (req, res, next) => {
@@ -117,7 +170,7 @@ export class RealmInstance {
     })
 
     this.server.get('*', (req, res) => {
-      return handle(req, res)
+      return this.handle(req, res)
     })
 
     // console.log('Initializing database connection')
@@ -138,7 +191,7 @@ export class RealmInstance {
         logoImageUrl: '/static/grayskull.gif',
         baseUrl: ConfigurationManager.General.fallbackUrl,
         homePageUrl: `${ConfigurationManager.General.fallbackUrl}/home`,
-        redirectUri: `${ConfigurationManager.General.fallbackUrl}/signin`,
+        redirectUris: JSON.stringify([`${ConfigurationManager.General.fallbackUrl}/signin`]),
         public: true
       })
     }

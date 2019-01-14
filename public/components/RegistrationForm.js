@@ -28,9 +28,10 @@ class RegistrationForm extends PureComponent {
       <ApolloConsumer>
         {(apolloClient) => {
           const checkEmailAvailable = async (val, client) => {
-            if (!val) {
+            if (!val || this.props.disableEmailAvailabilityCheck) {
               return true
             }
+
             const { data } = await client.query({
               query: GET_EMAIL_ADDRESS_QUERY,
               variables: { emailAddress: val },
@@ -56,112 +57,97 @@ class RegistrationForm extends PureComponent {
               {({ validate, validationErrors }) => (
                 <div>
                   <h5>User Profile</h5>
-                  <div className='form-group row'>
-                    <label className='col-sm-12 col-md-3 col-form-label' htmlFor='emailAddress'>
+                  <div className="form-group row">
+                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="emailAddress">
                       E-mail Address
                     </label>
-                    <div className='col-sm-12 col-md-9'>
+                    <div className="col-sm-12 col-md-9">
                       <input
-                        id='emailAddress'
-                        autoComplete='username'
+                        id="emailAddress"
+                        autoComplete="username"
                         autoFocus
-                        type='email'
+                        type="email"
                         className={`form-control ${validationErrors['emailAddress'] ? 'is-invalid' : 'is-valid'}`}
-                        name='emailAddress'
+                        name="emailAddress"
                         value={this.props.data.emailAddress}
                         onChange={(e) => this.handleChange(e, validate)}
-                        aria-describedby='emailAddressHelpBlock'
+                        aria-describedby="emailAddressHelpBlock"
                       />
                       <FormValidationMessage id={'emailAddressHelpBlock'} validationErrors={validationErrors['emailAddress']} />
                     </div>
                   </div>
-                  <div className='form-group row mt-5'>
-                    <label
-                      className='col-sm-12 col-md-3 col-form-label'
-                      htmlFor='firstName'
-                    >
+                  <div className="form-group row mt-5">
+                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="firstName">
                       First Name
                     </label>
-                    <div className='col-sm-12 col-md-9'>
+                    <div className="col-sm-12 col-md-9">
                       <input
-                        id='firstName'
-                        type='text'
+                        id="firstName"
+                        type="text"
                         className={`form-control ${validationErrors['firstName'] ? 'is-invalid' : 'is-valid'}`}
-                        name='firstName'
+                        name="firstName"
                         value={this.props.data.firstName}
                         onChange={(e) => this.handleChange(e, validate)}
-                        aria-describedby='firstNameHelpBlock'
+                        aria-describedby="firstNameHelpBlock"
                       />
                       <FormValidationMessage id={'firstNameHelpBlock'} validationErrors={validationErrors['firstName']} />
                     </div>
                   </div>
-                  <div className='form-group row'>
-                    <label
-                      className='col-sm-12 col-md-3 col-form-label'
-                      htmlFor='lastName'
-                    >
+                  <div className="form-group row">
+                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="lastName">
                       Last Name
                     </label>
-                    <div className='col-sm-12 col-md-9'>
+                    <div className="col-sm-12 col-md-9">
                       <input
-                        id='lastName'
-                        type='text'
+                        id="lastName"
+                        type="text"
                         className={`form-control ${validationErrors['lastName'] ? 'is-invalid' : 'is-valid'}`}
-                        name='lastName'
+                        name="lastName"
                         value={this.props.data.lastName}
                         onChange={(e) => this.handleChange(e, validate)}
-                        aria-describedby='lastNameHelpBlock'
+                        aria-describedby="lastNameHelpBlock"
                       />
                       <FormValidationMessage id={'lastNameHelpBlock'} validationErrors={validationErrors['lastName']} />
                     </div>
                   </div>
-                  <div className='form-group row mt-5'>
-                    <label
-                      className='col-sm-12 col-md-3 col-form-label'
-                      htmlFor='password'
-                    >
+                  <div className="form-group row mt-5">
+                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="password">
                       Password
                     </label>
-                    <div className='col-sm-12 col-md-9'>
+                    <div className="col-sm-12 col-md-9">
                       <input
-                        id='password'
-                        autoComplete='new-password'
-                        type='password'
+                        id="password"
+                        autoComplete="new-password"
+                        type="password"
                         className={`form-control ${validationErrors['password'] ? 'is-invalid' : 'is-valid'}`}
-                        name='password'
-                        aria-describedby='passwordHelpBlock'
+                        name="password"
+                        aria-describedby="passwordHelpBlock"
                         value={this.props.data.password}
                         onChange={(e) => this.handleChange(e, validate)}
                       />
                       <FormValidationMessage id={'passwordHelpBlock'} validationErrors={validationErrors['password']} />
                       {validationErrors['password'] && (
-                        <div className='card border-info mt-2'>
-                          <div className='card-header'>Password requirements</div>
-                          <div className='card-body'>
-                            <PasswordComplexity
-                              configuration={this.props.configuration}
-                              password={this.props.data.password}
-                            />
+                        <div className="card border-info mt-2">
+                          <div className="card-header">Password requirements</div>
+                          <div className="card-body">
+                            <PasswordComplexity configuration={this.props.configuration} password={this.props.data.password} />
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className='form-group row'>
-                    <label
-                      className='col-sm-12 col-md-3 col-form-label'
-                      htmlFor='confirm'
-                    >
+                  <div className="form-group row">
+                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="confirm">
                       Confirm
                     </label>
-                    <div className='col-sm-12 col-md-9'>
+                    <div className="col-sm-12 col-md-9">
                       <input
-                        id='confirm'
-                        type='password'
-                        autoComplete='new-password'
+                        id="confirm"
+                        type="password"
+                        autoComplete="new-password"
                         className={`form-control ${validationErrors['confirm'] ? 'is-invalid' : 'is-valid'}`}
-                        name='confirm'
-                        aria-describedby='confirmHelpBlock'
+                        name="confirm"
+                        aria-describedby="confirmHelpBlock"
                         value={this.props.data.confirm}
                         onChange={(e) => this.handleChange(e, validate)}
                       />
@@ -184,16 +170,17 @@ RegistrationForm.propTypes = {
     passwordRequireNumber: PropTypes.bool.isRequired,
     passwordRequireSymbol: PropTypes.bool.isRequired,
     passwordRequireLowercase: PropTypes.bool.isRequired,
-    passwordRequireUppercase: PropTypes.bool.isRequired,
+    passwordRequireUppercase: PropTypes.bool.isRequired
   }).isRequired,
   data: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
     lastName: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
-    confirm: PropTypes.string.isRequired,
+    confirm: PropTypes.string.isRequired
   }).isRequired,
+  disableEmailAvailabilityCheck: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
-  onValidated: PropTypes.func,
+  onValidated: PropTypes.func
 }
 
 export default RegistrationForm
