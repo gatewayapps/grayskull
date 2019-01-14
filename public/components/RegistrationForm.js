@@ -1,10 +1,11 @@
 import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { ApolloConsumer } from 'react-apollo'
 import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'
 import FormValidation, { FormValidationRule } from './FormValidation'
-import { ApolloConsumer } from 'react-apollo';
+import FormValidationMessage from './FormValidationMessage'
 
 const GET_EMAIL_ADDRESS_QUERY = gql`
   query GET_EMAIL_ADDRESS_QUERY($emailAddress: String!) {
@@ -44,6 +45,7 @@ class RegistrationForm extends PureComponent {
             new FormValidationRule('emailAddress', checkEmailAvailable, true, 'Sorry, this email address is already being used by another account', [apolloClient]),
             new FormValidationRule('firstName', 'isEmpty', false, 'First name is required'),
             new FormValidationRule('lastName', 'isEmpty', false, 'Last name is required'),
+            new FormValidationRule('password', 'isEmpty', false, 'Password is required'),
             new FormValidationRule('password', validatePassword, true, 'Password does not meet complexity requirements', [this.props.configuration]),
             new FormValidationRule('confirm', 'isEmpty', false, 'Confirm password is required'),
             new FormValidationRule('confirm', 'equals', true, 'Confirm should match the password', [this.props.data.password])
@@ -51,7 +53,7 @@ class RegistrationForm extends PureComponent {
 
           return (
             <FormValidation validations={validations} data={this.props.data} onValidated={this.props.onValidated}>
-              {({ isValid, validate, validationErrors }) => (
+              {({ validate, validationErrors }) => (
                 <div>
                   <h5>User Profile</h5>
                   <div className='form-group row'>
@@ -70,11 +72,7 @@ class RegistrationForm extends PureComponent {
                         onChange={(e) => this.handleChange(e, validate)}
                         aria-describedby='emailAddressHelpBlock'
                       />
-                      {validationErrors['emailAddress'] && (
-                        <small id='emailAddressHelpBlock' className='form-text text-danger'>
-                          {validationErrors['emailAddress'].map((msg, idx) => (<div key={idx}>{msg}</div>))}
-                        </small>
-                      )}
+                      <FormValidationMessage id={'emailAddressHelpBlock'} validationErrors={validationErrors['emailAddress']} />
                     </div>
                   </div>
                   <div className='form-group row mt-5'>
@@ -94,11 +92,7 @@ class RegistrationForm extends PureComponent {
                         onChange={(e) => this.handleChange(e, validate)}
                         aria-describedby='firstNameHelpBlock'
                       />
-                      {validationErrors['firstName'] && (
-                        <small id='firstNameHelpBlock' className='form-text text-danger'>
-                          {validationErrors['firstName'].map((msg, idx) => (<div key={idx}>{msg}</div>))}
-                        </small>
-                      )}
+                      <FormValidationMessage id={'firstNameHelpBlock'} validationErrors={validationErrors['firstName']} />
                     </div>
                   </div>
                   <div className='form-group row'>
@@ -118,11 +112,7 @@ class RegistrationForm extends PureComponent {
                         onChange={(e) => this.handleChange(e, validate)}
                         aria-describedby='lastNameHelpBlock'
                       />
-                      {validationErrors['lastName'] && (
-                        <small id='lastNameHelpBlock' className='form-text text-danger'>
-                          {validationErrors['lastName'].map((msg, idx) => (<div key={idx}>{msg}</div>))}
-                        </small>
-                      )}
+                      <FormValidationMessage id={'lastNameHelpBlock'} validationErrors={validationErrors['lastName']} />
                     </div>
                   </div>
                   <div className='form-group row mt-5'>
@@ -143,8 +133,9 @@ class RegistrationForm extends PureComponent {
                         value={this.props.data.password}
                         onChange={(e) => this.handleChange(e, validate)}
                       />
+                      <FormValidationMessage id={'passwordHelpBlock'} validationErrors={validationErrors['password']} />
                       {validationErrors['password'] && (
-                        <div id='passwordHelpBlock' className='card border-info mt-2'>
+                        <div className='card border-info mt-2'>
                           <div className='card-header'>Password requirements</div>
                           <div className='card-body'>
                             <PasswordComplexity
@@ -174,11 +165,7 @@ class RegistrationForm extends PureComponent {
                         value={this.props.data.confirm}
                         onChange={(e) => this.handleChange(e, validate)}
                       />
-                      {validationErrors['confirm'] && (
-                        <small id='confirmHelpBlock' className='form-text text-danger'>
-                          {validationErrors['confirm'].map((msg, idx) => (<div key={idx}>{msg}</div>))}
-                        </small>
-                      )}
+                      <FormValidationMessage id={'confirmHelpBlock'} validationErrors={validationErrors['confirm']} />
                     </div>
                   </div>
                 </div>
