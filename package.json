@@ -24,7 +24,7 @@
   "homepage": "https://github.com/gatewayapps/grayskull#readme",
   "devDependencies": {
     "@babel/parser": "^7.1.2",
-    "@gatewayapps/cradle": "^0.4.0",
+    "@gatewayapps/cradle": "^0.4.1",
     "@gatewayapps/cradle-apollo-emitter": "^0.4.0",
     "@gatewayapps/cradle-template-emitter": "^0.4.0",
     "@types/bcrypt": "^3.0.0",

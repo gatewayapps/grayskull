@@ -13,6 +13,21 @@ export class FormValidationRule {
   }
 }
 
+function getValue(data, field) {
+  if (!data || !field) {
+    return undefined
+  }
+
+  return field
+    .split('.')
+    .reduce((result, prop) => {
+      if (!result || !prop) {
+        return undefined
+      }
+      return result[prop]
+    }, data)
+}
+
 class FormValidation extends PureComponent {
   state = {
     isValid: false,
@@ -45,10 +60,18 @@ class FormValidation extends PureComponent {
       const rule = this.props.validations[i]
       const testFn = typeof rule.test === 'string' ? Validator[rule.test] : rule.test
       if (typeof testFn === 'function') {
-        const value = data[rule.field]
+        const value = getValue(data, rule.field)
         const args = rule.args || []
         const validWhen = rule.validWhen || false
-        if (await testFn(value, ...args) !== validWhen) {
+
+        let testResult
+        try {
+          testResult = await testFn(value, ...args)
+        } catch {
+          testResult = undefined
+        }
+
+        if (testResult !== validWhen) {
           if (!Array.isArray(validationErrors[rule.field])) {
             validationErrors[rule.field] = [rule.message]
           } else {

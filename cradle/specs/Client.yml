@@ -14,6 +14,7 @@ Client:
     baseUrl: string
     homePageUrl: string?
     redirectUris: string(1000)
+    scopes: string(1000)
     public: boolean? default(false)
     isActive: boolean default(true)
     createdBy: uniqueidentifier?
@@ -39,6 +40,7 @@ Client:
         baseUrl:
         homePageUrl:
         redirectUris:
+        scopes:
         isActive:
     updateClient:
       returns: Client
@@ -52,6 +54,3 @@ Client:
         homePageUrl:
         redirectUris:
         isActive:
-
-
-

@@ -7,6 +7,7 @@ export interface IClient {
   baseUrl: string
   homePageUrl?: string
   redirectUris: string
+  scopes: string
   public?: boolean
   isActive?: boolean
   createdBy?: string

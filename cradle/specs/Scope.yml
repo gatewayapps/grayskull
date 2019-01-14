@@ -1,0 +1,9 @@
+Scope:
+  meta:
+    database: false
+    graphql: true
+    graphqlResolvers: false
+  properties:
+    id: string primary
+    clientDescription: string
+    userDescription: string
