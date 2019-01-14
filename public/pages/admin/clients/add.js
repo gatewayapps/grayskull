@@ -107,17 +107,22 @@ class ClientAddPage extends PureComponent {
 
   submitClient = async (evt, createClient) => {
     evt.preventDefault()
-    if (!this.state.clientIdValid || !this.state.client.redirectUris || this.state.client.redirectUris.length === 0) {
+    if (!this.state.clientIdValid || !this.state.clientFormValid) {
       return
     }
     const secret = generateSecret()
-    const data = {
-      ...this.state.client,
-      redirectUris: JSON.stringify(this.state.client.redirectUris.map((r) => r.value)),
-      scopes: JSON.stringify(this.state.client.scopes),
-      secret
+
+    const { redirectUris, scopes, ...data } = this.state.client
+
+    if (redirectUris) {
+      data.redirectUris = JSON.stringify(redirectUris.map((r) => r.value))
     }
+    if (scopes) {
+      data.scopes = JSON.stringify(scopes)
+    }
+
     const res = await createClient({ variables: { data } })
+
     if (res.data && res.data.createClient) {
       this.setState({
         result: {

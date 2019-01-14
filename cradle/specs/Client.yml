@@ -46,11 +46,12 @@ Client:
       returns: Client
       arguments:
         client_id:
-        name:
-        logoImageUrl:
-        description:
-        public: 
-        baseUrl:
-        homePageUrl:
-        redirectUris:
-        isActive:
+        name: '?'
+        logoImageUrl: '?'
+        description: '?'
+        public: '?'
+        baseUrl: '?'
+        homePageUrl: '?'
+        redirectUris: '?'
+        scopes: '?'
+        isActive: '?'

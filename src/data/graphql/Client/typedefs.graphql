@@ -36,14 +36,15 @@ input CreateClientArgs {
 
 input UpdateClientArgs {
 	client_id: String!
-	name: String!
+	name: String
 	logoImageUrl: String
 	description: String
 	public: Boolean
-	baseUrl: String!
+	baseUrl: String
 	homePageUrl: String
-	redirectUris: String!
-	isActive: Boolean!
+	redirectUris: String
+	scopes: String
+	isActive: Boolean
 }
 
 
