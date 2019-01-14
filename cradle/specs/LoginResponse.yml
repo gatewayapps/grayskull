@@ -1,6 +1,8 @@
 LoginResponse:
   meta:
-    topLevel: false
+    database: false
+    graphql: true
+    graphqlResolvers: false
   properties:
     success: boolean
     message: string?

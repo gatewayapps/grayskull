@@ -2,7 +2,9 @@ Client:
   meta:
     sensitive:
       - secret
-    topLevel: true
+    database: true
+    graphql: true
+    graphqlResolvers: true
   properties:
     client_id: string(50) primary
     name: string(50)
