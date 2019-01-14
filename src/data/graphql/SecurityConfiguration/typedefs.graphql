@@ -9,5 +9,4 @@ type SecurityConfiguration {
 	multifactorRequired: Boolean!
 	invitationExpirationSeconds: Int!
 	accessTokenExpirationSeconds: Int!
-	globalSecret: String!
 }

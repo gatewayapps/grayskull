@@ -11,4 +11,4 @@ module.exports = new cradle.EmitterOptions('graphql-interfaces', '@gatewayapps/c
   shouldEmit: (model) => {
     return model.Meta !== undefined && model.Meta.topLevel
   },
-})
+}, console)

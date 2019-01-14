@@ -11,4 +11,4 @@ module.exports = new cradle.EmitterOptions('service-base', '@gatewayapps/cradle-
   shouldEmit: (model) => {
     return model.Meta !== undefined && model.Meta.topLevel
   },
-})
+}, console)

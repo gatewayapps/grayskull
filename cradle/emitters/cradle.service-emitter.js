@@ -12,4 +12,4 @@ module.exports =
     shouldEmit: (model) => {
       return model.Meta !== undefined && model.Meta.topLevel
     },
-  })
+  }, console)

@@ -7,4 +7,4 @@ module.exports = new cradle.EmitterOptions('sequelize-attributes', '@gatewayapps
   languageType: 'ts',
   onFilesEmitted: utils.lintAndPretty,
   registerCustomHelpers: utils.registerHandleBarHelpers,
-})
+}, console)

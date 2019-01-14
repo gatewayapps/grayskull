@@ -11,4 +11,4 @@ module.exports = new cradle.EmitterOptions('sequelize-models', '@gatewayapps/cra
   shouldEmit: (model) => {
     return model.Meta !== undefined && model.Meta.topLevel
   },
-})
+}, console)
