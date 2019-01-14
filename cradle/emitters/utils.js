@@ -38,15 +38,7 @@ module.exports = {
     })
 
     registerHelper('hasDefaultValue', (args, options) => {
-      if (!args) {
-        return options.inverse(this)
-      }
-
-      if (args.OriginalTypeName === 'UniqueIdentifier') {
-        return args.DefaultValue !== undefined ? options.fn(this) : options.inverse(this)
-      }
-
-      return args.DefaultValue !== undefined ? options.fn(this) : options.inverse(this)
+      return args && args.DefaultValue !== undefined ? options.fn(this) : options.inverse(this)
     })
 
     registerHelper('isNotSensitive', (propName, meta, options) => {
