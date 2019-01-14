@@ -1,19 +1,25 @@
 type UserAccount {
-	userAccountId: Int!
+	userAccountId: ID!
 	firstName: String!
 	lastName: String!
-	emailAddress: String!
-	emailVerified: Boolean!
 	lastActive: Date!
 	lastPasswordChange: Date!
 	phoneNumber: String!
 	profileImageUrl: String!
+	permissions: Int!
 	otpEnabled: Boolean!
 	isActive: Boolean!
-	createdBy: Int
+	createdBy: ID
 	createdAt: Date!
-	modifiedBy: Int
-	modifiedAt: Date!
+	updatedBy: ID
+	updatedAt: Date!
+	deletedBy: ID
+	deletedAt: Date
+	emailAddresses: [EmailAddress]
+}
+
+input GenerateMfaKeyArgs {
+	emailAddress: String!
 }
 
 input VerifyMfaKeyArgs {
@@ -22,6 +28,10 @@ input VerifyMfaKeyArgs {
 }
 
 input SendBackupCodeArgs {
+	emailAddress: String!
+}
+
+input ResetPasswordArgs {
 	emailAddress: String!
 }
 
@@ -48,20 +58,13 @@ input LoginArgs {
 }
 
 input RegisterUserArgs {
+	emailAddress: String!
 	password: String!
 	confirm: String!
-	cpt: String!
+	client_id: String
 	firstName: String!
 	lastName: String!
 	otpSecret: String
-}
-
-input GenerateMfaKeyArgs {
-	emailAddress: String!
-}
-
-input ResetPasswordArgs {
-	emailAddress: String!
 }
 
 
@@ -72,10 +75,9 @@ type UserAccountMeta {
 input UserAccountFilter {
   or: [UserAccountFilter!]
   and: [UserAccountFilter!]
-	userAccountId_lessThan: Int
-	userAccountId_greaterThan: Int
-	userAccountId_equals: Int
-	userAccountId_notEquals: Int
+	userAccountId_in: [ID]
+	userAccountId_equals: ID
+	userAccountId_notEquals: ID
 	firstName_contains: String
 	firstName_notContains: String
 	firstName_startsWith: String
@@ -88,14 +90,6 @@ input UserAccountFilter {
 	lastName_endsWith: String
 	lastName_equals: String
 	lastName_notEquals: String
-	emailAddress_contains: String
-	emailAddress_notContains: String
-	emailAddress_startsWith: String
-	emailAddress_endsWith: String
-	emailAddress_equals: String
-	emailAddress_notEquals: String
-	emailVerified_equals: Boolean
-	emailVerified_notEquals: Boolean
 	lastActive_lessThan: Date
 	lastActive_greaterThan: Date
 	lastActive_equals: Date
@@ -116,31 +110,42 @@ input UserAccountFilter {
 	profileImageUrl_endsWith: String
 	profileImageUrl_equals: String
 	profileImageUrl_notEquals: String
+	permissions_lessThan: Int
+	permissions_greaterThan: Int
+	permissions_equals: Int
+	permissions_notEquals: Int
 	otpEnabled_equals: Boolean
 	otpEnabled_notEquals: Boolean
 	isActive_equals: Boolean
 	isActive_notEquals: Boolean
-	createdBy_lessThan: Int
-	createdBy_greaterThan: Int
-	createdBy_equals: Int
-	createdBy_notEquals: Int
+	createdBy_in: [ID]
+	createdBy_equals: ID
+	createdBy_notEquals: ID
 	createdAt_lessThan: Date
 	createdAt_greaterThan: Date
 	createdAt_equals: Date
 	createdAt_notEquals: Date
-	modifiedBy_lessThan: Int
-	modifiedBy_greaterThan: Int
-	modifiedBy_equals: Int
-	modifiedBy_notEquals: Int
-	modifiedAt_lessThan: Date
-	modifiedAt_greaterThan: Date
-	modifiedAt_equals: Date
-	modifiedAt_notEquals: Date
+	updatedBy_in: [ID]
+	updatedBy_equals: ID
+	updatedBy_notEquals: ID
+	updatedAt_lessThan: Date
+	updatedAt_greaterThan: Date
+	updatedAt_equals: Date
+	updatedAt_notEquals: Date
+	deletedBy_in: [ID]
+	deletedBy_equals: ID
+	deletedBy_notEquals: ID
+	deletedAt_lessThan: Date
+	deletedAt_greaterThan: Date
+	deletedAt_equals: Date
+	deletedAt_notEquals: Date
+	emailAddresses_equals: [ID]
+	emailAddresses_notEquals: [ID]
+	emailAddresses_contains: [ID]
 }
 
 input UserAccountUniqueFilter {
-	userAccountId: Int
-	emailAddress: String
+	userAccountId: ID
 }
 
 type Query {
@@ -150,12 +155,12 @@ type Query {
 }
 
 type Mutation {
+	generateMfaKey(data: GenerateMfaKeyArgs!): String 
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
 	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
+	resetPassword(data: ResetPasswordArgs!): Boolean 
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
 	changePassword(data: ChangePasswordArgs!): Boolean 
 	login(data: LoginArgs!): LoginResponse 
-	registerUser(data: RegisterUserArgs!): String 
-	generateMfaKey(data: GenerateMfaKeyArgs!): String 
-	resetPassword(data: ResetPasswordArgs!): Boolean 
+	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

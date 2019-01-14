@@ -2,7 +2,6 @@ import ConfigurationManager from '@/config/ConfigurationManager'
 import { decrypt } from '@/utils/cipher'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
-import { UserAccountInstance } from '@data/models/UserAccount'
 import ClientService from '@services/ClientService'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
@@ -13,7 +12,6 @@ import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
 import MailService from './MailService'
-import { ReflectionObject } from 'protobufjs'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -45,7 +43,7 @@ interface IAuthenticateUserResult {
 interface IRefreshTokenPayload {
   client_id: string
   session_id: string
-  userAccountId: number
+  userAccountId: string
 }
 
 otplib.authenticator.options = {
@@ -59,7 +57,7 @@ class AuthenticationService {
   }
 
   public async authenticateUser(emailAddress: string, password: string, sessionId: string, clientId: string, otpToken?: string): Promise<IAuthenticateUserResult> {
-    const existingUser = await UserAccountService.getUserAccountWithSensitiveData({ emailAddress })
+    const existingUser = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress)
 
     if (!existingUser) {
       throw new Error('Invalid email address/password combination')
@@ -78,7 +76,7 @@ class AuthenticationService {
       const otpSecret = decrypt(existingUser.otpSecret)
 
       if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken)) {
-        const backupCode = this.localCache.get<string>(existingUser.emailAddress)
+        const backupCode = this.localCache.get<string>(emailAddress)
 
         if (!backupCode || backupCode !== otpToken) {
           return {
@@ -89,7 +87,7 @@ class AuthenticationService {
         }
       }
 
-      this.localCache.del(existingUser.emailAddress)
+      this.localCache.del(emailAddress)
     }
 
     const userClient = await UserClientService.getUserClient({ userAccountId: existingUser.userAccountId!, client_id: clientId })
@@ -129,7 +127,7 @@ class AuthenticationService {
           throw new Error(`authorization_code has expired`)
         }
 
-        userAccount = await UserAccountService.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || -1 })
+        userAccount = await UserAccountService.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || '' })
         if (!userAccount) {
           throw new Error(`Unable to locate user account`)
         }
@@ -179,7 +177,7 @@ class AuthenticationService {
   }
 
   public async sendBackupCode(emailAddress: string): Promise<boolean> {
-    const user = await UserAccountService.getUserAccountWithSensitiveData({ emailAddress })
+    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress)
     if (!user || !user.otpEnabled || !user.otpSecret) {
       return false
     }
@@ -190,15 +188,15 @@ class AuthenticationService {
     }
 
     const backupCode = otplib.authenticator.generate(otpSecret)
-    this.localCache.set(user.emailAddress, backupCode, 16 * 60)
+    this.localCache.set(emailAddress, backupCode, 16 * 60)
     const body = `Your login code is: ${backupCode}<br/><br/>This code will expire in 15 minutes.`
-    MailService.sendMail(user.emailAddress, 'Login Code', body, ConfigurationManager.Security.adminEmailAddress)
+    MailService.sendMail(emailAddress, 'Login Code', body, ConfigurationManager.Security.adminEmailAddress)
     return true
   }
 
   public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
     if (ConfigurationManager.Security.passwordExpiresDays > 0) {
-      const userAccount = await UserAccountService.getUserAccount({ emailAddress })
+      const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress)
       if (userAccount) {
         const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))

@@ -5,10 +5,9 @@ export interface IUserAccountMeta {
 export interface IUserAccountFilter {
   or?: [IUserAccountFilter]
   and?: [IUserAccountFilter]
-  userAccountId_lessThan?: number
-  userAccountId_greaterThan?: number
-  userAccountId_equals?: number
-  userAccountId_notEquals?: number
+  userAccountId_in?: [string]
+  userAccountId_equals?: string
+  userAccountId_notEquals?: string
   firstName_contains?: string
   firstName_startsWith?: string
   firstName_endsWith?: string
@@ -19,13 +18,6 @@ export interface IUserAccountFilter {
   lastName_endsWith?: string
   lastName_equals?: string
   lastName_notEquals?: string
-  emailAddress_contains?: string
-  emailAddress_startsWith?: string
-  emailAddress_endsWith?: string
-  emailAddress_equals?: string
-  emailAddress_notEquals?: string
-  emailVerified_equals?: boolean
-  emailVerified_notEquals?: boolean
   lastActive_lessThan?: Date
   lastActive_greaterThan?: Date
   lastActive_equals?: Date
@@ -44,29 +36,37 @@ export interface IUserAccountFilter {
   profileImageUrl_endsWith?: string
   profileImageUrl_equals?: string
   profileImageUrl_notEquals?: string
+  permissions_lessThan?: number
+  permissions_greaterThan?: number
+  permissions_equals?: number
+  permissions_notEquals?: number
   otpEnabled_equals?: boolean
   otpEnabled_notEquals?: boolean
   isActive_equals?: boolean
   isActive_notEquals?: boolean
-  createdBy_lessThan?: number
-  createdBy_greaterThan?: number
-  createdBy_equals?: number
-  createdBy_notEquals?: number
+  createdBy_in?: [string]
+  createdBy_equals?: string
+  createdBy_notEquals?: string
   createdAt_lessThan?: Date
   createdAt_greaterThan?: Date
   createdAt_equals?: Date
   createdAt_notEquals?: Date
-  modifiedBy_lessThan?: number
-  modifiedBy_greaterThan?: number
-  modifiedBy_equals?: number
-  modifiedBy_notEquals?: number
-  modifiedAt_lessThan?: Date
-  modifiedAt_greaterThan?: Date
-  modifiedAt_equals?: Date
-  modifiedAt_notEquals?: Date
+  updatedBy_in?: [string]
+  updatedBy_equals?: string
+  updatedBy_notEquals?: string
+  updatedAt_lessThan?: Date
+  updatedAt_greaterThan?: Date
+  updatedAt_equals?: Date
+  updatedAt_notEquals?: Date
+  deletedBy_in?: [string]
+  deletedBy_equals?: string
+  deletedBy_notEquals?: string
+  deletedAt_lessThan?: Date
+  deletedAt_greaterThan?: Date
+  deletedAt_equals?: Date
+  deletedAt_notEquals?: Date
 }
 
 export interface IUserAccountUniqueFilter {
-  userAccountId?: number
-  emailAddress?: string
+  userAccountId?: string
 }

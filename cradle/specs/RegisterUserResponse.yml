@@ -1,0 +1,7 @@
+RegisterUserResponse:
+  meta:
+    topLevel: false
+  properties:
+    success: boolean
+    error: string?
+    message: string?

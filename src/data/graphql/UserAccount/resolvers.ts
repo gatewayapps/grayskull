@@ -1,7 +1,8 @@
-import ConfigurationManager from '@/config/ConfigurationManager'
 import AuthenticationService from '@services/AuthenticationService'
+import EmailAddressService from '@services/EmailAddressService'
 import UserAccountService from '@services/UserAccountService'
-import * as otplib from 'otplib'
+import { GrayskullError } from '@/GrayskullError'
+import { IRegisterUserResponse } from '@data/models/IRegisterUserResponse'
 
 export default {
   Query: {
@@ -73,19 +74,19 @@ export default {
       // Insert your resetPassword implementation here
       throw new Error('resetPassword is not implemented')
     },
-    registerUser: async (obj, args, context, info) => {
-      const { confirm, cpt, password, otpSecret, ...userInfo } = args.data
+    registerUser: async (obj, args, context, info): Promise<IRegisterUserResponse> => {
+      try {
+        const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
 
-      if (!UserAccountService.validateCPT(cpt)) {
-        throw new Error('CPT is not valid')
+        await AuthenticationService.validatePassword(password, confirm)
+        const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password)
+        return { success: true }
+      } catch (err) {
+        if (err instanceof GrayskullError) {
+          return { success: false, error: err.code, message: err.message }
+        }
+        return { success: false, message: err.message }
       }
-
-      await AuthenticationService.validatePassword(password, confirm)
-      const { client } = await UserAccountService.registerUser(userInfo, password, cpt, otpSecret)
-      if (!client) {
-        throw new Error('Invalid client')
-      }
-      return client.homePageUrl || client.baseUrl
     },
     generateMfaKey: (obj, args, context, info) => {
       return AuthenticationService.generateOtpSecret(args.data.emailAddress)
@@ -97,5 +98,9 @@ export default {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress)
     }
   },
-  UserAccount: {}
+  UserAccount: {
+    emailAddresses: async (obj, args, context, info) => {
+      return await EmailAddressService.getEmailAddresses({ userAccountId_equals: obj.userAccountId })
+    }
+  }
 }

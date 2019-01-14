@@ -44,22 +44,33 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     },
     createdBy: {
       allowNull: true,
-      type: Sequelize.INTEGER
+      type: Sequelize.UUID
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
       type: Sequelize.DATE
     },
-    modifiedBy: {
+    updatedBy: {
       allowNull: true,
-      type: Sequelize.INTEGER
+      type: Sequelize.UUID
     },
-    modifiedAt: {
+    updatedAt: {
       defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    deletedBy: {
+      allowNull: true,
+      type: Sequelize.UUID
+    },
+    deletedAt: {
+      allowNull: true,
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<ClientInstance, IClient>('Client', attributes, { timestamps: false })
+  return sequelize.define<ClientInstance, IClient>('Client', attributes, {
+    timestamps: true,
+    paranoid: true
+  })
 }
 
 export default ClientFactory

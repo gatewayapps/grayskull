@@ -2,19 +2,22 @@ import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '@/interfa
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { I{{Name}} } from '@data/models/I{{Name}}'
+{{#ifNotEquals Name 'UserAccount'}}
+import { IUserAccount } from '@data/models/IUserAccount'
+{{/ifNotEquals}}
 import { {{Name}}Instance } from '@data/models/{{Name}}'
-import { AnyWhereOptions } from 'sequelize'
+import { AnyWhereOptions, Transaction } from 'sequelize'
 
 export default class {{Name}}ServiceBase {
-  public async {{toCamelCase (pluralize Name)}}Meta(filter?: I{{Name}}Filter): Promise<I{{Name}}Meta> {
+  public async {{toCamelCase (pluralize Name)}}Meta(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<I{{Name}}Meta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.{{Name}}.count({ where })
+    const count = await db.{{Name}}.count({ where, transaction })
     return {
       count
     }
   }
 
-  public async get{{pluralize Name}}(filter?: I{{Name}}Filter): Promise<{{Name}}Instance[]> {
+  public async get{{pluralize Name}}(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await db.{{Name}}.findAll({
       where,
@@ -24,20 +27,22 @@ export default class {{Name}}ServiceBase {
       },
       {{/if}}
       raw: true,
+      transaction,
     })
   }
 
   {{#if Meta.sensitive}}
-  public async get{{pluralize Name}}WithSensitiveData(filter?: I{{Name}}Filter): Promise<{{Name}}Instance[]> {
+  public async get{{pluralize Name}}WithSensitiveData(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await db.{{Name}}.findAll({
       where,
       raw: true,
+      transaction,
     })
   }
   {{/if}}
 
-  public async get{{Name}}(filter: I{{Name}}UniqueFilter): Promise<{{Name}}Instance | null> {
+  public async get{{Name}}(filter: I{{Name}}UniqueFilter, transaction?: Transaction): Promise<{{Name}}Instance | null> {
     return await db.{{Name}}.findOne({
       where: filter,
       {{#if Meta.sensitive}}
@@ -46,32 +51,50 @@ export default class {{Name}}ServiceBase {
       },
       {{/if}}
       raw: true,
+      transaction,
     })
   }
 
   {{#if Meta.sensitive}}
-  public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter): Promise<{{Name}}Instance | null> {
+  public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, transaction?: Transaction): Promise<{{Name}}Instance | null> {
     return await db.{{Name}}.findOne({
       where: filter,
       raw: true,
+      transaction,
     })
   }
   {{/if}}
 
-  public async create{{Name}}(data: I{{Name}}): Promise<{{Name}}Instance> {
-    return await db.{{Name}}.create(data, {returning: true, raw: true})
+  public async create{{Name}}(data: I{{Name}}, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance> {
+    if (userContext) {
+      data.createdBy = userContext.userAccountId
+      data.updatedBy = userContext.userAccountId
+    }
+    return await db.{{Name}}.create(data, {returning: true, raw: true, transaction})
   }
 
-  public async delete{{Name}}(filter: I{{Name}}UniqueFilter): Promise<number> {
-    return await db.{{Name}}.destroy({
+  public async delete{{Name}}(filter: I{{Name}}UniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+    const data: Partial<I{{Name}}> = {
+      deletedAt: new Date()
+    }
+    if (userContext) {
+      data.deletedBy = userContext.userAccountId
+    }
+    const [ affectedCount ] = await db.{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
+      transaction,
     })
+    return affectedCount > 0
   }
 
-  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: I{{Name}}): Promise<{{Name}}Instance | null> {
+  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: I{{Name}}, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance | null> {
+    if (userContext) {
+      data.updatedBy = userContext.userAccountId
+    }
     return await db.{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
+      transaction,
     }).then(() => this.get{{Name}}(filter))
   }
 }

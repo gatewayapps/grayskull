@@ -1,8 +1,9 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import Sequelize from 'sequelize'
 
-import UserAccountFactory from './models/UserAccount'
 import ClientFactory from './models/Client'
+import EmailAddressFactory from './models/EmailAddress'
+import UserAccountFactory from './models/UserAccount'
 import UserClientFactory from './models/UserClient'
 import SessionFactory from './models/Session'
 
@@ -11,8 +12,9 @@ const sequelize = new Sequelize(ConfigurationManager.General.databaseConnectionS
 const db = {
   sequelize,
   Sequelize,
-  UserAccount: UserAccountFactory(sequelize),
   Client: ClientFactory(sequelize),
+  EmailAddress: EmailAddressFactory(sequelize),
+  UserAccount: UserAccountFactory(sequelize),
   UserClient: UserClientFactory(sequelize),
   Session: SessionFactory(sequelize)
 }

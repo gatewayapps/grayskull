@@ -36,9 +36,13 @@ export default {
       // Insert your createdByUser implementation here
       throw new Error('createdByUser is not implemented')
     },
-    modifiedByUser: (obj, args, context, info) => {
+    deletedByUser: (obj, args, context, info) => {
+      // Insert your deletedByUser implementation here
+      throw new Error('deletedByUser is not implemented')
+    },
+    updatedByUser: (obj, args, context, info) => {
       // Insert your modifiedByUser implementation here
-      throw new Error('modifiedByUser is not implemented')
+      throw new Error('updatedByUser is not implemented')
     }
   }
 }

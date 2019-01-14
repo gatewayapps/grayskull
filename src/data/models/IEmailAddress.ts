@@ -1,9 +1,9 @@
-export interface IUserClient {
+export interface IEmailAddress {
+  emailAddressId?: string
   userAccountId: string
-  client_id: string
-  revoked?: boolean
-  revokedBy?: string
-  RevokedAt?: Date
+  emailAddress: string
+  verified?: boolean
+  primary?: boolean
   createdBy?: string
   createdAt?: Date
   updatedBy?: string

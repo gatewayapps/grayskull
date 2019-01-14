@@ -14,13 +14,16 @@ Client:
     redirectUris: string(1000)
     public: boolean? default(false)
     isActive: boolean default(true)
-    createdBy: integer?
+    createdBy: uniqueidentifier?
     createdAt: datetime default(NOW)
-    modifiedBy: integer?
-    modifiedAt: datetime default(NOW)
+    updatedBy: uniqueidentifier?
+    updatedAt: datetime default(NOW)
+    deletedBy: uniqueidentifier?
+    deletedAt: datetime?
   references:
     createdByUser: single of UserAccount on createdBy
-    modifiedByUser: single of UserAccount on modifiedBy
+    updatedByUser: single of UserAccount on updatedBy
+    deletedByUser: single of UserAccount on deletedBy
   operations:
     createClient:
       returns: Client

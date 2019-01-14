@@ -1,9 +1,7 @@
 export interface IUserAccount {
-  userAccountId?: number
+  userAccountId?: string
   firstName: string
   lastName: string
-  emailAddress: string
-  emailVerified?: boolean
   lastActive?: Date
   lastPasswordChange: Date
   passwordHash: string
@@ -13,8 +11,10 @@ export interface IUserAccount {
   otpSecret?: string
   otpEnabled?: boolean
   isActive?: boolean
-  createdBy?: number
+  createdBy?: string
   createdAt?: Date
-  modifiedBy?: number
-  modifiedAt?: Date
+  updatedBy?: string
+  updatedAt?: Date
+  deletedBy?: string
+  deletedAt?: Date
 }

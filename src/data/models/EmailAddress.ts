@@ -1,31 +1,31 @@
 import Sequelize from 'sequelize'
 import { SequelizeAttributes } from '../../types/SequelizeAttributes'
-import { IUserClient } from './IUserClient'
+import { IEmailAddress } from './IEmailAddress'
 
-export type UserClientInstance = Sequelize.Instance<IUserClient> & IUserClient
+export type EmailAddressInstance = Sequelize.Instance<IEmailAddress> & IEmailAddress
 
-function UserClientFactory(sequelize: Sequelize.Sequelize) {
-  const attributes: SequelizeAttributes<IUserClient> = {
-    userAccountId: {
-      unique: 'userClient',
+function EmailAddressFactory(sequelize: Sequelize.Sequelize) {
+  const attributes: SequelizeAttributes<IEmailAddress> = {
+    emailAddressId: {
+      primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
       type: Sequelize.UUID
     },
-    client_id: {
-      unique: 'userClient',
-      type: Sequelize.STRING(50)
+    userAccountId: {
+      defaultValue: Sequelize.UUIDV4,
+      type: Sequelize.UUID
     },
-    revoked: {
+    emailAddress: {
+      unique: true,
+      type: Sequelize.STRING
+    },
+    verified: {
       defaultValue: false,
       type: Sequelize.BOOLEAN
     },
-    revokedBy: {
-      allowNull: true,
-      type: Sequelize.UUID
-    },
-    RevokedAt: {
-      allowNull: true,
-      type: Sequelize.DATE
+    primary: {
+      defaultValue: false,
+      type: Sequelize.BOOLEAN
     },
     createdBy: {
       allowNull: true,
@@ -52,10 +52,10 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<UserClientInstance, IUserClient>('UserClient', attributes, {
+  return sequelize.define<EmailAddressInstance, IEmailAddress>('EmailAddress', attributes, {
     timestamps: true,
     paranoid: true
   })
 }
 
-export default UserClientFactory
+export default EmailAddressFactory

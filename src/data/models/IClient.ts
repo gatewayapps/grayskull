@@ -9,8 +9,10 @@ export interface IClient {
   redirectUris: string
   public?: boolean
   isActive?: boolean
-  createdBy?: number
+  createdBy?: string
   createdAt?: Date
-  modifiedBy?: number
-  modifiedAt?: Date
+  updatedBy?: string
+  updatedAt?: Date
+  deletedBy?: string
+  deletedAt?: Date
 }

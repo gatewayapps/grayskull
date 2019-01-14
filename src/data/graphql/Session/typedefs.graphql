@@ -1,6 +1,11 @@
 type Session {
 	sessionId: String!
 	refreshToken: String!
-	createdAt: Date!
 	lastUsedAt: Date!
+	createdBy: ID
+	createdAt: Date!
+	updatedBy: ID
+	updatedAt: Date!
+	deletedBy: ID
+	deletedAt: Date
 }

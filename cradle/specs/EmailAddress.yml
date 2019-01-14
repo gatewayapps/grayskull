@@ -1,12 +1,12 @@
-UserClient:
+EmailAddress:
   meta:
     topLevel: true
   properties:
-    userAccountId: uniqueidentifier unique('userClient')
-    client_id: string(50) unique('userClient')
-    revoked: boolean default(false)
-    revokedBy: uniqueidentifier?
-    RevokedAt: datetime?
+    emailAddressId: uniqueidentifier primary default('new_uuid')
+    userAccountId: uniqueidentifier
+    emailAddress: string unique
+    verified: boolean default(false)
+    primary: boolean default(false)
     createdBy: uniqueidentifier?
     createdAt: datetime default(NOW)
     updatedBy: uniqueidentifier?

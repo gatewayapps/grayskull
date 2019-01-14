@@ -13,16 +13,39 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
     refreshToken: {
       type: Sequelize.STRING(1000)
     },
+    lastUsedAt: {
+      defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    createdBy: {
+      allowNull: true,
+      type: Sequelize.UUID
+    },
     createdAt: {
       defaultValue: Sequelize.NOW,
       type: Sequelize.DATE
     },
-    lastUsedAt: {
+    updatedBy: {
+      allowNull: true,
+      type: Sequelize.UUID
+    },
+    updatedAt: {
       defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    deletedBy: {
+      allowNull: true,
+      type: Sequelize.UUID
+    },
+    deletedAt: {
+      allowNull: true,
       type: Sequelize.DATE
     }
   }
-  return sequelize.define<SessionInstance, ISession>('Session', attributes, { timestamps: false })
+  return sequelize.define<SessionInstance, ISession>('Session', attributes, {
+    timestamps: true,
+    paranoid: true
+  })
 }
 
 export default SessionFactory
