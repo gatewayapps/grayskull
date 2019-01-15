@@ -12,7 +12,7 @@ module.exports = new cradle.EmitterOptions(
       return model.Meta !== undefined && model.Meta.graphql === true
     },
     shouldGenerateResolvers: (model) => {
-      return model.Meta !== undefined && model.Meta.graphqlResolvers === true && !['Session', 'UserClient'].includes(model.Name)
+      return model.Meta !== undefined && model.Meta.graphqlResolvers === true
     },
     shouldTypeIncludeProperty: (model, propertyName, propertyType) => (!utils.isFieldSensitive(model, propertyName)),
     shouldTypeIncludeReference: (model, referenceName, referenceType) => (!utils.isFieldSensitive(model, referenceName)),

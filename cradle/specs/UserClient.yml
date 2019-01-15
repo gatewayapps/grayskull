@@ -1,8 +1,7 @@
 UserClient:
   meta:
     database: true
-    graphql: true
-    graphqlResolvers: true
+    graphql: false
   properties:
     userAccountId: uniqueidentifier unique('userClient')
     client_id: string(50) unique('userClient')
