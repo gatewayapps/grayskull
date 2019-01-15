@@ -12,7 +12,6 @@ function EmailAddressFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.UUID
     },
     userAccountId: {
-      defaultValue: Sequelize.UUIDV4,
       type: Sequelize.UUID
     },
     emailAddress: {

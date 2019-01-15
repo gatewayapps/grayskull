@@ -3,8 +3,11 @@ UserClient:
     database: true
     graphql: false
   properties:
+    userClientId: uniqueidentifier primary auto
     userAccountId: uniqueidentifier unique('userClient')
     client_id: string(50) unique('userClient')
+    allowedScopes: string(1000)
+    deniedScopes: string(1000)
     revoked: boolean default(false)
     revokedBy: uniqueidentifier?
     RevokedAt: datetime?

@@ -7,7 +7,7 @@ UserAccount:
     graphql: true
     graphqlResolvers: true
   properties:
-    userAccountId: uniqueidentifier primary default('new_uuid')
+    userAccountId: uniqueidentifier primary auto
     firstName: string(30)
     lastName: string(30)
     lastActive: datetime default(NOW)

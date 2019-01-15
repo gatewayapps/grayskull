@@ -6,14 +6,24 @@ export type UserClientInstance = Sequelize.Instance<IUserClient> & IUserClient
 
 function UserClientFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IUserClient> = {
+    userClientId: {
+      primaryKey: true,
+      defaultValue: Sequelize.UUIDV4,
+      type: Sequelize.UUID
+    },
     userAccountId: {
       unique: 'userClient',
-      defaultValue: Sequelize.UUIDV4,
       type: Sequelize.UUID
     },
     client_id: {
       unique: 'userClient',
       type: Sequelize.STRING(50)
+    },
+    allowedScopes: {
+      type: Sequelize.STRING(1000)
+    },
+    deniedScopes: {
+      type: Sequelize.STRING(1000)
     },
     revoked: {
       defaultValue: false,
