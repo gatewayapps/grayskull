@@ -1,0 +1,13 @@
+type UserClient {
+	userAccountId: ID!
+	client_id: String!
+	revoked: Boolean!
+	revokedBy: ID
+	RevokedAt: Date
+	createdBy: ID
+	createdAt: Date!
+	updatedBy: ID
+	updatedAt: Date!
+	deletedBy: ID
+	deletedAt: Date
+}

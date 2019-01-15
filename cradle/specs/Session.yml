@@ -1,7 +1,8 @@
 Session:
   meta:
     database: true
-    graphql: false
+    graphql: true
+    graphqlResolvers: true
   properties:
     sessionId: string primary
     refreshToken: string(1000)
