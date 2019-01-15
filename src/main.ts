@@ -9,6 +9,7 @@ import next from 'next'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import ClientService from './api/services/ClientService'
+import ScopeService from './api/services/ScopeService'
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 import { generateLoginUrl } from './utils/authentication'
@@ -93,6 +94,7 @@ async function ensureGrayskullClient(): Promise<void> {
       baseUrl: ConfigurationManager.General.fallbackUrl,
       homePageUrl: `${ConfigurationManager.General.fallbackUrl}/home`,
       redirectUris: JSON.stringify([`${ConfigurationManager.General.fallbackUrl}/signin`]),
+      scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
       public: true
     })
   }

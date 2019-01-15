@@ -1,6 +1,7 @@
 Session:
   meta:
-    topLevel: true
+    database: true
+    graphql: false
   properties:
     sessionId: string primary
     refreshToken: string(1000)

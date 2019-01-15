@@ -23,12 +23,15 @@ export default {
       if (!context.user) {
         throw new Error('You must be logged in to create a client')
       }
-      // Insert your createClient implementation here
       return ClientService.createClient(args.data, context.user)
     },
     updateClient: (obj, args, context, info) => {
-      // Insert your updateClient implementation here
-      throw new Error('updateClient is not implemented')
+      if (!context.user) {
+        throw new Error('You must be logged in to update a client')
+      }
+      console.log(args)
+      const { client_id, ...data } = args.data
+      return ClientService.updateClient({ client_id }, data, context.user)
     }
   },
   Client: {

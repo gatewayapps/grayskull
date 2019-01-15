@@ -4,4 +4,5 @@ LoginResponse: ./specs/LoginResponse.yml#LoginResponse
 RegisterUserResponse: ./specs/RegisterUserResponse.yml#RegisterUserResponse
 UserAccount: ./specs/UserAccount.yml#UserAccount
 UserClient: ./specs/UserClient.yml#UserClient
+Scope: ./specs/Scope.yml#Scope
 Session: ./specs/Session.yml#Session

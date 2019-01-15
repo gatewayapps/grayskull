@@ -1,0 +1,5 @@
+type Scope {
+	id: String!
+	clientDescription: String!
+	userDescription: String!
+}

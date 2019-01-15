@@ -3,7 +3,9 @@ UserAccount:
     sensitive:
       - passwordHash
       - otpSecret
-    topLevel: true
+    database: true
+    graphql: true
+    graphqlResolvers: true
   properties:
     userAccountId: uniqueidentifier primary default('new_uuid')
     firstName: string(30)

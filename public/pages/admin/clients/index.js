@@ -57,6 +57,9 @@ const ClientsIndexPage = () => {
                         <a href={client.homePageUrl || client.baseUrl}>{client.homePageUrl || client.baseUrl}</a>
                       </td>
                       <td>
+                        <Link href={{ pathname: '/admin/clients/edit', query: { id: client.client_id } }}>
+                          <a className='mr-3'>Edit</a>
+                        </Link>
                         <Link href={{ pathname: '/admin/clients/view', query: { id: client.client_id } }}>
                           <a>View</a>
                         </Link>

@@ -1,6 +1,8 @@
 EmailAddress:
   meta:
-    topLevel: true
+    database: true
+    graphql: true
+    graphqlResolvers: true
   properties:
     emailAddressId: uniqueidentifier primary default('new_uuid')
     userAccountId: uniqueidentifier
