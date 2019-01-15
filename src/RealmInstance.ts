@@ -15,6 +15,7 @@ import { getUserContext } from './middleware/authentication'
 import db from '@data/context'
 import { Server } from 'http'
 import next from 'next'
+import { startServerInstance } from './main'
 import withCss from '@zeit/next-css'
 import withSass from '@zeit/next-sass'
 
@@ -39,6 +40,11 @@ export class RealmInstance {
   private static instance: RealmInstance
   public static getInstance() {
     return RealmInstance.instance
+  }
+  public static restartServer() {
+    RealmInstance.instance.stopServer().then(() => {
+      startServerInstance()
+    })
   }
 
   constructor(config?: IConfiguration) {

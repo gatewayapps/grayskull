@@ -14,14 +14,18 @@ export class FormValidationRule {
 }
 
 class FormValidation extends PureComponent {
-  state = {
-    isValid: false,
-    validationErrors: {},
-    validating: false,
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      isValid: false,
+      validationErrors: {},
+      validating: false
+    }
   }
 
   componentDidMount() {
-    if (this.props.data) {
+    if (this.props.data && this.props.validateOnMount) {
       this.onValidate(this.props.data)
     }
   }
@@ -31,7 +35,7 @@ class FormValidation extends PureComponent {
       this.setState({
         validationErrors: {},
         isValid: true,
-        validating: false,
+        validating: false
       })
     }
 
@@ -48,7 +52,7 @@ class FormValidation extends PureComponent {
         const value = data[rule.field]
         const args = rule.args || []
         const validWhen = rule.validWhen || false
-        if (await testFn(value, ...args) !== validWhen) {
+        if ((await testFn(value, ...args)) !== validWhen) {
           if (!Array.isArray(validationErrors[rule.field])) {
             validationErrors[rule.field] = [rule.message]
           } else {
@@ -63,7 +67,7 @@ class FormValidation extends PureComponent {
     this.setState({
       isValid,
       validationErrors,
-      validating: false,
+      validating: false
     })
 
     if (this.props.onValidated) {
@@ -75,22 +79,29 @@ class FormValidation extends PureComponent {
     return this.props.children({
       validationErrors: this.state.validationErrors,
       isValid: this.state.isValid,
-      validate: this.onValidate,
+      validate: this.onValidate
     })
   }
+}
+
+FormValidation.defaultProps = {
+  validateOnMount: true
 }
 
 FormValidation.propTypes = {
   children: PropTypes.func.isRequired,
   data: PropTypes.any,
+  validateOnMount: PropTypes.bool,
   onValidated: PropTypes.func,
-  validations: PropTypes.arrayOf(PropTypes.shape({
-    field: PropTypes.string.isRequired,
-    test: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-    args: PropTypes.array,
-    validWhen: PropTypes.any,
-    message: PropTypes.string.isRequired,
-  })),
+  validations: PropTypes.arrayOf(
+    PropTypes.shape({
+      field: PropTypes.string.isRequired,
+      test: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+      args: PropTypes.array,
+      validWhen: PropTypes.any,
+      message: PropTypes.string.isRequired
+    })
+  )
 }
 
 export default FormValidation
