@@ -40,6 +40,9 @@ SecurityConfiguration:
     passwordRequiresSymbol: boolean
     passwordMinimumLength: integer
     multifactorRequired: boolean
+    requireEmailAddressVerification: boolean
+    passwordHistoryEnabled: boolean
+    passwordHistoryCount: integer
     invitationExpirationSeconds: integer
     accessTokenExpirationSeconds: integer
     globalSecret: string
