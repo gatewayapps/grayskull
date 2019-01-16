@@ -94,7 +94,7 @@ export default class {{Name}}ServiceBase {
     return affectedCount > 0
   }
 
-  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: I{{Name}}, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance | null> {
+  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: Partial<I{{Name}}>, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

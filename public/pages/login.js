@@ -1,7 +1,7 @@
 import React from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-import Router from 'next/router'
+import { withRouter } from 'next/router'
 import ErrorMessage from '../components/ErrorMessage'
 import LoadingIndicator from '../components/LoadingIndicator'
 import LoginForm from '../components/LoginForm'
@@ -29,7 +29,14 @@ class LoginPage extends React.PureComponent {
   }
 
   onAuthenticated = () => {
-    Router.push({ pathname: '/authorize', query: this.props.query })
+    if (this.props.router.query.state) {
+      const parsedState = JSON.parse(atob(this.props.router.query.state))
+      if (parsedState) {
+        this.props.router.push(parsedState)
+        return
+      }
+    }
+    this.props.router.push('/home')
   }
 
   render() {
@@ -68,4 +75,4 @@ class LoginPage extends React.PureComponent {
   }
 }
 
-export default LoginPage
+export default withRouter(LoginPage)

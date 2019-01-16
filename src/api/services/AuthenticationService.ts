@@ -101,7 +101,6 @@ class AuthenticationService {
       fingerprint,
       userAccountId: user.userAccountId!,
       ipAddress,
-      expiresAt: moment().add(60 * 60, 'seconds').toDate(),
     })
 
     return {

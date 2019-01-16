@@ -53,13 +53,6 @@ input LoginArgs {
 	fingerprint: String!
 }
 
-input AuthorizeClientArgs {
-	authCode: String!
-	client_id: String!
-	allowedScopes: [String]
-	deniedScopes: [String]
-}
-
 input RegisterUserArgs {
 	emailAddress: String!
 	password: String!
@@ -165,6 +158,5 @@ type Mutation {
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
 	changePassword(data: ChangePasswordArgs!): Boolean 
 	login(data: LoginArgs!): LoginResponse 
-	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

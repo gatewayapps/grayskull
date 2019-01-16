@@ -53,15 +53,16 @@ export function decodeState(state: string | undefined): IAuthState | null {
 }
 
 export function setAuthCookies(res: Response, session: ISession) {
-  // res.cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, { httpOnly: true, maxAge: expiresIn, signed: true })
   res.cookie(SESSION_ID_COOKIE_NAME, session.sessionId!, { httpOnly: true, signed: true, expires: session.expiresAt })
 }
 
 export function getAuthCookies(req: Request) {
-  // const accessToken = req.signedCookies[ACCESS_TOKEN_COOKIE_NAME]
   const sessionId = req.signedCookies[SESSION_ID_COOKIE_NAME]
   return {
-    // accessToken,
     sessionId
   }
+}
+
+export function clearAuthCookies(res: Response) {
+  res.clearCookie(SESSION_ID_COOKIE_NAME)
 }

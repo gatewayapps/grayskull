@@ -76,7 +76,7 @@ export default class UserAccountServiceBase {
     return affectedCount > 0
   }
 
-  public async updateUserAccount(filter: IUserAccountUniqueFilter, data: IUserAccount, userContext?: IUserAccount, transaction?: Transaction): Promise<UserAccountInstance | null> {
+  public async updateUserAccount(filter: IUserAccountUniqueFilter, data: Partial<IUserAccount>, userContext?: IUserAccount, transaction?: Transaction): Promise<UserAccountInstance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

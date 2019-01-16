@@ -77,7 +77,7 @@ export default class ClientServiceBase {
     return affectedCount > 0
   }
 
-  public async updateClient(filter: IClientUniqueFilter, data: IClient, userContext?: IUserAccount, transaction?: Transaction): Promise<ClientInstance | null> {
+  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, userContext?: IUserAccount, transaction?: Transaction): Promise<ClientInstance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

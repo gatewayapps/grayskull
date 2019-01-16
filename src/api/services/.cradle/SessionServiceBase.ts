@@ -48,7 +48,7 @@ export default class SessionServiceBase {
     return affectedCount > 0
   }
 
-  public async updateSession(filter: ISessionUniqueFilter, data: ISession, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance | null> {
+  public async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

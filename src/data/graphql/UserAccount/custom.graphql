@@ -1,0 +1,10 @@
+type UserProfile {
+  firstName: String!
+  lastName: String!
+  profileImageUrl: String
+  permissions: Int!
+}
+
+type Query {
+  me: UserProfile
+}

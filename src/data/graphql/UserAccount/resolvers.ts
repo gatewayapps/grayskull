@@ -20,7 +20,10 @@ export default {
     userAccount: (obj, args, context, info) => {
       // Insert your userAccount implementation here
       throw new Error('userAccount is not implemented')
-    }
+    },
+    me: (obj, args, context, info) => {
+      return context.user
+    },
   },
   Mutation: {
     login: async (obj, args, context, info): Promise<ILoginResponse> => {
