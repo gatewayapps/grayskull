@@ -6,7 +6,7 @@ const ApolloEmitter = require('@gatewayapps/cradle-apollo-emitter')
 module.exports = new cradle.EmitterOptions('apollo', new ApolloEmitter({
   outputDirectory: './src/data/graphql/',
   outputType: 'typescript',
-  shouldOutputResolverFiles: false,
+  shouldOutputResolverFiles: true,
   shouldEmitModel: (model) => {
     return model.Meta !== undefined && model.Meta.topLevel
   },
@@ -15,7 +15,7 @@ module.exports = new cradle.EmitterOptions('apollo', new ApolloEmitter({
   },
   shouldTypeIncludeProperty: (model, propertyName, propertyType) => (!utils.isFieldSensitive(model, propertyName)),
   shouldTypeIncludeReference: (model, referenceName, referenceType) => (!utils.isFieldSensitive(model, referenceName)),
-  overwriteExisting: true,
+  overwriteExisting: false,
   verbose: true,
   onComplete: utils.lintAndPretty,
   registerCustomHelpers: utils.registerHandleBarHelpers
