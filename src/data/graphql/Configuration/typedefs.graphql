@@ -4,3 +4,31 @@ type Configuration {
 	Database: DatabaseConfiguration
 	Server: ServerConfiguration
 }
+
+input VerifyDatabaseConnectionArgs {
+	provider: String!
+	serverAddress: String!
+	serverPort: String!
+	databaseName: String!
+	adminUsername: String!
+	adminPassword: String!
+}
+
+
+type ConfigurationMeta {
+	count: Int!
+}
+
+
+
+
+
+type Query {
+	configurations(offset: Int, limit: Int, filter: ConfigurationFilter): [Configuration!]! 
+	configurationsMeta(filter: ConfigurationFilter): ConfigurationMeta 
+	configuration(where: ConfigurationUniqueFilter): Configuration 
+}
+
+type Mutation {
+	verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse 
+}
