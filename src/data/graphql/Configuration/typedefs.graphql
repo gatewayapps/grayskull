@@ -24,9 +24,7 @@ type ConfigurationMeta {
 
 
 type Query {
-	configurations(offset: Int, limit: Int, filter: ConfigurationFilter): [Configuration!]! 
-	configurationsMeta(filter: ConfigurationFilter): ConfigurationMeta 
-	configuration(where: ConfigurationUniqueFilter): Configuration 
+	configuration: Configuration 
 }
 
 type Mutation {

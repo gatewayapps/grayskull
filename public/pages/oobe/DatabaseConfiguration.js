@@ -7,7 +7,7 @@ import gql from 'graphql-tag'
 import { ApolloConsumer } from 'react-apollo'
 
 const VERIFY_DATABASE_CONNECTION = gql`
-  mutation VERIFY_DATABASE_CONNECTION($provider: string!, $serverAddress: string!, $serverPort: string!, $databaseName: string!, $adminUsername: string!, $adminPassword: string!) {
+  mutation VERIFY_DATABASE_CONNECTION($provider: String!, $serverAddress: String!, $serverPort: String!, $databaseName: String!, $adminUsername: String!, $adminPassword: String!) {
     verifyDatabaseConnection(
       data: {
         provider: $provider
@@ -17,7 +17,11 @@ const VERIFY_DATABASE_CONNECTION = gql`
         adminUsername: $adminUsername
         adminPassword: $adminPassword
       }
-    )
+    ) {
+      success
+      error
+      message
+    }
   }
 `
 
@@ -44,6 +48,11 @@ export class DatabaseConfiguration extends React.Component {
   handleChange = (e, validate) => {
     const data = this.props.data
     data[e.target.name] = e.target.value
+
+    if (['verifyingConnection', 'connectionVerified', 'connectionError'].includes(e.target.name) === false) {
+      data.connectionVerified = false
+    }
+
     this.props.onConfigurationChanged(data)
     if (validate) {
       validate()
@@ -72,7 +81,7 @@ export class DatabaseConfiguration extends React.Component {
       new FormValidationRule('serverPort', 'isNumeric', true, 'The database port must be a number'),
       new FormValidationRule('serverPort', 'isEmpty', false, 'A database port must be provided'),
       new FormValidationRule('databaseName', 'isEmpty', false, 'A database name is required'),
-      new FormValidationRule('connectionVerified', (val, comp) => val === comp, true, 'You must verify the connection', ['true'])
+      new FormValidationRule('connectionVerified', (val, comp) => val === comp, true, 'You must verify the connection', [true])
     ]
 
     return (
@@ -182,11 +191,22 @@ export class DatabaseConfiguration extends React.Component {
                     <div className="col-sm-12 col-md-3">
                       <button
                         className="btn btn-sm btn-success"
+                        disabled={this.props.data.verifyingConnection}
                         onClick={async () => {
-                          const { result } = await apolloClient.mutate({ mutation: VERIFY_DATABASE_CONNECTION, variables: { ...this.props.data } })
-                          //this.handleChange({ target: { name: 'connectionVerified', value: 'true' } }, validate)
+                          this.handleChange({ target: { name: 'verifyingConnection', value: true } }, validate)
+                          const { data } = await apolloClient.mutate({ mutation: VERIFY_DATABASE_CONNECTION, variables: { ...this.props.data } })
+                          const success = data.verifyDatabaseConnection.success
+                          this.handleChange({ target: { name: 'verifyingConnection', value: false } }, validate)
+                          this.handleChange({ target: { name: 'connectionVerified', value: success } }, validate)
+                          this.handleChange({ target: { name: 'connectionError', value: data.verifyDatabaseConnection.error } })
                         }}>
-                        Verify Connection
+                        {this.props.data.verifyingConnection ? (
+                          <span>
+                            <i className="fa fa-fw fa-spin fa-spinner" /> Verifying
+                          </span>
+                        ) : (
+                          'Verify Connection'
+                        )}
                       </button>
                     </div>
                     <div className="col-sm-12 col-md-9">
@@ -197,7 +217,7 @@ export class DatabaseConfiguration extends React.Component {
                         type="text"
                         className={`form-control ${validationErrors['connectionVerified'] ? 'is-invalid' : 'is-valid'}`}
                         name="connectionVerified"
-                        value={this.props.data.connectionVerified ? 'Verified' : 'Not Verified'}
+                        value={this.props.data.connectionVerified ? 'Verified' : this.props.data.connectionError || 'Not Verified'}
                         onChange={(e) => this.handleChange(e, validate)}
                         aria-describedby="connectionVerifiedHelpBlock"
                       />

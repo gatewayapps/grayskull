@@ -17,18 +17,18 @@ export default {
       }
       return null
     }
-  }),
-  Query: {
-    configuration: (obj, args, context, info) => {
-      return {
-        multifactorRequired: ConfigurationManager.Security.multifactorRequired,
-        passwordRequireLowercase: ConfigurationManager.Security.passwordRequireLowercase,
-        passwordRequireUppercase: ConfigurationManager.Security.passwordRequireUppercase,
-        passwordRequireNumber: ConfigurationManager.Security.passwordRequireNumber,
-        passwordRequireSymbol: ConfigurationManager.Security.passwordRequireSymbol,
-        passwordMinimumLength: ConfigurationManager.Security.passwordMinimumLength,
-        realmName: ConfigurationManager.General.realmName,
-      }
-    }
-  }
+  })
+  // Query: {
+  //   configuration: (obj, args, context, info) => {
+  //     return {
+  //       multifactorRequired: ConfigurationManager.Security.multifactorRequired,
+  //       passwordRequireLowercase: ConfigurationManager.Security.passwordRequireLowercase,
+  //       passwordRequireUppercase: ConfigurationManager.Security.passwordRequireUppercase,
+  //       passwordRequireNumber: ConfigurationManager.Security.passwordRequireNumber,
+  //       passwordRequireSymbol: ConfigurationManager.Security.passwordRequireSymbol,
+  //       passwordMinimumLength: ConfigurationManager.Security.passwordMinimumLength,
+  //       realmName: ConfigurationManager.General.realmName,
+  //     }
+  //   }
+  // }
 }
