@@ -1,3 +1,4 @@
+import FormValidationMessage from './FormValidationMessage'
 import React from 'react'
 export default class ValidatingInput extends React.PureComponent {
   state = {
@@ -7,15 +8,19 @@ export default class ValidatingInput extends React.PureComponent {
     const { name, validationErrors, ...props } = this.props
 
     return (
-      <input
-        id={name}
-        name={name}
-        onBlur={() => {
-          this.setState({ blurred: true })
-        }}
-        className={`form-control ${this.state.blurred && (validationErrors[name] ? 'is-invalid' : 'is-valid')}`}
-        {...props}
-      />
+      <div>
+        <input
+          id={name}
+          name={name}
+          onBlur={() => {
+            this.setState({ blurred: true })
+          }}
+          aria-describedby={`${name}HelpBlock`}
+          className={`form-control ${(this.state.blurred || this.props.value) && (validationErrors[name] ? 'is-invalid' : 'is-valid')}`}
+          {...props}
+        />
+        <FormValidationMessage id={`${name}HelpBlock`} validationErrors={validationErrors[name]} />
+      </div>
     )
   }
 }
