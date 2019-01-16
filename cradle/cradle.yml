@@ -2,6 +2,7 @@ Client: ./specs/Client.yml#Client
 EmailAddress: ./specs/EmailAddress.yml#EmailAddress
 LoginResponse: ./specs/LoginResponse.yml#LoginResponse
 RegisterUserResponse: ./specs/RegisterUserResponse.yml#RegisterUserResponse
+OperationResponse: ./specs/OperationResponse.yml#OperationResponse
 UserAccount: ./specs/UserAccount.yml#UserAccount
 UserClient: ./specs/UserClient.yml#UserClient
 Session: ./specs/Session.yml#Session
