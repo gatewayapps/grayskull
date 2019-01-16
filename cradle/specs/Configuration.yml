@@ -47,7 +47,7 @@ SecurityConfiguration:
 
 Configuration:
   meta:
-    topLevel: false
+    topLevel: true
   properties:
     Security:
       modelRef: SecurityConfiguration
@@ -57,4 +57,15 @@ Configuration:
       modelRef: DatabaseConfiguration
     Server:
       modelRef: ServerConfiguration
+  operations:
+    verifyDatabaseConnection:
+      returns: OperationResponse
+      arguments:
+        provider: string
+        serverAddress: string
+        serverPort: string
+        databaseName: string
+        adminUsername: string
+        adminPassword: string
+
 
