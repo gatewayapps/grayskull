@@ -1,5 +1,5 @@
 import { default as FormValidation, FormValidationRule } from '../../components/FormValidation'
-import FormValidationMessage from '../../components/FormValidationMessage'
+import ValidatingInput from '../../components/ValidatingInput'
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -45,18 +45,15 @@ export class ServerConfiguration extends React.Component {
                   Server Base URL
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="baseUrl"
+                  <ValidatingInput
+                    validationErrors={validationErrors}
                     autoFocus
                     autoComplete="off"
                     type="url"
-                    className={`form-control ${validationErrors['baseUrl'] ? 'is-invalid' : 'is-valid'}`}
                     name="baseUrl"
                     value={this.props.data.baseUrl}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="baseUrlHelpBlock"
                   />
-                  <FormValidationMessage id={'baseUrlHelpBlock'} validationErrors={validationErrors['baseUrl']} />
                 </div>
               </div>
               <div className="form-group row">
@@ -64,18 +61,15 @@ export class ServerConfiguration extends React.Component {
                   Realm Name
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="realmName"
+                  <ValidatingInput
+                    validationErrors={validationErrors}
                     autoFocus
                     autoComplete="off"
                     type="text"
-                    className={`form-control ${validationErrors['realmName'] ? 'is-invalid' : 'is-valid'}`}
                     name="realmName"
                     value={this.props.data.realmName}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="realmNameHelpBlock"
                   />
-                  <FormValidationMessage id={'realmNameHelpBlock'} validationErrors={validationErrors['realmName']} />
                 </div>
               </div>
             </div>

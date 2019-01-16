@@ -3,6 +3,23 @@ import { default as FormValidation, FormValidationRule } from '../../components/
 import FormValidationMessage from '../../components/FormValidationMessage'
 import React from 'react'
 import PropTypes from 'prop-types'
+import gql from 'graphql-tag'
+import { ApolloConsumer } from 'react-apollo'
+
+const VERIFY_DATABASE_CONNECTION = gql`
+  mutation VERIFY_DATABASE_CONNECTION($provider: string!, $serverAddress: string!, $serverPort: string!, $databaseName: string!, $adminUsername: string!, $adminPassword: string!) {
+    verifyDatabaseConnection(
+      data: {
+        provider: $provider
+        serverAddress: $serverAddress
+        serverPort: $serverPort
+        databaseName: $databaseName
+        adminUsername: $adminUsername
+        adminPassword: $adminPassword
+      }
+    )
+  }
+`
 
 export class DatabaseConfiguration extends React.Component {
   static propTypes = {
@@ -69,18 +86,14 @@ export class DatabaseConfiguration extends React.Component {
                   Database Provider
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="provider"
+                  <ValidatingInput
                     autoComplete="off"
-                    onBlur={(e) => {}}
                     type="hidden"
-                    className={`form-control ${validationErrors['provider'] ? 'is-invalid' : 'is-valid'}`}
+                    validationErrors={validationErrors}
                     name="provider"
                     value={this.props.data.provider}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="providerHelpBlock"
                   />
-                  <FormValidationMessage id={'providerHelpBlock'} validationErrors={validationErrors['provider']} />
                 </div>
               </div>
               <div className="form-group row">
@@ -96,10 +109,7 @@ export class DatabaseConfiguration extends React.Component {
                     name="serverAddress"
                     value={this.props.data.serverAddress}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="serverAddressHelpBlock"
                   />
-
-                  <FormValidationMessage id={'serverAddressHelpBlock'} validationErrors={validationErrors['serverAddress']} />
                 </div>
               </div>
               <div className="form-group row">
@@ -107,17 +117,14 @@ export class DatabaseConfiguration extends React.Component {
                   Server Port
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="serverPort"
+                  <ValidatingInput
                     autoComplete="off"
                     type="number"
-                    className={`form-control ${validationErrors['serverPort'] ? 'is-invalid' : 'is-valid'}`}
                     name="serverPort"
+                    validationErrors={validationErrors}
                     value={this.props.data.serverPort}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="serverPortHelpBlock"
                   />
-                  <FormValidationMessage id={'serverPortHelpBlock'} validationErrors={validationErrors['serverPort']} />
                 </div>
               </div>
 
@@ -126,18 +133,15 @@ export class DatabaseConfiguration extends React.Component {
                   Database Name
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="databaseName"
+                  <ValidatingInput
                     autoComplete="off"
                     type="text"
                     required
-                    className={`form-control ${validationErrors['databaseName'] ? 'is-invalid' : 'is-valid'}`}
+                    validationErrors={validationErrors}
                     name="databaseName"
                     value={this.props.data.databaseName}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="databaseNameHelpBlock"
                   />
-                  <FormValidationMessage id={'databaseNameHelpBlock'} validationErrors={validationErrors['databaseName']} />
                 </div>
               </div>
               <hr />
@@ -146,17 +150,14 @@ export class DatabaseConfiguration extends React.Component {
                   Admin Username
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="adminUsername"
+                  <ValidatingInput
+                    validationErrors={validationErrors}
                     autoComplete="nope"
                     type="text"
-                    className={`form-control ${validationErrors['adminUsername'] ? 'is-invalid' : 'is-valid'}`}
                     name="adminUsername"
                     value={this.props.data.adminUsername}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="adminUsernameHelpBlock"
                   />
-                  <FormValidationMessage id={'adminUsernameHelpBlock'} validationErrors={validationErrors['adminUsername']} />
                 </div>
               </div>
               <div className="form-group row">
@@ -164,45 +165,47 @@ export class DatabaseConfiguration extends React.Component {
                   Admin Password
                 </label>
                 <div className="col-sm-12 col-md-9">
-                  <input
-                    id="adminPassword"
+                  <ValidatingInput
+                    validationErrors={validationErrors}
                     autoComplete="new-password"
                     type="password"
-                    className={`form-control ${validationErrors['adminPassword'] ? 'is-invalid' : 'is-valid'}`}
                     name="adminPassword"
                     value={this.props.data.adminPassword}
                     onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="adminPasswordHelpBlock"
                   />
-                  <FormValidationMessage id={'adminPasswordHelpBlock'} validationErrors={validationErrors['adminPassword']} />
                 </div>
               </div>
               <hr />
-              <div className="form-group row">
-                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="btnVerifyConnection">
-                  <button
-                    className="btn btn-sm btn-outline-secondary"
-                    onClick={() => {
-                      this.handleChange({ target: { name: 'connectionVerified', value: 'true' } }, validate)
-                    }}>
-                    Click to Verify
-                  </button>
-                </label>
-                <div className="col-sm-12 col-md-9">
-                  <input
-                    id="connectionVerified"
-                    autoComplete="new-password"
-                    readOnly
-                    type="text"
-                    className={`form-control ${validationErrors['connectionVerified'] ? 'is-invalid' : 'is-valid'}`}
-                    name="connectionVerified"
-                    value={this.props.data.connectionVerified ? 'Verified' : 'Not Verified'}
-                    onChange={(e) => this.handleChange(e, validate)}
-                    aria-describedby="connectionVerifiedHelpBlock"
-                  />
-                  <FormValidationMessage id={'connectionVerifiedHelpBlock'} validationErrors={validationErrors['connectionVerified']} />
-                </div>
-              </div>
+              <ApolloConsumer>
+                {(apolloClient) => (
+                  <div className="form-group row">
+                    <div className="col-sm-12 col-md-3">
+                      <button
+                        className="btn btn-sm btn-success"
+                        onClick={async () => {
+                          const { result } = await apolloClient.mutate({ mutation: VERIFY_DATABASE_CONNECTION, variables: { ...this.props.data } })
+                          //this.handleChange({ target: { name: 'connectionVerified', value: 'true' } }, validate)
+                        }}>
+                        Verify Connection
+                      </button>
+                    </div>
+                    <div className="col-sm-12 col-md-9">
+                      <input
+                        id="connectionVerified"
+                        autoComplete="new-password"
+                        readOnly
+                        type="text"
+                        className={`form-control ${validationErrors['connectionVerified'] ? 'is-invalid' : 'is-valid'}`}
+                        name="connectionVerified"
+                        value={this.props.data.connectionVerified ? 'Verified' : 'Not Verified'}
+                        onChange={(e) => this.handleChange(e, validate)}
+                        aria-describedby="connectionVerifiedHelpBlock"
+                      />
+                      <FormValidationMessage id={'connectionVerifiedHelpBlock'} validationErrors={validationErrors['connectionVerified']} />
+                    </div>
+                  </div>
+                )}
+              </ApolloConsumer>
             </div>
           )}
         </FormValidation>
