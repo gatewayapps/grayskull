@@ -1,13 +1,9 @@
-import { existsSync } from 'fs'
-import { join } from 'path'
+import ConfigurationService from './api/services/ConfigurationService'
 import { RealmInstance } from './RealmInstance'
 
 export function startServerInstance() {
-  const CONFIG_FILE_PATH = '/config/grayskull.config.js'
-
-  const realmConfig = existsSync(CONFIG_FILE_PATH) ? require(CONFIG_FILE_PATH) : undefined
-
-  const realm = new RealmInstance(realmConfig)
+  const config = ConfigurationService.loadConfiguration()
+  const realm = new RealmInstance(config)
 }
 
 startServerInstance()
