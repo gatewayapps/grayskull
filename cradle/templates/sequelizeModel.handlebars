@@ -67,7 +67,7 @@ function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
   }
   return sequelize.define<{{Name}}Instance, I{{Name}}>('{{Name}}', attributes, {
     timestamps: true,
-    paranoid: true,
+    paranoid: {{#if Meta.destroy}}false{{else}}true{{/if}},
   })
 }
 

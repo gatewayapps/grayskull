@@ -50,11 +50,14 @@ input LoginArgs {
 	emailAddress: String!
 	password: String!
 	otpToken: String
-	sessionId: String!
+	fingerprint: String!
+}
+
+input AuthorizeClientArgs {
+	authCode: String!
 	client_id: String!
-	response_type: String!
-	redirect_uri: String!
-	state: String
+	allowedScopes: [String]
+	deniedScopes: [String]
 }
 
 input RegisterUserArgs {
@@ -162,5 +165,6 @@ type Mutation {
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
 	changePassword(data: ChangePasswordArgs!): Boolean 
 	login(data: LoginArgs!): LoginResponse 
+	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

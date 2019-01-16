@@ -8,13 +8,27 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<ISession> = {
     sessionId: {
       primaryKey: true,
+      defaultValue: Sequelize.UUIDV4,
+      type: Sequelize.UUID
+    },
+    fingerprint: {
       type: Sequelize.STRING
     },
-    refreshToken: {
-      type: Sequelize.STRING(1000)
+    userAccountId: {
+      type: Sequelize.UUID
+    },
+    name: {
+      allowNull: true,
+      type: Sequelize.STRING(100)
+    },
+    ipAddress: {
+      type: Sequelize.STRING(50)
     },
     lastUsedAt: {
       defaultValue: Sequelize.NOW,
+      type: Sequelize.DATE
+    },
+    expiresAt: {
       type: Sequelize.DATE
     },
     createdBy: {
@@ -32,19 +46,11 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
     updatedAt: {
       defaultValue: Sequelize.NOW,
       type: Sequelize.DATE
-    },
-    deletedBy: {
-      allowNull: true,
-      type: Sequelize.UUID
-    },
-    deletedAt: {
-      allowNull: true,
-      type: Sequelize.DATE
     }
   }
   return sequelize.define<SessionInstance, ISession>('Session', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: false
   })
 }
 

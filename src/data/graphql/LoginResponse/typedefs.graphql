@@ -2,5 +2,4 @@ type LoginResponse {
 	success: Boolean!
 	message: String
 	otpRequired: Boolean
-	redirectUrl: String
 }

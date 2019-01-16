@@ -24,7 +24,7 @@ export default class LoginController extends ControllerBase {
     }
   }
 
-  @route(HttpMethod.GET, '/auth')
+  @route(HttpMethod.GET, '/authorize')
   @query('client_id', 'response_type', 'redirect_uri')
   @queryMustEqual('response_type', 'code')
   public async renderLoginPage(req: Request, res: Response) {
@@ -32,7 +32,7 @@ export default class LoginController extends ControllerBase {
       res.status(400).send()
       return
     } else {
-      return this.next.render(req, res, '/login', req.query)
+      return this.next.render(req, res, '/authorize', req.query)
     }
   }
 
@@ -99,12 +99,12 @@ export default class LoginController extends ControllerBase {
         throw new Error('Session not found')
       }
 
-      // 2. Store sessionId and refreshToken to the database
-      const sessionId = `${accessToken.session_id}:${Date.now()}`
-      await SessionService.createSession({ sessionId, refreshToken: accessToken.refresh_token })
+      // // 2. Store sessionId and refreshToken to the database
+      // const sessionId = `${accessToken.session_id}:${Date.now()}`
+      // await SessionService.createSession({ sessionId, refreshToken: accessToken.refresh_token })
 
-      // 3. Set sessionId and accessToken cookies
-      setAuthCookies(res, sessionId, accessToken.access_token, accessToken.expires_in * 1000)
+      // // 3. Set sessionId and accessToken cookies
+      // setAuthCookies(res, sessionId, accessToken.access_token, accessToken.expires_in * 1000)
 
       // 4. Redirect to returnUrl or home page
       const state = decodeState(req.query.state)

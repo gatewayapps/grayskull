@@ -1,6 +1,7 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import { decrypt } from '@/utils/cipher'
 import { ClientInstance } from '@data/models/Client'
+import { ISession } from '@data/models/ISession'
 import { IUserAccount } from '@data/models/IUserAccount'
 import ClientService from '@services/ClientService'
 import bcrypt from 'bcrypt'
@@ -12,6 +13,7 @@ import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
 import MailService from './MailService'
+import SessionService from './SessionService'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -35,7 +37,7 @@ interface IAuthenticationCodeCacheResult {
 
 interface IAuthenticateUserResult {
   success: boolean
-  code?: string
+  session?: ISession
   message?: string
   otpRequired?: boolean
 }
@@ -56,25 +58,29 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
-  public async authenticateUser(emailAddress: string, password: string, sessionId: string, clientId: string, otpToken?: string): Promise<IAuthenticateUserResult> {
-    const existingUser = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress)
+  public async authenticateUser(emailAddress: string, password: string, fingerprint: string, ipAddress: string, otpToken?: string): Promise<IAuthenticateUserResult> {
+    // 1. Find the user account for the email address
+    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress)
 
-    if (!existingUser) {
+    if (!user) {
       throw new Error('Invalid email address/password combination')
     }
 
-    if (!existingUser.passwordHash || !existingUser.isActive) {
+    if (!user.passwordHash || !user.isActive) {
       throw new Error('Your account is not active. Contact your system administrator.')
     }
 
-    const passwordMatch = await bcrypt.compare(password, existingUser.passwordHash)
+    // 2. Verify the password matches
+    const passwordMatch = await bcrypt.compare(password, user.passwordHash)
     if (!passwordMatch) {
       throw new Error('Invalid email address/password combination')
     }
 
-    if (existingUser.otpEnabled && existingUser.otpSecret) {
-      const otpSecret = decrypt(existingUser.otpSecret)
+    // 3. Determine if the user requires a OTP to login
+    if (user.otpEnabled && user.otpSecret) {
+      const otpSecret = decrypt(user.otpSecret)
 
+      // 3a. Verify the OTP token
       if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken)) {
         const backupCode = this.localCache.get<string>(emailAddress)
 
@@ -90,15 +96,17 @@ class AuthenticationService {
       this.localCache.del(emailAddress)
     }
 
-    const userClient = await UserClientService.getUserClient({ userAccountId: existingUser.userAccountId!, client_id: clientId })
-    if (!userClient) {
-      throw new Error('You do not have access to login here. Contact your system administrator.')
-    }
+    // 4. Create a session for the user
+    const session = await SessionService.createSession({
+      fingerprint,
+      userAccountId: user.userAccountId!,
+      ipAddress,
+      expiresAt: moment().add(60 * 60, 'seconds').toDate(),
+    })
 
-    const authCode = this.generateAndCacheAuthorizationCode(existingUser, sessionId)
     return {
       success: true,
-      code: authCode
+      session,
     }
   }
 

@@ -135,12 +135,17 @@ class UserAccountService extends UserAccountServiceBase {
       await EmailAddressService.createEmailAddress(emailAddressData, user, trx)
 
       // 5. Create a UserClient for Grayskull
-      const userClientData: IUserClient = {
-        client_id: ConfigurationManager.General.grayskullClientId,
-        userAccountId: user.userAccountId!,
-        createdBy: user.userAccountId!,
+      const client = await ClientService.getClient({ client_id: ConfigurationManager.General.grayskullClientId }, trx)
+      if (client) {
+        const userClientData: IUserClient = {
+          client_id: client.client_id,
+          userAccountId: user.userAccountId!,
+          createdBy: user.userAccountId!,
+          allowedScopes: client.scopes,
+          deniedScopes: JSON.stringify([]),
+        }
+        await UserClientService.createUserClient(userClientData, user, trx)
       }
-      await UserClientService.createUserClient(userClientData, user, trx)
 
       // 6. Commit the transaction
       await trx.commit()

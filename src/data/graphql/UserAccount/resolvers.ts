@@ -1,8 +1,11 @@
+import { GrayskullError } from '@/GrayskullError'
+import { IAuthorizeClientResponse } from '@data/models/IAuthorizeClientResponse'
+import { ILoginResponse } from '@data/models/ILoginResponse'
+import { IRegisterUserResponse } from '@data/models/IRegisterUserResponse'
 import AuthenticationService from '@services/AuthenticationService'
 import EmailAddressService from '@services/EmailAddressService'
 import UserAccountService from '@services/UserAccountService'
-import { GrayskullError } from '@/GrayskullError'
-import { IRegisterUserResponse } from '@data/models/IRegisterUserResponse'
+import { setAuthCookies } from '@/utils/authentication'
 
 export default {
   Query: {
@@ -20,35 +23,24 @@ export default {
     }
   },
   Mutation: {
-    login: async (obj, args, context, info) => {
+    login: async (obj, args, context, info): Promise<ILoginResponse> => {
       const {
         emailAddress,
         password,
         otpToken,
-        sessionId,
-        client_id,
-        response_type,
-        redirect_uri,
+        fingerprint
       } = args.data
 
       try {
-        if (response_type !== 'code') {
-          throw new Error('Invalid login Request')
-        }
-        if (!await AuthenticationService.validateRedirectUri(client_id, redirect_uri)) {
-          throw new Error('Invalid login request')
-        } else if (!sessionId) {
+        if (!fingerprint) {
           throw new Error('Invalid login request')
         } else {
-          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, sessionId, client_id, otpToken)
-          if (authResult.success === true) {
-            const queryParts = [`code=${authResult.code}`]
-            if (args.data.state) {
-              queryParts.push(`state=${args.data.state}`)
-            }
+          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken)
+          if (authResult.session) {
+            setAuthCookies(context.res, authResult.session)
+
             return {
               success: true,
-              redirectUrl: `${redirect_uri}?${queryParts.join('&')}`
             }
           } else {
             return {

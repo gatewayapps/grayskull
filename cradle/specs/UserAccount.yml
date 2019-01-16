@@ -35,11 +35,7 @@ UserAccount:
         emailAddress: string
         password: string
         otpToken: string?
-        sessionId: string
-        client_id: string
-        response_type: string
-        redirect_uri: string
-        state: string?
+        fingerprint: string
     # Create User Account #
     registerUser:
       returns: RegisterUserResponse
@@ -62,11 +58,12 @@ UserAccount:
       arguments:
         secret: string
         token: string
-    # Reset Password #
+    # Send Backup Code #
     sendBackupCode:
       returns: boolean
       arguments:
         emailAddress: string
+    # Reset Password #
     resetPassword:
       returns: boolean
       arguments:

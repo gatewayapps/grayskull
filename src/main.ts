@@ -42,8 +42,8 @@ app.prepare().then(() => {
       console.log(error)
       return new Error('Internal server error')
     },
-    context: ({ req }) => {
-      return { user: req.user }
+    context: ({ req, res }) => {
+      return { req, res, user: req.user }
     }
   })
   apollo.applyMiddleware({ app: server, path: '/api/graphql' })

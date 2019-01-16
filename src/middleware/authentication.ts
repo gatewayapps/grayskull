@@ -30,55 +30,55 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
     return
   }
 
-  const { accessToken, sessionId } = getAuthCookies(req)
+  // const { accessToken, sessionId } = getAuthCookies(req)
 
-  if (!sessionId || !accessToken) {
-    next()
-    return
-  }
+  // if (!sessionId || !accessToken) {
+  //   next()
+  //   return
+  // }
 
-  let accessTokenExpiresIn = 0
-  let decodedToken: any
-  let userAccount: UserAccountInstance | null = null
+  // let accessTokenExpiresIn = 0
+  // let decodedToken: any
+  // let userAccount: UserAccountInstance | null = null
 
-  if (accessToken) {
-    try {
-      const decoded = jwt.verify(accessToken, ConfigurationManager.Security.globalSecret)
-      if (typeof decoded === 'object') {
-        decodedToken = decoded
-        if (typeof decodedToken.exp === 'number') {
-          accessTokenExpiresIn = decodedToken.exp - Date.now() / 1000
-        }
-      }
-    } catch (err) {
-      // Any error other than Token Expired then return not authorized
-      if (err.name !== 'TokenExpiredError') {
-        console.error('Token failed to verify', accessToken)
-        console.error(err)
-        next()
-        return
-      }
-    }
-  }
+  // if (accessToken) {
+  //   try {
+  //     const decoded = jwt.verify(accessToken, ConfigurationManager.Security.globalSecret)
+  //     if (typeof decoded === 'object') {
+  //       decodedToken = decoded
+  //       if (typeof decodedToken.exp === 'number') {
+  //         accessTokenExpiresIn = decodedToken.exp - Date.now() / 1000
+  //       }
+  //     }
+  //   } catch (err) {
+  //     // Any error other than Token Expired then return not authorized
+  //     if (err.name !== 'TokenExpiredError') {
+  //       console.error('Token failed to verify', accessToken)
+  //       console.error(err)
+  //       next()
+  //       return
+  //     }
+  //   }
+  // }
 
-  if (!decodedToken || accessTokenExpiresIn <= ACCESS_TOKEN_EXPIRATION_WINDOW) {
-    const refreshAccessTokenResult = await refreshAccessToken(sessionId)
-    if (refreshAccessTokenResult) {
-      setAuthCookies(res, sessionId, refreshAccessTokenResult.access_token, refreshAccessTokenResult.expires_in)
-      decodedToken = jwt.decode(refreshAccessTokenResult.access_token)
-    }
-  }
+  // if (!decodedToken || accessTokenExpiresIn <= ACCESS_TOKEN_EXPIRATION_WINDOW) {
+  //   const refreshAccessTokenResult = await refreshAccessToken(sessionId)
+  //   if (refreshAccessTokenResult) {
+  //     setAuthCookies(res, sessionId, refreshAccessTokenResult.expires_in)
+  //     decodedToken = jwt.decode(refreshAccessTokenResult.access_token)
+  //   }
+  // }
 
-  if (decodedToken) {
-    userAccount = await UserAccountService.getUserAccount({ userAccountId: decodedToken.userAccountId })
-  }
+  // if (decodedToken) {
+  //   userAccount = await UserAccountService.getUserAccount({ userAccountId: decodedToken.userAccountId })
+  // }
 
-  if (!userAccount) {
-    next()
-    return
-  }
+  // if (!userAccount) {
+  //   next()
+  //   return
+  // }
 
-  req.user = userAccount
+  // req.user = userAccount
 
   next()
   return
@@ -96,7 +96,8 @@ async function refreshAccessToken(sessionId): Promise<IRefreshAccessTokenResult 
       ConfigurationManager.General.grayskullClientId,
       ConfigurationManager.Security.globalSecret,
       undefined,
-      session.refreshToken)
+      // session.refreshToken
+    )
 
     if (!atResult.access_token || !atResult.refresh_token) {
       return null
