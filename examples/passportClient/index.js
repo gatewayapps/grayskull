@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 passport.use(
   new OAuth2Strategy(
     {
-      authorizationURL: `${config.authServerBaseUrl}/auth`,
+      authorizationURL: `${config.authServerBaseUrl}/authorize`,
       tokenURL: `${config.authServerBaseUrl}/access_token`,
       clientID: config.clientId,
       clientSecret: config.secret,

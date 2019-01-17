@@ -1,10 +1,12 @@
 import gql from 'graphql-tag'
+import { withRouter } from 'next/router'
 import React, { PureComponent } from 'react'
 import { Mutation, Query } from 'react-apollo'
-import Primary from '../../layouts/primary'
-import LoadingIndicator from '../../components/LoadingIndicator'
-import MultiFactorSetup from '../../components/MultiFactorSetup'
-import RegistrationForm from '../../components/RegistrationForm'
+import Primary from '../layouts/primary'
+import LoadingIndicator from '../components/LoadingIndicator'
+import MultiFactorSetup from '../components/MultiFactorSetup'
+import RegistrationForm from '../components/RegistrationForm'
+import { parseRoutingState } from '../utils/routing'
 
 const RegistrationSteps = {
   UserData: 1,
@@ -34,14 +36,7 @@ const REGISTER_USER_MUTATION = gql`
   }
 `
 
-class Register extends PureComponent {
-  static getInitialProps = async ({ req, query, res }) => {
-    return {
-      query,
-      ...res.locals
-    }
-  }
-
+class RegisterPage extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
@@ -113,7 +108,15 @@ class Register extends PureComponent {
         const { data } = await registerUser()
         if (data && data.registerUser) {
           if (data.registerUser.success) {
-            window.location.replace('/home')
+            if (this.props.router.query.state) {
+              const parsedState = parseRoutingState(this.props.router.query.state)
+              console.log(parsedState)
+              if (parsedState) {
+                this.props.router.push(parsedState)
+                return
+              }
+            }
+            this.props.router.push('/home')
           } else {
             this.setState({ error: data.registerUser.error })
           }
@@ -194,4 +197,4 @@ class Register extends PureComponent {
   }
 }
 
-export default Register
+export default withRouter(RegisterPage)

@@ -5,7 +5,7 @@ const fetch = require('isomorphic-fetch')
 const ACCESS_TOKEN_COOKIE_NAME = 'access_token'
 const REFRESH_TOKEN_COOKIE_NAME = 'refresh_token'
 
-exports.requireAuth = async function(req, res, next) {
+exports.requireAuth = async function (req, res, next) {
   if (req.cookies[ACCESS_TOKEN_COOKIE_NAME]) {
     try {
       const decoded = jwt.verify(req.cookies[ACCESS_TOKEN_COOKIE_NAME], config.secret)
@@ -56,7 +56,7 @@ exports.requireAuth = async function(req, res, next) {
   return
 }
 
-exports.completeSignin = async function(req, res) {
+exports.completeSignin = async function (req, res) {
   const reqOpts = {
     method: 'POST',
     headers: {
@@ -108,6 +108,6 @@ function redirectToLogin(res, returnPath) {
   }
   const state = Buffer.from(JSON.stringify(stateObj), 'utf8').toString('base64')
   const query = [`client_id=${config.clientId}`, 'response_type=code', `redirect_uri=${encodeURIComponent(`${config.clientBaseUrl}/signin`)}`, `state=${state}`]
-  res.redirect(`${config.authServerBaseUrl}/auth?${query.join('&')}`)
+  res.redirect(`${config.authServerBaseUrl}/authorize?${query.join('&')}`)
   return
 }

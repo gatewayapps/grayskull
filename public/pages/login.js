@@ -2,6 +2,7 @@ import React from 'react'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
+import BackgroundCover from '../components/BackgroundCover'
 import ErrorMessage from '../components/ErrorMessage'
 import LoadingIndicator from '../components/LoadingIndicator'
 import LoginForm from '../components/LoginForm'
@@ -48,20 +49,14 @@ class LoginPage extends React.PureComponent {
               return <div>No client found</div>
             } else {
               return (
-                <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ flex: 1 }} />
-                  <div className='container'>
-                    <div className='row'>
-                      <div className='col col-md-8 offset-md-2'>
-                        <LoginForm
-                          client={data.client}
-                          onAuthenticated={this.onAuthenticated}
-                        />
-                      </div>
-                    </div>
+                <BackgroundCover>
+                  <div className='px-3'>
+                    <LoginForm
+                      client={data.client}
+                      onAuthenticated={this.onAuthenticated}
+                    />
                   </div>
-                  <div style={{ flex: 1 }} />
-                </div>
+                </BackgroundCover>
               )
             }
           }}

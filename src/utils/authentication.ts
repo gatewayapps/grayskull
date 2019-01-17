@@ -29,7 +29,7 @@ export function generateLoginUrl(protocol: string, hostname: string | undefined,
     `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General.fallbackUrl}/signin`)}`,
     `state=${state}`
   ]
-  return `/auth?${query.join('&')}`
+  return `/authorize?${query.join('&')}`
 }
 
 export function generateState(returnPath: string): string {

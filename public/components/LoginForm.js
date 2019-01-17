@@ -1,4 +1,6 @@
 import gql from 'graphql-tag'
+import Link from 'next/link'
+import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Mutation } from 'react-apollo'
@@ -103,6 +105,17 @@ class LoginForm extends PureComponent {
                           <label htmlFor='password'>Password:</label>
                           <input type='password' className='form-control' name='password' value={this.state.password} onChange={this.handleChange} />
                         </div>
+                        <div>
+                          Need an account?
+                          <Link href={{ pathname: '/register', query: this.props.router.query }}>
+                            <a className='ml-2'>Create one!</a>
+                          </Link>
+                        </div>
+                        <div className='mt-3'>
+                          <Link href='/resetPassword'>
+                            <a>Forgot Password</a>
+                          </Link>
+                        </div>
                       </>
                     )}
                     {this.state.otpRequired && (
@@ -125,11 +138,6 @@ class LoginForm extends PureComponent {
                 </div>
               </div>
               <div className='card-footer'>
-                <div className='btn-toolbar float-left'>
-                  <a href='/resetPassword' className='btn btn-link'>
-                    Forgot Password
-                  </a>
-                </div>
                 <div className='btn-toolbar float-right'>
                   <button type='submit' className='btn btn-outline-info' disabled={loading} onClick={() => this.attemptLogin(login)}>
                     <i className='fal fa-sign-in' /> Login
@@ -153,4 +161,4 @@ LoginForm.propTypes = {
   onAuthenticated: PropTypes.func.isRequired
 }
 
-export default LoginForm
+export default withRouter(LoginForm)
