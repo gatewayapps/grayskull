@@ -146,12 +146,12 @@ class Register extends PureComponent {
                     onSubmit={(e) => {
                       e.preventDefault()
                     }}>
-                    <div className="container pt-4">
+                    <div className="container" style={{ height: '100vh' }}>
                       <div className="row">
                         <div className="col col-md-8 offset-md-2">
-                          <div className="card">
+                          <div className="card m-3" style={{ maxHeight: '95vh' }}>
                             <div className="card-header">Register for {serverConfiguration.realmName}</div>
-                            <div className="card-body">
+                            <div className="card-body" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
                               {error && <div className="alert alert-danger">{error.message}</div>}
                               {this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
                               {this.state.step === RegistrationSteps.UserData && (
