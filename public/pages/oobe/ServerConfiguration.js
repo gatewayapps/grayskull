@@ -63,7 +63,6 @@ export class ServerConfiguration extends React.Component {
                 <div className="col-sm-12 col-md-9">
                   <ValidatingInput
                     validationErrors={validationErrors}
-                    autoFocus
                     autoComplete="off"
                     type="text"
                     name="realmName"

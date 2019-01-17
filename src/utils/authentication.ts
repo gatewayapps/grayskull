@@ -20,14 +20,12 @@ export function generateLoginUrl(protocol: string, hostname: string | undefined,
     state = generateState(options.returnUrl || '/')
   }
 
-  hostname = hostname || `localhost:${ConfigurationManager.General.port}`
+  const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
+  const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
 
-  const query = [
-    `client_id=${ConfigurationManager.General.grayskullClientId}`,
-    `response_type=code`,
-    `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General.fallbackUrl}/signin`)}`,
-    `state=${state}`
-  ]
+  hostname = hostname || `localhost${IS_DEVELOPMENT ? ':3000' : ''}`
+
+  const query = [`client_id=grayskull`, `response_type=code`, `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General!.baseUrl}/signin`)}`, `state=${state}`]
   return `/auth?${query.join('&')}`
 }
 

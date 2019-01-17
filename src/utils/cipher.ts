@@ -6,7 +6,7 @@ const IV_LENGTH: number = 16
 const KEY_LENGTH: number = 32
 
 function getKey(): string {
-  return ConfigurationManager.Security.globalSecret.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')
+  return ConfigurationManager.Security!.globalSecret.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')
 }
 
 export function encrypt(value: string): string {

@@ -8,23 +8,45 @@ import UserClientFactory from './models/UserClient'
 import SessionFactory from './models/Session'
 import ConfigurationFactory from './models/Configuration'
 
-const sequelize = new Sequelize(ConfigurationManager.General.databaseConnectionString)
+let db
+export function initializeDatabase() {
+  const config = ConfigurationManager.CurrentConfiguration
+  if (config && config.Database) {
+    const dbConfig = config.Database
+    const { databaseName, adminUsername, adminPassword, provider, serverAddress, serverPort } = dbConfig!
 
-const db = {
-  sequelize,
-  Sequelize,
-  Client: ClientFactory(sequelize),
-  EmailAddress: EmailAddressFactory(sequelize),
-  UserAccount: UserAccountFactory(sequelize),
-  UserClient: UserClientFactory(sequelize),
-  Session: SessionFactory(sequelize),
-  Configuration: ConfigurationFactory(sequelize)
+    const sequelize = new Sequelize(databaseName, adminUsername, adminPassword, {
+      port: serverPort,
+      host: serverAddress,
+      dialect: provider,
+      dialectOptions: {
+        poolIdleTimeout: 5000
+      }
+    })
+
+    db = {
+      sequelize,
+      Sequelize,
+      Client: ClientFactory(sequelize),
+      EmailAddress: EmailAddressFactory(sequelize),
+      UserAccount: UserAccountFactory(sequelize),
+      UserClient: UserClientFactory(sequelize),
+      Session: SessionFactory(sequelize),
+      Configuration: ConfigurationFactory(sequelize)
+    }
+
+    Object.values(db).forEach((model: any) => {
+      if (model.associate) {
+        model.associate(db)
+      }
+    })
+  }
 }
 
-Object.values(db).forEach((model: any) => {
-  if (model.associate) {
-    model.associate(db)
-  }
-})
+initializeDatabase()
+
+export function getContext() {
+  return db
+}
 
 export default db

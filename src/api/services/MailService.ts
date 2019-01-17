@@ -1,15 +1,15 @@
-import ConfigurationManager from '@/config/ConfigurationManager'
 import email from 'emailjs'
+import ConfigurationManager from '@/config/ConfigurationManager'
 
 const server = email.server.connect(ConfigurationManager.Mail)
 
 class MailService {
-  public sendMail(to: string, subject: string, body: string, from: string): Promise<object> {
+  public sendMail(to: string, subject: string, body: string): Promise<object> {
     return new Promise((resolve, reject) => {
       server.send(
         {
           to,
-          from,
+          from: ConfigurationManager.Mail!.fromAddress,
           subject,
           text: body,
           attachment: [{ data: `<html><body>${body.replace(/\n/g, '<br />')}</body></html>`, alternative: true }]

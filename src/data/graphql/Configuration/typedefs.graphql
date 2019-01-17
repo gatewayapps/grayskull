@@ -14,6 +14,45 @@ input VerifyDatabaseConnectionArgs {
 	adminPassword: String!
 }
 
+input SecurityConfigurationInput {
+	passwordRequiresLowercase: Boolean!
+	passwordRequiresUppercase: Boolean!
+	passwordRequiresNumber: Boolean!
+	passwordRequiresSymbol: Boolean!
+	passwordMinimumLength: Int!
+	multifactorRequired: Boolean!
+	accessTokenExpirationSeconds: Int!
+}
+
+input MailConfigurationInput {
+	serverAddress: String!
+	username: String!
+	password: String!
+	port: Int!
+	fromAddress: String!
+}
+
+input DatabaseConfigurationInput {
+	provider: String!
+	adminUsername: String!
+	adminPassword: String!
+	serverAddress: String!
+	serverPort: Int!
+	databaseName: String!
+}
+
+input ServerConfigurationInput {
+	baseUrl: String!
+	realmName: String!
+}
+
+input SaveConfigurationArgs {
+	Security: SecurityConfigurationInput
+	Mail: MailConfigurationInput
+	Database: DatabaseConfigurationInput
+	Server: ServerConfigurationInput
+}
+
 
 type ConfigurationMeta {
 	count: Int!
@@ -29,4 +68,5 @@ type Query {
 
 type Mutation {
 	verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse 
+	saveConfiguration(data: SaveConfigurationArgs!): OperationResponse 
 }

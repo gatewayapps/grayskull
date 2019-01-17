@@ -1,6 +1,6 @@
 import { IUserAccountMeta, IUserAccountFilter, IUserAccountUniqueFilter } from '@/interfaces/graphql/IUserAccount'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
+import { getContext } from '@data/context'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
 import { AnyWhereOptions, Transaction } from 'sequelize'
@@ -8,7 +8,7 @@ import { AnyWhereOptions, Transaction } from 'sequelize'
 export default class UserAccountServiceBase {
   public async userAccountsMeta(filter?: IUserAccountFilter, transaction?: Transaction): Promise<IUserAccountMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.UserAccount.count({ where, transaction })
+    const count = await getContext().UserAccount.count({ where, transaction })
     return {
       count
     }
@@ -16,7 +16,7 @@ export default class UserAccountServiceBase {
 
   public async getUserAccounts(filter?: IUserAccountFilter, transaction?: Transaction): Promise<UserAccountInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.UserAccount.findAll({
+    return await getContext().UserAccount.findAll({
       where,
       attributes: {
         exclude: ['passwordHash', 'otpSecret']
@@ -28,7 +28,7 @@ export default class UserAccountServiceBase {
 
   public async getUserAccountsWithSensitiveData(filter?: IUserAccountFilter, transaction?: Transaction): Promise<UserAccountInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.UserAccount.findAll({
+    return await getContext().UserAccount.findAll({
       where,
       raw: true,
       transaction
@@ -36,7 +36,7 @@ export default class UserAccountServiceBase {
   }
 
   public async getUserAccount(filter: IUserAccountUniqueFilter, transaction?: Transaction): Promise<UserAccountInstance | null> {
-    return await db.UserAccount.findOne({
+    return await getContext().UserAccount.findOne({
       where: filter,
       attributes: {
         exclude: ['passwordHash', 'otpSecret']
@@ -47,7 +47,7 @@ export default class UserAccountServiceBase {
   }
 
   public async getUserAccountWithSensitiveData(filter: IUserAccountUniqueFilter, transaction?: Transaction): Promise<UserAccountInstance | null> {
-    return await db.UserAccount.findOne({
+    return await getContext().UserAccount.findOne({
       where: filter,
       raw: true,
       transaction
@@ -59,7 +59,7 @@ export default class UserAccountServiceBase {
       data.createdBy = userContext.userAccountId
       data.updatedBy = userContext.userAccountId
     }
-    return await db.UserAccount.create(data, { returning: true, raw: true, transaction })
+    return await getContext().UserAccount.create(data, { returning: true, raw: true, transaction })
   }
 
   public async deleteUserAccount(filter: IUserAccountUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
@@ -69,7 +69,7 @@ export default class UserAccountServiceBase {
     if (userContext) {
       data.deletedBy = userContext.userAccountId
     }
-    const [affectedCount] = await db.UserAccount.update(data, {
+    const [affectedCount] = await getContext().UserAccount.update(data, {
       where: filter as AnyWhereOptions,
       transaction
     })
@@ -80,10 +80,12 @@ export default class UserAccountServiceBase {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }
-    return await db.UserAccount.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
-      transaction
-    }).then(() => this.getUserAccount(filter))
+    return await getContext()
+      .UserAccount.update(data, {
+        where: filter as AnyWhereOptions,
+        returning: true,
+        transaction
+      })
+      .then(() => this.getUserAccount(filter))
   }
 }

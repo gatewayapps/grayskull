@@ -4,4 +4,5 @@ export interface IMailConfiguration {
   password: string
   sslEnabled: boolean
   port: number
+  fromAddress: string
 }

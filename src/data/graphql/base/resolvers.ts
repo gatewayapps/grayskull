@@ -17,18 +17,20 @@ export default {
       }
       return null
     }
-  })
-  // Query: {
-  //   configuration: (obj, args, context, info) => {
-  //     return {
-  //       multifactorRequired: ConfigurationManager.Security.multifactorRequired,
-  //       passwordRequireLowercase: ConfigurationManager.Security.passwordRequireLowercase,
-  //       passwordRequireUppercase: ConfigurationManager.Security.passwordRequireUppercase,
-  //       passwordRequireNumber: ConfigurationManager.Security.passwordRequireNumber,
-  //       passwordRequireSymbol: ConfigurationManager.Security.passwordRequireSymbol,
-  //       passwordMinimumLength: ConfigurationManager.Security.passwordMinimumLength,
-  //       realmName: ConfigurationManager.General.realmName,
-  //     }
-  //   }
-  // }
+  }),
+  Query: {
+    securityConfiguration: (obj, args, context, info) => {
+      return {
+        multifactorRequired: ConfigurationManager.Security!.multifactorRequired,
+        passwordRequiresLowercase: ConfigurationManager.Security!.passwordRequiresLowercase,
+        passwordRequiresUppercase: ConfigurationManager.Security!.passwordRequiresUppercase,
+        passwordRequiresNumber: ConfigurationManager.Security!.passwordRequiresNumber,
+        passwordRequiresSymbol: ConfigurationManager.Security!.passwordRequiresSymbol,
+        passwordMinimumLength: ConfigurationManager.Security!.passwordMinimumLength
+      }
+    },
+    serverConfiguration: (obj, args, context, info) => {
+      return ConfigurationManager.General
+    }
+  }
 }

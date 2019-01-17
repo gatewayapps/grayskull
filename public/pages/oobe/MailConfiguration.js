@@ -32,9 +32,11 @@ export class MailConfiguration extends React.Component {
 
   render() {
     const validations = [
-      new FormValidationRule('baseUrl', 'isEmpty', false, 'Server Base URL is required'),
-      new FormValidationRule('baseUrl', 'isURL', true, 'Server Base URL must be a valid URL'),
-      new FormValidationRule('realmName', 'isEmpty', false, 'Realm Name is required')
+      new FormValidationRule('serverAddress', 'isEmpty', false, 'Server Address is required'),
+      new FormValidationRule('serverAddress', 'isURL', true, 'Server Address must be a valid URL'),
+      new FormValidationRule('port', 'isEmpty', false, 'SMTP Port is required'),
+      new FormValidationRule('fromAddress', 'isEmpty', false, 'From Address is required'),
+      new FormValidationRule('fromAddress', 'isEmail', true, 'From Address must be a valid email address')
     ]
 
     return (
@@ -42,10 +44,10 @@ export class MailConfiguration extends React.Component {
         <FormValidation validations={validations} data={this.props.data} onValidated={this.onValidated}>
           {({ validate, validationErrors }) => (
             <div>
-              <h5>Server Configuration</h5>
+              <h5>Mail Configuration</h5>
               <div className="form-group row">
-                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="baseUrl">
-                  Server Base URL
+                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="serverAddress">
+                  Mail Server Address
                 </label>
                 <div className="col-sm-12 col-md-9">
                   <ValidatingInput
@@ -53,24 +55,70 @@ export class MailConfiguration extends React.Component {
                     autoFocus
                     autoComplete="off"
                     type="url"
-                    name="baseUrl"
-                    value={this.props.data.baseUrl}
+                    name="serverAddress"
+                    value={this.props.data.serverAddress}
                     onChange={(e) => this.handleChange(e, validate)}
                   />
                 </div>
               </div>
               <div className="form-group row">
-                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="realmName">
-                  Realm Name
+                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="port">
+                  SMTP Port
                 </label>
                 <div className="col-sm-12 col-md-9">
                   <ValidatingInput
                     validationErrors={validationErrors}
-                    autoFocus
                     autoComplete="off"
-                    type="text"
-                    name="realmName"
-                    value={this.props.data.realmName}
+                    type="number"
+                    name="port"
+                    value={this.props.data.port}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="username">
+                  Username
+                </label>
+                <div className="col-sm-12 col-md-9">
+                  <ValidatingInput
+                    validationErrors={validationErrors}
+                    autoComplete="new-password"
+                    type="number"
+                    name="username"
+                    placeholder="Optional"
+                    value={this.props.data.username}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="password">
+                  Password
+                </label>
+                <div className="col-sm-12 col-md-9">
+                  <ValidatingInput
+                    validationErrors={validationErrors}
+                    autoComplete="new-password"
+                    type="password"
+                    name="password"
+                    placeholder="Optional"
+                    value={this.props.data.password}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+                </div>
+              </div>
+              <div className="form-group row">
+                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="fromAddress">
+                  From Address
+                </label>
+                <div className="col-sm-12 col-md-9">
+                  <ValidatingInput
+                    validationErrors={validationErrors}
+                    autoComplete="off"
+                    type="email"
+                    name="fromAddress"
+                    value={this.props.data.fromAddress}
                     onChange={(e) => this.handleChange(e, validate)}
                   />
                 </div>

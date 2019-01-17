@@ -5,9 +5,9 @@ import jwt from 'jsonwebtoken'
 import { generateLoginUrl, setAuthCookies, getAuthCookies } from '../utils/authentication'
 import { UserAccountInstance } from '@data/models/UserAccount'
 import { IUserAccount } from '@data/models/IUserAccount'
-import UserAccountService from '@services/UserAccountService';
-import SessionService from '@services/SessionService';
-import AuthenticationService from '@services/AuthenticationService';
+import UserAccountService from '@services/UserAccountService'
+import SessionService from '@services/SessionService'
+import AuthenticationService from '@services/AuthenticationService'
 
 const ACCESS_TOKEN_EXPIRATION_WINDOW = 5 * 60
 
@@ -43,7 +43,7 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
 
   if (accessToken) {
     try {
-      const decoded = jwt.verify(accessToken, ConfigurationManager.Security.globalSecret)
+      const decoded = jwt.verify(accessToken, ConfigurationManager.Security!.globalSecret)
       if (typeof decoded === 'object') {
         decodedToken = decoded
         if (typeof decodedToken.exp === 'number') {
@@ -91,12 +91,7 @@ async function refreshAccessToken(sessionId): Promise<IRefreshAccessTokenResult 
       return null
     }
 
-    const atResult = await AuthenticationService.getAccessToken(
-      'refresh_token',
-      ConfigurationManager.General.grayskullClientId,
-      ConfigurationManager.Security.globalSecret,
-      undefined,
-      session.refreshToken)
+    const atResult = await AuthenticationService.getAccessToken('refresh_token', 'grayskull', ConfigurationManager.Security!.globalSecret, undefined, session.refreshToken)
 
     if (!atResult.access_token || !atResult.refresh_token) {
       return null

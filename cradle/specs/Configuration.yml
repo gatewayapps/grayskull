@@ -25,6 +25,7 @@ MailConfiguration:
     password: string
     sslEnabled: boolean
     port: integer
+    fromAddress: string
 
 SecurityConfiguration:
   meta:
@@ -70,5 +71,12 @@ Configuration:
         databaseName: string
         adminUsername: string
         adminPassword: string
+    saveConfiguration:
+      returns: OperationResponse
+      arguments:
+        Security: 
+        Mail: 
+        Database: 
+        Server: 
 
 

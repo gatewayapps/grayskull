@@ -22,7 +22,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING(500)
     },
     secret: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING(500)
     },
     baseUrl: {
       type: Sequelize.STRING

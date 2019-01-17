@@ -1,9 +1,9 @@
-import ConfigurationService from './api/services/ConfigurationService'
 import { RealmInstance } from './RealmInstance'
+import { default as ConfigurationManager, loadConfigurationFromDisk } from './config/ConfigurationManager'
 
 export function startServerInstance() {
-  const config = ConfigurationService.loadConfiguration()
-  const realm = new RealmInstance(config)
+  loadConfigurationFromDisk()
+  const realm = new RealmInstance(ConfigurationManager.CurrentConfiguration)
 }
 
 startServerInstance()

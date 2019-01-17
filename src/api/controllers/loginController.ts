@@ -88,12 +88,7 @@ export default class LoginController extends ControllerBase {
   public async getSignin(req: Request, res: Response) {
     try {
       // 1. Get accessToken via AuthenticationService
-      const accessToken = await AuthenticationService.getAccessToken(
-        'authorization_code',
-        ConfigurationManager.General.grayskullClientId,
-        ConfigurationManager.Security.globalSecret,
-        req.query.code
-      )
+      const accessToken = await AuthenticationService.getAccessToken('authorization_code', 'grayskull', ConfigurationManager.Security!.globalSecret, req.query.code)
 
       if (!accessToken.session_id) {
         throw new Error('Session not found')
