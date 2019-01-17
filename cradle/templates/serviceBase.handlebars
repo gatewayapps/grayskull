@@ -1,6 +1,6 @@
 import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '@/interfaces/graphql/I{{Name}}'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
+import {getContext} from '@data/context'
 import { I{{Name}} } from '@data/models/I{{Name}}'
 {{#ifNotEquals Name 'UserAccount'}}
 import { IUserAccount } from '@data/models/IUserAccount'
@@ -11,7 +11,7 @@ import { AnyWhereOptions, Transaction } from 'sequelize'
 export default class {{Name}}ServiceBase {
   public async {{toCamelCase (pluralize Name)}}Meta(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<I{{Name}}Meta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.{{Name}}.count({ where, transaction })
+    const count = await getContext().{{Name}}.count({ where, transaction })
     return {
       count
     }
@@ -19,7 +19,7 @@ export default class {{Name}}ServiceBase {
 
   public async get{{pluralize Name}}(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.{{Name}}.findAll({
+    return await getContext().{{Name}}.findAll({
       where,
       {{#if Meta.sensitive}}
       attributes: {
@@ -34,7 +34,7 @@ export default class {{Name}}ServiceBase {
   {{#if Meta.sensitive}}
   public async get{{pluralize Name}}WithSensitiveData(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.{{Name}}.findAll({
+    return await getContext().{{Name}}.findAll({
       where,
       raw: true,
       transaction,
@@ -43,7 +43,7 @@ export default class {{Name}}ServiceBase {
   {{/if}}
 
   public async get{{Name}}(filter: I{{Name}}UniqueFilter, transaction?: Transaction): Promise<{{Name}}Instance | null> {
-    return await db.{{Name}}.findOne({
+    return await getContext().{{Name}}.findOne({
       where: filter,
       {{#if Meta.sensitive}}
       attributes: {
@@ -57,7 +57,7 @@ export default class {{Name}}ServiceBase {
 
   {{#if Meta.sensitive}}
   public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, transaction?: Transaction): Promise<{{Name}}Instance | null> {
-    return await db.{{Name}}.findOne({
+    return await getContext().{{Name}}.findOne({
       where: filter,
       raw: true,
       transaction,
@@ -70,7 +70,7 @@ export default class {{Name}}ServiceBase {
       data.createdBy = userContext.userAccountId
       data.updatedBy = userContext.userAccountId
     }
-    return await db.{{Name}}.create(data, {returning: true, raw: true, transaction})
+    return await getContext().{{Name}}.create(data, {returning: true, raw: true, transaction})
   }
 
   public async delete{{Name}}(filter: I{{Name}}UniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
@@ -80,7 +80,7 @@ export default class {{Name}}ServiceBase {
     if (userContext) {
       data.deletedBy = userContext.userAccountId
     }
-    const [ affectedCount ] = await db.{{Name}}.update(data, {
+    const [ affectedCount ] = await getContext().{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
       transaction,
     })
@@ -91,7 +91,7 @@ export default class {{Name}}ServiceBase {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }
-    return await db.{{Name}}.update(data, {
+    return await getContext().{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
       transaction,

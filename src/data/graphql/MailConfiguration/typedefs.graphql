@@ -1,0 +1,8 @@
+type MailConfiguration {
+	serverAddress: String!
+	username: String!
+	password: String!
+	sslEnabled: Boolean!
+	port: Int!
+	fromAddress: String!
+}

@@ -1,10 +1,10 @@
 export interface ISecurityOptions {
   maxLoginAttemptsPerMinute: number
   passwordExpiresDays: number
-  passwordRequireLowercase: boolean
-  passwordRequireUppercase: boolean
-  passwordRequireNumber: boolean
-  passwordRequireSymbol: boolean
+  passwordRequiresLowercase: boolean
+  passwordRequiresUppercase: boolean
+  passwordRequiresNumber: boolean
+  passwordRequiresSymbol: boolean
   passwordMinimumLength: number
   multifactorRequired: boolean
   adminEmailAddress: string

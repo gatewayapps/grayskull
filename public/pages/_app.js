@@ -13,12 +13,23 @@ const apolloClient = new ApolloClient({
 export default class MyApp extends App {
   static async getInitialProps({ Component, router, ctx }) {
     let pageProps = {}
-
+    if (ctx && ctx.res && ctx.res.locals) {
+      if (ctx.res.locals.NEEDS_FIRST_USER && ctx.req.url !== '/register') {
+        ctx.res.writeHead(302, {
+          Location: '/register'
+        })
+        ctx.res.end()
+      }
+    }
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    return { pageProps }
+    return { pageProps, router }
+  }
+
+  componentDidMount() {
+    console.log(this.props.router)
   }
 
   render() {

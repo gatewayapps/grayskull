@@ -2,7 +2,7 @@ import ConfigurationManager from '@/config/ConfigurationManager'
 import { GrayskullError, GrayskullErrorCode } from '@/GrayskullError'
 import { Permissions } from '@/utils/permissions'
 import { encrypt } from '@/utils/cipher'
-import db from '@data/context'
+import { getContext } from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
@@ -17,10 +17,12 @@ import ClientService from './ClientService'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
 import UserClientService from './UserClientService'
-import { IUserClient } from '@data/models/IUserClient';
-import { IEmailAddress } from '@data/models/IEmailAddress';
+import { IUserClient } from '@data/models/IUserClient'
+import { IEmailAddress } from '@data/models/IEmailAddress'
 
-const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
+const INVITATION_EXPIRES_IN = 3600
+
+const TokenCache = new Cache({ stdTTL: INVITATION_EXPIRES_IN })
 
 interface ICPTToken {
   client: ClientInstance | { name: string; client_id: string } | null
@@ -48,16 +50,7 @@ class UserAccountService extends UserAccountServiceBase {
   public async changeUserPassword(emailAddress: string, password: string) {
     const passwordHash = await this.hashPassword(password)
 
-    await db.UserAccount.update({ passwordHash, lastPasswordChange: new Date() }, { where: { emailAddress } })
-  }
-
-  public async inviteAdmin(baseUrl: string) {
-    const token = this.generateCPT(
-      ConfigurationManager.Security.adminEmailAddress,
-      ConfigurationManager.Security.invitationExpiresIn,
-      ConfigurationManager.General.grayskullClientId
-    )
-    this.sendInvitation(ConfigurationManager.Security.adminEmailAddress, `${ConfigurationManager.General.realmName} Global Administrator`, token, baseUrl)
+    await getContext().UserAccount.update({ passwordHash, lastPasswordChange: new Date() }, { where: { emailAddress } })
   }
 
   public async getUserAccountByEmailAddress(emailAddress: string): Promise<UserAccountInstance | null> {
@@ -77,9 +70,9 @@ class UserAccountService extends UserAccountServiceBase {
   }
 
   public async sendResetPasswordMessage(emailAddress: string, baseUrl: string) {
-    const cpt = this.generateCPT(emailAddress, ConfigurationManager.Security.invitationExpiresIn, undefined)
+    const cpt = this.generateCPT(emailAddress, INVITATION_EXPIRES_IN, undefined)
     const relativeTime = moment()
-      .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
+      .add(INVITATION_EXPIRES_IN, 'seconds')
       .fromNow(true)
 
     const body = `Please click the following link to reset your password.
@@ -88,7 +81,7 @@ class UserAccountService extends UserAccountServiceBase {
     This link will expire in ${relativeTime}.
     `
 
-    MailService.sendMail(emailAddress, `Password Reset Instructions`, body, ConfigurationManager.Security.adminEmailAddress)
+    MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
   }
 
   public async processCPT(cpt: string, removeFromCache: boolean = true): Promise<ICPTToken> {
@@ -99,7 +92,7 @@ class UserAccountService extends UserAccountServiceBase {
     if (decoded.client_id) {
       client = await ClientService.getClient({ client_id: decoded.client_id })
     } else if (decoded.admin) {
-      client = { name: `${ConfigurationManager.General.realmName} Global Administrator` }
+      client = { name: `${ConfigurationManager.General!.realmName} Global Administrator` }
     }
     if (removeFromCache) {
       TokenCache.del(cpt)
@@ -119,11 +112,13 @@ class UserAccountService extends UserAccountServiceBase {
     }
 
     // 2. Start a transaction
-    const trx = await db.sequelize.transaction()
+    const trx = await getContext().sequelize.transaction()
 
     try {
+      // First user is always an administrator
+      const userMeta = await super.userAccountsMeta()
       // 3. Create the user account
-      data.permissions = emailAddress === ConfigurationManager.Security.adminEmailAddress ? Permissions.Admin : Permissions.User
+      data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
       const user = await this.createUserAccountWithPassword(data, password, trx)
 
       // 4. Create the user account email
@@ -136,9 +131,9 @@ class UserAccountService extends UserAccountServiceBase {
 
       // 5. Create a UserClient for Grayskull
       const userClientData: IUserClient = {
-        client_id: ConfigurationManager.General.grayskullClientId,
+        client_id: 'grayskull',
         userAccountId: user.userAccountId!,
-        createdBy: user.userAccountId!,
+        createdBy: user.userAccountId!
       }
       await UserClientService.createUserClient(userClientData, user, trx)
 
@@ -157,7 +152,7 @@ class UserAccountService extends UserAccountServiceBase {
       return false
     }
     try {
-      return !!jwt.verify(token, ConfigurationManager.Security.globalSecret)
+      return !!jwt.verify(token, ConfigurationManager.Security!.globalSecret)
     } catch (err) {
       return false
     }
@@ -173,12 +168,12 @@ class UserAccountService extends UserAccountServiceBase {
 
   private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance) {
     const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
-    MailService.sendMail(emailAddress, `${client.name} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
+    MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
   }
 
   private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, invitedByUser?: UserAccountInstance) {
     const relativeTime = moment()
-      .add(ConfigurationManager.Security.invitationExpiresIn, 'seconds')
+      .add(INVITATION_EXPIRES_IN, 'seconds')
       .fromNow(true)
 
     const invitedByMessage = invitedByUser ? `<p>${invitedByUser.firstName} ${invitedByUser.lastName} has invited you to start using ${clientName}.</p>` : ''
@@ -188,7 +183,7 @@ class UserAccountService extends UserAccountServiceBase {
     <p>This link will expire in ${relativeTime}.</p>
     `
 
-    MailService.sendMail(emailAddress, `${clientName} Invitation`, body, ConfigurationManager.Security.adminEmailAddress)
+    MailService.sendMail(emailAddress, `${clientName} Invitation`, body)
   }
 
   private generateCPT(emailAddress: string, expiresIn: number, client_id?: string, invitedById?: number): string {
@@ -198,7 +193,7 @@ class UserAccountService extends UserAccountServiceBase {
         client_id,
         invitedById
       },
-      ConfigurationManager.Security.globalSecret,
+      ConfigurationManager.Security!.globalSecret,
       {
         expiresIn
       }

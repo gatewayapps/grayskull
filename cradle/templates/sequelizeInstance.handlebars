@@ -5,20 +5,44 @@ import Sequelize from 'sequelize'
 import {{model.Name}}Factory from './models/{{model.Name}}'
 {{/each}}
 
-const sequelize = new Sequelize(ConfigurationManager.General.databaseConnectionString)
 
-const db = {
-  sequelize,
-  Sequelize,
-  {{#each Models as |model|}}
-  {{model.Name}}: {{model.Name}}Factory(sequelize),
-  {{/each}}
+let db
+export function initializeDatabase() {
+  const config = ConfigurationManager.CurrentConfiguration
+  if (config && config.Database) {
+    const dbConfig = config.Database
+    const { databaseName, adminUsername, adminPassword, provider, serverAddress, serverPort } = dbConfig!
+
+    const sequelize = new Sequelize(databaseName, adminUsername, adminPassword, {
+      port: serverPort,
+      host: serverAddress,
+      dialect: provider,
+      dialectOptions: {
+        poolIdleTimeout: 5000
+      }
+    })
+
+    db = {
+      sequelize,
+      Sequelize,
+      {{#each Models as |model|}}
+      {{model.Name}}: {{model.Name}}Factory(sequelize),
+      {{/each}}
+    }
+
+    Object.values(db).forEach((model: any) => {
+      if (model.associate) {
+        model.associate(db)
+      }
+    })
+
+ }
 }
 
-Object.values(db).forEach((model: any) => {
-  if (model.associate) {
-    model.associate(db)
-  }
-})
+initializeDatabase()
+
+export function getContext() {
+  return db
+}
 
 export default db

@@ -10,7 +10,7 @@ Client:
     name: string(50)
     logoImageUrl: string?
     description: string(500)?
-    secret: string
+    secret: string(500)
     baseUrl: string
     homePageUrl: string?
     redirectUris: string(1000)

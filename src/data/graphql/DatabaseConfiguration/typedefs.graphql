@@ -1,0 +1,8 @@
+type DatabaseConfiguration {
+	provider: String!
+	adminUsername: String!
+	adminPassword: String!
+	serverAddress: String!
+	serverPort: Int!
+	databaseName: String!
+}
