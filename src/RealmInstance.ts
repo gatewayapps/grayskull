@@ -18,6 +18,7 @@ import next from 'next'
 import { startServerInstance } from './main'
 import withCss from '@zeit/next-css'
 import withSass from '@zeit/next-sass'
+import ScopeService from '@services/ScopeService'
 
 let FIRST_USER_CREATED: boolean = false
 
@@ -221,6 +222,7 @@ export class RealmInstance {
         baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
         homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
         redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
+        scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
         public: true
       })
     }

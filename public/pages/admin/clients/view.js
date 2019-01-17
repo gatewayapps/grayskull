@@ -8,6 +8,11 @@ import ErrorMessage from '../../../components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
   query SINGLE_CLIENT_QUERY($client_id: String!) {
+    scopes {
+      id
+      clientDescription
+    }
+
     client(where: { client_id: $client_id }) {
       client_id
       name
@@ -17,6 +22,7 @@ const SINGLE_CLIENT_QUERY = gql`
       baseUrl
       homePageUrl
       redirectUris
+      scopes
     }
   }
 `
@@ -37,7 +43,10 @@ class ClientView extends PureComponent {
               if (!data || !data.client) {
                 return <p>Client not found</p>
               }
-              const { client } = data
+              const { client, scopes } = data
+
+              const clientScopes = JSON.parse(client.scopes)
+
               return (
                 <div className="card">
                   <img className="card-img-top" src={client.logoImageUrl} alt={client.name} />
@@ -47,6 +56,18 @@ class ClientView extends PureComponent {
                     <p>Base Url: {client.baseUrl}</p>
                     <p>Home Page Url: {client.homePageUrl || client.baseUrl}</p>
                     <p>Redirect Uri: {JSON.parse(client.redirectUris).join(', ')}</p>
+                    <div>
+                      Scopes:
+                      <ul>
+                        {scopes.map((scope) => {
+                          if (clientScopes.includes(scope.id)) {
+                            return (<li key={scope.id}>{scope.clientDescription}</li>)
+                          } else {
+                            return null
+                          }
+                        })}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               )

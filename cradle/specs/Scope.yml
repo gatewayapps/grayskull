@@ -1,9 +1,9 @@
-RegisterUserResponse:
+Scope:
   meta:
     database: false
     graphql: true
     graphqlResolvers: false
   properties:
-    success: boolean
-    error: string?
-    message: string?
+    id: string primary
+    clientDescription: string
+    userDescription: string

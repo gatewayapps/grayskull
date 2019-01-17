@@ -40,6 +40,11 @@ export interface IClientFilter {
   redirectUris_endsWith?: string
   redirectUris_equals?: string
   redirectUris_notEquals?: string
+  scopes_contains?: string
+  scopes_startsWith?: string
+  scopes_endsWith?: string
+  scopes_equals?: string
+  scopes_notEquals?: string
   public_equals?: boolean
   public_notEquals?: boolean
   isActive_equals?: boolean

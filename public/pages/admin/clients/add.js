@@ -2,12 +2,14 @@ import gql from 'graphql-tag'
 import debounce from 'lodash/debounce'
 import Link from 'next/link'
 import React, { PureComponent } from 'react'
-import { ApolloConsumer, Mutation } from 'react-apollo'
+import { ApolloConsumer, Mutation, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
 import ErrorMessage from '../../../components/ErrorMessage'
 import Primary from '../../../layouts/primary'
 import generateSecret from '../../../utils/generateSecret'
 import { ALL_CLIENTS_QUERY } from './index'
+import LoadingIndicator from '../../../components/LoadingIndicator'
+import ClientForm from '../../../components/ClientForm'
 
 const CREATE_CLIENT_MUTATION = gql`
   mutation CREATE_CLIENT_MUTATION($data: CreateClientArgs!) {
@@ -25,6 +27,15 @@ const CHECK_CLIENT_ID_QUERY = gql`
   }
 `
 
+const GET_SCOPES_FOR_CLIENT_QUERY = gql`
+  query GET_SCOPES_FOR_CLIENT_QUERY {
+    scopes {
+      id
+      clientDescription
+    }
+  }
+`
+
 class ClientAddPage extends PureComponent {
   state = {
     client: {
@@ -36,10 +47,12 @@ class ClientAddPage extends PureComponent {
       homePageUrl: '',
       public: true,
       redirectUris: [{ key: uuid(), value: '' }],
+      scopes: [],
       isActive: true
     },
     customizeClientId: false,
     clientIdValid: true,
+    clientFormValid: false,
     result: undefined
   }
 
@@ -66,37 +79,12 @@ class ClientAddPage extends PureComponent {
     this.checkClientId(apolloClient)
   }
 
-  addRedirectUri = () => {
+  handleClientFormChange = (name, value) => {
     this.setState((prevState) => ({
       ...prevState,
       client: {
         ...prevState.client,
-        redirectUris: prevState.client.redirectUris.concat({ key: uuid(), value: '' })
-      }
-    }))
-  }
-
-  removeRedirectUri = (key) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      client: {
-        ...prevState.client,
-        redirectUris: prevState.client.redirectUris.length === 1 ? prevState.client.redirectUris : prevState.client.redirectUris.filter((r) => r.key !== key)
-      }
-    }))
-  }
-
-  handleRedirectUriChange = (key, value) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      client: {
-        ...prevState.client,
-        redirectUris: prevState.client.redirectUris.map((r) => {
-          if (r.key === key) {
-            r.value = value
-          }
-          return r
-        })
+        [name]: value
       }
     }))
   }
@@ -104,28 +92,37 @@ class ClientAddPage extends PureComponent {
   handleChange = (evt) => {
     const { name, value } = evt.target
 
-    const finalValue = evt.target.type === 'checkbox' ? evt.target.checked : value
     this.setState((prevState) => ({
       ...prevState,
       client: {
         ...prevState.client,
-        [name]: finalValue
+        [name]: value
       }
     }))
   }
 
+  onClientFormValidated = (isValid) => {
+    this.setState({ clientFormValid: isValid })
+  }
+
   submitClient = async (evt, createClient) => {
     evt.preventDefault()
-    if (!this.state.clientIdValid || !this.state.client.redirectUris || this.state.client.redirectUris.length === 0) {
+    if (!this.state.clientIdValid || !this.state.clientFormValid) {
       return
     }
     const secret = generateSecret()
-    const data = {
-      ...this.state.client,
-      redirectUris: JSON.stringify(this.state.client.redirectUris.map((r) => r.value)),
-      secret
+
+    const { redirectUris, scopes, ...data } = this.state.client
+
+    if (redirectUris) {
+      data.redirectUris = JSON.stringify(redirectUris.map((r) => r.value))
     }
+    if (scopes) {
+      data.scopes = JSON.stringify(scopes)
+    }
+
     const res = await createClient({ variables: { data } })
+
     if (res.data && res.data.createClient) {
       this.setState({
         result: {
@@ -145,216 +142,109 @@ class ClientAddPage extends PureComponent {
 
   render() {
     return (
-      <Mutation mutation={CREATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
-        {(createClient, { error, loading }) => (
-          <Primary>
-            <div className="container pt-4">
-              <form onSubmit={(e) => this.submitClient(e, createClient)}>
-                <div className="card">
-                  <div className="card-header">Create Client</div>
-                  <div className="card-body">
-                    <ErrorMessage error={error} />
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="client_id">
-                        Client ID
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        {!this.state.customizeClientId && (
-                          <>
-                            <span className='py-2' style={{ verticalAlign: 'middle' }}>{this.state.client.client_id}</span>
-                            <button type='button' className='btn btn-link btn-sm' onClick={this.toggleCustomize}>
-                              Customize
-                            </button>
-                          </>
-                        )}
-                        {this.state.customizeClientId && (
-                          <ApolloConsumer>
-                            {(apolloClient) => (
-                              <input
-                                type="text"
-                                className={`form-control ${this.state.clientIdValid ? 'is-valid' : 'is-invalid'}`}
-                                name="client_id"
-                                value={this.state.client.client_id}
-                                onChange={(e) => this.handleClientIdChange(e, apolloClient)}
-                                required
-                                readOnly={this.state.result !== undefined}
-                                aria-describedby='clientIdHelpBlock'
-                                autoFocus
-                              />
-                            )}
-                          </ApolloConsumer>
-                        )}
-                        <div id="clientIdHelpBlock" className="small form-text text-muted">
-                          We recommend using the generated Client ID but you can customize it as long as the value is unique.
+      <Query query={GET_SCOPES_FOR_CLIENT_QUERY}>
+        {({ data, error, loading: loadingScopes }) => {
+          if (loadingScopes) {
+            return (<LoadingIndicator />)
+          }
+
+          if (error) {
+            return (<ErrorMessage error={error} />)
+          }
+
+          return (
+            <Mutation mutation={CREATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
+              {(createClient, { error, loading }) => (
+                <Primary>
+                  <div className="container pt-4">
+                    <form onSubmit={(e) => this.submitClient(e, createClient)}>
+                      <div className="card">
+                        <div className="card-header">Create Client</div>
+                        <div className="card-body">
+                          <ErrorMessage error={error} />
+                          <div className="form-group row">
+                            <label className="col-sm-12 col-md-3 col-form-label" htmlFor="client_id">
+                              Client ID
+                            </label>
+                            <div className="col-sm-12 col-md-9">
+                              {!this.state.customizeClientId && (
+                                <>
+                                  <span className='py-2' style={{ verticalAlign: 'middle' }}>{this.state.client.client_id}</span>
+                                  <button type='button' className='btn btn-link btn-sm' onClick={this.toggleCustomize}>
+                                    Customize
+                                  </button>
+                                </>
+                              )}
+                              {this.state.customizeClientId && (
+                                <ApolloConsumer>
+                                  {(apolloClient) => (
+                                    <input
+                                      type="text"
+                                      className={`form-control ${this.state.clientIdValid ? 'is-valid' : 'is-invalid'}`}
+                                      name="client_id"
+                                      value={this.state.client.client_id}
+                                      onChange={(e) => this.handleClientIdChange(e, apolloClient)}
+                                      required
+                                      readOnly={this.state.result !== undefined}
+                                      aria-describedby='clientIdHelpBlock'
+                                      autoFocus
+                                    />
+                                  )}
+                                </ApolloConsumer>
+                              )}
+                              <div id="clientIdHelpBlock" className="small form-text text-muted">
+                                We recommend using the generated Client ID but you can customize it as long as the value is unique.
+                              </div>
+                            </div>
+                          </div>
+                          <ClientForm
+                            client={this.state.client}
+                            onChange={this.handleClientFormChange}
+                            onValidated={this.onClientFormValidated}
+                            scopes={data.scopes}
+                          />
+                          {this.state.result && (
+                            <div className="alert alert-success">
+                              <p>
+                                Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is
+                                the only time the client_secret will be visible.
+                              </p>
+                              <div>
+                                <strong>Client Id:</strong> {this.state.result.client_id}
+                              </div>
+                              <div>
+                                <strong>Secret:</strong> {this.state.result.secret}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="name">
-                        Name
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="name"
-                          value={this.state.client.name}
-                          onChange={this.handleChange}
-                          required
-                          readOnly={this.state.result !== undefined}
-                          autoFocus
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="logoImageUrl">
-                        Logo Image Url
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        <input
-                          type="url"
-                          className="form-control"
-                          name="logoImageUrl"
-                          value={this.state.client.logoImageUrl}
-                          onChange={this.handleChange}
-                          required
-                          readOnly={this.state.result !== undefined}
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="url">
-                        Base Url
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        <input
-                          type="url"
-                          className="form-control"
-                          name="baseUrl"
-                          value={this.state.client.baseUrl}
-                          onChange={this.handleChange}
-                          required
-                          readOnly={this.state.result !== undefined}
-                          aria-describedby='baseUrlHelpBlock'
-                        />
-                        <div id="baseUrlHelpBlock" className="small form-text text-muted">
-                          The base url for the client application
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="url">
-                        Home Page Url
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        <input
-                          type="url"
-                          className="form-control"
-                          name="homePageUrl"
-                          value={this.state.client.homePageUrl}
-                          onChange={this.handleChange}
-                          readOnly={this.state.result !== undefined}
-                          aria-describedby='homePageUrlHelpBlock'
-                        />
-                        <div id="homePageUrlHelpBlock" className="small form-text text-muted">
-                          The url for the home page of the client application. You can leave this blank if the home page is the same as the Base Url.
-                      </div>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="redirectUri">
-                        Redirect URI(s)
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        {this.state.client.redirectUris.map((redirectUri) => (
-                          <div key={redirectUri.key} className='input-group mb-2'>
-                            <input
-                              type='url'
-                              className='form-control'
-                              name={`redirectUris-${redirectUri.key}`}
-                              onChange={(e) => this.handleRedirectUriChange(redirectUri.key, e.target.value)}
-                              required
-                              readOnly={this.state.result !== undefined}
-                              value={redirectUri.value}
-                            />
-                            <div className='input-group-append'>
-                              <button className='btn btn-outline-danger' type='button' onClick={() => this.removeRedirectUri(redirectUri.key)}>
-                                <i className='fal fa-fw fa-trash' />
+                        {!this.state.result && (
+                          <div className="card-footer clearfix">
+                            <div className="btn-toolbar float-right">
+                              <Link href="/admin/clients">
+                                <a className="btn btn-outline-secondary mr-3">
+                                  <i className="fal fa-times" /> Cancel
+                                </a>
+                              </Link>
+                              <button
+                                className="btn btn-success"
+                                type="submit"
+                                disabled={loading || !this.state.clientIdValid || !this.state.clientFormValid}
+                              >
+                                <i className="fal fa-save" /> Create
                               </button>
                             </div>
                           </div>
-                        ))}
-                        <button className='btn btn-link btn-sm' onClick={this.addRedirectUri} type='button'>
-                          Add another redirect uri
-                        </button>
+                        )}
                       </div>
-                    </div>
-                    <div className="form-group row">
-                      <label className="col-sm-12 col-md-3 col-form-label" htmlFor="description">
-                        Description
-                      </label>
-                      <div className="col-sm-12 col-md-9">
-                        <textarea
-                          className="form-control"
-                          name="description"
-                          value={this.state.client.description}
-                          onChange={this.handleChange}
-                          readOnly={this.state.result !== undefined}
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="public"
-                          name="public"
-                          value={this.state.client.public}
-                          onChange={this.handleChange}
-                          readOnly={this.state.result !== undefined}
-                        />
-                        <label className="form-check-label" htmlFor="public">
-                          Publicly visible
-                        </label>
-                      </div>
-                    </div>
-
-                    {this.state.result && (
-                      <div className="alert alert-success">
-                        <p>
-                          Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is
-                          the only time the client_secret will be visible.
-                        </p>
-                        <div>
-                          <strong>Client Id:</strong> {this.state.result.client_id}
-                        </div>
-                        <div>
-                          <strong>Secret:</strong> {this.state.result.secret}
-                        </div>
-                      </div>
-                    )}
+                    </form>
                   </div>
-                  {!this.state.result && (
-                    <div className="card-footer clearfix">
-                      <div className="btn-toolbar float-right">
-                        <Link href="/admin/clients">
-                          <a className="btn btn-outline-secondary mr-3">
-                            <i className="fal fa-times" /> Cancel
-                          </a>
-                        </Link>
-                        <button className="btn btn-success" type="submit" disabled={loading || !this.state.clientIdValid}>
-                          <i className="fal fa-save" /> Create
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </form>
-            </div>
-          </Primary>
-        )}
-      </Mutation>
+                </Primary>
+              )}
+            </Mutation>
+          )
+        }}
+      </Query>
     )
   }
 }

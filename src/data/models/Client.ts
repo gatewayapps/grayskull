@@ -34,6 +34,9 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     redirectUris: {
       type: Sequelize.STRING(1000)
     },
+    scopes: {
+      type: Sequelize.STRING(1000)
+    },
     public: {
       allowNull: true,
       type: Sequelize.BOOLEAN

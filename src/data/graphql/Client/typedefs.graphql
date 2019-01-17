@@ -6,6 +6,7 @@ type Client {
 	baseUrl: String!
 	homePageUrl: String
 	redirectUris: String!
+	scopes: String!
 	public: Boolean
 	isActive: Boolean!
 	createdBy: ID
@@ -29,19 +30,21 @@ input CreateClientArgs {
 	baseUrl: String!
 	homePageUrl: String
 	redirectUris: String!
+	scopes: String!
 	isActive: Boolean!
 }
 
 input UpdateClientArgs {
 	client_id: String!
-	name: String!
+	name: String
 	logoImageUrl: String
 	description: String
 	public: Boolean
-	baseUrl: String!
+	baseUrl: String
 	homePageUrl: String
-	redirectUris: String!
-	isActive: Boolean!
+	redirectUris: String
+	scopes: String
+	isActive: Boolean
 }
 
 
@@ -94,6 +97,12 @@ input ClientFilter {
 	redirectUris_endsWith: String
 	redirectUris_equals: String
 	redirectUris_notEquals: String
+	scopes_contains: String
+	scopes_notContains: String
+	scopes_startsWith: String
+	scopes_endsWith: String
+	scopes_equals: String
+	scopes_notEquals: String
 	public_equals: Boolean
 	public_notEquals: Boolean
 	isActive_equals: Boolean
