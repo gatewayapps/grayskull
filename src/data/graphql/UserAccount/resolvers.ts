@@ -7,6 +7,7 @@ import EmailAddressService from '@services/EmailAddressService'
 import UserAccountService from '@services/UserAccountService'
 import { setAuthCookies } from '@/utils/authentication'
 import UserClientService from '@services/UserClientService'
+import SessionService from '@services/SessionService';
 
 export default {
   Query: {
@@ -117,6 +118,15 @@ export default {
 
         await AuthenticationService.validatePassword(password, confirm)
         const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password)
+        const fingerprint = context.req.header('x-fingerprint')
+        if (fingerprint) {
+          const session = await SessionService.createSession({
+            fingerprint,
+            userAccountId: userAccount.userAccountId!,
+            ipAddress: context.req.ip,
+          })
+          setAuthCookies(context.res, session)
+        }
         return { success: true }
       } catch (err) {
         if (err instanceof GrayskullError) {
