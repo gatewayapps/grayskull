@@ -1,0 +1,8 @@
+AuthorizeClientResponse:
+  meta:
+    database: false
+    graphql: true
+    graphqlResolvers: false
+  properties:
+    pendingScopes: string[]?
+    redirectUri: string?

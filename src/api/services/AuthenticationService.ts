@@ -31,8 +31,10 @@ interface IAccessTokenResponse {
 }
 
 interface IAuthenticationCodeCacheResult {
-  sessionId: string
+  clientId: string
+  scope: string[]
   userAccount: IUserAccount
+  userClientId: string
 }
 
 interface IAuthenticateUserResult {
@@ -139,8 +141,7 @@ class AuthenticationService {
           throw new Error(`Unable to locate user account`)
         }
 
-        refresh_token = await this.createRefreshToken(client, userAccount, authCodeCacheResult.sessionId)
-        session_id = authCodeCacheResult.sessionId
+        refresh_token = await this.createRefreshToken(client, userAccount, '')
         break
       }
 
@@ -320,9 +321,9 @@ class AuthenticationService {
     })
   }
 
-  private generateAndCacheAuthorizationCode(userAccount: IUserAccount, sessionId: string): string {
+  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[]): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
-    this.localCache.set(authorizationCode, { sessionId, userAccount }, 120)
+    this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId }, 120)
     return authorizationCode
   }
 

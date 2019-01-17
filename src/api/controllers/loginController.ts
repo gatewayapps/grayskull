@@ -95,18 +95,11 @@ export default class LoginController extends ControllerBase {
         req.query.code
       )
 
-      if (!accessToken.session_id) {
-        throw new Error('Session not found')
+      if (!accessToken) {
+        throw new Error('Unable to create access token')
       }
 
-      // // 2. Store sessionId and refreshToken to the database
-      // const sessionId = `${accessToken.session_id}:${Date.now()}`
-      // await SessionService.createSession({ sessionId, refreshToken: accessToken.refresh_token })
-
-      // // 3. Set sessionId and accessToken cookies
-      // setAuthCookies(res, sessionId, accessToken.access_token, accessToken.expires_in * 1000)
-
-      // 4. Redirect to returnUrl or home page
+      // 2. Redirect to returnUrl or home page
       const state = decodeState(req.query.state)
       const returnPath = state && state.returnPath ? state.returnPath : '/home'
       res.redirect(returnPath)

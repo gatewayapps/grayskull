@@ -18,6 +18,12 @@ type UserAccount {
 	emailAddresses: [EmailAddress]
 }
 
+input UpdateClientScopesArgs {
+	client_id: String!
+	allowedScopes: [String]
+	deniedScopes: [String]
+}
+
 input GenerateMfaKeyArgs {
 	emailAddress: String!
 }
@@ -51,6 +57,14 @@ input LoginArgs {
 	password: String!
 	otpToken: String
 	fingerprint: String!
+}
+
+input AuthorizeClientArgs {
+	client_id: String!
+	responseType: String!
+	redirectUri: String!
+	scope: String
+	state: String
 }
 
 input RegisterUserArgs {
@@ -151,6 +165,7 @@ type Query {
 }
 
 type Mutation {
+	updateClientScopes(data: UpdateClientScopesArgs!): Boolean 
 	generateMfaKey(data: GenerateMfaKeyArgs!): String 
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
 	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
@@ -158,5 +173,6 @@ type Mutation {
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
 	changePassword(data: ChangePasswordArgs!): Boolean 
 	login(data: LoginArgs!): LoginResponse 
+	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

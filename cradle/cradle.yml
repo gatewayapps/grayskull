@@ -1,3 +1,4 @@
+AuthorizeClientResponse: ./specs/AuthorizeClientResponse.yml#AuthorizeClientResponse
 Client: ./specs/Client.yml#Client
 EmailAddress: ./specs/EmailAddress.yml#EmailAddress
 LoginResponse: ./specs/LoginResponse.yml#LoginResponse

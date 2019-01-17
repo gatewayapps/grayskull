@@ -6,6 +6,7 @@ import AuthenticationService from '@services/AuthenticationService'
 import EmailAddressService from '@services/EmailAddressService'
 import UserAccountService from '@services/UserAccountService'
 import { setAuthCookies } from '@/utils/authentication'
+import UserClientService from '@services/UserClientService'
 
 export default {
   Query: {
@@ -56,6 +57,47 @@ export default {
       } catch (err) {
         return { success: false, message: err.message }
       }
+    },
+    authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
+      if (!context.user) {
+        throw new Error('You must be logged in')
+      }
+      const {
+        client_id,
+        responseType,
+        redirectUri,
+        scope,
+        state,
+      } = args.data
+
+      if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri)) {
+        throw new Error('Invalid redirect uri')
+      }
+      if (responseType !== 'code') {
+        throw new Error('Invalid response type')
+      }
+      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(context.user.userAccountId, client_id, scope)
+      if (pendingScopes && pendingScopes.length > 0) {
+        return {
+          pendingScopes,
+        }
+      }
+      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!)
+      const query = [`code=${encodeURIComponent(authCode)}`]
+      if (state) {
+        query.push(`state=${encodeURIComponent(state)}`)
+      }
+      return {
+        redirectUri: `${redirectUri}?${query.join('&')}`
+      }
+    },
+    updateClientScopes: async (obj, args, context, info) => {
+      if (!context.user) {
+        throw new Error('You must be logged in!')
+      }
+      const { client_id, allowedScopes, deniedScopes } = args.data
+      await UserClientService.updateScopes(context.user, client_id, allowedScopes, deniedScopes)
+      return true
     },
     validatePassword: (obj, args, context, info) => {
       // Insert your validatePassword implementation here

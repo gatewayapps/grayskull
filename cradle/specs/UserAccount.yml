@@ -36,6 +36,22 @@ UserAccount:
         password: string
         otpToken: string?
         fingerprint: string
+    # Authorize Client #
+    authorizeClient:
+      returns: AuthorizeClientResponse
+      arguments:
+        client_id: string
+        responseType: string
+        redirectUri: string
+        scope: string?
+        state: string?
+    # Update Client Scopes #
+    updateClientScopes:
+      returns: boolean
+      arguments:
+        client_id: string
+        allowedScopes: string[]
+        deniedScopes: string[]
     # Create User Account #
     registerUser:
       returns: RegisterUserResponse

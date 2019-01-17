@@ -1,7 +1,27 @@
+import gql from 'graphql-tag'
+import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { Query } from 'react-apollo'
+import Primary from '../layouts/primary'
+import ClientAuthorization from '../components/ClientAuthorization'
+import LoadingIndicator from '../components/LoadingIndicator'
 import RequireAuthentication from '../components/RequireAuthentication'
-import UserContext from '../contexts/UserContext'
+
+const LOAD_AUTHORIZE_QUERY = gql`
+  query LOAD_AUTHORIZE_QUERY($client_id: String!) {
+    client(where: { client_id: $client_id }) {
+      client_id
+      name
+      logoImageUrl
+    }
+
+    scopes {
+      id
+      userDescription
+    }
+  }
+`
 
 class AuthorizePage extends PureComponent {
   static async getInitialProps({ req, query, res }) {
@@ -12,16 +32,36 @@ class AuthorizePage extends PureComponent {
   render() {
     return (
       <RequireAuthentication>
-        <UserContext.Consumer>
-          {({ user }) => (
-            <div>
-              Hello from the authorize page!
-              {user && (
-                <div>{user.firstName} {user.lastName}</div>
-              )}
-            </div>
-          )}
-        </UserContext.Consumer>
+        <Primary>
+          <Query query={LOAD_AUTHORIZE_QUERY} variables={{ client_id: this.props.router.query.client_id }}>
+            {({ data, loading }) => {
+              if (loading) {
+                return (<LoadingIndicator />)
+              }
+              if (!data || !data.client) {
+                return (<div>Client not found</div>)
+              }
+              return (
+                <div style={{ display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
+                  <div className='container'>
+                    <div className='row'>
+                      <div className='col col-md-8 offset-md-2'>
+                        <ClientAuthorization
+                          client={data.client}
+                          responseType={this.props.router.query.response_type}
+                          redirectUri={this.props.router.query.redirect_uri}
+                          scope={this.props.router.query.scope}
+                          scopes={data.scopes}
+                          state={this.props.router.query.state}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            }}
+          </Query>
+        </Primary>
       </RequireAuthentication>
     )
   }
@@ -31,4 +71,4 @@ AuthorizePage.propTypes = {
 
 }
 
-export default AuthorizePage
+export default withRouter(AuthorizePage)

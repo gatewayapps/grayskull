@@ -14,11 +14,6 @@ const GET_CLIENT_QUERY = gql`
       name
       logoImageUrl
     }
-
-    scopes {
-      id
-      userDescription
-    }
   }
 `
 

@@ -4,6 +4,7 @@ import { Permissions } from '@/utils/permissions'
 import { encrypt } from '@/utils/cipher'
 import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
+import { IEmailAddress } from '@data/models/IEmailAddress'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
 import UserAccountServiceBase from '@services/UserAccountServiceBase'
@@ -16,9 +17,6 @@ import uuid from 'uuid/v4'
 import ClientService from './ClientService'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
-import UserClientService from './UserClientService'
-import { IUserClient } from '@data/models/IUserClient';
-import { IEmailAddress } from '@data/models/IEmailAddress';
 
 const TokenCache = new Cache({ stdTTL: ConfigurationManager.Security.invitationExpiresIn })
 
@@ -134,20 +132,7 @@ class UserAccountService extends UserAccountServiceBase {
       }
       await EmailAddressService.createEmailAddress(emailAddressData, user, trx)
 
-      // 5. Create a UserClient for Grayskull
-      const client = await ClientService.getClient({ client_id: ConfigurationManager.General.grayskullClientId }, trx)
-      if (client) {
-        const userClientData: IUserClient = {
-          client_id: client.client_id,
-          userAccountId: user.userAccountId!,
-          createdBy: user.userAccountId!,
-          allowedScopes: client.scopes,
-          deniedScopes: JSON.stringify([]),
-        }
-        await UserClientService.createUserClient(userClientData, user, trx)
-      }
-
-      // 6. Commit the transaction
+      // 5. Commit the transaction
       await trx.commit()
 
       return user

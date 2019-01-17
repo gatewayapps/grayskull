@@ -91,8 +91,8 @@ class LoginForm extends PureComponent {
               <div className='card-header'>Login to {this.props.client.name}</div>
               <div className='card-body'>
                 <div className='row'>
-                  <div className='col-3'>{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
-                  <div className='col-9'>
+                  <div className='col-lg-3'>{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
+                  <div className='col-lg-9'>
                     {!this.state.otpRequired && (
                       <>
                         <div className='form-group'>
