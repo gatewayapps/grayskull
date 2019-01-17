@@ -6,6 +6,7 @@ import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import ValidatingInput from './ValidatingInput'
+import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 
 const GET_EMAIL_ADDRESS_QUERY = gql`
   query GET_EMAIL_ADDRESS_QUERY($emailAddress: String!) {
@@ -57,89 +58,64 @@ class RegistrationForm extends PureComponent {
               {({ validate, validationErrors }) => (
                 <div>
                   <h5>User Profile</h5>
-                  <div className="form-group row">
-                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="emailAddress">
-                      E-mail Address
-                    </label>
-                    <div className="col-sm-12 col-md-9">
-                      <ValidatingInput
-                        autoComplete="username"
-                        autoFocus
-                        validationErrors={validationErrors}
-                        type="email"
-                        name="emailAddress"
-                        value={this.props.data.emailAddress}
-                        onChange={(e) => this.handleChange(e, validate)}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group row mt-5">
-                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="firstName">
-                      First Name
-                    </label>
-                    <div className="col-sm-12 col-md-9">
-                      <ValidatingInput
-                        validationErrors={validationErrors}
-                        type="text"
-                        name="firstName"
-                        value={this.props.data.firstName}
-                        onChange={(e) => this.handleChange(e, validate)}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="lastName">
-                      Last Name
-                    </label>
-                    <div className="col-sm-12 col-md-9">
-                      <ValidatingInput
-                        validationErrors={validationErrors}
-                        type="text"
-                        name="lastName"
-                        value={this.props.data.lastName}
-                        onChange={(e) => this.handleChange(e, validate)}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group row mt-5">
-                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="password">
-                      Password
-                    </label>
-                    <div className="col-sm-12 col-md-9">
-                      <ValidatingInput
-                        validationErrors={validationErrors}
-                        autoComplete="new-password"
-                        type="password"
-                        name="password"
-                        value={this.props.data.password}
-                        onChange={(e) => this.handleChange(e, validate)}
-                      />
 
-                      {validationErrors['password'] && (
-                        <div className="card border-info mt-2">
-                          <div className="card-header">Password requirements</div>
-                          <div className="card-body">
-                            <PasswordComplexity configuration={this.props.configuration} password={this.props.data.password} />
-                          </div>
-                        </div>
-                      )}
+                  <ResponsiveValidatingInput
+                    autoComplete="username"
+                    label="E-mail address"
+                    autoFocus
+                    validationErrors={validationErrors}
+                    type="email"
+                    name="emailAddress"
+                    value={this.props.data.emailAddress}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+
+                  <ResponsiveValidatingInput
+                    label="First Name"
+                    validationErrors={validationErrors}
+                    type="text"
+                    name="firstName"
+                    value={this.props.data.firstName}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+
+                  <ResponsiveValidatingInput
+                    validationErrors={validationErrors}
+                    label="Last Name"
+                    type="text"
+                    name="lastName"
+                    value={this.props.data.lastName}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+
+                  <ResponsiveValidatingInput
+                    validationErrors={validationErrors}
+                    label="Password"
+                    autoComplete="new-password"
+                    type="password"
+                    name="password"
+                    value={this.props.data.password}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
+
+                  {validationErrors['password'] && (
+                    <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                      <div className="alert-heading">Password requirements</div>
+                      <div>
+                        <PasswordComplexity configuration={this.props.configuration} password={this.props.data.password} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="form-group row">
-                    <label className="col-sm-12 col-md-3 col-form-label" htmlFor="confirm">
-                      Confirm
-                    </label>
-                    <div className="col-sm-12 col-md-9">
-                      <ValidatingInput
-                        type="password"
-                        validationErrors={validationErrors}
-                        autoComplete="new-password"
-                        name="confirm"
-                        value={this.props.data.confirm}
-                        onChange={(e) => this.handleChange(e, validate)}
-                      />
-                    </div>
-                  </div>
+                  )}
+
+                  <ResponsiveValidatingInput
+                    type="password"
+                    label="Confirm Password"
+                    validationErrors={validationErrors}
+                    autoComplete="new-password"
+                    name="confirm"
+                    value={this.props.data.confirm}
+                    onChange={(e) => this.handleChange(e, validate)}
+                  />
                 </div>
               )}
             </FormValidation>
