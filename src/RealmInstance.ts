@@ -3,7 +3,7 @@ import { IConfiguration } from '@data/models/IConfiguration'
 import { ApolloServer } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import cookieParser = require('cookie-parser')
-import express from 'express'
+import express, { Request, Response } from 'express'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import ClientService from './api/services/ClientService'
@@ -12,12 +12,14 @@ import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 import { generateLoginUrl } from './utils/authentication'
 import { getUserContext } from './middleware/authentication'
-import db from '@data/context'
+import { initializeDatabase, getContext } from '@data/context'
 import { Server } from 'http'
 import next from 'next'
 import { startServerInstance } from './main'
 import withCss from '@zeit/next-css'
 import withSass from '@zeit/next-sass'
+
+let FIRST_USER_CREATED: boolean = false
 
 const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
 
@@ -28,8 +30,12 @@ let REALM_INSTANCE: RealmInstance
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
 
+export function getInstance() {
+  return REALM_INSTANCE
+}
+
 export class RealmInstance {
-  private config?: IConfiguration
+  public config?: IConfiguration
   private server!: express.Application
   private httpServer!: Server
   private app: next.Server
@@ -38,9 +44,7 @@ export class RealmInstance {
   private handle: any
 
   private static instance: RealmInstance
-  public static getInstance() {
-    return RealmInstance.instance
-  }
+
   public static restartServer() {
     RealmInstance.instance.stopServer().then(() => {
       startServerInstance()
@@ -48,6 +52,7 @@ export class RealmInstance {
   }
 
   constructor(config?: IConfiguration) {
+    REALM_INSTANCE = this
     RealmInstance.instance = this
     this.config = config
     this.initializeServer()
@@ -65,8 +70,10 @@ export class RealmInstance {
         this.startServer()
       })
     } else {
-      this.configureServer().then(() => {
-        this.startServer()
+      this.prepareDatabase().then(() => {
+        this.configureServer().then(() => {
+          this.startServer()
+        })
       })
     }
   }
@@ -101,6 +108,7 @@ export class RealmInstance {
     server.use(bodyParser.json())
     if (this.config) {
       server.use(cookieParser(this.config.Security!.globalSecret))
+      server.use(this.firstUserMiddleware)
       server.use(getUserContext)
     }
 
@@ -133,6 +141,18 @@ export class RealmInstance {
     })
   }
 
+  private async prepareDatabase() {
+    initializeDatabase()
+    const db = getContext()
+    // console.log('Initializing database connection')
+    await db.sequelize
+      .sync()
+      .then(this.ensureGrayskullClient)
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+
   private async configureOobeServer() {
     await this.app.prepare()
 
@@ -152,6 +172,17 @@ export class RealmInstance {
     this.server.get('*', (req, res) => {
       res.redirect('/oobe')
     })
+  }
+
+  private async firstUserMiddleware(req: Request, res: Response, next: any) {
+    if (!FIRST_USER_CREATED) {
+      const userMeta = await UserAccountService.userAccountsMeta()
+      FIRST_USER_CREATED = userMeta.count > 0
+      res.locals['NEEDS_FIRST_USER'] = true
+    } else {
+      res.locals['NEEDS_FIRST_USER'] = false
+    }
+    next()
   }
 
   private async configureServer() {
@@ -178,26 +209,18 @@ export class RealmInstance {
     this.server.get('*', (req, res) => {
       return this.handle(req, res)
     })
-
-    // console.log('Initializing database connection')
-    return db.sequelize
-      .sync()
-      .then(this.ensureGrayskullClient)
-      .catch((err) => {
-        console.error(err)
-      })
   }
   private async ensureGrayskullClient(): Promise<void> {
-    const grayskullClient = await ClientService.getClient({ client_id: ConfigurationManager.General.grayskullClientId })
+    const grayskullClient = await ClientService.getClient({ client_id: 'grayskull' })
     if (!grayskullClient) {
       await ClientService.createClient({
-        client_id: ConfigurationManager.General.grayskullClientId,
-        name: ConfigurationManager.General.realmName,
-        secret: ConfigurationManager.Security.globalSecret,
+        client_id: 'grayskull',
+        name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
+        secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
         logoImageUrl: '/static/grayskull.gif',
-        baseUrl: ConfigurationManager.General.fallbackUrl,
-        homePageUrl: `${ConfigurationManager.General.fallbackUrl}/home`,
-        redirectUris: JSON.stringify([`${ConfigurationManager.General.fallbackUrl}/signin`]),
+        baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
+        homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
+        redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
         public: true
       })
     }
