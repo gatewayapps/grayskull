@@ -1,13 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import {
-  hasLowercase,
-  hasMinLength,
-  hasNumber,
-  hasSymbol,
-  hasUppercase,
-} from '../utils/passwordComplexity'
+import { hasLowercase, hasMinLength, hasNumber, hasSymbol, hasUppercase } from '../utils/passwordComplexity'
 
 const PasswordComplexityList = styled.ul`
   list-style: none;
@@ -28,7 +22,7 @@ const CheckListItem = (props) => {
 
 CheckListItem.propTypes = {
   checked: PropTypes.bool.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired
 }
 
 const PasswordComplexity = (props) => {
@@ -36,34 +30,11 @@ const PasswordComplexity = (props) => {
 
   return (
     <PasswordComplexityList>
-      <CheckListItem
-        checked={hasMinLength(password, configuration.passwordMinimumLength)}
-        label={`Minimum length of ${configuration.passwordMinimumLength} characters`}
-      />
-      {configuration.passwordRequireLowercase && (
-        <CheckListItem
-          checked={hasLowercase(password)}
-          label='Contains lowercase letters (a-z)'
-        />
-      )}
-      {configuration.passwordRequireUppercase && (
-        <CheckListItem
-          checked={hasUppercase(password)}
-          label='Contains uppercase letters (A-Z)'
-        />
-      )}
-      {configuration.passwordRequireNumber && (
-        <CheckListItem
-          checked={hasNumber(password)}
-          label='Contains a number (0-9)'
-        />
-      )}
-      {configuration.passwordRequireSymbol && (
-        <CheckListItem
-          checked={hasSymbol(password)}
-          label='Contains a symbol (!, #, @, etc...)'
-        />
-      )}
+      <CheckListItem checked={hasMinLength(password, configuration.passwordMinimumLength)} label={`Minimum length of ${configuration.passwordMinimumLength} characters`} />
+      {configuration.passwordRequiresLowercase && <CheckListItem checked={hasLowercase(password)} label="Contains lowercase letters (a-z)" />}
+      {configuration.passwordRequiresUppercase && <CheckListItem checked={hasUppercase(password)} label="Contains uppercase letters (A-Z)" />}
+      {configuration.passwordRequiresNumber && <CheckListItem checked={hasNumber(password)} label="Contains a number (0-9)" />}
+      {configuration.passwordRequiresSymbol && <CheckListItem checked={hasSymbol(password)} label="Contains a symbol (!, #, @, etc...)" />}
     </PasswordComplexityList>
   )
 }
@@ -71,12 +42,12 @@ const PasswordComplexity = (props) => {
 PasswordComplexity.propTypes = {
   configuration: PropTypes.shape({
     passwordMinimumLength: PropTypes.number.isRequired,
-    passwordRequireNumber: PropTypes.bool.isRequired,
-    passwordRequireSymbol: PropTypes.bool.isRequired,
-    passwordRequireLowercase: PropTypes.bool.isRequired,
-    passwordRequireUppercase: PropTypes.bool.isRequired,
+    passwordRequiresNumber: PropTypes.bool.isRequired,
+    passwordRequiresSymbol: PropTypes.bool.isRequired,
+    passwordRequiresLowercase: PropTypes.bool.isRequired,
+    passwordRequiresUppercase: PropTypes.bool.isRequired
   }).isRequired,
-  password: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired
 }
 
 export default PasswordComplexity

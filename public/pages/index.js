@@ -2,6 +2,7 @@ import React from 'react'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import styled from 'styled-components'
+import ErrorMessage from '../components/ErrorMessage'
 import Primary from '../layouts/primary'
 import LoadingIndicator from '../components/LoadingIndicator'
 const ALL_CLIENTS_QUERY = gql`

@@ -5,7 +5,7 @@ import { ApolloConsumer } from 'react-apollo'
 import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'
 import FormValidation, { FormValidationRule } from './FormValidation'
-import FormValidationMessage from './FormValidationMessage'
+import ValidatingInput from './ValidatingInput'
 
 const GET_EMAIL_ADDRESS_QUERY = gql`
   query GET_EMAIL_ADDRESS_QUERY($emailAddress: String!) {
@@ -62,18 +62,15 @@ class RegistrationForm extends PureComponent {
                       E-mail Address
                     </label>
                     <div className="col-sm-12 col-md-9">
-                      <input
-                        id="emailAddress"
+                      <ValidatingInput
                         autoComplete="username"
                         autoFocus
+                        validationErrors={validationErrors}
                         type="email"
-                        className={`form-control ${validationErrors['emailAddress'] ? 'is-invalid' : 'is-valid'}`}
                         name="emailAddress"
                         value={this.props.data.emailAddress}
                         onChange={(e) => this.handleChange(e, validate)}
-                        aria-describedby="emailAddressHelpBlock"
                       />
-                      <FormValidationMessage id={'emailAddressHelpBlock'} validationErrors={validationErrors['emailAddress']} />
                     </div>
                   </div>
                   <div className="form-group row mt-5">
@@ -81,16 +78,13 @@ class RegistrationForm extends PureComponent {
                       First Name
                     </label>
                     <div className="col-sm-12 col-md-9">
-                      <input
-                        id="firstName"
+                      <ValidatingInput
+                        validationErrors={validationErrors}
                         type="text"
-                        className={`form-control ${validationErrors['firstName'] ? 'is-invalid' : 'is-valid'}`}
                         name="firstName"
                         value={this.props.data.firstName}
                         onChange={(e) => this.handleChange(e, validate)}
-                        aria-describedby="firstNameHelpBlock"
                       />
-                      <FormValidationMessage id={'firstNameHelpBlock'} validationErrors={validationErrors['firstName']} />
                     </div>
                   </div>
                   <div className="form-group row">
@@ -98,16 +92,13 @@ class RegistrationForm extends PureComponent {
                       Last Name
                     </label>
                     <div className="col-sm-12 col-md-9">
-                      <input
-                        id="lastName"
+                      <ValidatingInput
+                        validationErrors={validationErrors}
                         type="text"
-                        className={`form-control ${validationErrors['lastName'] ? 'is-invalid' : 'is-valid'}`}
                         name="lastName"
                         value={this.props.data.lastName}
                         onChange={(e) => this.handleChange(e, validate)}
-                        aria-describedby="lastNameHelpBlock"
                       />
-                      <FormValidationMessage id={'lastNameHelpBlock'} validationErrors={validationErrors['lastName']} />
                     </div>
                   </div>
                   <div className="form-group row mt-5">
@@ -115,17 +106,15 @@ class RegistrationForm extends PureComponent {
                       Password
                     </label>
                     <div className="col-sm-12 col-md-9">
-                      <input
-                        id="password"
+                      <ValidatingInput
+                        validationErrors={validationErrors}
                         autoComplete="new-password"
                         type="password"
-                        className={`form-control ${validationErrors['password'] ? 'is-invalid' : 'is-valid'}`}
                         name="password"
-                        aria-describedby="passwordHelpBlock"
                         value={this.props.data.password}
                         onChange={(e) => this.handleChange(e, validate)}
                       />
-                      <FormValidationMessage id={'passwordHelpBlock'} validationErrors={validationErrors['password']} />
+
                       {validationErrors['password'] && (
                         <div className="card border-info mt-2">
                           <div className="card-header">Password requirements</div>
@@ -141,17 +130,14 @@ class RegistrationForm extends PureComponent {
                       Confirm
                     </label>
                     <div className="col-sm-12 col-md-9">
-                      <input
-                        id="confirm"
+                      <ValidatingInput
                         type="password"
+                        validationErrors={validationErrors}
                         autoComplete="new-password"
-                        className={`form-control ${validationErrors['confirm'] ? 'is-invalid' : 'is-valid'}`}
                         name="confirm"
-                        aria-describedby="confirmHelpBlock"
                         value={this.props.data.confirm}
                         onChange={(e) => this.handleChange(e, validate)}
                       />
-                      <FormValidationMessage id={'confirmHelpBlock'} validationErrors={validationErrors['confirm']} />
                     </div>
                   </div>
                 </div>
@@ -167,10 +153,10 @@ class RegistrationForm extends PureComponent {
 RegistrationForm.propTypes = {
   configuration: PropTypes.shape({
     passwordMinimumLength: PropTypes.number.isRequired,
-    passwordRequireNumber: PropTypes.bool.isRequired,
-    passwordRequireSymbol: PropTypes.bool.isRequired,
-    passwordRequireLowercase: PropTypes.bool.isRequired,
-    passwordRequireUppercase: PropTypes.bool.isRequired
+    passwordRequiresNumber: PropTypes.bool.isRequired,
+    passwordRequiresSymbol: PropTypes.bool.isRequired,
+    passwordRequiresLowercase: PropTypes.bool.isRequired,
+    passwordRequiresUppercase: PropTypes.bool.isRequired
   }).isRequired,
   data: PropTypes.shape({
     firstName: PropTypes.string.isRequired,
