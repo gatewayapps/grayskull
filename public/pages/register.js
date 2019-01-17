@@ -15,13 +15,15 @@ const RegistrationSteps = {
 
 const GET_CONFIGURATION_QUERY = gql`
   query GET_CONFIGURATION_QUERY {
-    configuration {
+    securityConfiguration {
       multifactorRequired
-      passwordRequireNumber
-      passwordRequireSymbol
-      passwordRequireLowercase
-      passwordRequireUppercase
+      passwordRequiresNumber
+      passwordRequiresSymbol
+      passwordRequiresLowercase
+      passwordRequiresUppercase
       passwordMinimumLength
+    }
+    serverConfiguration {
       realmName
     }
   }
@@ -138,23 +140,26 @@ class RegisterPage extends PureComponent {
               return <LoadingIndicator />
             }
 
-            const { configuration } = data
+            const { securityConfiguration, serverConfiguration } = data
 
             return (
               <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
                 {(registerUser, { loading, error }) => (
-                  <form onSubmit={(e) => { e.preventDefault() }}>
-                    <div className='container pt-4'>
-                      <div className='row'>
-                        <div className='col col-md-8 offset-md-2'>
-                          <div className='card'>
-                            <div className='card-header'>Register for {configuration.realmName}</div>
-                            <div className='card-body'>
-                              {error && <div className='alert alert-danger'>{error.message}</div>}
-                              {this.state.error && <div className='alert alert-danger'>{this.state.error}</div>}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                    }}>
+                    <div className="container pt-4">
+                      <div className="row">
+                        <div className="col col-md-8 offset-md-2">
+                          <div className="card">
+                            <div className="card-header">Register for {serverConfiguration.realmName}</div>
+                            <div className="card-body">
+                              {error && <div className="alert alert-danger">{error.message}</div>}
+                              {this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
                               {this.state.step === RegistrationSteps.UserData && (
                                 <RegistrationForm
-                                  configuration={configuration}
+                                  configuration={securityConfiguration}
                                   data={this.state.data}
                                   onChange={this.onFormValueChanged}
                                   onValidated={this.onFormValidated}
@@ -163,24 +168,20 @@ class RegisterPage extends PureComponent {
                               {this.state.step === RegistrationSteps.Multifactor && (
                                 <MultiFactorSetup
                                   emailAddress={this.state.data.emailAddress}
-                                  required={configuration.multifactorRequired}
+                                  required={securityConfiguration.multifactorRequired}
                                   onCancel={() => this.setRequireMfaVerification(false)}
                                   onEnabled={() => this.setRequireMfaVerification(true)}
                                   onVerified={this.onMfaVerified}
                                 />
                               )}
                             </div>
-                            <div className='card-footer'>
-                              <div className='btn-toolbar float-right'>
-                                <button
-                                  type='submit'
-                                  className='btn btn-primary'
-                                  disabled={!this.isValid(configuration)}
-                                  onClick={() => this.onSubmitClick(registerUser)}>
+                            <div className="card-footer">
+                              <div className="btn-toolbar float-right">
+                                <button type="submit" className="btn btn-primary" disabled={!this.isValid(securityConfiguration)} onClick={() => this.onSubmitClick(registerUser)}>
                                   {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
                                 </button>
                               </div>
-                              <div className='clearfix' />
+                              <div className="clearfix" />
                             </div>
                           </div>
                         </div>

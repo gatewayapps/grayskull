@@ -1,6 +1,6 @@
 import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '@/interfaces/graphql/ISession'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
+import { getContext } from '@data/context'
 import { ISession } from '@data/models/ISession'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { SessionInstance } from '@data/models/Session'
@@ -9,7 +9,7 @@ import { AnyWhereOptions, Transaction } from 'sequelize'
 export default class SessionServiceBase {
   public async sessionsMeta(filter?: ISessionFilter, transaction?: Transaction): Promise<ISessionMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.Session.count({ where, transaction })
+    const count = await getContext().Session.count({ where, transaction })
     return {
       count
     }
@@ -17,7 +17,7 @@ export default class SessionServiceBase {
 
   public async getSessions(filter?: ISessionFilter, transaction?: Transaction): Promise<SessionInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.Session.findAll({
+    return await getContext().Session.findAll({
       where,
       raw: true,
       transaction
@@ -25,7 +25,7 @@ export default class SessionServiceBase {
   }
 
   public async getSession(filter: ISessionUniqueFilter, transaction?: Transaction): Promise<SessionInstance | null> {
-    return await db.Session.findOne({
+    return await getContext().Session.findOne({
       where: filter,
       raw: true,
       transaction
@@ -37,11 +37,11 @@ export default class SessionServiceBase {
       data.createdBy = userContext.userAccountId
       data.updatedBy = userContext.userAccountId
     }
-    return await db.Session.create(data, { returning: true, raw: true, transaction })
+    return await getContext().Session.create(data, { returning: true, raw: true, transaction })
   }
 
   public async deleteSession(filter: ISessionUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
-    const affectedCount = await db.Session.destroy({
+    const affectedCount = await getContext().Session.destroy({
       where: filter as AnyWhereOptions,
       transaction
     })
@@ -52,10 +52,12 @@ export default class SessionServiceBase {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }
-    return await db.Session.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
-      transaction
-    }).then(() => this.getSession(filter))
+    return await getContext()
+      .Session.update(data, {
+        where: filter as AnyWhereOptions,
+        returning: true,
+        transaction
+      })
+      .then(() => this.getSession(filter))
   }
 }

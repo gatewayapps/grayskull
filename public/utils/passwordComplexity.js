@@ -27,16 +27,16 @@ export function validatePassword(password, configuration) {
   if (configuration.minLength && !hasMinLength(password, configuration.minLength)) {
     return false
   }
-  if (configuration.passwordRequireLowercase && !hasLowercase(password)) {
+  if (configuration.passwordRequiresLowercase && !hasLowercase(password)) {
     return false
   }
-  if (configuration.passwordRequireUppercase && !hasUppercase(password)) {
+  if (configuration.passwordRequiresUppercase && !hasUppercase(password)) {
     return false
   }
-  if (configuration.passwordRequireNumber && !hasNumber(password)) {
+  if (configuration.passwordRequiresNumber && !hasNumber(password)) {
     return false
   }
-  if (configuration.passwordRequireSymbol && !hasSymbol(password)) {
+  if (configuration.passwordRequiresSymbol && !hasSymbol(password)) {
     return false
   }
   return true

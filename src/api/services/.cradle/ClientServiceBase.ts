@@ -1,6 +1,6 @@
 import { IClientMeta, IClientFilter, IClientUniqueFilter } from '@/interfaces/graphql/IClient'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
+import { getContext } from '@data/context'
 import { IClient } from '@data/models/IClient'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { ClientInstance } from '@data/models/Client'
@@ -9,7 +9,7 @@ import { AnyWhereOptions, Transaction } from 'sequelize'
 export default class ClientServiceBase {
   public async clientsMeta(filter?: IClientFilter, transaction?: Transaction): Promise<IClientMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.Client.count({ where, transaction })
+    const count = await getContext().Client.count({ where, transaction })
     return {
       count
     }
@@ -17,7 +17,7 @@ export default class ClientServiceBase {
 
   public async getClients(filter?: IClientFilter, transaction?: Transaction): Promise<ClientInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.Client.findAll({
+    return await getContext().Client.findAll({
       where,
       attributes: {
         exclude: ['secret']
@@ -29,7 +29,7 @@ export default class ClientServiceBase {
 
   public async getClientsWithSensitiveData(filter?: IClientFilter, transaction?: Transaction): Promise<ClientInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.Client.findAll({
+    return await getContext().Client.findAll({
       where,
       raw: true,
       transaction
@@ -37,7 +37,7 @@ export default class ClientServiceBase {
   }
 
   public async getClient(filter: IClientUniqueFilter, transaction?: Transaction): Promise<ClientInstance | null> {
-    return await db.Client.findOne({
+    return await getContext().Client.findOne({
       where: filter,
       attributes: {
         exclude: ['secret']
@@ -48,7 +48,7 @@ export default class ClientServiceBase {
   }
 
   public async getClientWithSensitiveData(filter: IClientUniqueFilter, transaction?: Transaction): Promise<ClientInstance | null> {
-    return await db.Client.findOne({
+    return await getContext().Client.findOne({
       where: filter,
       raw: true,
       transaction
@@ -60,7 +60,7 @@ export default class ClientServiceBase {
       data.createdBy = userContext.userAccountId
       data.updatedBy = userContext.userAccountId
     }
-    return await db.Client.create(data, { returning: true, raw: true, transaction })
+    return await getContext().Client.create(data, { returning: true, raw: true, transaction })
   }
 
   public async deleteClient(filter: IClientUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
@@ -70,7 +70,7 @@ export default class ClientServiceBase {
     if (userContext) {
       data.deletedBy = userContext.userAccountId
     }
-    const [affectedCount] = await db.Client.update(data, {
+    const [affectedCount] = await getContext().Client.update(data, {
       where: filter as AnyWhereOptions,
       transaction
     })
@@ -81,10 +81,12 @@ export default class ClientServiceBase {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }
-    return await db.Client.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
-      transaction
-    }).then(() => this.getClient(filter))
+    return await getContext()
+      .Client.update(data, {
+        where: filter as AnyWhereOptions,
+        returning: true,
+        transaction
+      })
+      .then(() => this.getClient(filter))
   }
 }

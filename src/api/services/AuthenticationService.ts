@@ -113,7 +113,7 @@ class AuthenticationService {
 
   public generateOtpSecret(emailAddress: string): string {
     const secret = otplib.authenticator.generateSecret()
-    return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.General.realmName, secret)
+    return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.General!.realmName, secret)
   }
 
   public async getAccessToken(grant_type: GrantType, client_id: string, client_secret: string, code?: string, refresh_token?: string): Promise<IAccessTokenResponse> {
@@ -177,7 +177,7 @@ class AuthenticationService {
 
     return {
       access_token,
-      expires_in: ConfigurationManager.Security.accessTokenExpiresIn,
+      expires_in: ConfigurationManager.Security!.accessTokenExpirationSeconds,
       refresh_token,
       session_id,
       token_type: 'Bearer'
@@ -198,17 +198,17 @@ class AuthenticationService {
     const backupCode = otplib.authenticator.generate(otpSecret)
     this.localCache.set(emailAddress, backupCode, 16 * 60)
     const body = `Your login code is: ${backupCode}<br/><br/>This code will expire in 15 minutes.`
-    MailService.sendMail(emailAddress, 'Login Code', body, ConfigurationManager.Security.adminEmailAddress)
+    MailService.sendMail(emailAddress, 'Login Code', body)
     return true
   }
 
   public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
-    if (ConfigurationManager.Security.passwordExpiresDays > 0) {
+    if (ConfigurationManager.Security!.maxPasswordAge > 0) {
       const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress)
       if (userAccount) {
         const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
-        if (daysSincePasswordChange >= ConfigurationManager.Security.passwordExpiresDays) {
+        if (daysSincePasswordChange >= ConfigurationManager.Security!.maxPasswordAge) {
           return true
         }
       }
@@ -232,16 +232,16 @@ class AuthenticationService {
 
   public async validatePassword(password: string, confirm: string): Promise<boolean> {
     const requiredParts: string[] = []
-    if (ConfigurationManager.Security.passwordRequireLowercase) {
+    if (ConfigurationManager.Security!.passwordRequiresLowercase) {
       requiredParts.push('lowercase letter (a-z)')
     }
-    if (ConfigurationManager.Security.passwordRequireUppercase) {
+    if (ConfigurationManager.Security!.passwordRequiresUppercase) {
       requiredParts.push('uppercase letter (A-Z)')
     }
-    if (ConfigurationManager.Security.passwordRequireNumber) {
+    if (ConfigurationManager.Security!.passwordRequiresNumber) {
       requiredParts.push('number (0-9)')
     }
-    if (ConfigurationManager.Security.passwordRequireSymbol) {
+    if (ConfigurationManager.Security!.passwordRequiresSymbol) {
       requiredParts.push('symbol (!, #, @, etc...)')
     }
 
@@ -251,20 +251,20 @@ class AuthenticationService {
       throw new Error('Passwords do not match.  Please re-enter your passwords')
     }
 
-    if (ConfigurationManager.Security.passwordRequireLowercase && LOWERCASE_REGEX.test(password) === false) {
+    if (ConfigurationManager.Security!.passwordRequiresLowercase && LOWERCASE_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (ConfigurationManager.Security.passwordRequireUppercase && UPPERCASE_REGEX.test(password) === false) {
+    if (ConfigurationManager.Security!.passwordRequiresUppercase && UPPERCASE_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (ConfigurationManager.Security.passwordRequireNumber && NUMBER_REGEX.test(password) === false) {
+    if (ConfigurationManager.Security!.passwordRequiresNumber && NUMBER_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (ConfigurationManager.Security.passwordRequireSymbol && SYMBOL_REGEX.test(password) === false) {
+    if (ConfigurationManager.Security!.passwordRequiresSymbol && SYMBOL_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (password.length < ConfigurationManager.Security.passwordMinimumLength) {
-      throw new Error(`Password must be at least ${ConfigurationManager.Security.passwordMinimumLength} characters long`)
+    if (password.length < ConfigurationManager.Security!.passwordMinimumLength) {
+      throw new Error(`Password must be at least ${ConfigurationManager.Security!.passwordMinimumLength} characters long`)
     }
     return true
   }
@@ -282,7 +282,7 @@ class AuthenticationService {
         client_id: client.client_id
       })
       const options = {
-        expiresIn: ConfigurationManager.Security.accessTokenExpiresIn
+        expiresIn: ConfigurationManager.Security!.accessTokenExpirationSeconds
       }
       return jwt.sign(payload, client.secret || '', options, (err, token) => {
         if (err) {
@@ -311,7 +311,7 @@ class AuthenticationService {
         session_id: sessionId,
         userAccountId: userAccount.userAccountId
       }
-      return jwt.sign(payload, ConfigurationManager.Security.globalSecret, (err, token) => {
+      return jwt.sign(payload, ConfigurationManager.Security!.globalSecret, (err, token) => {
         if (err) {
           reject(err)
         } else {
@@ -329,7 +329,7 @@ class AuthenticationService {
 
   private verifyRefreshToken(client: ClientInstance, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, ConfigurationManager.Security.globalSecret, (err, payload) => {
+      jwt.verify(token, ConfigurationManager.Security!.globalSecret, (err, payload) => {
         if (err) {
           reject(err)
         } else {
