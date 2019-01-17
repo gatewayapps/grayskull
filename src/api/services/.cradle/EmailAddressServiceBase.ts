@@ -54,7 +54,7 @@ export default class EmailAddressServiceBase {
     return affectedCount > 0
   }
 
-  public async updateEmailAddress(filter: IEmailAddressUniqueFilter, data: IEmailAddress, userContext?: IUserAccount, transaction?: Transaction): Promise<EmailAddressInstance | null> {
+  public async updateEmailAddress(filter: IEmailAddressUniqueFilter, data: Partial<IEmailAddress>, userContext?: IUserAccount, transaction?: Transaction): Promise<EmailAddressInstance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

@@ -5,8 +5,9 @@ import AuthenticationService from '@services/AuthenticationService'
 import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
-import { setAuthCookies, decodeState } from '@/utils/authentication'
+import { setAuthCookies, decodeState, clearAuthCookies, getAuthCookies } from '@/utils/authentication'
 import SessionService from '@services/SessionService'
+import '../../middleware/authentication'
 
 export default class LoginController extends ControllerBase {
   @route(HttpMethod.POST, '/access_token')
@@ -24,7 +25,7 @@ export default class LoginController extends ControllerBase {
     }
   }
 
-  @route(HttpMethod.GET, '/auth')
+  @route(HttpMethod.GET, '/authorize')
   @query('client_id', 'response_type', 'redirect_uri')
   @queryMustEqual('response_type', 'code')
   public async renderLoginPage(req: Request, res: Response) {
@@ -32,8 +33,19 @@ export default class LoginController extends ControllerBase {
       res.status(400).send()
       return
     } else {
-      return this.next.render(req, res, '/login', req.query)
+      return this.next.render(req, res, '/authorize', req.query)
     }
+  }
+
+  @route(HttpMethod.GET, '/logout')
+  public async logout(req: Request, res: Response) {
+    const { sessionId } = getAuthCookies(req)
+    if (sessionId) {
+      await SessionService.deleteSession({ sessionId })
+    }
+    clearAuthCookies(res)
+    const redirectUrl = `/login${req.query.state ? `?state=${encodeURIComponent(req.query.state)}` : ''}`
+    res.redirect(redirectUrl)
   }
 
   @route(HttpMethod.GET, '/resetPassword')
@@ -90,18 +102,11 @@ export default class LoginController extends ControllerBase {
       // 1. Get accessToken via AuthenticationService
       const accessToken = await AuthenticationService.getAccessToken('authorization_code', 'grayskull', ConfigurationManager.Security!.globalSecret, req.query.code)
 
-      if (!accessToken.session_id) {
-        throw new Error('Session not found')
+      if (!accessToken) {
+        throw new Error('Unable to create access token')
       }
 
-      // 2. Store sessionId and refreshToken to the database
-      const sessionId = `${accessToken.session_id}:${Date.now()}`
-      await SessionService.createSession({ sessionId, refreshToken: accessToken.refresh_token })
-
-      // 3. Set sessionId and accessToken cookies
-      setAuthCookies(res, sessionId, accessToken.access_token, accessToken.expires_in * 1000)
-
-      // 4. Redirect to returnUrl or home page
+      // 2. Redirect to returnUrl or home page
       const state = decodeState(req.query.state)
       const returnPath = state && state.returnPath ? state.returnPath : '/home'
       res.redirect(returnPath)

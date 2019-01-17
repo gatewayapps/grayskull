@@ -41,20 +41,14 @@ export default class SessionServiceBase {
   }
 
   public async deleteSession(filter: ISessionUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
-    const data: Partial<ISession> = {
-      deletedAt: new Date()
-    }
-    if (userContext) {
-      data.deletedBy = userContext.userAccountId
-    }
-    const [affectedCount] = await getContext().Session.update(data, {
+    const affectedCount = await getContext().Session.destroy({
       where: filter as AnyWhereOptions,
       transaction
     })
     return affectedCount > 0
   }
 
-  public async updateSession(filter: ISessionUniqueFilter, data: ISession, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance | null> {
+  public async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

@@ -4,7 +4,7 @@ EmailAddress:
     graphql: true
     graphqlResolvers: true
   properties:
-    emailAddressId: uniqueidentifier primary default('new_uuid')
+    emailAddressId: uniqueidentifier primary auto
     userAccountId: uniqueidentifier
     emailAddress: string unique
     verified: boolean default(false)

@@ -4,6 +4,7 @@ import { Permissions } from '@/utils/permissions'
 import { encrypt } from '@/utils/cipher'
 import { getContext } from '@data/context'
 import { ClientInstance } from '@data/models/Client'
+import { IEmailAddress } from '@data/models/IEmailAddress'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
 import UserAccountServiceBase from '@services/UserAccountServiceBase'
@@ -16,9 +17,6 @@ import uuid from 'uuid/v4'
 import ClientService from './ClientService'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
-import UserClientService from './UserClientService'
-import { IUserClient } from '@data/models/IUserClient'
-import { IEmailAddress } from '@data/models/IEmailAddress'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -129,15 +127,7 @@ class UserAccountService extends UserAccountServiceBase {
       }
       await EmailAddressService.createEmailAddress(emailAddressData, user, trx)
 
-      // 5. Create a UserClient for Grayskull
-      const userClientData: IUserClient = {
-        client_id: 'grayskull',
-        userAccountId: user.userAccountId!,
-        createdBy: user.userAccountId!
-      }
-      await UserClientService.createUserClient(userClientData, user, trx)
-
-      // 6. Commit the transaction
+      // 5. Commit the transaction
       await trx.commit()
 
       return user

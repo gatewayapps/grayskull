@@ -2,13 +2,16 @@ Session:
   meta:
     database: true
     graphql: false
+    destroy: true
   properties:
-    sessionId: string primary
-    refreshToken: string(1000)
+    sessionId: uniqueidentifier primary auto
+    fingerprint: string
+    userAccountId: uniqueidentifier
+    name: string(100)?
+    ipAddress: string(50)
     lastUsedAt: datetime default(NOW)
+    expiresAt: datetime
     createdBy: uniqueidentifier?
     createdAt: datetime default(NOW)
     updatedBy: uniqueidentifier?
     updatedAt: datetime default(NOW)
-    deletedBy: uniqueidentifier?
-    deletedAt: datetime?

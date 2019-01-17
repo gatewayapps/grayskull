@@ -54,7 +54,7 @@ export default class UserClientServiceBase {
     return affectedCount > 0
   }
 
-  public async updateUserClient(filter: IUserClientUniqueFilter, data: IUserClient, userContext?: IUserAccount, transaction?: Transaction): Promise<UserClientInstance | null> {
+  public async updateUserClient(filter: IUserClientUniqueFilter, data: Partial<IUserClient>, userContext?: IUserAccount, transaction?: Transaction): Promise<UserClientInstance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

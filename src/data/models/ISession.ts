@@ -1,11 +1,13 @@
 export interface ISession {
-  sessionId: string
-  refreshToken: string
+  sessionId?: string
+  fingerprint: string
+  userAccountId: string
+  name?: string
+  ipAddress: string
   lastUsedAt?: Date
+  expiresAt: Date
   createdBy?: string
   createdAt?: Date
   updatedBy?: string
   updatedAt?: Date
-  deletedBy?: string
-  deletedAt?: Date
 }

@@ -1,9 +1,8 @@
-LoginResponse:
+AuthorizeClientResponse:
   meta:
     database: false
     graphql: true
     graphqlResolvers: false
   properties:
-    success: boolean
-    message: string?
-    otpRequired: boolean?
+    pendingScopes: string[]?
+    redirectUri: string?

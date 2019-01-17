@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { ISession } from '@data/models/ISession'
 
 export const ACCESS_TOKEN_COOKIE_NAME = 'at'
 export const SESSION_ID_COOKIE_NAME = 'sid'
@@ -23,10 +24,13 @@ export function generateLoginUrl(protocol: string, hostname: string | undefined,
   const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
   const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
 
-  hostname = hostname || `localhost${IS_DEVELOPMENT ? ':3000' : ''}`
-
-  const query = [`client_id=grayskull`, `response_type=code`, `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General!.baseUrl}/signin`)}`, `state=${state}`]
-  return `/auth?${query.join('&')}`
+  const query = [
+    `client_id=grayskull`,
+    `response_type=code`,
+    `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General!.baseUrl}/signin`)}`,
+    `state=${state}`
+  ]
+  return `/authorize?${query.join('&')}`
 }
 
 export function generateState(returnPath: string): string {
@@ -49,16 +53,17 @@ export function decodeState(state: string | undefined): IAuthState | null {
   }
 }
 
-export function setAuthCookies(res: Response, sessionId: string, accessToken: string, expiresIn: number) {
-  res.cookie(ACCESS_TOKEN_COOKIE_NAME, accessToken, { httpOnly: true, maxAge: expiresIn, signed: true })
-  res.cookie(SESSION_ID_COOKIE_NAME, sessionId, { httpOnly: true, signed: true })
+export function setAuthCookies(res: Response, session: ISession) {
+  res.cookie(SESSION_ID_COOKIE_NAME, session.sessionId!, { httpOnly: true, signed: true, expires: session.expiresAt })
 }
 
 export function getAuthCookies(req: Request) {
-  const accessToken = req.signedCookies[ACCESS_TOKEN_COOKIE_NAME]
   const sessionId = req.signedCookies[SESSION_ID_COOKIE_NAME]
   return {
-    accessToken,
     sessionId
   }
+}
+
+export function clearAuthCookies(res: Response) {
+  res.clearCookie(SESSION_ID_COOKIE_NAME)
 }

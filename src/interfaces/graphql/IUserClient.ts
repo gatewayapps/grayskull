@@ -5,6 +5,9 @@ export interface IUserClientMeta {
 export interface IUserClientFilter {
   or?: [IUserClientFilter]
   and?: [IUserClientFilter]
+  userClientId_in?: [string]
+  userClientId_equals?: string
+  userClientId_notEquals?: string
   userAccountId_in?: [string]
   userAccountId_equals?: string
   userAccountId_notEquals?: string
@@ -13,6 +16,16 @@ export interface IUserClientFilter {
   client_id_endsWith?: string
   client_id_equals?: string
   client_id_notEquals?: string
+  allowedScopes_contains?: string
+  allowedScopes_startsWith?: string
+  allowedScopes_endsWith?: string
+  allowedScopes_equals?: string
+  allowedScopes_notEquals?: string
+  deniedScopes_contains?: string
+  deniedScopes_startsWith?: string
+  deniedScopes_endsWith?: string
+  deniedScopes_equals?: string
+  deniedScopes_notEquals?: string
   revoked_equals?: boolean
   revoked_notEquals?: boolean
   revokedBy_in?: [string]
@@ -46,6 +59,7 @@ export interface IUserClientFilter {
 }
 
 export interface IUserClientUniqueFilter {
+  userClientId?: string
   userAccountId?: string
   client_id?: string
 }

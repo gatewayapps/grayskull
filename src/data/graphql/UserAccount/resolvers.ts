@@ -1,8 +1,13 @@
+import { GrayskullError } from '@/GrayskullError'
+import { IAuthorizeClientResponse } from '@data/models/IAuthorizeClientResponse'
+import { ILoginResponse } from '@data/models/ILoginResponse'
+import { IRegisterUserResponse } from '@data/models/IRegisterUserResponse'
 import AuthenticationService from '@services/AuthenticationService'
 import EmailAddressService from '@services/EmailAddressService'
 import UserAccountService from '@services/UserAccountService'
-import { GrayskullError } from '@/GrayskullError'
-import { IRegisterUserResponse } from '@data/models/IRegisterUserResponse'
+import { setAuthCookies } from '@/utils/authentication'
+import UserClientService from '@services/UserClientService'
+import SessionService from '@services/SessionService';
 
 export default {
   Query: {
@@ -17,38 +22,30 @@ export default {
     userAccount: (obj, args, context, info) => {
       // Insert your userAccount implementation here
       throw new Error('userAccount is not implemented')
-    }
+    },
+    me: (obj, args, context, info) => {
+      return context.user
+    },
   },
   Mutation: {
-    login: async (obj, args, context, info) => {
+    login: async (obj, args, context, info): Promise<ILoginResponse> => {
       const {
         emailAddress,
         password,
         otpToken,
-        sessionId,
-        client_id,
-        response_type,
-        redirect_uri,
+        fingerprint
       } = args.data
 
       try {
-        if (response_type !== 'code') {
-          throw new Error('Invalid login Request')
-        }
-        if (!await AuthenticationService.validateRedirectUri(client_id, redirect_uri)) {
-          throw new Error('Invalid login request')
-        } else if (!sessionId) {
+        if (!fingerprint) {
           throw new Error('Invalid login request')
         } else {
-          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, sessionId, client_id, otpToken)
-          if (authResult.success === true) {
-            const queryParts = [`code=${authResult.code}`]
-            if (args.data.state) {
-              queryParts.push(`state=${args.data.state}`)
-            }
+          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken)
+          if (authResult.session) {
+            setAuthCookies(context.res, authResult.session)
+
             return {
               success: true,
-              redirectUrl: `${redirect_uri}?${queryParts.join('&')}`
             }
           } else {
             return {
@@ -61,6 +58,47 @@ export default {
       } catch (err) {
         return { success: false, message: err.message }
       }
+    },
+    authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
+      if (!context.user) {
+        throw new Error('You must be logged in')
+      }
+      const {
+        client_id,
+        responseType,
+        redirectUri,
+        scope,
+        state,
+      } = args.data
+
+      if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri)) {
+        throw new Error('Invalid redirect uri')
+      }
+      if (responseType !== 'code') {
+        throw new Error('Invalid response type')
+      }
+      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(context.user.userAccountId, client_id, scope)
+      if (pendingScopes && pendingScopes.length > 0) {
+        return {
+          pendingScopes,
+        }
+      }
+      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!)
+      const query = [`code=${encodeURIComponent(authCode)}`]
+      if (state) {
+        query.push(`state=${encodeURIComponent(state)}`)
+      }
+      return {
+        redirectUri: `${redirectUri}?${query.join('&')}`
+      }
+    },
+    updateClientScopes: async (obj, args, context, info) => {
+      if (!context.user) {
+        throw new Error('You must be logged in!')
+      }
+      const { client_id, allowedScopes, deniedScopes } = args.data
+      await UserClientService.updateScopes(context.user, client_id, allowedScopes, deniedScopes)
+      return true
     },
     validatePassword: (obj, args, context, info) => {
       // Insert your validatePassword implementation here
@@ -80,6 +118,15 @@ export default {
 
         await AuthenticationService.validatePassword(password, confirm)
         const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password)
+        const fingerprint = context.req.header('x-fingerprint')
+        if (fingerprint) {
+          const session = await SessionService.createSession({
+            fingerprint,
+            userAccountId: userAccount.userAccountId!,
+            ipAddress: context.req.ip,
+          })
+          setAuthCookies(context.res, session)
+        }
         return { success: true }
       } catch (err) {
         if (err instanceof GrayskullError) {

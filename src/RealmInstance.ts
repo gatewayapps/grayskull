@@ -105,7 +105,7 @@ export class RealmInstance {
 
   private initializeServer() {
     const server = express()
-    server.use(bodyParser.urlencoded())
+    server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
     if (this.config) {
       server.use(cookieParser(this.config.Security!.globalSecret))
@@ -125,8 +125,8 @@ export class RealmInstance {
         console.log(error)
         return new Error('Internal server error')
       },
-      context: ({ req }) => {
-        return { user: req.user }
+      context: ({ req, res }) => {
+        return { req, res, user: req.user }
       }
     })
     apollo.applyMiddleware({ app: this.server, path: '/api/graphql' })
@@ -197,15 +197,6 @@ export class RealmInstance {
     // Server-side
     const routeControllers = [new LoginController(this.app), new UserController(this.app)]
     routeControllers.forEach((c) => c.registerRoutes(this.server))
-
-    this.server.all('^/admin$|^/admin/*|^/home$|^/home/*', (req, res, next) => {
-      if (!req.user) {
-        const url = generateLoginUrl(req.protocol, req.hostname, { returnUrl: req.originalUrl })
-        res.redirect(url)
-      } else {
-        next()
-      }
-    })
 
     this.server.get('*', (req, res) => {
       return this.handle(req, res)

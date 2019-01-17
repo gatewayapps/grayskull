@@ -1,11 +1,11 @@
 export interface I{{Name}} {
   {{#each Properties as |prop|}}
   {{#if prop.AllowNull }}
-  {{#isArray TypeName}}
+  {{#isArray prop.TypeName}}
   {{#if prop.MemberType.ModelName}}
-  {{prop.Name}}?: List<I{{prop.MemberType.ModelName}}>
+  {{prop.Name}}?: I{{prop.MemberType.ModelName}}[]
   {{else}}
-  {{prop.Name}}?: List<{{prop.MemberType.TypeName}}>
+  {{prop.Name}}?: {{prop.MemberType.TypeName}}[]
   {{/if}}
   {{/isArray}}
   {{#isObject prop}}
@@ -19,11 +19,11 @@ export interface I{{Name}} {
   {{/ifEquals}}
   {{/isBaseDataType}}
   {{else}}
-  {{#isArray TypeName}}
+  {{#isArray prop.TypeName}}
   {{#if prop.MemberType.ModelName}}
-  {{prop.Name}}: List<I{{prop.MemberType.ModelName}}>
+  {{prop.Name}}{{#if prop.MemberType.AllowNull}}?{{/if}}: I{{prop.MemberType.ModelName}}[]
   {{else}}
-  {{prop.Name}}: List<{{prop.MemberType.TypeName}}>
+  {{prop.Name}}{{#if prop.MemberType.AllowNull}}?{{/if}}: {{prop.MemberType.TypeName}}[]
   {{/if}}
   {{/isArray}}
   {{#isObject prop}}

@@ -74,6 +74,12 @@ export default class {{Name}}ServiceBase {
   }
 
   public async delete{{Name}}(filter: I{{Name}}UniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+    {{#if Meta.destroy}}
+    const affectedCount = await db.Session.destroy({
+      where: filter as AnyWhereOptions,
+      transaction,
+    })
+    {{else}}
     const data: Partial<I{{Name}}> = {
       deletedAt: new Date()
     }
@@ -84,10 +90,11 @@ export default class {{Name}}ServiceBase {
       where: filter as AnyWhereOptions,
       transaction,
     })
+    {{/if}}
     return affectedCount > 0
   }
 
-  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: I{{Name}}, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance | null> {
+  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: Partial<I{{Name}}>, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance | null> {
     if (userContext) {
       data.updatedBy = userContext.userAccountId
     }

@@ -7,7 +7,7 @@ UserAccount:
     graphql: true
     graphqlResolvers: true
   properties:
-    userAccountId: uniqueidentifier primary default('new_uuid')
+    userAccountId: uniqueidentifier primary auto
     firstName: string(30)
     lastName: string(30)
     lastActive: datetime default(NOW)
@@ -35,11 +35,23 @@ UserAccount:
         emailAddress: string
         password: string
         otpToken: string?
-        sessionId: string
+        fingerprint: string
+    # Authorize Client #
+    authorizeClient:
+      returns: AuthorizeClientResponse
+      arguments:
         client_id: string
-        response_type: string
-        redirect_uri: string
+        responseType: string
+        redirectUri: string
+        scope: string?
         state: string?
+    # Update Client Scopes #
+    updateClientScopes:
+      returns: boolean
+      arguments:
+        client_id: string
+        allowedScopes: string[]
+        deniedScopes: string[]
     # Create User Account #
     registerUser:
       returns: RegisterUserResponse
@@ -62,11 +74,12 @@ UserAccount:
       arguments:
         secret: string
         token: string
-    # Reset Password #
+    # Send Backup Code #
     sendBackupCode:
       returns: boolean
       arguments:
         emailAddress: string
+    # Reset Password #
     resetPassword:
       returns: boolean
       arguments:
