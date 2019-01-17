@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { ApolloConsumer } from 'react-apollo'
 import LoadingIndicator from './LoadingIndicator'
+import UserContext from '../contexts/UserContext'
+import SignOut from '../components/SignOut'
 
 const AUTHORIZE_CLIENT_MUTATION = gql`
   mutation AUTHORIZE_CLIENT_MUTATION($client_id: String!, $responseType: String!, $redirectUri: String!, $scope: String, $state: String) {
@@ -126,53 +128,60 @@ class ClientAuthorization extends PureComponent {
             return (<LoadingIndicator />)
           }
           return (
-            <form onSubmit={this.onSubmit}>
-              <div className='card'>
-                <div className='card-header'>Authorize {this.props.client.name}</div>
-                <div className='card-body'>
-                  <div className='row'>
-                    <div className='col-lg-3'>{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
-                    <div className='col-lg-9'>
-                      <div><strong>{this.props.client.name}</strong> would like to:</div>
-                      {this.props.scopes.filter((s) => this.state.pendingScopes.includes(s.id)).map((scope) => (
-                        <div key={scope.id} className='form-check my-2 mx-4'>
-                          <input
-                            type='checkbox'
-                            id={scope.id}
-                            name={scope.id}
-                            className='form-check-input'
-                            checked={this.state.allowedScopes.includes(scope.id)}
-                            onChange={this.handleScopeCheckChanged}
-                          />
-                          <label htmlFor={scope.id} className='form-check-label'>
-                            {scope.userDescription}
-                          </label>
+            <UserContext.Consumer>
+              {({ user }) => (
+                <form onSubmit={this.onSubmit}>
+                  <div className='card'>
+                    <div className='card-header'>Authorize {this.props.client.name}</div>
+                    <div className='card-body'>
+                      <div className='row'>
+                        <div className='col-lg-3'>{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
+                        <div className='col-lg-9'>
+                          <div className='mt-2'><strong>{this.props.client.name}</strong> would like to:</div>
+                          {this.props.scopes.filter((s) => this.state.pendingScopes.includes(s.id)).map((scope) => (
+                            <div key={scope.id} className='form-check my-2 mx-4'>
+                              <input
+                                type='checkbox'
+                                id={scope.id}
+                                name={scope.id}
+                                className='form-check-input'
+                                checked={this.state.allowedScopes.includes(scope.id)}
+                                onChange={this.handleScopeCheckChanged}
+                              />
+                              <label htmlFor={scope.id} className='form-check-label'>
+                                {scope.userDescription}
+                              </label>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
+                      <div className='d-flex align-items-center justify-content-center mt-2'>
+                        <div>Logged in as <strong>{user.firstName} {user.lastName}</strong> (<SignOut includeState>Not You?</SignOut>)</div>
+                      </div>
+                    </div>
+                    <div className='card-footer clearfix'>
+                      <div className='btn-toolbar float-right'>
+                        <button
+                          type='button'
+                          className='btn btn-outline-danger mr-3'
+                          disabled={this.state.isSaving}
+                          onClick={this.onDenyClicked}
+                        >
+                          <i className='fal fa-times fa-fw' /> Deny
+                        </button>
+                        <button
+                          type='submit'
+                          className='btn btn-success'
+                          disabled={this.state.isSaving}
+                        >
+                          <i className='fal fa-check fa-fw' /> Authorize
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className='card-footer clearfix'>
-                  <div className='btn-toolbar float-right'>
-                    <button
-                      type='button'
-                      className='btn btn-outline-danger mr-3'
-                      disabled={this.state.isSaving}
-                      onClick={this.onDenyClicked}
-                    >
-                      <i className='fal fa-times fa-fw' /> Deny
-                    </button>
-                    <button
-                      type='submit'
-                      className='btn btn-success'
-                      disabled={this.state.isSaving}
-                    >
-                      <i className='fal fa-check fa-fw' /> Authorize
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
+                </form>
+              )}
+            </UserContext.Consumer>
           )
         }}
       </ApolloConsumer>

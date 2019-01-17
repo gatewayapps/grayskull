@@ -6,6 +6,7 @@ import ErrorMessage from '../components/ErrorMessage'
 import LoadingIndicator from '../components/LoadingIndicator'
 import LoginForm from '../components/LoginForm'
 import Primary from '../layouts/primary'
+import { parseRoutingState } from '../utils/routing'
 
 const GET_CLIENT_QUERY = gql`
   query GET_CLIENT($client_id: String!) {
@@ -25,7 +26,7 @@ class LoginPage extends React.PureComponent {
 
   onAuthenticated = () => {
     if (this.props.router.query.state) {
-      const parsedState = JSON.parse(atob(this.props.router.query.state))
+      const parsedState = parseRoutingState(this.props.router.query.state)
       if (parsedState) {
         this.props.router.push(parsedState)
         return
@@ -37,7 +38,7 @@ class LoginPage extends React.PureComponent {
   render() {
     return (
       <Primary>
-        <Query fetchPolicy='' query={GET_CLIENT_QUERY} variables={{ client_id: this.props.query.client_id }}>
+        <Query fetchPolicy='' query={GET_CLIENT_QUERY} variables={{ client_id: this.props.query.client_id || 'grayskull' }}>
           {({ loading, error, data }) => {
             if (loading) {
               return <LoadingIndicator />

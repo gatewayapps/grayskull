@@ -3,6 +3,7 @@ import { withRouter } from 'next/router'
 import React, { Component } from 'react'
 import { ApolloConsumer } from 'react-apollo'
 import UserContext from '../contexts/UserContext'
+import { generateRoutingState } from '../utils/routing'
 import LoadingIndicator from './LoadingIndicator'
 
 const GET_ME_QUERY = gql`
@@ -33,11 +34,8 @@ class RequireAuthentication extends Component {
         user: data.me
       })
     } else {
-      const state = btoa(JSON.stringify({
-        pathname: this.props.router.pathname,
-        query: this.props.router.query
-      }))
-      window.location.replace(`/login?client_id=${this.props.router.query.client_id || 'grayskull'}&state=${state}`)
+      const state = generateRoutingState(this.props.router)
+      window.location.replace(`/login?state=${state}`)
     }
   }
 

@@ -5,8 +5,9 @@ import AuthenticationService from '@services/AuthenticationService'
 import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
-import { setAuthCookies, decodeState } from '@/utils/authentication'
+import { setAuthCookies, decodeState, clearAuthCookies } from '@/utils/authentication'
 import SessionService from '@services/SessionService'
+import '../../middleware/authentication'
 
 export default class LoginController extends ControllerBase {
   @route(HttpMethod.POST, '/access_token')
@@ -34,6 +35,16 @@ export default class LoginController extends ControllerBase {
     } else {
       return this.next.render(req, res, '/authorize', req.query)
     }
+  }
+
+  @route(HttpMethod.GET, '/logout')
+  public async logout(req: Request, res: Response) {
+    if (req.session) {
+      await SessionService.deleteSession({ sessionId: req.session.sessionId })
+    }
+    clearAuthCookies(res)
+    const redirectUrl = `/login${req.query.state ? `?state=${encodeURIComponent(req.query.state)}` : ''}`
+    res.redirect(redirectUrl)
   }
 
   @route(HttpMethod.GET, '/resetPassword')

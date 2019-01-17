@@ -1,6 +1,5 @@
 import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
 import Primary from '../layouts/primary'
