@@ -99,7 +99,7 @@ class LoginForm extends PureComponent {
                       <>
                         <div className='form-group'>
                           <label htmlFor='name'>E-mail Address:</label>
-                          <input type='email' className='form-control' name='emailAddress' value={this.state.emailAddress} onChange={this.handleChange} />
+                          <input type='email' className='form-control' name='emailAddress' value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
                         </div>
                         <div className='form-group'>
                           <label htmlFor='password'>Password:</label>

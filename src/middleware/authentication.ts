@@ -36,6 +36,7 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
 
   const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.ip)
   if (!session) {
+    SessionService.deleteSession({ sessionId })
     clearAuthCookies(res)
     return next()
   }
