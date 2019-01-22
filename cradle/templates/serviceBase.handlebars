@@ -76,7 +76,7 @@ export default class {{Name}}ServiceBase {
 
   protected async delete{{Name}}(filter: I{{Name}}UniqueFilter, options: IServiceOptions): Promise<boolean> {
     {{#if Meta.destroy}}
-    const affectedCount = await db.Session.destroy({
+    const affectedCount = await getContext().Session.destroy({
       where: filter as AnyWhereOptions,
       transaction: options.transaction,
     })
