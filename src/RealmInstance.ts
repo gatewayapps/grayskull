@@ -179,10 +179,9 @@ export class RealmInstance {
     if (!FIRST_USER_CREATED) {
       const userMeta = await UserAccountRepository.userAccountsMeta(null, { userContext: null })
       FIRST_USER_CREATED = userMeta.count > 0
-      res.locals['NEEDS_FIRST_USER'] = FIRST_USER_CREATED
-    } else {
-      res.locals['NEEDS_FIRST_USER'] = false
     }
+    res.locals['NEEDS_FIRST_USER'] = !FIRST_USER_CREATED
+
     next()
   }
 
