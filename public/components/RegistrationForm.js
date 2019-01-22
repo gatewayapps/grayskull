@@ -74,6 +74,7 @@ class RegistrationForm extends PureComponent {
                     label="First Name"
                     validationErrors={validationErrors}
                     type="text"
+                    autoComplete="nope"
                     name="firstName"
                     value={this.props.data.firstName}
                     onChange={(e) => this.handleChange(e, validate)}
@@ -83,6 +84,7 @@ class RegistrationForm extends PureComponent {
                     validationErrors={validationErrors}
                     label="Last Name"
                     type="text"
+                    autoComplete="nope"
                     name="lastName"
                     value={this.props.data.lastName}
                     onChange={(e) => this.handleChange(e, validate)}
@@ -98,14 +100,12 @@ class RegistrationForm extends PureComponent {
                     onChange={(e) => this.handleChange(e, validate)}
                   />
 
-                  {validationErrors['password'] && (
-                    <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
-                      <div className="alert-heading">Password requirements</div>
-                      <div>
-                        <PasswordComplexity configuration={this.props.configuration} password={this.props.data.password} />
-                      </div>
+                  <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                    <div className="alert-heading">Password requirements</div>
+                    <div>
+                      <PasswordComplexity configuration={this.props.configuration} password={this.props.data.password} />
                     </div>
-                  )}
+                  </div>
 
                   <ResponsiveValidatingInput
                     type="password"

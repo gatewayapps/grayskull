@@ -16,28 +16,39 @@ class SessionService extends SessionServiceBase {
     const newSession: ISession = {
       ...data,
       fingerprint,
-      expiresAt: moment().add(SESSION_EXPIRATION_SECONDS, 'seconds').toDate()
+      expiresAt: moment()
+        .add(SESSION_EXPIRATION_SECONDS, 'seconds')
+        .toDate()
     }
     return super.createSession(newSession, userContext, transaction)
   }
 
   public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string): Promise<SessionInstance | null> {
-    const session = await super.getSession({ sessionId })
-    if (!session) {
-      return null
-    }
-    if (!await bcrypt.compare(fingerprint, session.fingerprint)) {
-      return null
-    }
-    if (session.expiresAt < new Date()) {
-      return null
-    }
+    try {
+      const session = await super.getSession({ sessionId })
+      if (!session) {
+        return null
+      }
+      if (!(await bcrypt.compare(fingerprint, session.fingerprint))) {
+        return null
+      }
+      if (session.expiresAt < new Date()) {
+        return null
+      }
 
-    return super.updateSession({ sessionId }, {
-      ipAddress,
-      lastUsedAt: new Date(),
-      expiresAt: moment().add(SESSION_EXPIRATION_SECONDS, 'seconds').toDate()
-    })
+      return super.updateSession(
+        { sessionId },
+        {
+          ipAddress,
+          lastUsedAt: new Date(),
+          expiresAt: moment()
+            .add(SESSION_EXPIRATION_SECONDS, 'seconds')
+            .toDate()
+        }
+      )
+    } catch (err) {
+      return null
+    }
   }
 
   private hashFingerprint(fingerprint: string): Promise<string> {

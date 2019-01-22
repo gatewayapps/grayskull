@@ -149,41 +149,32 @@ class RegisterPage extends PureComponent {
                     onSubmit={(e) => {
                       e.preventDefault()
                     }}>
-                    <div className="container" style={{ height: '100vh' }}>
-                      <div className="row">
-                        <div className="col col-md-8 offset-md-2">
-                          <div className="card m-3" style={{ maxHeight: '95vh' }}>
-                            <div className="card-header">Register for {serverConfiguration.realmName}</div>
-                            <div className="card-body" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
-                              {error && <div className="alert alert-danger">{error.message}</div>}
-                              {this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
-                              {this.state.step === RegistrationSteps.UserData && (
-                                <RegistrationForm
-                                  configuration={securityConfiguration}
-                                  data={this.state.data}
-                                  onChange={this.onFormValueChanged}
-                                  onValidated={this.onFormValidated}
-                                />
-                              )}
-                              {this.state.step === RegistrationSteps.Multifactor && (
-                                <MultiFactorSetup
-                                  emailAddress={this.state.data.emailAddress}
-                                  required={securityConfiguration.multifactorRequired}
-                                  onCancel={() => this.setRequireMfaVerification(false)}
-                                  onEnabled={() => this.setRequireMfaVerification(true)}
-                                  onVerified={this.onMfaVerified}
-                                />
-                              )}
-                            </div>
-                            <div className="card-footer">
-                              <div className="btn-toolbar float-right">
-                                <button type="submit" className="btn btn-primary" disabled={!this.isValid(securityConfiguration)} onClick={() => this.onSubmitClick(registerUser)}>
-                                  {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
-                                </button>
-                              </div>
-                              <div className="clearfix" />
-                            </div>
+                    <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 }}>
+                      <div className="card mt-1 d-flex flex-column mx-auto" style={{ maxHeight: '100%', maxWidth: '960px' }}>
+                        <div className="card-header">Register for {serverConfiguration.realmName}</div>
+                        <div className="card-body flex-fill" style={{ overflowY: 'auto' }}>
+                          {error && <div className="alert alert-danger">{error.message}</div>}
+                          {this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
+                          {this.state.step === RegistrationSteps.UserData && (
+                            <RegistrationForm configuration={securityConfiguration} data={this.state.data} onChange={this.onFormValueChanged} onValidated={this.onFormValidated} />
+                          )}
+                          {this.state.step === RegistrationSteps.Multifactor && (
+                            <MultiFactorSetup
+                              emailAddress={this.state.data.emailAddress}
+                              required={securityConfiguration.multifactorRequired}
+                              onCancel={() => this.setRequireMfaVerification(false)}
+                              onEnabled={() => this.setRequireMfaVerification(true)}
+                              onVerified={this.onMfaVerified}
+                            />
+                          )}
+                        </div>
+                        <div className="card-footer">
+                          <div className="btn-toolbar float-right">
+                            <button type="submit" className="btn btn-primary" disabled={!this.isValid(securityConfiguration)} onClick={() => this.onSubmitClick(registerUser)}>
+                              {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
+                            </button>
                           </div>
+                          <div className="clearfix" />
                         </div>
                       </div>
                     </div>
