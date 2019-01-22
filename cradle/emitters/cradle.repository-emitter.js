@@ -3,10 +3,10 @@ const TemplateEmitter = require('@gatewayapps/cradle-template-emitter')
 const utils = require('./utils')
 
 module.exports = new cradle.EmitterOptions(
-  'service-base',
+  'repository',
   new TemplateEmitter({
-    sourcePath: './cradle/templates/serviceBase.handlebars',
-    outputPath: './src/api/services/.cradle/{{Name}}ServiceBase.ts',
+    sourcePath: './cradle/templates/repository.handlebars',
+    outputPath: './src/data/repositories/{{Name}}Repository.ts',
     overwriteExisting: true,
     languageType: 'ts',
     onFilesEmitted: utils.lintAndPretty,

@@ -69,4 +69,5 @@ type Query {
 	emailAddresses(offset: Int, limit: Int, filter: EmailAddressFilter): [EmailAddress!]! 
 	emailAddressesMeta(filter: EmailAddressFilter): EmailAddressMeta 
 	emailAddress(where: EmailAddressUniqueFilter): EmailAddress 
+	emailAddressAvailable(emailAddress: String): Boolean
 }

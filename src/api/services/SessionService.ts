@@ -1,17 +1,19 @@
-import SessionServiceBase from '@services/SessionServiceBase'
 import { ISession } from '@data/models/ISession'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { SessionInstance } from '@data/models/Session'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 import { Transaction } from 'sequelize'
+import { IQueryOptions } from '../../data/IQueryOptions'
+import { ISessionUniqueFilter } from '@/interfaces/graphql/ISession'
+import SessionRepository from '@data/repositories/SessionRepository'
 
 const SESSION_EXPIRATION_SECONDS = 60 * 60
 
 type ICreateSession = Pick<ISession, 'fingerprint' | 'userAccountId' | 'ipAddress'>
 
-class SessionService extends SessionServiceBase {
-  public async createSession(data: ICreateSession, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance> {
+class SessionService {
+  public async createSession(data: ICreateSession, options: IQueryOptions): Promise<SessionInstance> {
     const fingerprint = await this.hashFingerprint(data.fingerprint)
     const newSession: ISession = {
       ...data,
@@ -20,12 +22,13 @@ class SessionService extends SessionServiceBase {
         .add(SESSION_EXPIRATION_SECONDS, 'seconds')
         .toDate()
     }
-    return super.createSession(newSession, userContext, transaction)
+    return SessionRepository.createSession(newSession, options)
   }
 
-  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string): Promise<SessionInstance | null> {
+  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string, options: IQueryOptions): Promise<SessionInstance | null> {
     try {
-      const session = await super.getSession({ sessionId })
+      const session = await SessionRepository.getSession({ sessionId }, options)
+
       if (!session) {
         return null
       }
@@ -35,8 +38,7 @@ class SessionService extends SessionServiceBase {
       if (session.expiresAt < new Date()) {
         return null
       }
-
-      return super.updateSession(
+      return SessionRepository.updateSession(
         { sessionId },
         {
           ipAddress,
@@ -44,7 +46,8 @@ class SessionService extends SessionServiceBase {
           expiresAt: moment()
             .add(SESSION_EXPIRATION_SECONDS, 'seconds')
             .toDate()
-        }
+        },
+        { userContext: null }
       )
     } catch (err) {
       return null
@@ -55,6 +58,10 @@ class SessionService extends SessionServiceBase {
     const FINGERPRINT_SALT_ROUNDS = 10
 
     return bcrypt.hash(fingerprint, FINGERPRINT_SALT_ROUNDS)
+  }
+
+  public async deleteSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
+    return SessionRepository.deleteSession(filter, options)
   }
 }
 

@@ -6,19 +6,19 @@ import cookieParser = require('cookie-parser')
 import express, { Request, Response } from 'express'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
-import ClientService from './api/services/ClientService'
-import UserAccountService from './api/services/UserAccountService'
+
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
-import { generateLoginUrl } from './utils/authentication'
+
 import { getUserContext } from './middleware/authentication'
 import { initializeDatabase, getContext } from '@data/context'
 import { Server } from 'http'
 import next from 'next'
 import { startServerInstance } from './main'
-import withCss from '@zeit/next-css'
-import withSass from '@zeit/next-sass'
+
 import ScopeService from '@services/ScopeService'
+import UserAccountRepository from '@data/repositories/UserAccountRepository'
+import ClientRepository from '@data/repositories/ClientRepository'
 
 let FIRST_USER_CREATED: boolean = false
 
@@ -177,12 +177,11 @@ export class RealmInstance {
 
   private async firstUserMiddleware(req: Request, res: Response, next: any) {
     if (!FIRST_USER_CREATED) {
-      const userMeta = await UserAccountService.userAccountsMeta()
+      const userMeta = await UserAccountRepository.userAccountsMeta(null, { userContext: null })
       FIRST_USER_CREATED = userMeta.count > 0
-      res.locals['NEEDS_FIRST_USER'] = true
-    } else {
-      res.locals['NEEDS_FIRST_USER'] = false
     }
+    res.locals['NEEDS_FIRST_USER'] = !FIRST_USER_CREATED
+
     next()
   }
 
@@ -203,19 +202,22 @@ export class RealmInstance {
     })
   }
   private async ensureGrayskullClient(): Promise<void> {
-    const grayskullClient = await ClientService.getClient({ client_id: 'grayskull' })
+    const grayskullClient = await ClientRepository.getClient({ client_id: 'grayskull' }, { userContext: null })
     if (!grayskullClient) {
-      await ClientService.createClient({
-        client_id: 'grayskull',
-        name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
-        secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
-        logoImageUrl: '/static/grayskull.gif',
-        baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
-        homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
-        redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
-        scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
-        public: true
-      })
+      await ClientRepository.createClient(
+        {
+          client_id: 'grayskull',
+          name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
+          secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
+          logoImageUrl: '/static/grayskull.gif',
+          baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
+          homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
+          redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
+          scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
+          public: true
+        },
+        { userContext: null }
+      )
     }
   }
 }

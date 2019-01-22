@@ -1,39 +1,63 @@
 import { ClientInstance } from '@data/models/Client'
 import { IClient } from '@data/models/IClient'
 import { IUserAccount } from '@data/models/IUserAccount'
-import ClientServiceBase from '@services/ClientServiceBase'
+
 import crypto from 'crypto'
 import uuid from 'uuid/v4'
-import { IClientFilter } from '@/interfaces/graphql/IClient'
+import { IClientFilter, IClientUniqueFilter, IClientMeta } from '@/interfaces/graphql/IClient'
 import { Transaction } from 'sequelize'
+import { IQueryOptions } from '../../data/IQueryOptions'
+import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
+import { getContext } from '@data/context'
+import { hasPermission } from '@decorators/permissionDecorator'
+import { Permissions } from '@/utils/permissions'
+import ClientRepository from '@data/repositories/ClientRepository'
 
-class ClientService extends ClientServiceBase {
-  public async createClient(data: IClient, userContext?: IUserAccount, transaction?: Transaction): Promise<ClientInstance> {
+class ClientService {
+  @hasPermission(Permissions.Admin)
+  public async createClient(data: IClient, options: IQueryOptions): Promise<ClientInstance> {
     if (!data.client_id) {
       data.client_id = uuid()
     }
     if (!data.secret) {
-      data.secret = crypto.randomBytes(32).toString('hex')
+      data.secret = crypto.randomBytes(128).toString('hex')
     }
-    const client = await super.createClient(data, userContext, transaction)
+    const client = await ClientRepository.createClient(data, options)
     return client
   }
 
-  public async getPublicClients(filter?: IClientFilter) {
+  @hasPermission(Permissions.Admin)
+  public async clientsMeta(filter: IClientFilter | null, options: IQueryOptions): Promise<IClientMeta> {
+    return ClientRepository.clientsMeta(filter, options)
+  }
+
+  public async getPublicClients(filter: IClientFilter | null, options: IQueryOptions) {
     if (filter) {
       filter.public_equals = true
     } else {
       filter = { public_equals: true }
     }
-    return super.getClients(filter)
+    return ClientRepository.getClients(filter, options)
   }
 
-  public async validateClient(client_id: string, secret: string): Promise<ClientInstance | null> {
-    const client = await super.getClientWithSensitiveData({ client_id })
+  @hasPermission(Permissions.Admin)
+  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<ClientInstance[]> {
+    return ClientRepository.getClients(filter, options)
+  }
+  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<ClientInstance | null> {
+    return ClientRepository.getClient(filter, options)
+  }
+  @hasPermission(Permissions.User)
+  public async validateClient(client_id: string, secret: string, options: IQueryOptions): Promise<ClientInstance | null> {
+    const client = await ClientRepository.getClientWithSensitiveData({ client_id }, options)
     if (client && client.secret === secret) {
       return client
     }
     return null
+  }
+  @hasPermission(Permissions.Admin)
+  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, options: IQueryOptions): Promise<ClientInstance | null> {
+    return ClientRepository.updateClient(filter, data, options)
   }
 }
 

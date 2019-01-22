@@ -1,7 +1,14 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
-import { GraphQLScalarType, Kind } from 'graphql'
+import { GraphQLScalarType, Kind, GraphQLEnumType } from 'graphql'
+import { Permissions } from '@/utils/permissions'
+//import { Permissions } from '@/utils/permissions'
 
 export default {
+  Role: {
+    None: Permissions.None,
+    User: Permissions.User,
+    Admin: Permissions.Admin
+  },
   Date: new GraphQLScalarType({
     name: 'Date',
     description: 'Date custom scalar type',
