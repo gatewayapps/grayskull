@@ -1,11 +1,12 @@
 import _ from 'lodash'
 import { IUserAccount } from '@data/models/IUserAccount'
-import UserClientServiceBase from '@services/UserClientServiceBase'
+
 import ClientService from './ClientService'
 import { UserClientInstance } from '@data/models/UserClient'
 import { IUserClientUniqueFilter } from '@/interfaces/graphql/IUserClient'
-import { IServiceOptions } from './IServiceOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 import { getContext } from '@data/context'
+import UserClientRepository from '@data/repositories/UserClientRepository'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -13,8 +14,8 @@ export interface IVerifyScopeResult {
   userClientId?: string
 }
 
-class UserClientService extends UserClientServiceBase {
-  public async verifyScope(userAccountId: string, client_id: string, scope: string | null, options: IServiceOptions): Promise<IVerifyScopeResult> {
+class UserClientService {
+  public async verifyScope(userAccountId: string, client_id: string, scope: string | null, options: IQueryOptions): Promise<IVerifyScopeResult> {
     const client = await ClientService.getClient({ client_id }, options)
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
@@ -22,7 +23,7 @@ class UserClientService extends UserClientServiceBase {
 
     const requestedScopes: string[] = scope ? scope.split(/[, ]/) : JSON.parse(client.scopes)
 
-    const userClient = await super.getUserClient({ userAccountId, client_id }, options)
+    const userClient = await UserClientRepository.getUserClient({ userAccountId, client_id }, options)
     if (!userClient) {
       return {
         pendingScopes: requestedScopes
@@ -46,19 +47,19 @@ class UserClientService extends UserClientServiceBase {
   }
 
   //TODO: Should be admin or self
-  async getUserClient(filter: IUserClientUniqueFilter, options: IServiceOptions): Promise<UserClientInstance | null> {
-    return super.getUserClient(filter, options)
+  async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClientInstance | null> {
+    return UserClientRepository.getUserClient(filter, options)
   }
   //TODO: Should be admin
-  public async updateScopes(userAccount: IUserAccount, client_id: string, allowedScopes: string[], deniedScopes: string[], options: IServiceOptions): Promise<void> {
+  public async updateScopes(userAccount: IUserAccount, client_id: string, allowedScopes: string[], deniedScopes: string[], options: IQueryOptions): Promise<void> {
     const client = await ClientService.getClient({ client_id }, options)
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
     }
-    const userClient = await super.getUserClient({ userAccountId: userAccount.userAccountId, client_id }, options)
+    const userClient = await UserClientRepository.getUserClient({ userAccountId: userAccount.userAccountId, client_id }, options)
     if (!userClient) {
       // create a new userClient
-      await super.createUserClient(
+      await UserClientRepository.createUserClient(
         {
           userAccountId: userAccount.userAccountId!,
           client_id,
@@ -75,7 +76,7 @@ class UserClientService extends UserClientServiceBase {
       // add new denied to previous denied
       const newDeniedScopes = _.uniq(prevDeniedScopes.concat(deniedScopes)).filter((denied) => !allowedScopes.includes(denied))
       const newAllowedScopes = _.uniq(prevAllowedScopes.concat(allowedScopes)).filter((allowed) => !newDeniedScopes.includes(allowed))
-      await super.updateUserClient(
+      await UserClientRepository.updateUserClient(
         { userClientId: userClient.userClientId! },
         {
           allowedScopes: JSON.stringify(newAllowedScopes),

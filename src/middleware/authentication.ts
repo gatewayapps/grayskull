@@ -4,6 +4,8 @@ import { ISession } from '@data/models/ISession'
 import { IUserAccount } from '@data/models/IUserAccount'
 import UserAccountService from '@services/UserAccountService'
 import SessionService from '@services/SessionService'
+import UserAccountRepository from '@data/repositories/UserAccountRepository'
+import SessionRepository from '@data/repositories/SessionRepository'
 
 export interface IRefreshAccessTokenResult {
   access_token: string
@@ -36,12 +38,12 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
 
   const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.ip, { userContext: null })
   if (!session) {
-    SessionService.deleteSession({ sessionId }, { userContext: null })
+    SessionRepository.deleteSession({ sessionId }, { userContext: null })
     clearAuthCookies(res)
     return next()
   }
 
-  const user = await UserAccountService.getUserAccount({ userAccountId: session.userAccountId }, { userContext: null })
+  const user = await UserAccountRepository.getUserAccount({ userAccountId: session.userAccountId }, { userContext: null })
   if (!user) {
     clearAuthCookies(res)
     return next()

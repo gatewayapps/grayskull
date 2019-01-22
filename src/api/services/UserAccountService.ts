@@ -7,7 +7,7 @@ import { ClientInstance } from '@data/models/Client'
 import { IEmailAddress } from '@data/models/IEmailAddress'
 import { IUserAccount } from '@data/models/IUserAccount'
 import { UserAccountInstance } from '@data/models/UserAccount'
-import UserAccountServiceBase from '@services/UserAccountServiceBase'
+
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
@@ -17,9 +17,12 @@ import uuid from 'uuid/v4'
 import ClientService from './ClientService'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
-import { IServiceOptions } from './IServiceOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 import { IUserAccountUniqueFilter, IUserAccountFilter, IUserAccountMeta } from '@/interfaces/graphql/IUserAccount'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
+import { hasPermission } from '@decorators/permissionDecorator'
+import AuthorizationHelper from '@/utils/AuthorizationHelper'
+import UserAccountRepository from '@data/repositories/UserAccountRepository'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -31,13 +34,13 @@ interface ICPTToken {
   invitedById?: number
 }
 
-class UserAccountService extends UserAccountServiceBase {
+class UserAccountService {
   /**
    *
    * @param data
    * @param password
    */
-  public async createUserAccountWithPassword(data: IUserAccount, password: string, options: IServiceOptions): Promise<UserAccountInstance> {
+  public async createUserAccountWithPassword(data: IUserAccount, password: string, options: IQueryOptions): Promise<UserAccountInstance> {
     data.userAccountId = uuid()
     data.passwordHash = await this.hashPassword(password)
     data.lastPasswordChange = new Date()
@@ -45,42 +48,56 @@ class UserAccountService extends UserAccountServiceBase {
       data.otpSecret = encrypt(data.otpSecret)
       data.otpEnabled = true
     }
-    return super.createUserAccount(data, options)
+    return UserAccountRepository.createUserAccount(data, options)
   }
 
-  //TODO: Check permissions, should be admin or self
-  public async changeUserPassword(emailAddress: string, password: string, options: IServiceOptions) {
+  @hasPermission(Permissions.User)
+  public async changeUserPassword(userAccountId: string, password: string, options: IQueryOptions) {
+    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+      if (!AuthorizationHelper.isSelf(options.userContext, userAccountId)) {
+        throw new Error('Not authorized')
+      }
+    }
     const passwordHash = await this.hashPassword(password)
-
-    await getContext().UserAccount.update({ passwordHash, lastPasswordChange: new Date() }, { where: { emailAddress } })
+    await getContext().UserAccount.update({ passwordHash, lastPasswordChange: new Date() }, { where: { userAccountId } })
   }
-  //TODO: Check permissions, should be admin or self
-  public async getUserAccountByEmailAddress(emailAddress: string, options: IServiceOptions): Promise<UserAccountInstance | null> {
+  @hasPermission(Permissions.User)
+  public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
     const email = await EmailAddressService.getEmailAddress({ emailAddress }, options)
+
     if (!email) {
       return null
+    }
+    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+      if (!AuthorizationHelper.isSelf(options.userContext, email.userAccountId)) {
+        throw new Error('Not authorized')
+      }
     }
     return this.getUserAccount({ userAccountId: email.userAccountId }, options)
   }
-  //TODO: Must be admin
-  public async userAccountsMeta(filter: IUserAccountFilter | null, options: IServiceOptions): Promise<IUserAccountMeta> {
-    return super.userAccountsMeta(filter, options)
+  @hasPermission(Permissions.Admin)
+  public async userAccountsMeta(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccountMeta> {
+    return UserAccountRepository.userAccountsMeta(filter, options)
   }
-  //TODO: Check permissions, should be admin or self
-  public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string, options: IServiceOptions): Promise<UserAccountInstance | null> {
+
+  // This seems not right.  This call should be admin only, but we have to expose it for
+  // authentication.  As long as it's never exposed via an API it should be ok I guess.
+  public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
     const email = await EmailAddressService.getEmailAddress({ emailAddress }, options)
+
     if (!email) {
       return null
     }
-    return super.getUserAccountWithSensitiveData({ userAccountId: email.userAccountId }, options)
+
+    return UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId: email.userAccountId }, options)
   }
 
-  //TODO: Check permissions, should be admin or self
-  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IServiceOptions): Promise<UserAccountInstance | null> {
-    return super.getUserAccount(filter, options)
+  @hasPermission(Permissions.User)
+  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<UserAccountInstance | null> {
+    return UserAccountRepository.getUserAccount(filter, options)
   }
 
-  public async sendResetPasswordMessage(emailAddress: string, baseUrl: string, options: IServiceOptions) {
+  public async sendResetPasswordMessage(emailAddress: string, baseUrl: string, options: IQueryOptions) {
     const cpt = this.generateCPT(emailAddress, INVITATION_EXPIRES_IN, undefined)
     const relativeTime = moment()
       .add(INVITATION_EXPIRES_IN, 'seconds')
@@ -95,7 +112,7 @@ class UserAccountService extends UserAccountServiceBase {
     MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true, options: IServiceOptions): Promise<ICPTToken> {
+  public async processCPT(cpt: string, removeFromCache: boolean = true, options: IQueryOptions): Promise<ICPTToken> {
     const decoded = this.decodeCPT(cpt, options)
     const emailAddress = decoded.emailAddress
     const invitedById = decoded.invitedById
@@ -115,7 +132,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IServiceOptions): Promise<UserAccountInstance> {
+  public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<UserAccountInstance> {
     // 1. Verify that a user has not already been registered with this email address
     const existingEmailAddress = await EmailAddressService.getEmailAddress({ emailAddress }, options)
     if (existingEmailAddress) {
@@ -127,7 +144,7 @@ class UserAccountService extends UserAccountServiceBase {
 
     try {
       // First user is always an administrator
-      const userMeta = await super.userAccountsMeta(null, options)
+      const userMeta = await UserAccountRepository.userAccountsMeta(null, options)
       // 3. Create the user account
       data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
       const user = await this.createUserAccountWithPassword(data, password, trx)
@@ -150,7 +167,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public validateCPT(token: string, options: IServiceOptions): boolean {
+  public validateCPT(token: string, options: IQueryOptions): boolean {
     if (TokenCache.get<number | undefined>(token) !== 1) {
       return false
     }
@@ -161,7 +178,7 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  public decodeCPT(token: string, options: IServiceOptions): any {
+  public decodeCPT(token: string, options: IQueryOptions): any {
     if (this.validateCPT(token, options) === false) {
       return undefined
     } else {
@@ -169,12 +186,12 @@ class UserAccountService extends UserAccountServiceBase {
     }
   }
 
-  private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance, options: IServiceOptions) {
+  private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance, options: IQueryOptions) {
     const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
     MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
   }
 
-  private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, options: IServiceOptions) {
+  private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, options: IQueryOptions) {
     const relativeTime = moment()
       .add(INVITATION_EXPIRES_IN, 'seconds')
       .fromNow(true)

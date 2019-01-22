@@ -14,7 +14,7 @@ import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
 import MailService from './MailService'
 import SessionService from './SessionService'
-import { IServiceOptions } from './IServiceOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -67,7 +67,7 @@ class AuthenticationService {
     fingerprint: string,
     ipAddress: string,
     otpToken: string | null,
-    options: IServiceOptions
+    options: IQueryOptions
   ): Promise<IAuthenticateUserResult> {
     // 1. Find the user account for the email address
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
@@ -133,7 +133,7 @@ class AuthenticationService {
     client_secret: string,
     code: string | null,
     refresh_token: string | null,
-    options: IServiceOptions
+    options: IQueryOptions
   ): Promise<IAccessTokenResponse> {
     const client = await ClientService.validateClient(client_id, client_secret, options)
     if (!client) {
@@ -202,7 +202,7 @@ class AuthenticationService {
     }
   }
 
-  public async sendBackupCode(emailAddress: string, options: IServiceOptions): Promise<boolean> {
+  public async sendBackupCode(emailAddress: string, options: IQueryOptions): Promise<boolean> {
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
     if (!user || !user.otpEnabled || !user.otpSecret) {
       return false
@@ -220,7 +220,7 @@ class AuthenticationService {
     return true
   }
 
-  public async shouldUserChangePassword(emailAddress: string, options: IServiceOptions): Promise<boolean> {
+  public async shouldUserChangePassword(emailAddress: string, options: IQueryOptions): Promise<boolean> {
     if (ConfigurationManager.Security!.maxPasswordAge > 0) {
       const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, options)
       if (userAccount) {
@@ -234,7 +234,7 @@ class AuthenticationService {
     return false
   }
 
-  public async validateRedirectUri(client_id: string, redirectUri: string, options: IServiceOptions): Promise<boolean> {
+  public async validateRedirectUri(client_id: string, redirectUri: string, options: IQueryOptions): Promise<boolean> {
     const client = await ClientService.getClient({ client_id }, options)
     if (client) {
       return (
@@ -248,7 +248,7 @@ class AuthenticationService {
     }
   }
 
-  public async validatePassword(password: string, confirm: string, options: IServiceOptions): Promise<boolean> {
+  public async validatePassword(password: string, confirm: string, options: IQueryOptions): Promise<boolean> {
     const requiredParts: string[] = []
     if (ConfigurationManager.Security!.passwordRequiresLowercase) {
       requiredParts.push('lowercase letter (a-z)')
@@ -287,14 +287,14 @@ class AuthenticationService {
     return true
   }
 
-  public verifyOtpToken(secret: string | null, token: string | null, options: IServiceOptions): boolean {
+  public verifyOtpToken(secret: string | null, token: string | null, options: IQueryOptions): boolean {
     if (!secret || !token) {
       return false
     }
     return otplib.authenticator.check(token, secret)
   }
 
-  private createAccessToken(client: ClientInstance, options: IServiceOptions): Promise<string> {
+  private createAccessToken(client: ClientInstance, options: IQueryOptions): Promise<string> {
     const userAccount = options.userContext
     return new Promise((resolve, reject) => {
       const payload = Object.assign({}, userAccount, {
@@ -313,7 +313,7 @@ class AuthenticationService {
     })
   }
 
-  private createRefreshToken(client: ClientInstance, userAccount: IUserAccount, sessionId: string, options: IServiceOptions): Promise<string> {
+  private createRefreshToken(client: ClientInstance, userAccount: IUserAccount, sessionId: string, options: IQueryOptions): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!client.client_id) {
         reject(new Error('client_id is missing'))
@@ -340,7 +340,7 @@ class AuthenticationService {
     })
   }
 
-  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], options: IServiceOptions): string {
+  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], options: IQueryOptions): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId }, 120)
     return authorizationCode
