@@ -7,6 +7,9 @@ import { IUserClientUniqueFilter } from '@/interfaces/graphql/IUserClient'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import { getContext } from '@data/context'
 import UserClientRepository from '@data/repositories/UserClientRepository'
+import { hasPermission } from '@decorators/permissionDecorator'
+import { Permissions } from '@/utils/permissions'
+import AuthorizationHelper from '@/utils/AuthorizationHelper'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -46,11 +49,15 @@ class UserClientService {
     }
   }
 
-  //TODO: Should be admin or self
+  @hasPermission(Permissions.User)
   async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClientInstance | null> {
+    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+      filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
+    }
     return UserClientRepository.getUserClient(filter, options)
   }
-  //TODO: Should be admin
+
+  @hasPermission(Permissions.Admin)
   public async updateScopes(userAccount: IUserAccount, client_id: string, allowedScopes: string[], deniedScopes: string[], options: IQueryOptions): Promise<void> {
     const client = await ClientService.getClient({ client_id }, options)
     if (!client) {
