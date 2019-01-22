@@ -2,68 +2,67 @@ import { IUserClientMeta, IUserClientFilter, IUserClientUniqueFilter } from '@/i
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import { getContext } from '@data/context'
 import { IUserClient } from '@data/models/IUserClient'
-import { IUserAccount } from '@data/models/IUserAccount'
 import { UserClientInstance } from '@data/models/UserClient'
-import { AnyWhereOptions, Transaction } from 'sequelize'
+import { AnyWhereOptions } from 'sequelize'
+import { IServiceOptions } from '@services/IServiceOptions'
 
 export default class UserClientServiceBase {
-  public async userClientsMeta(filter?: IUserClientFilter, transaction?: Transaction): Promise<IUserClientMeta> {
+  protected async userClientsMeta(filter: IUserClientFilter | null, options: IServiceOptions): Promise<IUserClientMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await getContext().UserClient.count({ where, transaction })
+    const count = await getContext().UserClient.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getUserClients(filter?: IUserClientFilter, transaction?: Transaction): Promise<UserClientInstance[]> {
+  protected async getUserClients(filter: IUserClientFilter | null, options: IServiceOptions): Promise<UserClientInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await getContext().UserClient.findAll({
       where,
       raw: true,
-      transaction
+      transaction: options.transaction
     })
   }
 
-  public async getUserClient(filter: IUserClientUniqueFilter, transaction?: Transaction): Promise<UserClientInstance | null> {
+  protected async getUserClient(filter: IUserClientUniqueFilter, options: IServiceOptions): Promise<UserClientInstance | null> {
     return await getContext().UserClient.findOne({
       where: filter,
       raw: true,
-      transaction
+      transaction: options.transaction
     })
   }
 
-  public async createUserClient(data: IUserClient, userContext?: IUserAccount, transaction?: Transaction): Promise<UserClientInstance> {
-    if (userContext) {
-      data.createdBy = userContext.userAccountId
-      data.updatedBy = userContext.userAccountId
+  protected async createUserClient(data: IUserClient, options: IServiceOptions): Promise<UserClientInstance> {
+    if (options.userContext) {
+      data.createdBy = options.userContext.userAccountId
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().UserClient.create(data, { returning: true, raw: true, transaction })
+    return await getContext().UserClient.create(data, { returning: true, raw: true, transaction: options.transaction })
   }
 
-  public async deleteUserClient(filter: IUserClientUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+  protected async deleteUserClient(filter: IUserClientUniqueFilter, options: IServiceOptions): Promise<boolean> {
     const data: Partial<IUserClient> = {
       deletedAt: new Date()
     }
-    if (userContext) {
-      data.deletedBy = userContext.userAccountId
+    if (options.userContext) {
+      data.deletedBy = options.userContext.userAccountId
     }
     const [affectedCount] = await getContext().UserClient.update(data, {
       where: filter as AnyWhereOptions,
-      transaction
+      transaction: options.transaction
     })
     return affectedCount > 0
   }
 
-  public async updateUserClient(filter: IUserClientUniqueFilter, data: Partial<IUserClient>, userContext?: IUserAccount, transaction?: Transaction): Promise<UserClientInstance | null> {
-    if (userContext) {
-      data.updatedBy = userContext.userAccountId
+  protected async updateUserClient(filter: IUserClientUniqueFilter, data: Partial<IUserClient>, options: IServiceOptions): Promise<UserClientInstance | null> {
+    if (options.userContext) {
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext()
-      .UserClient.update(data, {
-        where: filter as AnyWhereOptions,
-        returning: true,
-        transaction
-      })
-      .then(() => this.getUserClient(filter))
+    await getContext().UserClient.update(data, {
+      where: filter as AnyWhereOptions,
+      returning: true,
+      transaction: options.transaction
+    })
+    return await this.getUserClient(filter, options)
   }
 }

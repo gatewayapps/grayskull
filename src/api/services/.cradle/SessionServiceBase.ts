@@ -2,62 +2,61 @@ import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '@/interfaces
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import { getContext } from '@data/context'
 import { ISession } from '@data/models/ISession'
-import { IUserAccount } from '@data/models/IUserAccount'
 import { SessionInstance } from '@data/models/Session'
-import { AnyWhereOptions, Transaction } from 'sequelize'
+import { AnyWhereOptions } from 'sequelize'
+import { IServiceOptions } from '@services/IServiceOptions'
 
 export default class SessionServiceBase {
-  public async sessionsMeta(filter?: ISessionFilter, transaction?: Transaction): Promise<ISessionMeta> {
+  protected async sessionsMeta(filter: ISessionFilter | null, options: IServiceOptions): Promise<ISessionMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await getContext().Session.count({ where, transaction })
+    const count = await getContext().Session.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getSessions(filter?: ISessionFilter, transaction?: Transaction): Promise<SessionInstance[]> {
+  protected async getSessions(filter: ISessionFilter | null, options: IServiceOptions): Promise<SessionInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await getContext().Session.findAll({
       where,
       raw: true,
-      transaction
+      transaction: options.transaction
     })
   }
 
-  public async getSession(filter: ISessionUniqueFilter, transaction?: Transaction): Promise<SessionInstance | null> {
+  protected async getSession(filter: ISessionUniqueFilter, options: IServiceOptions): Promise<SessionInstance | null> {
     return await getContext().Session.findOne({
       where: filter,
       raw: true,
-      transaction
+      transaction: options.transaction
     })
   }
 
-  public async createSession(data: ISession, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance> {
-    if (userContext) {
-      data.createdBy = userContext.userAccountId
-      data.updatedBy = userContext.userAccountId
+  protected async createSession(data: ISession, options: IServiceOptions): Promise<SessionInstance> {
+    if (options.userContext) {
+      data.createdBy = options.userContext.userAccountId
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().Session.create(data, { returning: true, raw: true, transaction })
+    return await getContext().Session.create(data, { returning: true, raw: true, transaction: options.transaction })
   }
 
-  public async deleteSession(filter: ISessionUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+  protected async deleteSession(filter: ISessionUniqueFilter, options: IServiceOptions): Promise<boolean> {
     const affectedCount = await getContext().Session.destroy({
       where: filter as AnyWhereOptions,
-      transaction
+      transaction: options.transaction
     })
     return affectedCount > 0
   }
 
-  public async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance | null> {
-    if (userContext) {
-      data.updatedBy = userContext.userAccountId
+  protected async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, options: IServiceOptions): Promise<SessionInstance | null> {
+    if (options.userContext) {
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext()
-      .Session.update(data, {
-        where: filter as AnyWhereOptions,
-        returning: true,
-        transaction
-      })
-      .then(() => this.getSession(filter))
+    await getContext().Session.update(data, {
+      where: filter as AnyWhereOptions,
+      returning: true,
+      transaction: options.transaction
+    })
+    return await this.getSession(filter, options)
   }
 }

@@ -5,13 +5,15 @@ import { SessionInstance } from '@data/models/Session'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 import { Transaction } from 'sequelize'
+import { IServiceOptions } from './IServiceOptions'
+import { ISessionUniqueFilter } from '@/interfaces/graphql/ISession'
 
 const SESSION_EXPIRATION_SECONDS = 60 * 60
 
 type ICreateSession = Pick<ISession, 'fingerprint' | 'userAccountId' | 'ipAddress'>
 
 class SessionService extends SessionServiceBase {
-  public async createSession(data: ICreateSession, userContext?: IUserAccount, transaction?: Transaction): Promise<SessionInstance> {
+  public async createSession(data: ICreateSession, options: IServiceOptions): Promise<SessionInstance> {
     const fingerprint = await this.hashFingerprint(data.fingerprint)
     const newSession: ISession = {
       ...data,
@@ -20,12 +22,13 @@ class SessionService extends SessionServiceBase {
         .add(SESSION_EXPIRATION_SECONDS, 'seconds')
         .toDate()
     }
-    return super.createSession(newSession, userContext, transaction)
+    return super.createSession(newSession, options)
   }
 
-  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string): Promise<SessionInstance | null> {
+  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string, options: IServiceOptions): Promise<SessionInstance | null> {
     try {
-      const session = await super.getSession({ sessionId })
+      const session = await super.getSession({ sessionId }, options)
+
       if (!session) {
         return null
       }
@@ -35,7 +38,6 @@ class SessionService extends SessionServiceBase {
       if (session.expiresAt < new Date()) {
         return null
       }
-
       return super.updateSession(
         { sessionId },
         {
@@ -44,7 +46,8 @@ class SessionService extends SessionServiceBase {
           expiresAt: moment()
             .add(SESSION_EXPIRATION_SECONDS, 'seconds')
             .toDate()
-        }
+        },
+        { userContext: null }
       )
     } catch (err) {
       return null
@@ -55,6 +58,10 @@ class SessionService extends SessionServiceBase {
     const FINGERPRINT_SALT_ROUNDS = 10
 
     return bcrypt.hash(fingerprint, FINGERPRINT_SALT_ROUNDS)
+  }
+
+  public async deleteSession(filter: ISessionUniqueFilter, options: IServiceOptions): Promise<boolean> {
+    return super.deleteSession(filter, options)
   }
 }
 

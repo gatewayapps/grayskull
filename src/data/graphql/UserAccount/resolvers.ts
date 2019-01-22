@@ -7,7 +7,8 @@ import EmailAddressService from '@services/EmailAddressService'
 import UserAccountService from '@services/UserAccountService'
 import { setAuthCookies } from '@/utils/authentication'
 import UserClientService from '@services/UserClientService'
-import SessionService from '@services/SessionService';
+import SessionService from '@services/SessionService'
+import { hasPermission } from '@decorators/permissionDecorator'
 
 export default {
   Query: {
@@ -25,33 +26,27 @@ export default {
     },
     me: (obj, args, context, info) => {
       return context.user
-    },
+    }
   },
   Mutation: {
     login: async (obj, args, context, info): Promise<ILoginResponse> => {
-      const {
-        emailAddress,
-        password,
-        otpToken,
-        fingerprint
-      } = args.data
-
+      const { emailAddress, password, otpToken, fingerprint } = args.data
       try {
         if (!fingerprint) {
           throw new Error('Invalid login request')
         } else {
-          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken)
+          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken, { userContext: context.user || null })
           if (authResult.session) {
             setAuthCookies(context.res, authResult.session)
 
             return {
-              success: true,
+              success: true
             }
           } else {
             return {
               success: authResult.success,
               message: authResult.message,
-              otpRequired: authResult.otpRequired,
+              otpRequired: authResult.otpRequired
             }
           }
         }
@@ -63,27 +58,24 @@ export default {
       if (!context.user) {
         throw new Error('You must be logged in')
       }
-      const {
-        client_id,
-        responseType,
-        redirectUri,
-        scope,
-        state,
-      } = args.data
 
-      if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri)) {
+      const serviceOptions = { userContext: context.user || null }
+
+      const { client_id, responseType, redirectUri, scope, state } = args.data
+
+      if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
         throw new Error('Invalid redirect uri')
       }
       if (responseType !== 'code') {
         throw new Error('Invalid response type')
       }
-      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(context.user.userAccountId, client_id, scope)
+      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(context.user.userAccountId, client_id, scope, serviceOptions)
       if (pendingScopes && pendingScopes.length > 0) {
         return {
-          pendingScopes,
+          pendingScopes
         }
       }
-      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!)
+      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, serviceOptions)
       const query = [`code=${encodeURIComponent(authCode)}`]
       if (state) {
         query.push(`state=${encodeURIComponent(state)}`)
@@ -96,8 +88,9 @@ export default {
       if (!context.user) {
         throw new Error('You must be logged in!')
       }
+      const serviceOptions = { userContext: context.user || null }
       const { client_id, allowedScopes, deniedScopes } = args.data
-      await UserClientService.updateScopes(context.user, client_id, allowedScopes, deniedScopes)
+      await UserClientService.updateScopes(context.user, client_id, allowedScopes, deniedScopes, serviceOptions)
       return true
     },
     validatePassword: (obj, args, context, info) => {
@@ -115,16 +108,19 @@ export default {
     registerUser: async (obj, args, context, info): Promise<IRegisterUserResponse> => {
       try {
         const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
-
-        await AuthenticationService.validatePassword(password, confirm)
-        const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password)
+        const serviceOptions = { userContext: context.user || null }
+        await AuthenticationService.validatePassword(password, confirm, serviceOptions)
+        const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password, serviceOptions)
         const fingerprint = context.req.header('x-fingerprint')
         if (fingerprint) {
-          const session = await SessionService.createSession({
-            fingerprint,
-            userAccountId: userAccount.userAccountId!,
-            ipAddress: context.req.ip,
-          })
+          const session = await SessionService.createSession(
+            {
+              fingerprint,
+              userAccountId: userAccount.userAccountId!,
+              ipAddress: context.req.ip
+            },
+            serviceOptions
+          )
           setAuthCookies(context.res, session)
         }
         return { success: true }
@@ -139,15 +135,15 @@ export default {
       return AuthenticationService.generateOtpSecret(args.data.emailAddress)
     },
     verifyMfaKey: (obj, args, context, info) => {
-      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
+      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token, { userContext: context.user || null })
     },
     sendBackupCode: async (obj, args, context, info) => {
-      return await AuthenticationService.sendBackupCode(args.data.emailAddress)
+      return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })
     }
   },
   UserAccount: {
     emailAddresses: async (obj, args, context, info) => {
-      return await EmailAddressService.getEmailAddresses({ userAccountId_equals: obj.userAccountId })
+      return await EmailAddressService.getEmailAddresses({ userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
     }
   }
 }

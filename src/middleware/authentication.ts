@@ -34,14 +34,14 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
     return next()
   }
 
-  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.ip)
+  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.ip, { userContext: null })
   if (!session) {
-    SessionService.deleteSession({ sessionId })
+    SessionService.deleteSession({ sessionId }, { userContext: null })
     clearAuthCookies(res)
     return next()
   }
 
-  const user = await UserAccountService.getUserAccount({ userAccountId: session.userAccountId })
+  const user = await UserAccountService.getUserAccount({ userAccountId: session.userAccountId }, { userContext: null })
   if (!user) {
     clearAuthCookies(res)
     return next()

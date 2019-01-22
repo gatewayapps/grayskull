@@ -18,7 +18,14 @@ export default class LoginController extends ControllerBase {
         return
       }
 
-      const accessTokenRespnse = await AuthenticationService.getAccessToken(req.body.grant_type, req.body.client_id, req.body.client_secret, req.body.code, req.body.refresh_token)
+      const accessTokenRespnse = await AuthenticationService.getAccessToken(
+        req.body.grant_type,
+        req.body.client_id,
+        req.body.client_secret,
+        req.body.code,
+        req.body.refresh_token,
+        { userContext: req.user || null }
+      )
       res.json(accessTokenRespnse)
     } catch (err) {
       res.status(400).json({ success: false, message: err.message })
@@ -41,7 +48,7 @@ export default class LoginController extends ControllerBase {
   public async logout(req: Request, res: Response) {
     const { sessionId } = getAuthCookies(req)
     if (sessionId) {
-      await SessionService.deleteSession({ sessionId })
+      await SessionService.deleteSession({ sessionId }, { userContext: req.user || null })
     }
     clearAuthCookies(res)
     const redirectUrl = `/login${req.query.state ? `?state=${encodeURIComponent(req.query.state)}` : ''}`
@@ -51,7 +58,7 @@ export default class LoginController extends ControllerBase {
   @route(HttpMethod.GET, '/resetPassword')
   public async renderResetPassword(req: Request, res: Response) {
     if (req.query.cpt) {
-      const decodedToken = await UserAccountService.decodeCPT(req.query.cpt)
+      const decodedToken = await UserAccountService.decodeCPT(req.query.cpt, { userContext: req.user || null })
       if (decodedToken) {
         res.locals.emailAddress = decodedToken.emailAddress
         return this.next.render(req, res, '/resetPassword/changePassword', req.query)
@@ -64,16 +71,16 @@ export default class LoginController extends ControllerBase {
   @route(HttpMethod.POST, '/resetPassword')
   public async processResetPasswordRequest(req: Request, res: Response) {
     if (req.query.cpt) {
-      const decodedToken = await UserAccountService.decodeCPT(req.query.cpt)
+      const decodedToken = await UserAccountService.decodeCPT(req.query.cpt, { userContext: req.user || null })
       if (decodedToken) {
         try {
-          const validPassword = await AuthenticationService.validatePassword(req.body.password, req.body.confirm)
+          const validPassword = await AuthenticationService.validatePassword(req.body.password, req.body.confirm, { userContext: req.user || null })
           if (validPassword) {
-            await UserAccountService.changeUserPassword(decodedToken.emailAddress, req.body.password)
+            await UserAccountService.changeUserPassword(decodedToken.emailAddress, req.body.password, { userContext: req.user || null })
 
             // Processing a CPT removes it from cache and marks it invalid
             // This should prevent someone using old reset password tokens
-            await UserAccountService.processCPT(req.query.cpt)
+            await UserAccountService.processCPT(req.query.cpt, false, { userContext: req.user || null })
 
             res.locals.message = `You have succesfully changed your password.  Please sign in using your new login`
             return this.next.render(req, res, '/resetPassword/changePassword', req.query)
@@ -86,9 +93,9 @@ export default class LoginController extends ControllerBase {
       }
       return this.next.render(req, res, '/resetPassword/changePassword', req.query)
     } else {
-      const userAccount = await UserAccountService.getUserAccountByEmailAddress(req.body.emailAddress)
+      const userAccount = await UserAccountService.getUserAccountByEmailAddress(req.body.emailAddress, { userContext: req.user || null })
       if (userAccount) {
-        await UserAccountService.sendResetPasswordMessage(req.body.emailAddress, req.baseUrl)
+        await UserAccountService.sendResetPasswordMessage(req.body.emailAddress, req.baseUrl, { userContext: req.user || null })
       }
       res.locals = { message: `We have sent instructions on resetting your password to ${req.body.emailAddress}.` }
     }
@@ -100,7 +107,9 @@ export default class LoginController extends ControllerBase {
   public async getSignin(req: Request, res: Response) {
     try {
       // 1. Get accessToken via AuthenticationService
-      const accessToken = await AuthenticationService.getAccessToken('authorization_code', 'grayskull', ConfigurationManager.Security!.globalSecret, req.query.code)
+      const accessToken = await AuthenticationService.getAccessToken('authorization_code', 'grayskull', ConfigurationManager.Security!.globalSecret, req.query.code, null, {
+        userContext: req.user || null
+      })
 
       if (!accessToken) {
         throw new Error('Unable to create access token')
@@ -118,7 +127,7 @@ export default class LoginController extends ControllerBase {
   }
 
   private async validateLoginRequest(req: Request): Promise<boolean> {
-    const validated = await AuthenticationService.validateRedirectUri(req.query.client_id, req.query.redirect_uri)
+    const validated = await AuthenticationService.validateRedirectUri(req.query.client_id, req.query.redirect_uri, { userContext: req.user || null })
     return validated
   }
 }

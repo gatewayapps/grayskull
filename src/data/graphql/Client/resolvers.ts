@@ -4,18 +4,18 @@ export default {
   Query: {
     clients: (obj, args, context, info) => {
       if (context.user) {
-        return ClientService.getClients(args.where)
+        return ClientService.getClients(args.where, { userContext: context.user || null })
       } else {
-        return ClientService.getPublicClients(args.where)
+        return ClientService.getPublicClients(args.where, { userContext: context.user || null })
       }
     },
     clientsMeta: (obj, args, context, info) => {
       // Insert your clientsMeta implementation here
-      return ClientService.clientsMeta(args.where)
+      return ClientService.clientsMeta(args.where, { userContext: context.user || null })
     },
     client: async (obj, args, context, info) => {
       // Insert your client implementation here
-      return ClientService.getClient(args.where)
+      return ClientService.getClient(args.where, { userContext: context.user || null })
     }
   },
   Mutation: {
@@ -23,7 +23,7 @@ export default {
       if (!context.user) {
         throw new Error('You must be logged in to create a client')
       }
-      return ClientService.createClient(args.data, context.user)
+      return ClientService.createClient(args.data, { userContext: context.user || null })
     },
     updateClient: (obj, args, context, info) => {
       if (!context.user) {
@@ -31,7 +31,7 @@ export default {
       }
       console.log(args)
       const { client_id, ...data } = args.data
-      return ClientService.updateClient({ client_id }, data, context.user)
+      return ClientService.updateClient({ client_id }, data, { userContext: context.user || null })
     }
   },
   Client: {

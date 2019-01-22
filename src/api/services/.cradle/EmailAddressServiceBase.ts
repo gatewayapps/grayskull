@@ -2,68 +2,67 @@ import { IEmailAddressMeta, IEmailAddressFilter, IEmailAddressUniqueFilter } fro
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import { getContext } from '@data/context'
 import { IEmailAddress } from '@data/models/IEmailAddress'
-import { IUserAccount } from '@data/models/IUserAccount'
 import { EmailAddressInstance } from '@data/models/EmailAddress'
-import { AnyWhereOptions, Transaction } from 'sequelize'
+import { AnyWhereOptions } from 'sequelize'
+import { IServiceOptions } from '@services/IServiceOptions'
 
 export default class EmailAddressServiceBase {
-  public async emailAddressesMeta(filter?: IEmailAddressFilter, transaction?: Transaction): Promise<IEmailAddressMeta> {
+  protected async emailAddressesMeta(filter: IEmailAddressFilter | null, options: IServiceOptions): Promise<IEmailAddressMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await getContext().EmailAddress.count({ where, transaction })
+    const count = await getContext().EmailAddress.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getEmailAddresses(filter?: IEmailAddressFilter, transaction?: Transaction): Promise<EmailAddressInstance[]> {
+  protected async getEmailAddresses(filter: IEmailAddressFilter | null, options: IServiceOptions): Promise<EmailAddressInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await getContext().EmailAddress.findAll({
       where,
       raw: true,
-      transaction
+      transaction: options.transaction
     })
   }
 
-  public async getEmailAddress(filter: IEmailAddressUniqueFilter, transaction?: Transaction): Promise<EmailAddressInstance | null> {
+  protected async getEmailAddress(filter: IEmailAddressUniqueFilter, options: IServiceOptions): Promise<EmailAddressInstance | null> {
     return await getContext().EmailAddress.findOne({
       where: filter,
       raw: true,
-      transaction
+      transaction: options.transaction
     })
   }
 
-  public async createEmailAddress(data: IEmailAddress, userContext?: IUserAccount, transaction?: Transaction): Promise<EmailAddressInstance> {
-    if (userContext) {
-      data.createdBy = userContext.userAccountId
-      data.updatedBy = userContext.userAccountId
+  protected async createEmailAddress(data: IEmailAddress, options: IServiceOptions): Promise<EmailAddressInstance> {
+    if (options.userContext) {
+      data.createdBy = options.userContext.userAccountId
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().EmailAddress.create(data, { returning: true, raw: true, transaction })
+    return await getContext().EmailAddress.create(data, { returning: true, raw: true, transaction: options.transaction })
   }
 
-  public async deleteEmailAddress(filter: IEmailAddressUniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+  protected async deleteEmailAddress(filter: IEmailAddressUniqueFilter, options: IServiceOptions): Promise<boolean> {
     const data: Partial<IEmailAddress> = {
       deletedAt: new Date()
     }
-    if (userContext) {
-      data.deletedBy = userContext.userAccountId
+    if (options.userContext) {
+      data.deletedBy = options.userContext.userAccountId
     }
     const [affectedCount] = await getContext().EmailAddress.update(data, {
       where: filter as AnyWhereOptions,
-      transaction
+      transaction: options.transaction
     })
     return affectedCount > 0
   }
 
-  public async updateEmailAddress(filter: IEmailAddressUniqueFilter, data: Partial<IEmailAddress>, userContext?: IUserAccount, transaction?: Transaction): Promise<EmailAddressInstance | null> {
-    if (userContext) {
-      data.updatedBy = userContext.userAccountId
+  protected async updateEmailAddress(filter: IEmailAddressUniqueFilter, data: Partial<IEmailAddress>, options: IServiceOptions): Promise<EmailAddressInstance | null> {
+    if (options.userContext) {
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext()
-      .EmailAddress.update(data, {
-        where: filter as AnyWhereOptions,
-        returning: true,
-        transaction
-      })
-      .then(() => this.getEmailAddress(filter))
+    await getContext().EmailAddress.update(data, {
+      where: filter as AnyWhereOptions,
+      returning: true,
+      transaction: options.transaction
+    })
+    return await this.getEmailAddress(filter, options)
   }
 }

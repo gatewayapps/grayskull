@@ -1,4 +1,4 @@
-type Client {
+type Client @auth(requires: User){
 	client_id: String!
 	name: String!
 	logoImageUrl: String

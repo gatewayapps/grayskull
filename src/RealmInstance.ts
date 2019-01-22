@@ -177,7 +177,7 @@ export class RealmInstance {
 
   private async firstUserMiddleware(req: Request, res: Response, next: any) {
     if (!FIRST_USER_CREATED) {
-      const userMeta = await UserAccountService.userAccountsMeta()
+      const userMeta = await UserAccountService.userAccountsMeta(null, { userContext: null })
       FIRST_USER_CREATED = userMeta.count > 0
       res.locals['NEEDS_FIRST_USER'] = true
     } else {
@@ -203,19 +203,22 @@ export class RealmInstance {
     })
   }
   private async ensureGrayskullClient(): Promise<void> {
-    const grayskullClient = await ClientService.getClient({ client_id: 'grayskull' })
+    const grayskullClient = await ClientService.getClient({ client_id: 'grayskull' }, { userContext: null })
     if (!grayskullClient) {
-      await ClientService.createClient({
-        client_id: 'grayskull',
-        name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
-        secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
-        logoImageUrl: '/static/grayskull.gif',
-        baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
-        homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
-        redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
-        scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
-        public: true
-      })
+      await ClientService.createClient(
+        {
+          client_id: 'grayskull',
+          name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
+          secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
+          logoImageUrl: '/static/grayskull.gif',
+          baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
+          homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
+          redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
+          scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
+          public: true
+        },
+        { userContext: null }
+      )
     }
   }
 }

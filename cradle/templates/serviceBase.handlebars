@@ -2,22 +2,23 @@ import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '@/interfa
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import {getContext} from '@data/context'
 import { I{{Name}} } from '@data/models/I{{Name}}'
-{{#ifNotEquals Name 'UserAccount'}}
+{{!-- {{#ifNotEquals Name 'UserAccount'}}
 import { IUserAccount } from '@data/models/IUserAccount'
-{{/ifNotEquals}}
+{{/ifNotEquals}} --}}
 import { {{Name}}Instance } from '@data/models/{{Name}}'
-import { AnyWhereOptions, Transaction } from 'sequelize'
+import { AnyWhereOptions } from 'sequelize'
+import { IServiceOptions } from '@services/IServiceOptions'
 
 export default class {{Name}}ServiceBase {
-  public async {{toCamelCase (pluralize Name)}}Meta(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<I{{Name}}Meta> {
+  protected async {{toCamelCase (pluralize Name)}}Meta(filter: I{{Name}}Filter | null, options: IServiceOptions): Promise<I{{Name}}Meta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await getContext().{{Name}}.count({ where, transaction })
+    const count = await getContext().{{Name}}.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async get{{pluralize Name}}(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<{{Name}}Instance[]> {
+  protected async get{{pluralize Name}}(filter: I{{Name}}Filter | null, options: IServiceOptions): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await getContext().{{Name}}.findAll({
       where,
@@ -27,22 +28,22 @@ export default class {{Name}}ServiceBase {
       },
       {{/if}}
       raw: true,
-      transaction,
+      transaction: options.transaction,
     })
   }
 
   {{#if Meta.sensitive}}
-  public async get{{pluralize Name}}WithSensitiveData(filter?: I{{Name}}Filter, transaction?: Transaction): Promise<{{Name}}Instance[]> {
+  protected async get{{pluralize Name}}WithSensitiveData(filter: I{{Name}}Filter | null, options: IServiceOptions): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
     return await getContext().{{Name}}.findAll({
       where,
       raw: true,
-      transaction,
+      transaction: options.transaction,
     })
   }
   {{/if}}
 
-  public async get{{Name}}(filter: I{{Name}}UniqueFilter, transaction?: Transaction): Promise<{{Name}}Instance | null> {
+  protected async get{{Name}}(filter: I{{Name}}UniqueFilter, options: IServiceOptions): Promise<{{Name}}Instance | null> {
     return await getContext().{{Name}}.findOne({
       where: filter,
       {{#if Meta.sensitive}}
@@ -51,57 +52,58 @@ export default class {{Name}}ServiceBase {
       },
       {{/if}}
       raw: true,
-      transaction,
+      transaction: options.transaction,
     })
   }
 
   {{#if Meta.sensitive}}
-  public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, transaction?: Transaction): Promise<{{Name}}Instance | null> {
+  protected async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, options: IServiceOptions): Promise<{{Name}}Instance | null> {
     return await getContext().{{Name}}.findOne({
       where: filter,
       raw: true,
-      transaction,
+      transaction: options.transaction,
     })
   }
   {{/if}}
 
-  public async create{{Name}}(data: I{{Name}}, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance> {
-    if (userContext) {
-      data.createdBy = userContext.userAccountId
-      data.updatedBy = userContext.userAccountId
+  protected async create{{Name}}(data: I{{Name}}, options: IServiceOptions): Promise<{{Name}}Instance> {
+    if (options.userContext) {
+      data.createdBy = options.userContext.userAccountId
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().{{Name}}.create(data, {returning: true, raw: true, transaction})
+    return await getContext().{{Name}}.create(data, {returning: true, raw: true, transaction: options.transaction})
   }
 
-  public async delete{{Name}}(filter: I{{Name}}UniqueFilter, userContext?: IUserAccount, transaction?: Transaction): Promise<boolean> {
+  protected async delete{{Name}}(filter: I{{Name}}UniqueFilter, options: IServiceOptions): Promise<boolean> {
     {{#if Meta.destroy}}
     const affectedCount = await db.Session.destroy({
       where: filter as AnyWhereOptions,
-      transaction,
+      transaction: options.transaction,
     })
     {{else}}
     const data: Partial<I{{Name}}> = {
       deletedAt: new Date()
     }
-    if (userContext) {
-      data.deletedBy = userContext.userAccountId
+    if (options.userContext) {
+      data.deletedBy = options.userContext.userAccountId
     }
     const [ affectedCount ] = await getContext().{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
-      transaction,
+      transaction: options.transaction,
     })
     {{/if}}
     return affectedCount > 0
   }
 
-  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: Partial<I{{Name}}>, userContext?: IUserAccount, transaction?: Transaction): Promise<{{Name}}Instance | null> {
-    if (userContext) {
-      data.updatedBy = userContext.userAccountId
+  protected async update{{Name}}(filter: I{{Name}}UniqueFilter, data: Partial<I{{Name}}>, options: IServiceOptions): Promise<{{Name}}Instance | null> {
+    if (options.userContext) {
+      data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().{{Name}}.update(data, {
+    await getContext().{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
-      transaction,
-    }).then(() => this.get{{Name}}(filter))
+      transaction: options.transaction,
+    })
+    return await this.get{{Name}}(filter, options)
   }
 }

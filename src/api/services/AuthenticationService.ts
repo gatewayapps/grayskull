@@ -14,6 +14,7 @@ import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
 import MailService from './MailService'
 import SessionService from './SessionService'
+import { IServiceOptions } from './IServiceOptions'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -60,9 +61,16 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
-  public async authenticateUser(emailAddress: string, password: string, fingerprint: string, ipAddress: string, otpToken?: string): Promise<IAuthenticateUserResult> {
+  public async authenticateUser(
+    emailAddress: string,
+    password: string,
+    fingerprint: string,
+    ipAddress: string,
+    otpToken: string | null,
+    options: IServiceOptions
+  ): Promise<IAuthenticateUserResult> {
     // 1. Find the user account for the email address
-    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress)
+    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
 
     if (!user) {
       throw new Error('Invalid email address/password combination')
@@ -83,14 +91,14 @@ class AuthenticationService {
       const otpSecret = decrypt(user.otpSecret)
 
       // 3a. Verify the OTP token
-      if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken)) {
+      if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken, options)) {
         const backupCode = this.localCache.get<string>(emailAddress)
 
         if (!backupCode || backupCode !== otpToken) {
           return {
             success: false,
             otpRequired: true,
-            message: otpToken !== undefined && otpToken.length > 0 ? 'Invalid multi-factor authentication code' : ''
+            message: otpToken !== null && otpToken.length > 0 ? 'Invalid multi-factor authentication code' : ''
           }
         }
       }
@@ -99,15 +107,18 @@ class AuthenticationService {
     }
 
     // 4. Create a session for the user
-    const session = await SessionService.createSession({
-      fingerprint,
-      userAccountId: user.userAccountId!,
-      ipAddress,
-    })
+    const session = await SessionService.createSession(
+      {
+        fingerprint,
+        userAccountId: user.userAccountId!,
+        ipAddress
+      },
+      options
+    )
 
     return {
       success: true,
-      session,
+      session
     }
   }
 
@@ -116,8 +127,15 @@ class AuthenticationService {
     return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.General!.realmName, secret)
   }
 
-  public async getAccessToken(grant_type: GrantType, client_id: string, client_secret: string, code?: string, refresh_token?: string): Promise<IAccessTokenResponse> {
-    const client = await ClientService.validateClient(client_id, client_secret)
+  public async getAccessToken(
+    grant_type: GrantType,
+    client_id: string,
+    client_secret: string,
+    code: string | null,
+    refresh_token: string | null,
+    options: IServiceOptions
+  ): Promise<IAccessTokenResponse> {
+    const client = await ClientService.validateClient(client_id, client_secret, options)
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
     }
@@ -136,12 +154,12 @@ class AuthenticationService {
           throw new Error(`authorization_code has expired`)
         }
 
-        userAccount = await UserAccountService.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || '' })
+        userAccount = await UserAccountService.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || '' }, options)
         if (!userAccount) {
           throw new Error(`Unable to locate user account`)
         }
 
-        refresh_token = await this.createRefreshToken(client, userAccount, '')
+        refresh_token = await this.createRefreshToken(client, userAccount, '', options)
         break
       }
 
@@ -155,7 +173,7 @@ class AuthenticationService {
           throw new Error(`Invalid refresh_token`)
         }
 
-        userAccount = await UserAccountService.getUserAccount({ userAccountId: decodedRefreshToken.userAccountId })
+        userAccount = await UserAccountService.getUserAccount({ userAccountId: decodedRefreshToken.userAccountId }, options)
         break
       }
 
@@ -168,12 +186,12 @@ class AuthenticationService {
       throw new Error(`Unable to locate user account`)
     }
 
-    const userClient = await UserClientService.getUserClient({ userAccountId: userAccount.userAccountId!, client_id: client.client_id! })
+    const userClient = await UserClientService.getUserClient({ userAccountId: userAccount.userAccountId!, client_id: client.client_id! }, options)
     if (!userClient) {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
 
-    const access_token = await this.createAccessToken(client, userAccount)
+    const access_token = await this.createAccessToken(client, options)
 
     return {
       access_token,
@@ -184,8 +202,8 @@ class AuthenticationService {
     }
   }
 
-  public async sendBackupCode(emailAddress: string): Promise<boolean> {
-    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress)
+  public async sendBackupCode(emailAddress: string, options: IServiceOptions): Promise<boolean> {
+    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
     if (!user || !user.otpEnabled || !user.otpSecret) {
       return false
     }
@@ -202,9 +220,9 @@ class AuthenticationService {
     return true
   }
 
-  public async shouldUserChangePassword(emailAddress: string): Promise<boolean> {
+  public async shouldUserChangePassword(emailAddress: string, options: IServiceOptions): Promise<boolean> {
     if (ConfigurationManager.Security!.maxPasswordAge > 0) {
-      const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress)
+      const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, options)
       if (userAccount) {
         const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
@@ -216,8 +234,8 @@ class AuthenticationService {
     return false
   }
 
-  public async validateRedirectUri(client_id: string, redirectUri: string): Promise<boolean> {
-    const client = await ClientService.getClient({ client_id })
+  public async validateRedirectUri(client_id: string, redirectUri: string, options: IServiceOptions): Promise<boolean> {
+    const client = await ClientService.getClient({ client_id }, options)
     if (client) {
       return (
         !client.redirectUris ||
@@ -230,7 +248,7 @@ class AuthenticationService {
     }
   }
 
-  public async validatePassword(password: string, confirm: string): Promise<boolean> {
+  public async validatePassword(password: string, confirm: string, options: IServiceOptions): Promise<boolean> {
     const requiredParts: string[] = []
     if (ConfigurationManager.Security!.passwordRequiresLowercase) {
       requiredParts.push('lowercase letter (a-z)')
@@ -269,14 +287,15 @@ class AuthenticationService {
     return true
   }
 
-  public verifyOtpToken(secret: string | undefined, token: string | undefined): boolean {
+  public verifyOtpToken(secret: string | null, token: string | null, options: IServiceOptions): boolean {
     if (!secret || !token) {
       return false
     }
     return otplib.authenticator.check(token, secret)
   }
 
-  private createAccessToken(client: ClientInstance, userAccount: IUserAccount): Promise<string> {
+  private createAccessToken(client: ClientInstance, options: IServiceOptions): Promise<string> {
+    const userAccount = options.userContext
     return new Promise((resolve, reject) => {
       const payload = Object.assign({}, userAccount, {
         client_id: client.client_id
@@ -294,7 +313,7 @@ class AuthenticationService {
     })
   }
 
-  private createRefreshToken(client: ClientInstance, userAccount: IUserAccount, sessionId: string): Promise<string> {
+  private createRefreshToken(client: ClientInstance, userAccount: IUserAccount, sessionId: string, options: IServiceOptions): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!client.client_id) {
         reject(new Error('client_id is missing'))
@@ -321,7 +340,7 @@ class AuthenticationService {
     })
   }
 
-  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[]): string {
+  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], options: IServiceOptions): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId }, 120)
     return authorizationCode
