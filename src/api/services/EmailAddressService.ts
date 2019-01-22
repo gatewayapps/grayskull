@@ -11,19 +11,21 @@ import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 
 class EmailAddressService {
   @hasPermission(Permissions.User)
-  public getEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions) {
+  public async getEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions) {
     if (!AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }
-    return EmailAddressRepository.getEmailAddress(filter, options)
+    return await EmailAddressRepository.getEmailAddress(filter, options)
   }
 
-  public emailAddressExists(emailAddress: string, options: IQueryOptions) {
-    return EmailAddressRepository.getEmailAddress({ emailAddress }, options) !== undefined
+  public async isEmailAddressAvailable(emailAddress: string, options: IQueryOptions): Promise<Boolean> {
+    const existingEmail = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
+
+    return existingEmail === null
   }
 
-  public createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
-    return EmailAddressRepository.createEmailAddress(data, options)
+  public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
+    return await EmailAddressRepository.createEmailAddress(data, options)
   }
 
   @hasPermission(Permissions.User)

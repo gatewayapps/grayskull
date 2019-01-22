@@ -8,11 +8,9 @@ import FormValidation, { FormValidationRule } from './FormValidation'
 import ValidatingInput from './ValidatingInput'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 
-const GET_EMAIL_ADDRESS_QUERY = gql`
-  query GET_EMAIL_ADDRESS_QUERY($emailAddress: String!) {
-    emailAddress(where: { emailAddress: $emailAddress }) {
-      emailAddressId
-    }
+const EMAIL_ADDRESS_AVAILABLE = gql`
+  query EMAIL_ADDRESS_AVAILABLE($emailAddress: String!) {
+    emailAddressAvailable(emailAddress: $emailAddress)
   }
 `
 
@@ -34,11 +32,12 @@ class RegistrationForm extends PureComponent {
             }
 
             const { data } = await client.query({
-              query: GET_EMAIL_ADDRESS_QUERY,
+              query: EMAIL_ADDRESS_AVAILABLE,
               variables: { emailAddress: val },
               refetchPolicy: 'network-only'
             })
-            return data && !data.emailAddress
+
+            return data.emailAddressAvailable
           }
 
           const validations = [

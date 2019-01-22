@@ -134,8 +134,8 @@ class UserAccountService {
 
   public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<UserAccountInstance> {
     // 1. Verify that a user has not already been registered with this email address
-    const existingEmailAddress = await EmailAddressService.getEmailAddress({ emailAddress }, options)
-    if (existingEmailAddress) {
+    const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
+    if (!emailAddressAvailable) {
       throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
     }
 

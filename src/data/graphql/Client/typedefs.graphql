@@ -26,7 +26,6 @@ input CreateClientArgs {
 	logoImageUrl: String
 	description: String
 	public: Boolean
-	secret: String!
 	baseUrl: String!
 	homePageUrl: String
 	redirectUris: String!

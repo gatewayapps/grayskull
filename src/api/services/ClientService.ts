@@ -20,11 +20,12 @@ class ClientService {
       data.client_id = uuid()
     }
     if (!data.secret) {
-      data.secret = crypto.randomBytes(32).toString('hex')
+      data.secret = crypto.randomBytes(128).toString('hex')
     }
     const client = await ClientRepository.createClient(data, options)
     return client
   }
+
   @hasPermission(Permissions.Admin)
   public async clientsMeta(filter: IClientFilter | null, options: IQueryOptions): Promise<IClientMeta> {
     return ClientRepository.clientsMeta(filter, options)
