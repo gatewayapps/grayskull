@@ -64,7 +64,7 @@ class ClientAddPage extends PureComponent {
     const { data } = await apolloClient.query({
       query: CHECK_CLIENT_ID_QUERY,
       variables: { client_id: this.state.client.client_id },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'network-only'
     })
     console.log(data)
     if (data && data.client) {
@@ -121,6 +121,8 @@ class ClientAddPage extends PureComponent {
       data.scopes = JSON.stringify(scopes)
     }
 
+    data.secret = secret
+
     const res = await createClient({ variables: { data } })
 
     if (res.data && res.data.createClient) {
@@ -136,7 +138,7 @@ class ClientAddPage extends PureComponent {
   toggleCustomize = () => {
     this.setState((prevState) => ({
       ...prevState,
-      customizeClientId: !prevState.customizeClientId,
+      customizeClientId: !prevState.customizeClientId
     }))
   }
 
@@ -145,11 +147,11 @@ class ClientAddPage extends PureComponent {
       <Query query={GET_SCOPES_FOR_CLIENT_QUERY}>
         {({ data, error, loading: loadingScopes }) => {
           if (loadingScopes) {
-            return (<LoadingIndicator />)
+            return <LoadingIndicator />
           }
 
           if (error) {
-            return (<ErrorMessage error={error} />)
+            return <ErrorMessage error={error} />
           }
 
           return (
@@ -169,8 +171,10 @@ class ClientAddPage extends PureComponent {
                             <div className="col-sm-12 col-md-9">
                               {!this.state.customizeClientId && (
                                 <>
-                                  <span className='py-2' style={{ verticalAlign: 'middle' }}>{this.state.client.client_id}</span>
-                                  <button type='button' className='btn btn-link btn-sm' onClick={this.toggleCustomize}>
+                                  <span className="py-2" style={{ verticalAlign: 'middle' }}>
+                                    {this.state.client.client_id}
+                                  </span>
+                                  <button type="button" className="btn btn-link btn-sm" onClick={this.toggleCustomize}>
                                     Customize
                                   </button>
                                 </>
@@ -186,7 +190,7 @@ class ClientAddPage extends PureComponent {
                                       onChange={(e) => this.handleClientIdChange(e, apolloClient)}
                                       required
                                       readOnly={this.state.result !== undefined}
-                                      aria-describedby='clientIdHelpBlock'
+                                      aria-describedby="clientIdHelpBlock"
                                       autoFocus
                                     />
                                   )}
@@ -197,17 +201,12 @@ class ClientAddPage extends PureComponent {
                               </div>
                             </div>
                           </div>
-                          <ClientForm
-                            client={this.state.client}
-                            onChange={this.handleClientFormChange}
-                            onValidated={this.onClientFormValidated}
-                            scopes={data.scopes}
-                          />
+                          <ClientForm client={this.state.client} onChange={this.handleClientFormChange} onValidated={this.onClientFormValidated} scopes={data.scopes} />
                           {this.state.result && (
                             <div className="alert alert-success">
                               <p>
-                                Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is
-                                the only time the client_secret will be visible.
+                                Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as
+                                this is the only time the client_secret will be visible.
                               </p>
                               <div>
                                 <strong>Client Id:</strong> {this.state.result.client_id}
@@ -226,11 +225,7 @@ class ClientAddPage extends PureComponent {
                                   <i className="fal fa-times" /> Cancel
                                 </a>
                               </Link>
-                              <button
-                                className="btn btn-success"
-                                type="submit"
-                                disabled={loading || !this.state.clientIdValid || !this.state.clientFormValid}
-                              >
+                              <button className="btn btn-success" type="submit" disabled={loading || !this.state.clientIdValid || !this.state.clientFormValid}>
                                 <i className="fal fa-save" /> Create
                               </button>
                             </div>

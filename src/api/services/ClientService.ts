@@ -47,7 +47,7 @@ class ClientService {
   public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<ClientInstance | null> {
     return ClientRepository.getClient(filter, options)
   }
-  @hasPermission(Permissions.User)
+
   public async validateClient(client_id: string, secret: string, options: IQueryOptions): Promise<ClientInstance | null> {
     const client = await ClientRepository.getClientWithSensitiveData({ client_id }, options)
     if (client && client.secret === secret) {

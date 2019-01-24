@@ -23,6 +23,7 @@ import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter
 import { hasPermission } from '@decorators/permissionDecorator'
 import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
+import EmailAddressRepository from '@data/repositories/EmailAddressRepository';
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -83,7 +84,7 @@ class UserAccountService {
   // This seems not right.  This call should be admin only, but we have to expose it for
   // authentication.  As long as it's never exposed via an API it should be ok I guess.
   public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
-    const email = await EmailAddressService.getEmailAddress({ emailAddress }, options)
+    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
       return null
