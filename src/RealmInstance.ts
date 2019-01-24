@@ -29,7 +29,7 @@ const decache = require('decache')
 let REALM_INSTANCE: RealmInstance
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
-const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
+const HTTP_PORT = 80
 
 export function getInstance() {
   return REALM_INSTANCE

@@ -14,10 +14,10 @@ const CONFIG_DIR = '/usr/local/grayskull'
 const CONFIG_FILENAME = 'grayskull.config.js'
 const CONFIG_FILE_PATH = join(CONFIG_DIR, CONFIG_FILENAME)
 
+ensureDirSync(CONFIG_DIR)
+
 export class ConfigurationService {
   public writeConfiguration(config: IConfiguration) {
-    ensureDirSync(CONFIG_DIR)
-
     const currentConfig = ConfigurationManager.CurrentConfiguration
     if (currentConfig) {
       config.Security!.globalSecret = currentConfig.Security!.globalSecret
