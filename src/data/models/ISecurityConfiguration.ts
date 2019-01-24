@@ -7,6 +7,9 @@ export interface ISecurityConfiguration {
   passwordRequiresSymbol: boolean
   passwordMinimumLength: number
   multifactorRequired: boolean
+  requireEmailAddressVerification: boolean
+  passwordHistoryEnabled: boolean
+  passwordHistoryCount: number
   invitationExpirationSeconds: number
   accessTokenExpirationSeconds: number
   globalSecret: string
