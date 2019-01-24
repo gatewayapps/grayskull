@@ -14,6 +14,7 @@ export class GettingStarted extends React.PureComponent {
         </p>
 
         <ul className="list-group card-text">
+          <li className="list-group-item">Have a valid certificate and private key for the URL you plan to use</li>
           <li className="list-group-item">Have a persistent volume mounted to /config with read/write permissions</li>
           <li className="list-group-item">Have a PostgreSQL database available with admin credentials</li>
         </ul>

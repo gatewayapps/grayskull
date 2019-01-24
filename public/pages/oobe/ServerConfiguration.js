@@ -2,6 +2,7 @@ import { default as FormValidation, FormValidationRule } from '../../components/
 import ValidatingInput from '../../components/ValidatingInput'
 import React from 'react'
 import PropTypes from 'prop-types'
+import ResponsiveValidatingInput from '../../components/ResponsiveValidatingInput'
 
 export class ServerConfiguration extends React.Component {
   static propTypes = {
@@ -30,8 +31,11 @@ export class ServerConfiguration extends React.Component {
   render() {
     const validations = [
       new FormValidationRule('baseUrl', 'isEmpty', false, 'Server Base URL is required'),
+      new FormValidationRule('baseUrl', 'startsWith', true, 'Server Base URL must start with https', ['https']),
       new FormValidationRule('baseUrl', 'isURL', true, 'Server Base URL must be a valid URL'),
-      new FormValidationRule('realmName', 'isEmpty', false, 'Realm Name is required')
+      new FormValidationRule('realmName', 'isEmpty', false, 'Realm Name is required'),
+      new FormValidationRule('privateKey', 'isEmpty', false, 'You must provide a private key'),
+      new FormValidationRule('certificate', 'isEmpty', false, 'You must provide a certificate')
     ]
 
     return (
@@ -40,37 +44,48 @@ export class ServerConfiguration extends React.Component {
           {({ validate, validationErrors }) => (
             <div>
               <h5>Server Configuration</h5>
-              <div className="form-group row">
-                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="baseUrl">
-                  Server Base URL
-                </label>
-                <div className="col-sm-12 col-md-9">
-                  <ValidatingInput
-                    validationErrors={validationErrors}
-                    autoFocus
-                    autoComplete="off"
-                    type="url"
-                    name="baseUrl"
-                    value={this.props.data.baseUrl}
-                    onChange={(e) => this.handleChange(e, validate)}
-                  />
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-12 col-md-3 col-form-label" htmlFor="realmName">
-                  Realm Name
-                </label>
-                <div className="col-sm-12 col-md-9">
-                  <ValidatingInput
-                    validationErrors={validationErrors}
-                    autoComplete="off"
-                    type="text"
-                    name="realmName"
-                    value={this.props.data.realmName}
-                    onChange={(e) => this.handleChange(e, validate)}
-                  />
-                </div>
-              </div>
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                autoFocus
+                label="Server Base URL"
+                autoComplete="off"
+                type="url"
+                name="baseUrl"
+                value={this.props.data.baseUrl}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Realm Name"
+                autoComplete="off"
+                type="text"
+                name="realmName"
+                value={this.props.data.realmName}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Private Key"
+                spellCheck={false}
+                autoComplete="off"
+                rows={5}
+                type="textarea"
+                name="privateKey"
+                value={this.props.data.privateKey}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Certificate"
+                autoComplete="off"
+                rows={5}
+                spellCheck={false}
+                type="textarea"
+                name="certificate"
+                value={this.props.data.certificate}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
             </div>
           )}
         </FormValidation>
