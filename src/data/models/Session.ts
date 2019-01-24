@@ -29,7 +29,7 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.DATE
     },
     expiresAt: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE(7)
     },
     createdBy: {
       allowNull: true,

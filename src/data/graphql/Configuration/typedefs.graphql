@@ -1,7 +1,6 @@
 type Configuration {
 	Security: SecurityConfiguration
 	Mail: MailConfiguration
-	Database: DatabaseConfiguration
 	Server: ServerConfiguration
 }
 
@@ -32,15 +31,6 @@ input MailConfigurationInput {
 	fromAddress: String!
 }
 
-input DatabaseConfigurationInput {
-	provider: String!
-	adminUsername: String!
-	adminPassword: String!
-	serverAddress: String!
-	serverPort: Int!
-	databaseName: String!
-}
-
 input ServerConfigurationInput {
 	baseUrl: String!
 	realmName: String!
@@ -49,7 +39,6 @@ input ServerConfigurationInput {
 input SaveConfigurationArgs {
 	Security: SecurityConfigurationInput
 	Mail: MailConfigurationInput
-	Database: DatabaseConfigurationInput
 	Server: ServerConfigurationInput
 }
 

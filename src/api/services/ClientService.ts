@@ -5,10 +5,9 @@ import { IUserAccount } from '@data/models/IUserAccount'
 import crypto from 'crypto'
 import uuid from 'uuid/v4'
 import { IClientFilter, IClientUniqueFilter, IClientMeta } from '@/interfaces/graphql/IClient'
-import { Transaction } from 'sequelize'
+
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import { getContext } from '@data/context'
+
 import { hasPermission } from '@decorators/permissionDecorator'
 import { Permissions } from '@/utils/permissions'
 import ClientRepository from '@data/repositories/ClientRepository'

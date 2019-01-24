@@ -1,6 +1,6 @@
 import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '@/interfaces/graphql/I{{Name}}'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import {getContext} from '@data/context'
+import db from '@data/context'
 import { I{{Name}} } from '@data/models/I{{Name}}'
 {{!-- {{#ifNotEquals Name 'UserAccount'}}
 import { IUserAccount } from '@data/models/IUserAccount'
@@ -12,7 +12,7 @@ import { IQueryOptions } from '@data/IQueryOptions'
 class {{Name}}Repository {
   public async {{toCamelCase (pluralize Name)}}Meta(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<I{{Name}}Meta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await getContext().{{Name}}.count({ where, transaction: options.transaction })
+    const count = await db.{{Name}}.count({ where, transaction: options.transaction })
     return {
       count
     }
@@ -20,14 +20,14 @@ class {{Name}}Repository {
 
   public async get{{pluralize Name}}(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await getContext().{{Name}}.findAll({
+    return await db.{{Name}}.findAll({
       where,
       {{#if Meta.sensitive}}
       attributes: {
         exclude: [{{#each Meta.sensitive as |s|}}'{{s}}',{{/each}}],
       },
       {{/if}}
-      raw: true,
+      
       transaction: options.transaction,
     })
   }
@@ -35,32 +35,32 @@ class {{Name}}Repository {
   {{#if Meta.sensitive}}
   public async get{{pluralize Name}}WithSensitiveData(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<{{Name}}Instance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await getContext().{{Name}}.findAll({
+    return await db.{{Name}}.findAll({
       where,
-      raw: true,
+      
       transaction: options.transaction,
     })
   }
   {{/if}}
 
   public async get{{Name}}(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<{{Name}}Instance | null> {
-    return await getContext().{{Name}}.findOne({
+    return await db.{{Name}}.findOne({
       where: filter,
       {{#if Meta.sensitive}}
       attributes: {
         exclude: [{{#each Meta.sensitive as |s|}}'{{s}}',{{/each}}],
       },
       {{/if}}
-      raw: true,
+      
       transaction: options.transaction,
     })
   }
 
   {{#if Meta.sensitive}}
   public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<{{Name}}Instance | null> {
-    return await getContext().{{Name}}.findOne({
+    return await db.{{Name}}.findOne({
       where: filter,
-      raw: true,
+      
       transaction: options.transaction,
     })
   }
@@ -71,12 +71,12 @@ class {{Name}}Repository {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().{{Name}}.create(data, {returning: true, raw: true, transaction: options.transaction})
+    return await db.{{Name}}.create(data, {returning: true,  transaction: options.transaction})
   }
 
   public async delete{{Name}}(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<boolean> {
     {{#if Meta.destroy}}
-    const affectedCount = await getContext().Session.destroy({
+    const affectedCount = await db.Session.destroy({
       where: filter as AnyWhereOptions,
       transaction: options.transaction,
     })
@@ -87,7 +87,7 @@ class {{Name}}Repository {
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [ affectedCount ] = await getContext().{{Name}}.update(data, {
+    const [ affectedCount ] = await db.{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
       transaction: options.transaction,
     })
@@ -99,7 +99,7 @@ class {{Name}}Repository {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await getContext().{{Name}}.update(data, {
+    await db.{{Name}}.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
       transaction: options.transaction,

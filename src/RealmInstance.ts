@@ -11,7 +11,7 @@ import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 
 import { getUserContext } from './middleware/authentication'
-import { initializeDatabase, getContext } from '@data/context'
+import db from '@data/context'
 import { Server } from 'http'
 import next from 'next'
 import { startServerInstance } from './main'
@@ -29,7 +29,7 @@ const decache = require('decache')
 let REALM_INSTANCE: RealmInstance
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
-const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
+const HTTP_PORT = 80
 
 export function getInstance() {
   return REALM_INSTANCE
@@ -65,18 +65,19 @@ export class RealmInstance {
     this.handle = this.app.getRequestHandler()
 
     this.hostname = this.config ? `${this.config.Server!.baseUrl}` : 'http://localhost'
-
-    if (!config) {
-      this.configureOobeServer().then(() => {
-        this.startServer()
-      })
-    } else {
-      this.prepareDatabase().then(() => {
-        this.configureServer().then(() => {
+    this.prepareDatabase().then(() => {
+      if (!config) {
+        this.configureOobeServer().then(() => {
           this.startServer()
         })
-      })
-    }
+      } else {
+        this.ensureGrayskullClient().then(() => {
+          this.configureServer().then(() => {
+            this.startServer()
+          })
+        })
+      }
+    })
   }
 
   public stopServer() {
@@ -143,15 +144,10 @@ export class RealmInstance {
   }
 
   private async prepareDatabase() {
-    initializeDatabase()
-    const db = getContext()
     // console.log('Initializing database connection')
-    await db.sequelize
-      .sync()
-      .then(this.ensureGrayskullClient)
-      .catch((err) => {
-        console.error(err)
-      })
+    await db.sequelize.sync().catch((err) => {
+      console.error(err)
+    })
   }
 
   private async configureOobeServer() {
