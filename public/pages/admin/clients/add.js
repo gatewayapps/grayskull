@@ -32,6 +32,7 @@ const GET_SCOPES_FOR_CLIENT_QUERY = gql`
     scopes {
       id
       clientDescription
+      required
     }
   }
 `
