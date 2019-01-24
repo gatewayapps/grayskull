@@ -2,25 +2,30 @@ import { IScope } from '../../data/models/IScope'
 
 const scopes: IScope[] = [
   {
-    id: 'read_basic',
-    clientDescription: `Read a user's name and profile image`,
-    userDescription: 'View your basic profile information such as name and profile image'
+    id: 'openid',
+    clientDescription: 'Access a client specific user identifier',
+    userDescription: 'Access your user account id'
   },
   {
-    id: 'write_basic',
-    clientDescription: `Update a user's name and profile image`,
-    userDescription: 'Change your basic profile information such as name and profile image'
+    id: 'profile',
+    clientDescription: `Access a user's profile information`,
+    userDescription: 'View your profile information such as name and profile image'
   },
   {
-    id: 'read_contact',
-    clientDescription: `Read a user's contact information such as email address and phone number`,
-    userDescription: 'View your contact information such as email address and phone number'
-  },
-  {
-    id: 'write_contact',
-    clientDescription: `Update a user's contact information such as email address and phone number`,
-    userDescription: 'Change your contact information such as email address and phone number'
+    id: 'email',
+    clientDescription: `Access a user's email address `,
+    userDescription: 'View your email address'
   }
+  // {
+  //   id: 'address',
+  //   clientDescription: `Access a user's physical address `,
+  //   userDescription: 'View your physical address'
+  // },
+  // {
+  //   id: 'phone',
+  //   clientDescription: `Access a user's phone number`,
+  //   userDescription: 'View your phone number'
+  // }
 ]
 
 class ScopeService {

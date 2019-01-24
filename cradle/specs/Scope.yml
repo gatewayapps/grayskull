@@ -7,3 +7,4 @@ Scope:
     id: string primary
     clientDescription: string
     userDescription: string
+    required: boolean
