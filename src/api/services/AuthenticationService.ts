@@ -15,6 +15,8 @@ import UserClientService from './UserClientService'
 import MailService from './MailService'
 import SessionService from './SessionService'
 import { IQueryOptions } from '../../data/IQueryOptions'
+import UserAccountRepository from '@data/repositories/UserAccountRepository'
+import UserClientRepository from '@data/repositories/UserClientRepository'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -154,7 +156,7 @@ class AuthenticationService {
           throw new Error(`authorization_code has expired`)
         }
 
-        userAccount = await UserAccountService.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || '' }, options)
+        userAccount = await UserAccountRepository.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || '' }, options)
         if (!userAccount) {
           throw new Error(`Unable to locate user account`)
         }
@@ -186,12 +188,12 @@ class AuthenticationService {
       throw new Error(`Unable to locate user account`)
     }
 
-    const userClient = await UserClientService.getUserClient({ userAccountId: userAccount.userAccountId!, client_id: client.client_id! }, options)
+    const userClient = await UserClientRepository.getUserClient({ userAccountId: userAccount.userAccountId!, client_id: client.client_id! }, options)
     if (!userClient) {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
 
-    const access_token = await this.createAccessToken(client, options)
+    const access_token = await this.createAccessToken(client, { userContext: userAccount})
 
     return {
       access_token,

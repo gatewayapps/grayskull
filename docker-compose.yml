@@ -1,16 +1,6 @@
 version: "2"
 
 services:
-  web:
-    build: .
-    volumes:
-      - ./config/default.js:/www/config/default.js
-    ports:
-      - "3000:3000"
-      - "9229:9229"
-    links:
-      - maildev
-      - postgres
   postgres:
     image: postgres
     environment:
@@ -19,30 +9,3 @@ services:
       - POSTGRES_DB=grayskull
     ports:
       - "5432:5432" 
-  maildev:
-    image: djfarrelly/maildev
-    ports:
-      - "1025:25"
-      - "8080:80"
-  testClient:
-    image: node:8-slim
-    command: bash -c "cd /www && npm install && npm start"
-    volumes:
-      - ./examples/testClient:/www
-      - /www/node_modules
-    environment:
-      - "AUTH_SERVER_BASE_URL=http://justin.gatewayapps.net:3000"
-      - "CLIENT_BASE_URL=http://justin.gatewayapps.net:5000"
-    ports:
-      - "5000:5000"
-  passportClient:
-    image: node:8-slim
-    command: bash -c "cd /www && npm install && npm start"
-    volumes:
-      - ./examples/passportClient:/www
-      - /www/node_modules
-    environment:
-      - "AUTH_SERVER_BASE_URL=http://localhost:3000"
-      - "CLIENT_BASE_URL=http://localhost:5001"
-    ports:
-      - "5001:5001"
