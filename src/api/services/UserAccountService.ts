@@ -23,7 +23,8 @@ import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter
 import { hasPermission } from '@decorators/permissionDecorator'
 import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
-import EmailAddressRepository from '@data/repositories/EmailAddressRepository';
+import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
+import ClientRepository from '@data/repositories/ClientRepository'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -64,7 +65,7 @@ class UserAccountService {
   }
   @hasPermission(Permissions.User)
   public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
-    const email = await EmailAddressService.getEmailAddress({ emailAddress }, options)
+    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
       return null
@@ -119,7 +120,7 @@ class UserAccountService {
     const invitedById = decoded.invitedById
     let client
     if (decoded.client_id) {
-      client = await ClientService.getClient({ client_id: decoded.client_id }, options)
+      client = await ClientRepository.getClient({ client_id: decoded.client_id }, options)
     } else if (decoded.admin) {
       client = { name: `${ConfigurationManager.General!.realmName} Global Administrator` }
     }

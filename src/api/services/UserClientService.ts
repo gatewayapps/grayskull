@@ -10,6 +10,7 @@ import UserClientRepository from '@data/repositories/UserClientRepository'
 import { hasPermission } from '@decorators/permissionDecorator'
 import { Permissions } from '@/utils/permissions'
 import AuthorizationHelper from '@/utils/AuthorizationHelper'
+import ClientRepository from '@data/repositories/ClientRepository'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -19,7 +20,7 @@ export interface IVerifyScopeResult {
 
 class UserClientService {
   public async verifyScope(userAccountId: string, client_id: string, scope: string | null, options: IQueryOptions): Promise<IVerifyScopeResult> {
-    const client = await ClientService.getClient({ client_id }, options)
+    const client = await ClientRepository.getClient({ client_id }, options)
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
     }
@@ -59,7 +60,7 @@ class UserClientService {
 
   @hasPermission(Permissions.Admin)
   public async updateScopes(userAccount: IUserAccount, client_id: string, allowedScopes: string[], deniedScopes: string[], options: IQueryOptions): Promise<void> {
-    const client = await ClientService.getClient({ client_id }, options)
+    const client = await ClientRepository.getClient({ client_id }, options)
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
     }
