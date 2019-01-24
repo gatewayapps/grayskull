@@ -6,7 +6,6 @@ import EmailAddressFactory from './models/EmailAddress'
 import UserAccountFactory from './models/UserAccount'
 import UserClientFactory from './models/UserClient'
 import SessionFactory from './models/Session'
-import ConfigurationFactory from './models/Configuration'
 
 let db
 export function initializeDatabase() {
@@ -31,8 +30,7 @@ export function initializeDatabase() {
       EmailAddress: EmailAddressFactory(sequelize),
       UserAccount: UserAccountFactory(sequelize),
       UserClient: UserClientFactory(sequelize),
-      Session: SessionFactory(sequelize),
-      Configuration: ConfigurationFactory(sequelize)
+      Session: SessionFactory(sequelize)
     }
 
     Object.values(db).forEach((model: any) => {
