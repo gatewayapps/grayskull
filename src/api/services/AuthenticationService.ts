@@ -17,6 +17,7 @@ import SessionService from './SessionService'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import UserClientRepository from '@data/repositories/UserClientRepository'
+import ClientRepository from '@data/repositories/ClientRepository'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -175,7 +176,7 @@ class AuthenticationService {
           throw new Error(`Invalid refresh_token`)
         }
 
-        userAccount = await UserAccountService.getUserAccount({ userAccountId: decodedRefreshToken.userAccountId }, options)
+        userAccount = await UserAccountRepository.getUserAccount({ userAccountId: decodedRefreshToken.userAccountId }, options)
         break
       }
 
@@ -193,7 +194,7 @@ class AuthenticationService {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
 
-    const access_token = await this.createAccessToken(client, { userContext: userAccount})
+    const access_token = await this.createAccessToken(client, { userContext: userAccount })
 
     return {
       access_token,
@@ -237,7 +238,7 @@ class AuthenticationService {
   }
 
   public async validateRedirectUri(client_id: string, redirectUri: string, options: IQueryOptions): Promise<boolean> {
-    const client = await ClientService.getClient({ client_id }, options)
+    const client = await ClientRepository.getClient({ client_id }, options)
     if (client) {
       return (
         !client.redirectUris ||
