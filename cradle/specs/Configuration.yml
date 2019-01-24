@@ -5,17 +5,6 @@ ServerConfiguration:
     baseUrl: string(1024)
     realmName: string(512)
 
-DatabaseConfiguration:
-  meta:
-    topLevel: false
-  properties:
-    provider: string
-    adminUsername: string
-    adminPassword: string
-    serverAddress: string
-    serverPort: integer
-    databaseName: string
-
 MailConfiguration:
   meta:
     topLevel: false
@@ -57,26 +46,14 @@ Configuration:
       modelRef: SecurityConfiguration
     Mail:
       modelRef: MailConfiguration
-    Database:
-      modelRef: DatabaseConfiguration
     Server:
       modelRef: ServerConfiguration
   operations:
-    verifyDatabaseConnection:
-      returns: OperationResponse
-      arguments:
-        provider: string
-        serverAddress: string
-        serverPort: string
-        databaseName: string
-        adminUsername: string
-        adminPassword: string
     saveConfiguration:
       returns: OperationResponse
       arguments:
         Security: 
         Mail: 
-        Database: 
         Server: 
 
 
