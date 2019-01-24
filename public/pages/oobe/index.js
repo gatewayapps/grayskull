@@ -46,7 +46,9 @@ export default class OobeIndex extends React.Component {
       configuration: {
         Server: {
           realmName: 'Grayskull',
-          baseUrl: 'http://127.0.0.1'
+          baseUrl: 'https://127.0.0.1',
+          privateKey: '',
+          certificate: ''
         },
         Mail: {
           serverAddress: '127.0.0.1',

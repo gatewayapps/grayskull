@@ -27,7 +27,7 @@ export class ConfirmConfiguration extends React.PureComponent {
   }
 
   shouldRender(k) {
-    return !['provider', 'connectionVerified', 'verifyingConnection', 'connectionError'].includes(k)
+    return !['provider', 'connectionVerified', 'verifyingConnection', 'connectionError', 'certificate', 'privateKey'].includes(k)
   }
 
   getValue(v) {

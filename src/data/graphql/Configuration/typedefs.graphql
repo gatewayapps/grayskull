@@ -34,6 +34,8 @@ input MailConfigurationInput {
 input ServerConfigurationInput {
 	baseUrl: String!
 	realmName: String!
+	privateKey: String!
+	certificate: String!
 }
 
 input SaveConfigurationArgs {

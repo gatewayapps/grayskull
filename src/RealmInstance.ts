@@ -6,13 +6,14 @@ import cookieParser = require('cookie-parser')
 import express, { Request, Response } from 'express'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
-
+import { pki } from 'node-forge'
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 
 import { getUserContext } from './middleware/authentication'
 import db from '@data/context'
-import { Server } from 'http'
+
+import { default as https, Server } from 'https'
 import next from 'next'
 import { startServerInstance } from './main'
 
@@ -30,6 +31,7 @@ let REALM_INSTANCE: RealmInstance
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const HTTP_PORT = 80
+const HTTPS_PORT = 443
 
 export function getInstance() {
   return REALM_INSTANCE
@@ -106,6 +108,7 @@ export class RealmInstance {
 
   private initializeServer() {
     const server = express()
+
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
     if (this.config) {
@@ -115,6 +118,75 @@ export class RealmInstance {
     }
 
     this.server = server
+  }
+  private generateTemporaryCertificate(): { key: string; cert: string } {
+    const keys = pki.rsa.generateKeyPair(2048)
+    const cert = pki.createCertificate()
+
+    cert.publicKey = keys.publicKey
+    cert.serialNumber = '01'
+    cert.validity.notBefore = new Date()
+    cert.validity.notAfter = new Date()
+    cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1)
+
+    const attrs = []
+
+    cert.setSubject(attrs)
+    cert.setIssuer(attrs)
+
+    cert.setExtensions([
+      {
+        name: 'basicConstraints',
+        cA: true
+      },
+      {
+        name: 'keyUsage',
+        keyCertSign: true,
+        digitalSignature: true,
+        nonRepudiation: true,
+        keyEncipherment: true,
+        dataEncipherment: true
+      },
+      {
+        name: 'extKeyUsage',
+        serverAuth: true,
+        clientAuth: true,
+        codeSigning: true,
+        emailProtection: true,
+        timeStamping: true
+      },
+      {
+        name: 'nsCertType',
+        client: true,
+        server: true,
+        email: true,
+        objsign: true,
+        sslCA: true,
+        emailCA: true,
+        objCA: true
+      },
+      {
+        name: 'subjectAltName',
+        altNames: [
+          {
+            type: 6, // URI
+            value: 'http://example.org/webid#me'
+          },
+          {
+            type: 7, // IP
+            ip: '127.0.0.1'
+          }
+        ]
+      },
+      {
+        name: 'subjectKeyIdentifier'
+      }
+    ])
+
+    cert.sign(keys.privateKey)
+    const pemCertificate = pki.certificateToPem(cert)
+
+    return { key: pki.privateKeyToPem(keys.privateKey), cert: pemCertificate }
   }
 
   private initializeApolloServer() {
@@ -134,12 +206,25 @@ export class RealmInstance {
   }
 
   private startServer() {
-    this.httpServer = this.server.listen(HTTP_PORT, (err: Error) => {
+    let httpsOptions: any
+    if (!this.config) {
+      httpsOptions = this.generateTemporaryCertificate()
+      //we need to generate a temporary certificate for use in the config process
+    } else {
+      httpsOptions = {
+        key: this.config.Server!.privateKey,
+        cert: this.config.Server!.certificate
+      }
+    }
+
+    this.httpServer = https.createServer(httpsOptions, this.server)
+
+    this.httpServer.listen(HTTPS_PORT, (err: Error) => {
       if (err) {
         throw err
       }
 
-      console.log(`Server ready at ${this.hostname}${IS_DEVELOPMENT ? ':3000' : ''}`)
+      console.log(`Server ready at ${this.hostname}`)
     })
   }
 
