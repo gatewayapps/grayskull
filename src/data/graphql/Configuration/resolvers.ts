@@ -8,20 +8,6 @@ export default {
     }
   },
   Mutation: {
-    verifyDatabaseConnection: async (obj, args, context, info) => {
-      // Insert your verifyDatabaseConnection implementation here
-      try {
-        const success = await ConfigurationService.verifyDatabaseConnection(args.data)
-        return {
-          success: true
-        }
-      } catch (err) {
-        return {
-          success: false,
-          error: err.message
-        }
-      }
-    },
     saveConfiguration: async (obj, args, context, info) => {
       // Insert your saveConfiguration implementation here
       try {

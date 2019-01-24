@@ -191,15 +191,11 @@ export default class OobeIndex extends React.Component {
                                   type="submit"
                                   disabled={this.state.saving}
                                   onClick={async () => {
-                                    this.setState({ saving: true, secondsRemaining: 45 })
+                                    this.setState({ saving: true, secondsRemaining: 35 })
                                     this.waitForRedirect()
 
                                     const config = this.state.configuration
-                                    delete config.Database.connectionError
-                                    delete config.Database.connectionVerified
-                                    delete config.Database.verifyingConnection
 
-                                    config.Database.serverPort = parseInt(config.Database.serverPort)
                                     config.Mail.port = parseInt(config.Mail.port)
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
 
