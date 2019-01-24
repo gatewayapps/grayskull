@@ -18,5 +18,5 @@ COPY --from=build /www/dist ./dist
 COPY --from=build /www/public/.next ./public/.next
 COPY --from=build /www/public/static ./public/static
 
-EXPOSE 3000
+EXPOSE 443
 CMD [ "npm", "start" ]
