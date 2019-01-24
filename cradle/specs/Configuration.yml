@@ -4,6 +4,8 @@ ServerConfiguration:
   properties:
     baseUrl: string(1024)
     realmName: string(512)
+    privateKey: string(16384)
+    publicKey: string(16384)
 
 DatabaseConfiguration:
   meta:
