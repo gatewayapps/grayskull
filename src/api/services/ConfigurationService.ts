@@ -1,4 +1,3 @@
-import { IDatabaseConfiguration } from '@data/models/IDatabaseConfiguration'
 import Sequelize from 'sequelize'
 import { IConfiguration } from '@data/models/IConfiguration'
 import { existsSync, writeFileSync } from 'fs'
@@ -31,22 +30,6 @@ export class ConfigurationService {
 
     loadConfigurationFromDisk()
     RealmInstance.restartServer()
-  }
-
-  public async verifyDatabaseConnection(config: IDatabaseConfiguration): Promise<boolean> {
-    const { databaseName, adminUsername, adminPassword, provider, serverAddress, serverPort } = config
-
-    const sequelize = new Sequelize(databaseName, adminUsername, adminPassword, {
-      port: serverPort,
-      host: serverAddress,
-      dialect: provider,
-      dialectOptions: {
-        poolIdleTimeout: 5000
-      }
-    })
-
-    await sequelize.authenticate()
-    return true
   }
 }
 
