@@ -2,7 +2,6 @@ import React from 'react'
 import Primary from '../../layouts/primary'
 import { GettingStarted } from './GettingStarted'
 import { ServerConfiguration } from './ServerConfiguration'
-import { DatabaseConfiguration } from './DatabaseConfiguration'
 import { MailConfiguration } from './MailConfiguration'
 import { SecurityConfiguration } from './SecurityConfiguration'
 import { ConfirmConfiguration } from './ConfirmConfiguration'
@@ -42,24 +41,12 @@ export default class OobeIndex extends React.Component {
         },
         {
           valid: false
-        },
-        {
-          valid: false
         }
       ],
       configuration: {
         Server: {
           realmName: 'Grayskull',
           baseUrl: 'http://127.0.0.1'
-        },
-        Database: {
-          provider: 'postgres',
-          adminUsername: 'root',
-          adminPassword: 'pass',
-          serverAddress: '127.0.0.1',
-          serverPort: '5432',
-          databaseName: 'grayskull',
-          connectionVerified: false
         },
         Mail: {
           serverAddress: '127.0.0.1',
@@ -102,22 +89,8 @@ export default class OobeIndex extends React.Component {
       }
       case 2: {
         return (
-          <DatabaseConfiguration
-            stepIndex={2}
-            onConfigurationChanged={(data) => {
-              const config = this.state.configuration
-              config.Database = data
-              this.setState({ configuration: config })
-            }}
-            data={this.state.configuration.Database}
-            onValidationChanged={this.onValidationChanged}
-          />
-        )
-      }
-      case 3: {
-        return (
           <MailConfiguration
-            stepIndex={3}
+            stepIndex={2}
             onConfigurationChanged={(data) => {
               const config = this.state.configuration
               config.Mail = data
@@ -128,10 +101,10 @@ export default class OobeIndex extends React.Component {
           />
         )
       }
-      case 4: {
+      case 3: {
         return (
           <SecurityConfiguration
-            stepIndex={4}
+            stepIndex={3}
             onConfigurationChanged={(data) => {
               const config = this.state.configuration
               config.Security = data
@@ -142,8 +115,8 @@ export default class OobeIndex extends React.Component {
           />
         )
       }
-      case 5: {
-        return <ConfirmConfiguration stepIndex={5} configuration={this.state.configuration} onValidationChanged={this.onValidationChanged} />
+      case 4: {
+        return <ConfirmConfiguration stepIndex={4} configuration={this.state.configuration} onValidationChanged={this.onValidationChanged} />
       }
     }
   }
@@ -161,8 +134,8 @@ export default class OobeIndex extends React.Component {
     let secondsTicked = 0
     const redirectInterval = window.setInterval(() => {
       secondsTicked++
-      this.setState({ secondsRemaining: 45 - secondsTicked })
-      if (secondsTicked >= 45) {
+      this.setState({ secondsRemaining: 35 - secondsTicked })
+      if (secondsTicked >= 35) {
         window.clearInterval(redirectInterval)
         window.location = `${this.state.configuration.Server.baseUrl}`
       }
