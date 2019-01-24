@@ -5,7 +5,7 @@ ServerConfiguration:
     baseUrl: string(1024)
     realmName: string(512)
     privateKey: string(16384)
-    publicKey: string(16384)
+    certificate: string(16384)
 
 MailConfiguration:
   meta:
