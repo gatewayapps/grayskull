@@ -1,6 +1,7 @@
 export interface IServerConfiguration {
   baseUrl: string
   realmName: string
-  privateKey: string
-  certificate: string
+  enableCertbot?: boolean
+  privateKey?: string
+  certificate?: string
 }

@@ -10,9 +10,11 @@ import { pki } from 'node-forge'
 import ConfigurationManager from './config/ConfigurationManager'
 import { schema } from './data/graphql/graphql'
 
+import CertificateService, { ACME_WEBROOT_PATH, GreenlockMiddleware } from './api/services/CertificateService'
+
 import { getUserContext } from './middleware/authentication'
 import db from '@data/context'
-
+import { default as http, Server as HttpServer } from 'http'
 import { default as https, Server } from 'https'
 import next from 'next'
 import { startServerInstance } from './main'
@@ -20,6 +22,7 @@ import { startServerInstance } from './main'
 import ScopeService from '@services/ScopeService'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import ClientRepository from '@data/repositories/ClientRepository'
+import { createSecureContext, SecureContext } from 'tls'
 
 let FIRST_USER_CREATED: boolean = false
 
@@ -40,18 +43,24 @@ export function getInstance() {
 export class RealmInstance {
   public config?: IConfiguration
   private server!: express.Application
-  private httpServer!: Server
+  private httpsServer!: Server
+  private httpServer!: HttpServer
   private app: next.Server
   private apolloServer!: ApolloServer
   private hostname: string
   private handle: any
+  private secureContext!: SecureContext
 
   private static instance: RealmInstance
 
-  public static restartServer() {
+  public restartServer() {
     RealmInstance.instance.stopServer().then(() => {
       startServerInstance()
     })
+  }
+
+  public updateSecureContext(context: { key: string; cert: string }) {
+    this.secureContext = createSecureContext(context)
   }
 
   constructor(config?: IConfiguration) {
@@ -73,23 +82,28 @@ export class RealmInstance {
           this.startServer()
         })
       } else {
-        this.ensureGrayskullClient().then(() => {
-          this.configureServer().then(() => {
-            this.startServer()
-          })
-        })
+        this.startGrayskull()
       }
     })
   }
 
+  private startGrayskull() {
+    this.ensureGrayskullClient().then(() => {
+      this.configureServer().then(() => {
+        this.startServer()
+      })
+    })
+  }
+
   public stopServer() {
+    this.httpsServer.close()
     this.httpServer.close()
     this.flushModules()
 
     return this.app.close().then(() => {
       delete this.config
       delete this.server
-      delete this.httpServer
+      delete this.httpsServer
       delete this.app
       delete this.apolloServer
       delete this.hostname
@@ -116,77 +130,16 @@ export class RealmInstance {
       server.use(this.firstUserMiddleware)
       server.use(getUserContext)
     }
+    server.use(GreenlockMiddleware())
 
-    this.server = server
-  }
-  private generateTemporaryCertificate(): { key: string; cert: string } {
-    const keys = pki.rsa.generateKeyPair(2048)
-    const cert = pki.createCertificate()
-
-    cert.publicKey = keys.publicKey
-    cert.serialNumber = '01'
-    cert.validity.notBefore = new Date()
-    cert.validity.notAfter = new Date()
-    cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1)
-
-    const attrs = []
-
-    cert.setSubject(attrs)
-    cert.setIssuer(attrs)
-
-    cert.setExtensions([
-      {
-        name: 'basicConstraints',
-        cA: true
-      },
-      {
-        name: 'keyUsage',
-        keyCertSign: true,
-        digitalSignature: true,
-        nonRepudiation: true,
-        keyEncipherment: true,
-        dataEncipherment: true
-      },
-      {
-        name: 'extKeyUsage',
-        serverAuth: true,
-        clientAuth: true,
-        codeSigning: true,
-        emailProtection: true,
-        timeStamping: true
-      },
-      {
-        name: 'nsCertType',
-        client: true,
-        server: true,
-        email: true,
-        objsign: true,
-        sslCA: true,
-        emailCA: true,
-        objCA: true
-      },
-      {
-        name: 'subjectAltName',
-        altNames: [
-          {
-            type: 6, // URI
-            value: 'http://example.org/webid#me'
-          },
-          {
-            type: 7, // IP
-            ip: '127.0.0.1'
-          }
-        ]
-      },
-      {
-        name: 'subjectKeyIdentifier'
+    server.use((req, res, next) => {
+      if (req.connection.localPort === 80 && req.originalUrl.indexOf('/.well-known/acme-challenge') === -1) {
+        res.redirect('https://' + req.headers.host + req.url)
+      } else {
+        next()
       }
-    ])
-
-    cert.sign(keys.privateKey)
-    const pemCertificate = pki.certificateToPem(cert)
-
-    return { key: pki.privateKeyToPem(keys.privateKey), cert: pemCertificate }
+    })
+    this.server = server
   }
 
   private initializeApolloServer() {
@@ -205,21 +158,30 @@ export class RealmInstance {
     apollo.applyMiddleware({ app: this.server, path: '/api/graphql' })
   }
 
-  private startServer() {
+  private async startServer() {
     let httpsOptions: any
-    if (!this.config) {
-      httpsOptions = this.generateTemporaryCertificate()
-      //we need to generate a temporary certificate for use in the config process
-    } else {
-      httpsOptions = {
-        key: this.config.Server!.privateKey,
-        cert: this.config.Server!.certificate
+
+    await CertificateService.loadCertificateAndUpdateSecureContext()
+
+    this.httpsServer = https.createServer(
+      {
+        SNICallback: (servername, cb) => {
+          cb(null, this.secureContext)
+        }
+      },
+      this.server
+    )
+    this.httpServer = http.createServer(this.server)
+
+    this.httpServer.listen(80, (err: Error) => {
+      if (err) {
+        throw err
       }
-    }
 
-    this.httpServer = https.createServer(httpsOptions, this.server)
+      console.log(`Server ready at ${this.hostname}`)
+    })
 
-    this.httpServer.listen(HTTPS_PORT, (err: Error) => {
+    this.httpsServer.listen(HTTPS_PORT, (err: Error) => {
       if (err) {
         throw err
       }
@@ -242,15 +204,6 @@ export class RealmInstance {
       return this.handle(req, res)
     })
 
-    this.server.all('/restart', (req, res) => {
-      this.stopServer().then(() => {
-        new RealmInstance(undefined)
-        Bluebird.delay(10000).then(() => {
-          res.redirect('/oobe')
-        })
-      })
-    })
-
     this.server.get('*', (req, res) => {
       res.redirect('/oobe')
     })
@@ -270,7 +223,7 @@ export class RealmInstance {
     await this.app.prepare()
 
     this.server.use((req, res, nxt) => {
-      req.baseUrl = `${req.protocol}://${req.hostname}${IS_DEVELOPMENT ? ':3000' : ''}`
+      req.baseUrl = `${req.protocol}://${req.url}`
       nxt()
     })
 

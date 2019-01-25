@@ -122,7 +122,7 @@ class UserAccountService {
     if (decoded.client_id) {
       client = await ClientRepository.getClient({ client_id: decoded.client_id }, options)
     } else if (decoded.admin) {
-      client = { name: `${ConfigurationManager.General!.realmName} Global Administrator` }
+      client = { name: `${ConfigurationManager.Server!.realmName} Global Administrator` }
     }
     if (removeFromCache) {
       TokenCache.del(cpt)

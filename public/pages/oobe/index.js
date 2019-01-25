@@ -47,6 +47,8 @@ export default class OobeIndex extends React.Component {
         Server: {
           realmName: 'Grayskull',
           baseUrl: 'https://127.0.0.1',
+          enableCertbot: true,
+          certBotState: 'NOT_VALIDATED',
           privateKey: '',
           certificate: ''
         },
@@ -197,7 +199,7 @@ export default class OobeIndex extends React.Component {
                                     this.waitForRedirect()
 
                                     const config = this.state.configuration
-
+                                    delete config.Server.certBotState
                                     config.Mail.port = parseInt(config.Mail.port)
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
 

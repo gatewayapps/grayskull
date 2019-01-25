@@ -29,7 +29,7 @@ class ConfigurationManager {
       return undefined
     }
   }
-  public get General(): IServerConfiguration | undefined {
+  public get Server(): IServerConfiguration | undefined {
     if (currentConfig) {
       return currentConfig.Server
     } else {

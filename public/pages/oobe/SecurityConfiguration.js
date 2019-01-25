@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from 'reactstrap'
 import ValidatingInput from '../../components/ValidatingInput'
 import React from 'react'
 import PropTypes from 'prop-types'
+import ResponsiveValidatingInput from '../../components/ResponsiveValidatingInput'
 
 export class SecurityConfiguration extends React.Component {
   static propTypes = {
@@ -25,7 +26,12 @@ export class SecurityConfiguration extends React.Component {
 
   handleChange = (e, validate) => {
     const data = this.props.data
-    data[e.target.name] = e.target.value
+    if (e.target.type === 'checkbox') {
+      data[e.target.name] = e.target.checked
+    } else {
+      data[e.target.name] = e.target.value
+    }
+
     this.props.onConfigurationChanged(data)
     if (validate) {
       validate()
@@ -49,58 +55,52 @@ export class SecurityConfiguration extends React.Component {
           {({ validate, validationErrors }) => (
             <div>
               <h5>Security Configuration</h5>
+              <h6 style={{ marginTop: '1rem', marginBottom: '-0.25rem' }}>Password Rules</h6>
+
+              <ResponsiveValidatingInput
+                labelColumnWidth={4}
+                labelStyles={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
+                validationErrors={validationErrors}
+                label="Require lowercase"
+                name="passwordRequiresLowercase"
+                type="checkbox"
+                checked={this.props.data.passwordRequiresLowercase}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                labelColumnWidth={4}
+                labelStyles={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
+                validationErrors={validationErrors}
+                label="Require uppercase"
+                name="passwordRequiresUppercase"
+                type="checkbox"
+                checked={this.props.data.passwordRequiresUppercase}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                labelColumnWidth={4}
+                labelStyles={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
+                validationErrors={validationErrors}
+                label="Require number"
+                name="passwordRequiresNumber"
+                type="checkbox"
+                checked={this.props.data.passwordRequiresNumber}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                labelColumnWidth={4}
+                labelStyles={{ paddingTop: '0.5rem', paddingBottom: '0.5rem' }}
+                validationErrors={validationErrors}
+                label="Require symbol"
+                name="passwordRequiresSymbol"
+                type="checkbox"
+                checked={this.props.data.passwordRequiresSymbol}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+
               <div className="form-group row">
-                <label className="col-sm-12 col-md-4 col-form-label" htmlFor="baseUrl">
-                  Password Complexity
-                </label>
-                <div className="col-sm-12 col-md-8">
-                  <ButtonGroup style={{ display: 'flex' }}>
-                    <Button
-                      style={{ textTransform: 'lowercase', flex: 1 }}
-                      color="primary"
-                      outline={!this.props.data.passwordRequiresLowercase}
-                      active={this.props.data.passwordRequiresLowercase}
-                      onClick={() => {
-                        this.handleChange({ target: { name: 'passwordRequiresLowercase', value: !this.props.data.passwordRequiresLowercase } })
-                      }}>
-                      a-z
-                    </Button>
-                    <Button
-                      style={{ textTransform: 'uppercase', flex: 1 }}
-                      color="primary"
-                      outline={!this.props.data.passwordRequiresUppercase}
-                      active={this.props.data.passwordRequiresUppercase}
-                      onClick={() => {
-                        this.handleChange({ target: { name: 'passwordRequiresUppercase', value: !this.props.data.passwordRequiresUppercase } })
-                      }}>
-                      A-Z
-                    </Button>
-                    <Button
-                      style={{ textTransform: 'uppercase', flex: 1 }}
-                      color="primary"
-                      outline={!this.props.data.passwordRequiresNumber}
-                      active={this.props.data.passwordRequiresNumber}
-                      onClick={() => {
-                        this.handleChange({ target: { name: 'passwordRequiresNumber', value: !this.props.data.passwordRequiresNumber } })
-                      }}>
-                      0-9
-                    </Button>
-                    <Button
-                      style={{ textTransform: 'uppercase', flex: 1 }}
-                      color="primary"
-                      outline={!this.props.data.passwordRequiresSymbol}
-                      active={this.props.data.passwordRequiresSymbol}
-                      onClick={() => {
-                        this.handleChange({ target: { name: 'passwordRequiresSymbol', value: !this.props.data.passwordRequiresSymbol } })
-                      }}>
-                      !,@,#,...
-                    </Button>
-                  </ButtonGroup>
-                </div>
-              </div>
-              <div className="form-group row">
-                <label className="col-sm-12 col-md-4 col-form-label" htmlFor="multifactorRequired">
-                  Min Password Length
+                <label className="col-sm-12 col-md-4 col-form-label" htmlFor="passwordMinimumLength">
+                  Minimum Length
                 </label>
                 <div className="col-sm-12 col-md-8">
                   <ValidatingInput
@@ -114,23 +114,15 @@ export class SecurityConfiguration extends React.Component {
                   />
                 </div>
               </div>
-              <div className="form-group row">
-                <label className="col-sm-12 col-md-4 col-form-label" htmlFor="multifactorRequired">
-                  Multifactor Authentication
-                </label>
-                <div className="col-sm-12 col-md-8">
-                  <Button
-                    style={{ textTransform: 'uppercase', width: '100%' }}
-                    color="primary"
-                    outline={!this.props.data.multifactorRequired}
-                    active={this.props.data.multifactorRequired}
-                    onClick={() => {
-                      this.handleChange({ target: { name: 'multifactorRequired', value: !this.props.data.multifactorRequired } })
-                    }}>
-                    {this.props.data.multifactorRequired ? 'Required' : 'Not Required'}
-                  </Button>
-                </div>
-              </div>
+              <ResponsiveValidatingInput
+                labelColumnWidth={4}
+                validationErrors={validationErrors}
+                label="Require Multifactor Authentication"
+                name="multifactorRequired"
+                type="checkbox"
+                checked={this.props.data.multifactorRequired}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
             </div>
           )}
         </FormValidation>

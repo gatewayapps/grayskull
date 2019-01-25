@@ -127,7 +127,7 @@ class AuthenticationService {
 
   public generateOtpSecret(emailAddress: string): string {
     const secret = otplib.authenticator.generateSecret()
-    return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.General!.realmName, secret)
+    return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.Server!.realmName, secret)
   }
 
   public async getAccessToken(
