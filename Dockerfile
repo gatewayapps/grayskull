@@ -3,7 +3,7 @@ FROM node:8-slim AS build
 WORKDIR /www
 COPY ./package.json ./package.json
 RUN apt-get update
-RUN apt-get install -y make gcc build-essential
+RUN apt-get install -y make gcc build-essential python
 #COPY ./package-lock.json ./package-lock.json
 RUN NODE_ENV=development
 RUN npm install
