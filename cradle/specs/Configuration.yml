@@ -4,6 +4,9 @@ ServerConfiguration:
   properties:
     baseUrl: string(1024)
     realmName: string(512)
+    enableCertbot: boolean default(0)
+    privateKey: string?(16384)
+    certificate: string?(16384)
 
 MailConfiguration:
   meta:

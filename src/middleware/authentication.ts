@@ -7,6 +7,8 @@ import SessionService from '@services/SessionService'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import SessionRepository from '@data/repositories/SessionRepository'
 
+let FIRST_USER_CREATED = false
+
 export interface IRefreshAccessTokenResult {
   access_token: string
   expires_in: number
@@ -21,6 +23,18 @@ declare global {
   }
 }
 
+/** Determines if ant user exists in the database and sets NEEDS_FIRST_USER header if not */
+export async function firstUserMiddleware(req: Request, res: Response, next: any) {
+  if (!FIRST_USER_CREATED) {
+    const userMeta = await UserAccountRepository.userAccountsMeta(null, { userContext: null })
+    FIRST_USER_CREATED = userMeta.count > 0
+  }
+  res.locals['NEEDS_FIRST_USER'] = !FIRST_USER_CREATED
+
+  next()
+}
+
+/** Sets req.user and req.session to authenticated user and session */
 export async function getUserContext(req: Request, res: Response, next: NextFunction) {
   if (/^\/(static|_next)/i.test(req.path)) {
     return next()

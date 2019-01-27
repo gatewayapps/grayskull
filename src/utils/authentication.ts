@@ -24,12 +24,7 @@ export function generateLoginUrl(protocol: string, hostname: string | undefined,
   const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
   const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
 
-  const query = [
-    `client_id=grayskull`,
-    `response_type=code`,
-    `redirect_uri=${encodeURIComponent(`${ConfigurationManager.General!.baseUrl}/signin`)}`,
-    `state=${state}`
-  ]
+  const query = [`client_id=grayskull`, `response_type=code`, `redirect_uri=${encodeURIComponent(`${ConfigurationManager.Server!.baseUrl}/signin`)}`, `state=${state}`]
   return `/authorize?${query.join('&')}`
 }
 
