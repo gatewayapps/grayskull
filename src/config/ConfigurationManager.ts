@@ -18,6 +18,9 @@ export function loadConfigurationFromDisk() {
   }
 }
 
+export function getCurrentConfiguration(): IConfiguration {
+  return currentConfig
+}
 class ConfigurationManager {
   public get CurrentConfiguration(): IConfiguration | undefined {
     return currentConfig

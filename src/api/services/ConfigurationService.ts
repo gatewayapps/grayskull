@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize'
 import { IConfiguration } from '@data/models/IConfiguration'
 import { existsSync, writeFileSync } from 'fs'
-import ConfigurationManager from '@/config/ConfigurationManager'
+import ConfigurationManager, { getCurrentConfiguration } from '@/config/ConfigurationManager'
 import { ensureDirSync } from 'fs-extra'
 import { join } from 'path'
 import { RealmInstance, getInstance } from '@/RealmInstance'
@@ -17,7 +17,7 @@ const CONFIG_FILE_PATH = join(CONFIG_DIR, CONFIG_FILENAME)
 ensureDirSync(CONFIG_DIR)
 
 export class ConfigurationService {
-  public writeConfiguration(config: IConfiguration) {
+  public async writeConfiguration(config: IConfiguration) {
     const currentConfig = ConfigurationManager.CurrentConfiguration
     if (currentConfig) {
       config.Security!.globalSecret = currentConfig.Security!.globalSecret
@@ -29,7 +29,8 @@ export class ConfigurationService {
     writeFileSync(CONFIG_FILE_PATH, fileContents, 'utf8')
 
     loadConfigurationFromDisk()
-    getInstance().restartServer()
+    await getInstance().stopServer()
+    new RealmInstance(getCurrentConfiguration())
   }
 }
 
