@@ -65,6 +65,7 @@ input AuthorizeClientArgs {
 	redirectUri: String!
 	scope: String
 	state: String
+	nonce: String
 }
 
 input RegisterUserArgs {
@@ -72,7 +73,7 @@ input RegisterUserArgs {
 	password: String!
 	confirm: String!
 	client_id: String
-	firstName: String!
+	firstName: String! 
 	lastName: String!
 	otpSecret: String
 }

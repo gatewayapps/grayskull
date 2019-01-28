@@ -45,6 +45,7 @@ UserAccount:
         redirectUri: string
         scope: string?
         state: string?
+        nonce: string?
     # Update Client Scopes #
     updateClientScopes:
       returns: boolean

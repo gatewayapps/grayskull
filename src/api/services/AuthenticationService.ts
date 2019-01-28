@@ -343,9 +343,9 @@ class AuthenticationService {
     })
   }
 
-  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], options: IQueryOptions): string {
+  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], nonce: string | undefined, options: IQueryOptions): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
-    this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId }, 120)
+    this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId, nonce }, 120)
     return authorizationCode
   }
 
