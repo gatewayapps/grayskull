@@ -37,7 +37,7 @@ export default {
       }
     },
     serverConfiguration: (obj, args, context, info) => {
-      return ConfigurationManager.General
+      return ConfigurationManager.Server
     }
   }
 }

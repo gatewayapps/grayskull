@@ -1,122 +1,195 @@
-import Bluebird from 'bluebird'
 import { IConfiguration } from '@data/models/IConfiguration'
-import { ApolloServer } from 'apollo-server-express'
-import bodyParser from 'body-parser'
+import db from './data/context'
+import { default as express, Application as ExpressApplication } from 'express'
+import { default as http, Server as HttpServer } from 'http'
+import { default as https, Server as HttpsServer } from 'https'
+import { SecureContext, createSecureContext } from 'tls'
+import { default as next, Server as NextServer } from 'next'
+import { UrlObject, Url } from 'url'
+import bodyParser = require('body-parser')
 import cookieParser = require('cookie-parser')
-import express, { Request, Response } from 'express'
+import httpsRedirect from 'express-https-redirect'
+import CertificateService, { GreenlockMiddleware } from './api/services/CertificateService'
+import { getUserContext, firstUserMiddleware } from './middleware/authentication'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
-
-import ConfigurationManager from './config/ConfigurationManager'
-import { schema } from './data/graphql/graphql'
-
-import { getUserContext } from './middleware/authentication'
-import { initializeDatabase, getContext } from '@data/context'
-import { Server } from 'http'
-import next from 'next'
-import { startServerInstance } from './main'
-
-import ScopeService from '@services/ScopeService'
-import UserAccountRepository from '@data/repositories/UserAccountRepository'
+import { ApolloServer } from 'apollo-server-express'
+import { schema } from '@data/graphql/graphql'
 import ClientRepository from '@data/repositories/ClientRepository'
-
-let FIRST_USER_CREATED: boolean = false
-
-const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
+import ConfigurationManager from './config/ConfigurationManager'
+import ScopeService from '@services/ScopeService'
 
 const decache = require('decache')
+const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
+const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 
 let REALM_INSTANCE: RealmInstance
 
-const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
-const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
-
-export function getInstance() {
-  return REALM_INSTANCE
-}
+export const getInstance = () => REALM_INSTANCE
 
 export class RealmInstance {
-  public config?: IConfiguration
-  private server!: express.Application
-  private httpServer!: Server
-  private app: next.Server
-  private apolloServer!: ApolloServer
-  private hostname: string
-  private handle: any
+  private config: IConfiguration | undefined
+  private expressApp: ExpressApplication
+  private nextServer: NextServer
+  private httpServer: HttpServer
+  private httpsServer: HttpsServer
+  private apolloServer: ApolloServer
+  private secureContext!: SecureContext
+  private requestHandler: (req: http.IncomingMessage, res: http.ServerResponse, parsedUrl?: UrlObject | Url | undefined) => Promise<void>
 
-  private static instance: RealmInstance
-
-  public static restartServer() {
-    RealmInstance.instance.stopServer().then(() => {
-      startServerInstance()
-    })
-  }
-
-  constructor(config?: IConfiguration) {
+  /**
+   * Create a Grayskull Realm
+   * @param {IConfiguration | undefined } config - The Realm Configuration or undefined for first launch
+   */
+  constructor(config: IConfiguration | undefined) {
     REALM_INSTANCE = this
-    RealmInstance.instance = this
     this.config = config
-    this.initializeServer()
-    this.initializeApolloServer()
-    const withCss = require('@zeit/next-css')
-    const withSass = require('@zeit/next-sass')
-    const NEXT_CONFIG = withSass(withCss())
-    this.app = next({ dev: IS_DEVELOPMENT, dir: './public', conf: NEXT_CONFIG })
-    this.handle = this.app.getRequestHandler()
+    this.prepareDatabase()
+    this.nextServer = this.createNextServer()
+    this.expressApp = this.createExpressApplication()
+    this.apolloServer = this.createApolloServer()
+    this.requestHandler = this.nextServer.getRequestHandler()
 
-    this.hostname = this.config ? `${this.config.Server!.baseUrl}` : 'http://localhost'
+    this.prepareSecureContext()
 
-    if (!config) {
-      this.configureOobeServer().then(() => {
-        this.startServer()
-      })
-    } else {
-      this.prepareDatabase().then(() => {
-        this.configureServer().then(() => {
-          this.startServer()
-        })
-      })
-    }
+    this.configureNextRoutes()
+
+    const httpServers = this.createHttpServers()
+    this.httpServer = httpServers.httpServer
+    this.httpsServer = httpServers.httpsServer
+
+    this.startServer()
   }
 
-  public stopServer() {
+  /** Update the https server to use a new certificate */
+  public updateSecureContext(context: { key: string; cert: string }) {
+    this.secureContext = createSecureContext(context)
+  }
+
+  // Shut down servers and update require cache
+  public async stopServer() {
+    this.httpsServer.close()
     this.httpServer.close()
     this.flushModules()
 
-    return this.app.close().then(() => {
-      delete this.config
-      delete this.server
-      delete this.httpServer
-      delete this.app
-      delete this.apolloServer
-      delete this.hostname
+    await this.nextServer.close()
+    delete this.config
+    delete this.nextServer
+    delete this.httpServer
+    delete this.httpsServer
+    delete this.expressApp
+    delete this.apolloServer
+    delete this.secureContext
 
-      this.requireModules()
-    })
+    this.requireModules()
   }
 
+  /** Remove 'next' modules from memory for a clean start */
   private flushModules() {
     NEXT_MODULES.forEach((moduleName) => decache(moduleName))
   }
 
+  /** Load 'next' modules into memory for a clean start */
   private requireModules() {
     NEXT_MODULES.forEach((moduleName) => require(moduleName))
   }
 
-  private initializeServer() {
+  /** Create Express Application and connect middleware */
+  private createExpressApplication(): ExpressApplication {
     const server = express()
+
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
-    if (this.config) {
+
+    // Use greenlock middleware for handling .well-known requests
+    server.use(GreenlockMiddleware())
+
+    // Require https for everything
+    server.use('/', httpsRedirect(true))
+
+    // Wire up authentication middlewares
+    if (this.config && this.config.Security) {
       server.use(cookieParser(this.config.Security!.globalSecret))
-      server.use(this.firstUserMiddleware)
+
+      // Set a NEEDS_FIRST_USER header if no user exists
+      server.use(firstUserMiddleware)
+
+      //
       server.use(getUserContext)
     }
 
-    this.server = server
+    return server
   }
 
-  private initializeApolloServer() {
+  /** Configure routes for next server */
+  private configureNextRoutes() {
+    if (!this.config || !this.config.Security) {
+      // Only allow OOBE, static, and _next routes
+      this.expressApp.all('/oobe/?*|/static/*|/_next*', (req, res) => {
+        return this.requestHandler(req, res)
+      })
+
+      this.expressApp.get('*', (req, res) => {
+        res.redirect('/oobe')
+      })
+    } else {
+      this.ensureGrayskullClient()
+      // Connect route controllers
+      const routeControllers = [new LoginController(this.nextServer), new UserController(this.nextServer)]
+      routeControllers.forEach((c) => c.registerRoutes(this.expressApp))
+
+      this.expressApp.get('*', (req, res) => {
+        return this.requestHandler(req, res)
+      })
+    }
+  }
+
+  /** Load next middleware and create next server */
+  private createNextServer(): NextServer {
+    const withCss = require('@zeit/next-css')
+    const withSass = require('@zeit/next-sass')
+    const NEXT_CONFIG = withSass(withCss())
+    return next({ dev: IS_DEVELOPMENT, dir: './public', conf: NEXT_CONFIG })
+  }
+
+  private async prepareSecureContext() {
+    await CertificateService.loadCertificateAndUpdateSecureContext()
+  }
+
+  /** Create the http and https servers */
+  private createHttpServers(): { httpServer: HttpServer; httpsServer: HttpsServer } {
+    const httpsServer = https.createServer(
+      {
+        SNICallback: (servername, cb) => {
+          cb(null, this.secureContext)
+        }
+      },
+      this.expressApp
+    )
+    const httpServer = http.createServer(this.expressApp)
+    return { httpServer, httpsServer }
+  }
+
+  /** Start http and https servers */
+  private async startServer() {
+    this.httpServer.listen(80, (err: Error) => {
+      if (err) {
+        throw err
+      }
+    })
+
+    this.httpsServer.listen(443, async (err: Error) => {
+      if (err) {
+        throw err
+      }
+
+      await this.nextServer.prepare()
+      console.log(`Grayskull server is ready`)
+    })
+  }
+
+  /** Create an Apollo Server */
+  private createApolloServer(): ApolloServer {
     const apollo = new ApolloServer({
       schema,
       playground: IS_DEVELOPMENT,
@@ -129,78 +202,19 @@ export class RealmInstance {
         return { req, res, user: req.user }
       }
     })
-    apollo.applyMiddleware({ app: this.server, path: '/api/graphql' })
+    apollo.applyMiddleware({ app: this.expressApp, path: '/api/graphql' })
+    return apollo
   }
-
-  private startServer() {
-    this.httpServer = this.server.listen(HTTP_PORT, (err: Error) => {
-      if (err) {
-        throw err
-      }
-
-      console.log(`Server ready at ${this.hostname}${IS_DEVELOPMENT ? ':3000' : ''}`)
-    })
-  }
-
+  /**
+   * Should connect to the database and ensure all tables are created
+   */
   private async prepareDatabase() {
-    initializeDatabase()
-    const db = getContext()
-    // console.log('Initializing database connection')
-    await db.sequelize
-      .sync()
-      .then(this.ensureGrayskullClient)
-      .catch((err) => {
-        console.error(err)
-      })
-  }
-
-  private async configureOobeServer() {
-    await this.app.prepare()
-
-    this.server.all('/oobe/?*|/static/*|/_next*', (req, res) => {
-      return this.handle(req, res)
-    })
-
-    this.server.all('/restart', (req, res) => {
-      this.stopServer().then(() => {
-        new RealmInstance(undefined)
-        Bluebird.delay(10000).then(() => {
-          res.redirect('/oobe')
-        })
-      })
-    })
-
-    this.server.get('*', (req, res) => {
-      res.redirect('/oobe')
+    await db.sequelize.sync().catch((err) => {
+      console.error(err)
     })
   }
 
-  private async firstUserMiddleware(req: Request, res: Response, next: any) {
-    if (!FIRST_USER_CREATED) {
-      const userMeta = await UserAccountRepository.userAccountsMeta(null, { userContext: null })
-      FIRST_USER_CREATED = userMeta.count > 0
-    }
-    res.locals['NEEDS_FIRST_USER'] = !FIRST_USER_CREATED
-
-    next()
-  }
-
-  private async configureServer() {
-    await this.app.prepare()
-
-    this.server.use((req, res, nxt) => {
-      req.baseUrl = `${req.protocol}://${req.hostname}${IS_DEVELOPMENT ? ':3000' : ''}`
-      nxt()
-    })
-
-    // Server-side
-    const routeControllers = [new LoginController(this.app), new UserController(this.app)]
-    routeControllers.forEach((c) => c.registerRoutes(this.server))
-
-    this.server.get('*', (req, res) => {
-      return this.handle(req, res)
-    })
-  }
+  /** Ensure the default Grayskull client application is created in the database */
   private async ensureGrayskullClient(): Promise<void> {
     const grayskullClient = await ClientRepository.getClient({ client_id: 'grayskull' }, { userContext: null })
     if (!grayskullClient) {

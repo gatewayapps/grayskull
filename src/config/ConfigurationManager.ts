@@ -2,7 +2,6 @@ import { getInstance } from '@/RealmInstance'
 import { ISecurityConfiguration } from '@data/models/ISecurityConfiguration'
 import { IServerConfiguration } from '@data/models/IServerConfiguration'
 import { IMailConfiguration } from '@data/models/IMailConfiguration'
-import { IDatabaseConfiguration } from '@data/models/IDatabaseConfiguration'
 import { join } from 'path'
 import { existsSync } from 'fs'
 import { IConfiguration } from '@data/models/IConfiguration'
@@ -19,6 +18,9 @@ export function loadConfigurationFromDisk() {
   }
 }
 
+export function getCurrentConfiguration(): IConfiguration {
+  return currentConfig
+}
 class ConfigurationManager {
   public get CurrentConfiguration(): IConfiguration | undefined {
     return currentConfig
@@ -30,7 +32,7 @@ class ConfigurationManager {
       return undefined
     }
   }
-  public get General(): IServerConfiguration | undefined {
+  public get Server(): IServerConfiguration | undefined {
     if (currentConfig) {
       return currentConfig.Server
     } else {
@@ -40,13 +42,6 @@ class ConfigurationManager {
   public get Mail(): IMailConfiguration | undefined {
     if (currentConfig) {
       return currentConfig.Mail
-    } else {
-      return undefined
-    }
-  }
-  public get Database(): IDatabaseConfiguration | undefined {
-    if (currentConfig) {
-      return currentConfig.Database
     } else {
       return undefined
     }

@@ -27,7 +27,7 @@ export class ConfirmConfiguration extends React.PureComponent {
   }
 
   shouldRender(k) {
-    return !['provider', 'connectionVerified', 'verifyingConnection', 'connectionError'].includes(k)
+    return !['provider', 'connectionVerified', 'verifyingConnection', 'connectionError', 'certificate', 'privateKey'].includes(k)
   }
 
   getValue(v) {
@@ -49,7 +49,6 @@ export class ConfirmConfiguration extends React.PureComponent {
         <h5>Confirm Configuration</h5>
 
         <div className="card-text">{this.renderConfigSection('Server')}</div>
-        <div className="card-text">{this.renderConfigSection('Database')}</div>
         <div className="card-text">{this.renderConfigSection('Mail')}</div>
         <div className="card-text">{this.renderConfigSection('Security')}</div>
 

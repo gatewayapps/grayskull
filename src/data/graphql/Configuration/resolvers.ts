@@ -1,4 +1,5 @@
 import ConfigurationService from '../../../api/services/ConfigurationService'
+import CertificateService from '@services/CertificateService'
 
 export default {
   Query: {
@@ -8,10 +9,10 @@ export default {
     }
   },
   Mutation: {
-    verifyDatabaseConnection: async (obj, args, context, info) => {
-      // Insert your verifyDatabaseConnection implementation here
+    saveConfiguration: async (obj, args, context, info) => {
+      // Insert your saveConfiguration implementation here
       try {
-        const success = await ConfigurationService.verifyDatabaseConnection(args.data)
+        const success = await ConfigurationService.writeConfiguration(args.data)
         return {
           success: true
         }
@@ -22,10 +23,9 @@ export default {
         }
       }
     },
-    saveConfiguration: async (obj, args, context, info) => {
-      // Insert your saveConfiguration implementation here
+    verifyCertbot: async (obj, args, context, info) => {
       try {
-        const success = await ConfigurationService.writeConfiguration(args.data)
+        const success = await CertificateService.verifyCertbot(args.domain)
         return {
           success: true
         }

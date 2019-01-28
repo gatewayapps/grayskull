@@ -1,6 +1,6 @@
 import { IUserClientMeta, IUserClientFilter, IUserClientUniqueFilter } from '@/interfaces/graphql/IUserClient'
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import { getContext } from '@data/context'
+import db from '@data/context'
 import { IUserClient } from '@data/models/IUserClient'
 import { UserClientInstance } from '@data/models/UserClient'
 import { AnyWhereOptions } from 'sequelize'
@@ -9,7 +9,7 @@ import { IQueryOptions } from '@data/IQueryOptions'
 class UserClientRepository {
   public async userClientsMeta(filter: IUserClientFilter | null, options: IQueryOptions): Promise<IUserClientMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await getContext().UserClient.count({ where, transaction: options.transaction })
+    const count = await db.UserClient.count({ where, transaction: options.transaction })
     return {
       count
     }
@@ -17,17 +17,17 @@ class UserClientRepository {
 
   public async getUserClients(filter: IUserClientFilter | null, options: IQueryOptions): Promise<UserClientInstance[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await getContext().UserClient.findAll({
+    return await db.UserClient.findAll({
       where,
-      raw: true,
+
       transaction: options.transaction
     })
   }
 
   public async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClientInstance | null> {
-    return await getContext().UserClient.findOne({
+    return await db.UserClient.findOne({
       where: filter,
-      raw: true,
+
       transaction: options.transaction
     })
   }
@@ -37,7 +37,7 @@ class UserClientRepository {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await getContext().UserClient.create(data, { returning: true, raw: true, transaction: options.transaction })
+    return await db.UserClient.create(data, { returning: true, transaction: options.transaction })
   }
 
   public async deleteUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<boolean> {
@@ -47,7 +47,7 @@ class UserClientRepository {
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [affectedCount] = await getContext().UserClient.update(data, {
+    const [affectedCount] = await db.UserClient.update(data, {
       where: filter as AnyWhereOptions,
       transaction: options.transaction
     })
@@ -58,7 +58,7 @@ class UserClientRepository {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await getContext().UserClient.update(data, {
+    await db.UserClient.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
       transaction: options.transaction

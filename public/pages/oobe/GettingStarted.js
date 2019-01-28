@@ -14,8 +14,8 @@ export class GettingStarted extends React.PureComponent {
         </p>
 
         <ul className="list-group card-text">
-          <li className="list-group-item">Have a persistent volume mounted to /config with read/write permissions</li>
-          <li className="list-group-item">Have a PostgreSQL database available with admin credentials</li>
+          <li className="list-group-item">Have a valid certificate and private key for the URL you plan to use OR this server must be publicly available on the internet</li>
+          <li className="list-group-item">Have a persistent volume mounted to /usr/local/grayskull with read/write permissions</li>
         </ul>
         <p className="card-text mt-4">If you are ready to get started, click Next below</p>
       </div>

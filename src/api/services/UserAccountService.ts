@@ -2,7 +2,7 @@ import ConfigurationManager from '@/config/ConfigurationManager'
 import { GrayskullError, GrayskullErrorCode } from '@/GrayskullError'
 import { Permissions } from '@/utils/permissions'
 import { encrypt } from '@/utils/cipher'
-import { getContext } from '@data/context'
+import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IEmailAddress } from '@data/models/IEmailAddress'
 import { IUserAccount } from '@data/models/IUserAccount'
@@ -61,7 +61,7 @@ class UserAccountService {
       }
     }
     const passwordHash = await this.hashPassword(password)
-    await getContext().UserAccount.update({ passwordHash, lastPasswordChange: new Date() }, { where: { userAccountId } })
+    await UserAccountRepository.updateUserAccount({ userAccountId }, { passwordHash, lastPasswordChange: new Date() }, options)
   }
   @hasPermission(Permissions.User)
   public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
@@ -122,7 +122,7 @@ class UserAccountService {
     if (decoded.client_id) {
       client = await ClientRepository.getClient({ client_id: decoded.client_id }, options)
     } else if (decoded.admin) {
-      client = { name: `${ConfigurationManager.General!.realmName} Global Administrator` }
+      client = { name: `${ConfigurationManager.Server!.realmName} Global Administrator` }
     }
     if (removeFromCache) {
       TokenCache.del(cpt)
@@ -140,16 +140,16 @@ class UserAccountService {
     if (!emailAddressAvailable) {
       throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
     }
-
+    const newOptions = Object.assign({}, options)
     // 2. Start a transaction
-    const trx = await getContext().sequelize.transaction()
+    newOptions.transaction = await db.sequelize.transaction()
 
     try {
       // First user is always an administrator
-      const userMeta = await UserAccountRepository.userAccountsMeta(null, options)
+      const userMeta = await UserAccountRepository.userAccountsMeta(null, newOptions)
       // 3. Create the user account
       data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
-      const user = await this.createUserAccountWithPassword(data, password, trx)
+      const user = await this.createUserAccountWithPassword(data, password, newOptions)
 
       // 4. Create the user account email
       const emailAddressData: IEmailAddress = {
@@ -157,14 +157,14 @@ class UserAccountService {
         emailAddress: emailAddress,
         primary: true
       }
-      await EmailAddressService.createEmailAddress(emailAddressData, options)
+      await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
 
       // 5. Commit the transaction
-      await trx.commit()
+      await newOptions.transaction.commit()
 
       return user
     } catch (err) {
-      await trx.rollback()
+      await newOptions.transaction.rollback()
       throw err
     }
   }
