@@ -133,6 +133,7 @@ export class RealmInstance {
         res.redirect('/oobe')
       })
     } else {
+      this.ensureGrayskullClient()
       // Connect route controllers
       const routeControllers = [new LoginController(this.nextServer), new UserController(this.nextServer)]
       routeControllers.forEach((c) => c.registerRoutes(this.expressApp))
