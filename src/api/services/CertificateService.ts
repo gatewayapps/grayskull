@@ -1,6 +1,7 @@
 import { getInstance } from '@/RealmInstance'
 import ConfigurationManager from '@/config/ConfigurationManager'
 import { pki } from 'node-forge'
+import moment = require('moment')
 
 export const ACME_WEBROOT_PATH = '/usr/local/grayskull/acme'
 export const CERTBOT_PATH = '/usr/local/grayskull/ssl'
@@ -32,20 +33,30 @@ const greenlock = Greenlock.create({
 export const GreenlockMiddleware = greenlock.middleware
 
 class CertificateService {
-  public async validateCertBot(domain: string): Promise<Boolean> {
+  public async verifyCertbot(domain: string): Promise<Boolean> {
     const finalDomain = domain.replace('https://', '')
     try {
-      const registerResults = await greenlock.register({
-        domains: [finalDomain],
-        email: 'security@letsencrypt.org',
-        agreeTos: true,
-        rsaKeySize: 2048,
-        challengeType: 'http-01'
-      })
+      const registerResults = await this.getCertificateFromACMEProvider(finalDomain)
       return !!registerResults
     } catch (err) {
       console.error(err)
       throw err
+    }
+  }
+
+  private async getCertificateFromACMEProvider(domain: string): Promise<{ cert: string; key: string }> {
+    const registerResults = await greenlock.register({
+      domains: [domain],
+      altNames: [domain],
+      email: 'security@letsencrypt.org',
+      agreeTos: true,
+      rsaKeySize: 2048,
+      challengeType: 'http-01'
+    })
+
+    return {
+      cert: registerResults.cert,
+      key: registerResults.privkey
     }
   }
 
@@ -57,9 +68,10 @@ class CertificateService {
     if (!ConfigurationManager || ConfigurationManager.Server === undefined) {
       certObj = this.generateTemporaryCertificate()
     } else {
+      const domain = ConfigurationManager.Server!.baseUrl.replace('https://', '')
+
       const useCertBot = ConfigurationManager.Server!.enableCertbot || false
       if (useCertBot) {
-        const domain = ConfigurationManager.Server!.baseUrl.replace('https://', '')
         const results = await greenlock.check({ domains: [domain] })
         if (results) {
           certObj = {
@@ -67,7 +79,7 @@ class CertificateService {
             key: results.privkey
           }
         } else {
-          return this.validateCertBot(domain)
+          certObj = await this.getCertificateFromACMEProvider(domain)
         }
       } else {
         certObj = {

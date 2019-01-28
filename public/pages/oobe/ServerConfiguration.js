@@ -130,9 +130,9 @@ export class ServerConfiguration extends React.Component {
               />
               <ResponsiveValidatingInput
                 validationErrors={validationErrors}
-                label="Enable CertBot"
+                label="Use Let'sEncrypt.org"
                 autoComplete="off"
-                helpText={`Automatically attempt to get a signed HTTPS certificate from Let's Encrypt using CertBot`}
+                helpText={`Automatically attempt to get a signed HTTPS certificate from Let's Encrypt using Greenlock`}
                 type="checkbox"
                 name="enableCertbot"
                 checked={this.props.data.enableCertbot}
@@ -157,7 +157,7 @@ export class ServerConfiguration extends React.Component {
                               className: 'btn-outline-warning',
                               render: (props) => (
                                 <span>
-                                  <i className="fa fa-fw fa-info-circle" /> Validate Certbot
+                                  <i className="fa fa-fw fa-info-circle" /> Validate LetsEncrypt
                                 </span>
                               )
                             },

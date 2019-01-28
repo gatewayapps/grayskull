@@ -25,7 +25,7 @@ export default {
     },
     verifyCertbot: async (obj, args, context, info) => {
       try {
-        const success = await CertificateService.validateCertBot(args.domain)
+        const success = await CertificateService.verifyCertbot(args.domain)
         return {
           success: true
         }
