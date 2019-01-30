@@ -42,7 +42,7 @@ class UserAccountService {
    * @param data
    * @param password
    */
-  public async createUserAccountWithPassword(data: IUserAccount, password: string, options: IQueryOptions): Promise<UserAccountInstance> {
+  public async createUserAccountWithPassword(data: IUserAccount, password: string, options: IQueryOptions): Promise<IUserAccount> {
     data.userAccountId = uuid()
     data.passwordHash = await this.hashPassword(password)
     data.lastPasswordChange = new Date()
@@ -64,7 +64,7 @@ class UserAccountService {
     await UserAccountRepository.updateUserAccount({ userAccountId }, { passwordHash, lastPasswordChange: new Date() }, options)
   }
   @hasPermission(Permissions.User)
-  public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
+  public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<IUserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
@@ -84,7 +84,7 @@ class UserAccountService {
 
   // This seems not right.  This call should be admin only, but we have to expose it for
   // authentication.  As long as it's never exposed via an API it should be ok I guess.
-  public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string, options: IQueryOptions): Promise<UserAccountInstance | null> {
+  public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string, options: IQueryOptions): Promise<IUserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
@@ -95,7 +95,7 @@ class UserAccountService {
   }
 
   @hasPermission(Permissions.User)
-  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<UserAccountInstance | null> {
+  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
     return UserAccountRepository.getUserAccount(filter, options)
   }
 
@@ -134,7 +134,7 @@ class UserAccountService {
     }
   }
 
-  public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<UserAccountInstance> {
+  public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<IUserAccount> {
     // 1. Verify that a user has not already been registered with this email address
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
     if (!emailAddressAvailable) {

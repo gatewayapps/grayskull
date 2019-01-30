@@ -12,3 +12,4 @@ ServerConfiguration: ./specs/Configuration.yml#ServerConfiguration
 MailConfiguration: ./specs/Configuration.yml#MailConfiguration
 SecurityConfiguration: ./specs/Configuration.yml#SecurityConfiguration
 Configuration: ./specs/Configuration.yml#Configuration
+RefreshToken: ./specs/RefreshToken.yml#RefreshToken

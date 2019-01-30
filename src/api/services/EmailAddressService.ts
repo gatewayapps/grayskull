@@ -37,7 +37,7 @@ class EmailAddressService {
   }
 
   @hasPermission(Permissions.User)
-  public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<EmailAddressInstance[]> {
+  public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<IEmailAddress[]> {
     if (!AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }

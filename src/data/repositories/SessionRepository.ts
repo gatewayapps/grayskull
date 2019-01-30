@@ -2,7 +2,7 @@ import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '@/interfaces
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { ISession } from '@data/models/ISession'
-import { SessionInstance } from '@data/models/Session'
+
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '@data/IQueryOptions'
 
@@ -15,24 +15,30 @@ class SessionRepository {
     }
   }
 
-  public async getSessions(filter: ISessionFilter | null, options: IQueryOptions): Promise<SessionInstance[]> {
+  public async getSessions(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISession[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.Session.findAll({
+    const results = await db.Session.findAll({
       where,
 
       transaction: options.transaction
     })
+    return results.map((r) => r.toJSON())
   }
 
-  public async getSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<SessionInstance | null> {
-    return await db.Session.findOne({
+  public async getSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<ISession | null> {
+    const result = await db.Session.findOne({
       where: filter,
 
       transaction: options.transaction
     })
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async createSession(data: ISession, options: IQueryOptions): Promise<SessionInstance> {
+  public async createSession(data: ISession, options: IQueryOptions): Promise<ISession> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
@@ -48,7 +54,7 @@ class SessionRepository {
     return affectedCount > 0
   }
 
-  public async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, options: IQueryOptions): Promise<SessionInstance | null> {
+  public async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, options: IQueryOptions): Promise<ISession | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }

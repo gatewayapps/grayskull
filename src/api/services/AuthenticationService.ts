@@ -18,6 +18,11 @@ import { IQueryOptions } from '../../data/IQueryOptions'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import UserClientRepository from '@data/repositories/UserClientRepository'
 import ClientRepository from '@data/repositories/ClientRepository'
+import { IClient } from '@data/models/IClient'
+import TokenService from './TokenService'
+import { IRefreshToken } from '@data/models/IRefreshToken'
+import { ScopeMap } from './ScopeService'
+import RefreshTokenRepository from '@data/repositories/RefreshTokenRepository'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -28,9 +33,10 @@ type GrantType = 'authorization_code' | 'refresh_token'
 
 interface IAccessTokenResponse {
   token_type: 'Bearer'
+  id_token?: string
   expires_in: number
-  access_token: string
-  refresh_token: string
+  access_token?: string
+  refresh_token?: string
   session_id?: string
 }
 
@@ -39,6 +45,7 @@ interface IAuthenticationCodeCacheResult {
   scope: string[]
   userAccount: IUserAccount
   userClientId: string
+  nonce: string | undefined
 }
 
 interface IAuthenticateUserResult {
@@ -142,10 +149,10 @@ class AuthenticationService {
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
     }
-
+    let id_token: string | undefined
     let userAccount: IUserAccount | null = null
     let session_id: string | undefined
-
+    let finalRefreshToken: IRefreshToken | null = null
     switch (grant_type) {
       case 'authorization_code': {
         if (!code) {
@@ -162,7 +169,13 @@ class AuthenticationService {
           throw new Error(`Unable to locate user account`)
         }
 
-        refresh_token = await this.createRefreshToken(client, userAccount, '', options)
+        if (authCodeCacheResult.scope.includes(ScopeMap.openid.id)) {
+          id_token = await TokenService.createIDToken(client, userAccount, authCodeCacheResult.nonce, options)
+        }
+        if (authCodeCacheResult.scope.includes(ScopeMap.offline_access.id)) {
+          finalRefreshToken = await TokenService.createRefreshToken(client, userAccount, null, options)
+        }
+
         break
       }
 
@@ -171,12 +184,18 @@ class AuthenticationService {
           throw new Error(`refresh_token is missing`)
         }
 
-        const decodedRefreshToken = await this.verifyRefreshToken(client, refresh_token)
-        if (!decodedRefreshToken || decodedRefreshToken.client_id !== client.client_id) {
+        finalRefreshToken = await RefreshTokenRepository.getRefreshToken({ token: refresh_token }, options)
+
+        if (!finalRefreshToken) {
           throw new Error(`Invalid refresh_token`)
         }
 
-        userAccount = await UserAccountRepository.getUserAccount({ userAccountId: decodedRefreshToken.userAccountId }, options)
+        const userClient = await UserClientRepository.getUserClient({ userClientId: finalRefreshToken.userClientId }, options)
+        if (!userClient || userClient.client_id !== client_id) {
+          throw new Error(`Invalid refresh_token`)
+        }
+
+        userAccount = await UserAccountRepository.getUserAccount({ userAccountId: userClient.userAccountId }, options)
         break
       }
 
@@ -194,13 +213,12 @@ class AuthenticationService {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
 
-    const access_token = await this.createAccessToken(client, { userContext: userAccount })
-
+    const access_token = await TokenService.createAccessToken(client, userAccount, finalRefreshToken, options)
     return {
       access_token,
+      id_token,
       expires_in: ConfigurationManager.Security!.accessTokenExpirationSeconds,
-      refresh_token,
-      session_id,
+      refresh_token: finalRefreshToken ? finalRefreshToken.token : undefined,
       token_type: 'Bearer'
     }
   }
@@ -297,59 +315,13 @@ class AuthenticationService {
     return otplib.authenticator.check(token, secret)
   }
 
-  private createAccessToken(client: ClientInstance, options: IQueryOptions): Promise<string> {
-    const userAccount = options.userContext
-    return new Promise((resolve, reject) => {
-      const payload = Object.assign({}, userAccount, {
-        client_id: client.client_id
-      })
-      const options = {
-        expiresIn: ConfigurationManager.Security!.accessTokenExpirationSeconds
-      }
-      return jwt.sign(payload, client.secret || '', options, (err, token) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(token)
-        }
-      })
-    })
-  }
-
-  private createRefreshToken(client: ClientInstance, userAccount: IUserAccount, sessionId: string, options: IQueryOptions): Promise<string> {
-    return new Promise((resolve, reject) => {
-      if (!client.client_id) {
-        reject(new Error('client_id is missing'))
-        return
-      }
-
-      if (!userAccount.userAccountId) {
-        reject(new Error('userAccountId is missing'))
-        return
-      }
-
-      const payload: IRefreshTokenPayload = {
-        client_id: client.client_id,
-        session_id: sessionId,
-        userAccountId: userAccount.userAccountId
-      }
-      return jwt.sign(payload, ConfigurationManager.Security!.globalSecret, (err, token) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(token)
-        }
-      })
-    })
-  }
-
   public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], nonce: string | undefined, options: IQueryOptions): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId, nonce }, 120)
     return authorizationCode
   }
 
-  private verifyRefreshToken(client: ClientInstance, token: string): Promise<any> {
+  private verifyRefreshToken(client: IClient, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, ConfigurationManager.Security!.globalSecret, (err, payload) => {
         if (err) {

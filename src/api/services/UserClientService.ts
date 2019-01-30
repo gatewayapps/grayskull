@@ -11,6 +11,7 @@ import { hasPermission } from '@decorators/permissionDecorator'
 import { Permissions } from '@/utils/permissions'
 import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import ClientRepository from '@data/repositories/ClientRepository'
+import { IUserClient } from '@data/models/IUserClient'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -24,8 +25,9 @@ class UserClientService {
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
     }
+    const clientScopes = JSON.parse(client.scopes)
 
-    const requestedScopes: string[] = scope ? scope.split(/[, ]/) : JSON.parse(client.scopes)
+    const requestedScopes: string[] = (scope ? scope.split(/[, ]/) : JSON.parse(client.scopes)).filter((s) => clientScopes.includes(s))
 
     const userClient = await UserClientRepository.getUserClient({ userAccountId, client_id }, options)
     if (!userClient) {
@@ -50,8 +52,25 @@ class UserClientService {
     }
   }
 
+  public UserClientHasAllowedScope(userClient: IUserClient | null, scope: string) {
+    if (!userClient) {
+      return false
+    }
+
+    if (!userClient.allowedScopes) {
+      return false
+    }
+
+    try {
+      const allowedScopes: string[] = JSON.parse(userClient.allowedScopes)
+      return allowedScopes.includes(scope)
+    } catch {
+      return false
+    }
+  }
+
   @hasPermission(Permissions.User)
-  async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClientInstance | null> {
+  async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<IUserClient | null> {
     if (!AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }

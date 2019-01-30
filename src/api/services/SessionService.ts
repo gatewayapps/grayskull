@@ -13,7 +13,7 @@ const SESSION_EXPIRATION_SECONDS = 60 * 60
 type ICreateSession = Pick<ISession, 'fingerprint' | 'userAccountId' | 'ipAddress'>
 
 class SessionService {
-  public async createSession(data: ICreateSession, options: IQueryOptions): Promise<SessionInstance> {
+  public async createSession(data: ICreateSession, options: IQueryOptions): Promise<ISession> {
     const fingerprint = await this.hashFingerprint(data.fingerprint)
     const newSession: ISession = {
       ...data,
@@ -25,7 +25,7 @@ class SessionService {
     return SessionRepository.createSession(newSession, options)
   }
 
-  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string, options: IQueryOptions): Promise<SessionInstance | null> {
+  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string, options: IQueryOptions): Promise<ISession | null> {
     try {
       const session = await SessionRepository.getSession({ sessionId }, options)
 

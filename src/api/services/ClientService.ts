@@ -14,7 +14,7 @@ import ClientRepository from '@data/repositories/ClientRepository'
 
 class ClientService {
   @hasPermission(Permissions.Admin)
-  public async createClient(data: IClient, options: IQueryOptions): Promise<ClientInstance> {
+  public async createClient(data: IClient, options: IQueryOptions): Promise<IClient> {
     if (!data.client_id) {
       data.client_id = uuid()
     }
@@ -40,14 +40,14 @@ class ClientService {
   }
 
   @hasPermission(Permissions.Admin)
-  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<ClientInstance[]> {
+  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<IClient[]> {
     return ClientRepository.getClients(filter, options)
   }
-  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<ClientInstance | null> {
+  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<IClient | null> {
     return ClientRepository.getClient(filter, options)
   }
 
-  public async validateClient(client_id: string, secret: string, options: IQueryOptions): Promise<ClientInstance | null> {
+  public async validateClient(client_id: string, secret: string, options: IQueryOptions): Promise<IClient | null> {
     const client = await ClientRepository.getClientWithSensitiveData({ client_id }, options)
     if (client && client.secret === secret) {
       return client
@@ -55,7 +55,7 @@ class ClientService {
     return null
   }
   @hasPermission(Permissions.Admin)
-  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, options: IQueryOptions): Promise<ClientInstance | null> {
+  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, options: IQueryOptions): Promise<IClient | null> {
     return ClientRepository.updateClient(filter, data, options)
   }
 }

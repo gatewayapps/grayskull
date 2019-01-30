@@ -1,26 +1,56 @@
 const express = require('express')
 const passport = require('passport')
-const OAuth2Strategy = require('passport-oauth2')
+const request = require('request')
+const { Strategy, Issuer } = require('openid-client')
 const config = require('./config')
 const session = require('express-session')
 
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 
-passport.use(
-  new OAuth2Strategy(
-    {
-      authorizationURL: `${config.authServerBaseUrl}/authorize`,
-      tokenURL: `${config.authServerBaseUrl}/access_token`,
-      clientID: config.clientId,
-      clientSecret: config.secret,
-      callbackURL: `${config.clientBaseUrl}/callback`
-    },
-    function(accessToken, refreshToken, profile, cb) {
-      console.log(profile)
-      console.log(accessToken)
+const grayskullIssuer = new Issuer({
+  issuer: config.authServerBaseUrl,
+  authorization_endpoint: `${config.authServerBaseUrl}/authorize`,
+  token_endpoint: `${config.authServerBaseUrl}/token`,
+  userinfo_endpoint: `${config.authServerBaseUrl}/userinfo`,
+  jwks_uri: `${config.authServerBaseUrl}/jwks`
+})
 
-      return cb(null, { username: 'test user', email: 'test@test.com' })
+const params = {
+  client_id: config.clientId,
+  client_secret: config.secret,
+  redirect_uri: `${config.clientBaseUrl}/callback`,
+  response_type: 'code',
+  scope: 'openid profile offline_access email'
+}
+
+const client = new grayskullIssuer.Client({
+  client_id: config.clientId,
+  id_token_signed_response_alg: 'HS256',
+  client_secret: config.secret,
+  redirect_uris: [`${config.clientBaseUrl}/callback`]
+})
+
+const passReqToCallback = false // optional, defaults to false, when true req is passed as a first
+// argument to verify fn
+
+const usePKCE = false
+
+passport.use(
+  'oidc',
+  new Strategy(
+    {
+      client,
+      params,
+      passReqToCallback,
+      usePKCE
+    },
+    (tokenset, userinfo, done) => {
+      console.log('tokenset', tokenset)
+      console.log('access_token', tokenset.access_token)
+      console.log('id_token', tokenset.id_token)
+      console.log('claims', tokenset.claims)
+      console.log('userinfo', userinfo)
     }
   )
 )
@@ -42,8 +72,8 @@ app.use(session({ secret: 'secret', resave: true, saveUninitialized: true }))
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get('/login', passport.authenticate('oauth2'))
-app.get('/callback', passport.authenticate('oauth2', { failureRedirect: '/login' }), (req, res) => {
+app.get('/login', passport.authenticate('oidc'))
+app.get('/callback', passport.authenticate('oidc', { failureRedirect: '/login' }), (req, res) => {
   res.redirect('/')
 })
 app.get(

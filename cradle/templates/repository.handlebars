@@ -5,7 +5,7 @@ import { I{{Name}} } from '@data/models/I{{Name}}'
 {{!-- {{#ifNotEquals Name 'UserAccount'}}
 import { IUserAccount } from '@data/models/IUserAccount'
 {{/ifNotEquals}} --}}
-import { {{Name}}Instance } from '@data/models/{{Name}}'
+
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '@data/IQueryOptions'
 
@@ -18,9 +18,9 @@ class {{Name}}Repository {
     }
   }
 
-  public async get{{pluralize Name}}(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<{{Name}}Instance[]> {
+  public async get{{pluralize Name}}(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<I{{Name}}[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.{{Name}}.findAll({
+    const results = await db.{{Name}}.findAll({
       where,
       {{#if Meta.sensitive}}
       attributes: {
@@ -30,21 +30,24 @@ class {{Name}}Repository {
       
       transaction: options.transaction,
     })
+    return results.map((r)=>r.toJSON())
   }
 
   {{#if Meta.sensitive}}
-  public async get{{pluralize Name}}WithSensitiveData(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<{{Name}}Instance[]> {
+  public async get{{pluralize Name}}WithSensitiveData(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<I{{Name}}[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.{{Name}}.findAll({
+    const results = await db.{{Name}}.findAll({
       where,
       
       transaction: options.transaction,
     })
+
+        return results.map((r)=>r.toJSON())
   }
   {{/if}}
 
-  public async get{{Name}}(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<{{Name}}Instance | null> {
-    return await db.{{Name}}.findOne({
+  public async get{{Name}}(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<I{{Name}} | null> {
+    const result = await db.{{Name}}.findOne({
       where: filter,
       {{#if Meta.sensitive}}
       attributes: {
@@ -54,19 +57,30 @@ class {{Name}}Repository {
       
       transaction: options.transaction,
     })
+    if(result){
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
   {{#if Meta.sensitive}}
-  public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<{{Name}}Instance | null> {
-    return await db.{{Name}}.findOne({
+  public async get{{Name}}WithSensitiveData(filter: I{{Name}}UniqueFilter, options: IQueryOptions): Promise<I{{Name}} | null> {
+    const result = await db.{{Name}}.findOne({
       where: filter,
       
       transaction: options.transaction,
     })
+
+        if(result){
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
   {{/if}}
 
-  public async create{{Name}}(data: I{{Name}}, options: IQueryOptions): Promise<{{Name}}Instance> {
+  public async create{{Name}}(data: I{{Name}}, options: IQueryOptions): Promise<I{{Name}}> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
@@ -95,7 +109,7 @@ class {{Name}}Repository {
     return affectedCount > 0
   }
 
-  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: Partial<I{{Name}}>, options: IQueryOptions): Promise<{{Name}}Instance | null> {
+  public async update{{Name}}(filter: I{{Name}}UniqueFilter, data: Partial<I{{Name}}>, options: IQueryOptions): Promise<I{{Name}} | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }

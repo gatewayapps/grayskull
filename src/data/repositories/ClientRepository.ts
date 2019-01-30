@@ -2,7 +2,7 @@ import { IClientMeta, IClientFilter, IClientUniqueFilter } from '@/interfaces/gr
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { IClient } from '@data/models/IClient'
-import { ClientInstance } from '@data/models/Client'
+
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '@data/IQueryOptions'
 
@@ -15,9 +15,9 @@ class ClientRepository {
     }
   }
 
-  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<ClientInstance[]> {
+  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<IClient[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.Client.findAll({
+    const results = await db.Client.findAll({
       where,
       attributes: {
         exclude: ['secret']
@@ -25,19 +25,22 @@ class ClientRepository {
 
       transaction: options.transaction
     })
+    return results.map((r) => r.toJSON())
   }
 
-  public async getClientsWithSensitiveData(filter: IClientFilter | null, options: IQueryOptions): Promise<ClientInstance[]> {
+  public async getClientsWithSensitiveData(filter: IClientFilter | null, options: IQueryOptions): Promise<IClient[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.Client.findAll({
+    const results = await db.Client.findAll({
       where,
 
       transaction: options.transaction
     })
+
+    return results.map((r) => r.toJSON())
   }
 
-  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<ClientInstance | null> {
-    return await db.Client.findOne({
+  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<IClient | null> {
+    const result = await db.Client.findOne({
       where: filter,
       attributes: {
         exclude: ['secret']
@@ -45,17 +48,28 @@ class ClientRepository {
 
       transaction: options.transaction
     })
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async getClientWithSensitiveData(filter: IClientUniqueFilter, options: IQueryOptions): Promise<ClientInstance | null> {
-    return await db.Client.findOne({
+  public async getClientWithSensitiveData(filter: IClientUniqueFilter, options: IQueryOptions): Promise<IClient | null> {
+    const result = await db.Client.findOne({
       where: filter,
 
       transaction: options.transaction
     })
+
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async createClient(data: IClient, options: IQueryOptions): Promise<ClientInstance> {
+  public async createClient(data: IClient, options: IQueryOptions): Promise<IClient> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
@@ -77,7 +91,7 @@ class ClientRepository {
     return affectedCount > 0
   }
 
-  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, options: IQueryOptions): Promise<ClientInstance | null> {
+  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, options: IQueryOptions): Promise<IClient | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }

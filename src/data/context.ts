@@ -6,6 +6,7 @@ import EmailAddressFactory from './models/EmailAddress'
 import UserAccountFactory from './models/UserAccount'
 import UserClientFactory from './models/UserClient'
 import SessionFactory from './models/Session'
+import RefreshTokenFactory from './models/RefreshToken'
 
 const SQLITE_PATH = `/usr/local/grayskull/meta.db`
 
@@ -25,7 +26,8 @@ const db = {
   EmailAddress: EmailAddressFactory(sequelize),
   UserAccount: UserAccountFactory(sequelize),
   UserClient: UserClientFactory(sequelize),
-  Session: SessionFactory(sequelize)
+  Session: SessionFactory(sequelize),
+  RefreshToken: RefreshTokenFactory(sequelize)
 }
 
 Object.values(db).forEach((model: any) => {
