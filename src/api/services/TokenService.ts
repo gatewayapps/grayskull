@@ -8,7 +8,7 @@ import { IRefreshTokenUniqueFilter } from '@/interfaces/graphql/IRefreshToken'
 import RefreshTokenRepository from '@/data/repositories/RefreshTokenRepository'
 import { IClient } from '@data/models/IClient'
 import { IRefreshToken } from '@data/models/IRefreshToken'
-import { randomBytes } from 'crypto'
+import { default as crypto, randomBytes } from 'crypto'
 import UserClientRepository from '@data/repositories/UserClientRepository'
 import { ScopeMap } from '@/api/services/ScopeService'
 import UserClientService from './UserClientService'
@@ -57,25 +57,38 @@ export interface IEmailClaim {
 }
 
 class TokenService {
+  private hashToken(refreshToken: string, secret: string): string {
+    return crypto
+      .createHmac('sha256', secret)
+      .update(refreshToken)
+      .digest('hex')
+  }
+
   public async createRefreshToken(client: IClient, userAccount: IUserAccount, maxAge: number | null, options: IQueryOptions): Promise<IRefreshToken> {
     const tokenData = randomBytes(256).toString('hex')
     const userClient = await UserClientRepository.getUserClient({ client_id: client.client_id, userAccountId: userAccount.userAccountId }, options)
     if (userClient && UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.offline_access.id)) {
-      const tokenData = randomBytes(256).toString('hex')
+      const tokenData = randomBytes(64).toString('hex')
+
+      const hashedToken = this.hashToken(tokenData, client.secret)
+
       let expiresAt: Date | undefined = undefined
       if (maxAge && maxAge > 0) {
         expiresAt = moment()
           .add(maxAge, 'seconds')
           .toDate()
       }
-      return await RefreshTokenRepository.createRefreshToken(
+      const result = await RefreshTokenRepository.createRefreshToken(
         {
-          token: tokenData,
+          token: hashedToken,
           userClientId: userClient.userClientId!,
           expiresAt: expiresAt
         },
         options
       )
+
+      result.token = tokenData
+      return result
     } else {
       throw new ForbiddenError('User has not granted client offline_access')
     }
@@ -148,8 +161,23 @@ class TokenService {
     throw new ForbiddenError('User has not authorized client')
   }
 
-  public async refreshAccessToken(refreshToken: string, options: IQueryOptions): Promise<String> {
-    const token = await RefreshTokenRepository.getRefreshToken({ id: refreshToken }, options)
+  public async getRefreshTokenFromRawToken(rawToken: string, client: IClient, options: IQueryOptions): Promise<IRefreshToken | null> {
+    const hashedToken = this.hashToken(rawToken, client.secret)
+    const result = await RefreshTokenRepository.getRefreshToken({ token: hashedToken }, options)
+    if (result) {
+      result.token = rawToken
+    }
+
+    return result
+  }
+
+  public async refreshAccessToken(refreshToken: string, client_id: string, options: IQueryOptions): Promise<string> {
+    const client = await ClientRepository.getClientWithSensitiveData({ client_id }, options)
+    if (!client) {
+      throw new Error('Invalid client_id')
+    }
+    const hashedToken = this.hashToken(refreshToken, client.secret)
+    const token = await RefreshTokenRepository.getRefreshToken({ token: hashedToken }, options)
     if (!token) {
       throw new ReferenceError('Refresh token does not exist')
     }

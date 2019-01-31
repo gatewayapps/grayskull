@@ -1,3 +1,4 @@
+const moment = require('moment')
 const express = require('express')
 const passport = require('passport')
 const request = require('request')
@@ -46,23 +47,30 @@ passport.use(
       usePKCE
     },
     (tokenset, userinfo, done) => {
-      console.log('tokenset', tokenset)
-      console.log('access_token', tokenset.access_token)
-      console.log('id_token', tokenset.id_token)
-      console.log('claims', tokenset.claims)
-      console.log('userinfo', userinfo)
+      userinfo.expiresAt = tokenset.claims.exp
+      userinfo.refreshToken = tokenset.refresh_token
+      return done(null, userinfo)
     }
   )
 )
 
 passport.serializeUser(function(user, done) {
-  console.log('serializing user', user)
+  console.log('SERIALIZING USER')
+  console.log(user)
   done(null, JSON.stringify(user))
 })
 
-passport.deserializeUser(function(id, done) {
-  console.log('deserializing user', id)
-  done(null, JSON.parse(id))
+passport.deserializeUser(async function(id, done) {
+  let userInfo = JSON.parse(id)
+  // if (userInfo.expiresAt < moment().unix()) {
+  //   const refresh_token = userInfo.refreshToken
+  //   const result = await client.refresh(refresh_token)
+  //   userInfo = await client.userinfo(result.access_token)
+  //   userInfo.refreshToken = refresh_token
+  //   userInfo.expiresAt = result.claims.exp
+  //   console.log('NEW USER INFO', userInfo)
+  // }
+  done(null, userInfo)
 })
 
 const app = express()
@@ -80,13 +88,24 @@ app.get(
   '*',
   (req, res, next) => {
     if (req.isAuthenticated()) {
-      next()
+      if (req.user.expiresAt < moment().unix()) {
+        req.login(req.user, (err) => {
+          next()
+        })
+      } else {
+        next()
+      }
     } else {
       res.redirect('/login')
     }
   },
   (req, res) => {
-    res.send('<html><body><h1>success!!!</h1></body></html>')
+    const keys = Object.keys(req.user)
+    const listItems = []
+    keys.forEach((k) => {
+      listItems.push(`<li><b>${k}</b>: ${req.user[k]}</li>`)
+    })
+    res.send(`<html><body><h1>User Details</h1><ul>${listItems.join('\n')}</ul></body></html>`)
   }
 )
 

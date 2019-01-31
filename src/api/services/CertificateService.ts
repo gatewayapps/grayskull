@@ -6,6 +6,9 @@ import moment = require('moment')
 
 export const ACME_WEBROOT_PATH = '/usr/local/grayskull/acme'
 export const CERTBOT_PATH = '/usr/local/grayskull/ssl'
+const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
+const ACME_ENDPOINT = 'https://acme-v02.api.letsencrypt.org/directory'
+//const ACME_ENDPOINT = IS_DEVELOPMENT ? 'https://acme-staging-v02.api.letsencrypt.org/directory' : 'https://acme-v02.api.letsencrypt.org/directory'
 
 const Greenlock = require('greenlock')
 
@@ -19,7 +22,7 @@ const challenge = require('le-challenge-fs').create({
 
 const greenlock = Greenlock.create({
   version: 'v02',
-  server: 'https://acme-v02.api.letsencrypt.org/directory',
+  server: ACME_ENDPOINT,
   challenges: {
     'http-01': challenge // handles /.well-known/acme-challege keys and tokens
   },

@@ -202,6 +202,7 @@ export default class OobeIndex extends React.Component {
                                     delete config.Server.certBotState
                                     config.Mail.port = parseInt(config.Mail.port)
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
+                                    config.Security.accessTokenExpirationSeconds = parseInt(config.Security.accessTokenExpirationSeconds)
 
                                     const { data } = await apolloClient.mutate({ mutation: SAVE_CONFIGURATION, variables: { configuration: config } })
                                   }}

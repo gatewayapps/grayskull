@@ -184,7 +184,7 @@ class AuthenticationService {
           throw new Error(`refresh_token is missing`)
         }
 
-        finalRefreshToken = await RefreshTokenRepository.getRefreshToken({ token: refresh_token }, options)
+        finalRefreshToken = await TokenService.getRefreshTokenFromRawToken(refresh_token, client, options)
 
         if (!finalRefreshToken) {
           throw new Error(`Invalid refresh_token`)
@@ -196,6 +196,10 @@ class AuthenticationService {
         }
 
         userAccount = await UserAccountRepository.getUserAccount({ userAccountId: userClient.userAccountId }, options)
+
+        if (userAccount && UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
+          id_token = await TokenService.createIDToken(client, userAccount, undefined, options)
+        }
         break
       }
 
@@ -213,7 +217,9 @@ class AuthenticationService {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
 
-    const access_token = await TokenService.createAccessToken(client, userAccount, finalRefreshToken, options)
+    const access_token = finalRefreshToken
+      ? await TokenService.refreshAccessToken(finalRefreshToken.token, client.client_id, options)
+      : await TokenService.createAccessToken(client, userAccount, finalRefreshToken, options)
     return {
       access_token,
       id_token,
