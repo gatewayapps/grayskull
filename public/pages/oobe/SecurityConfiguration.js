@@ -98,22 +98,29 @@ export class SecurityConfiguration extends React.Component {
                 onChange={(e) => this.handleChange(e, validate)}
               />
 
-              <div className="form-group row">
-                <label className="col-sm-12 col-md-4 col-form-label" htmlFor="passwordMinimumLength">
-                  Minimum Length
-                </label>
-                <div className="col-sm-12 col-md-8">
-                  <ValidatingInput
-                    validationErrors={validationErrors}
-                    autoComplete="off"
-                    min="6"
-                    type="number"
-                    name="passwordMinimumLength"
-                    value={this.props.data.passwordMinimumLength}
-                    onChange={(e) => this.handleChange(e, validate)}
-                  />
-                </div>
-              </div>
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Minimum Length"
+                labelColumnWidth={4}
+                autoComplete="off"
+                min="6"
+                type="number"
+                name="passwordMinimumLength"
+                value={this.props.data.passwordMinimumLength}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Token Duration (sec)"
+                labelColumnWidth={4}
+                autoComplete="off"
+                min="60"
+                type="number"
+                name="accessTokenExpirationSeconds"
+                value={this.props.data.accessTokenExpirationSeconds}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+
               <ResponsiveValidatingInput
                 labelColumnWidth={4}
                 validationErrors={validationErrors}

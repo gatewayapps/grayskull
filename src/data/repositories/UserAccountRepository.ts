@@ -2,7 +2,7 @@ import { IUserAccountMeta, IUserAccountFilter, IUserAccountUniqueFilter } from '
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { IUserAccount } from '@data/models/IUserAccount'
-import { UserAccountInstance } from '@data/models/UserAccount'
+
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '@data/IQueryOptions'
 
@@ -15,9 +15,9 @@ class UserAccountRepository {
     }
   }
 
-  public async getUserAccounts(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<UserAccountInstance[]> {
+  public async getUserAccounts(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccount[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.UserAccount.findAll({
+    const results = await db.UserAccount.findAll({
       where,
       attributes: {
         exclude: ['passwordHash', 'otpSecret']
@@ -25,19 +25,22 @@ class UserAccountRepository {
 
       transaction: options.transaction
     })
+    return results.map((r) => r.toJSON())
   }
 
-  public async getUserAccountsWithSensitiveData(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<UserAccountInstance[]> {
+  public async getUserAccountsWithSensitiveData(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccount[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.UserAccount.findAll({
+    const results = await db.UserAccount.findAll({
       where,
 
       transaction: options.transaction
     })
+
+    return results.map((r) => r.toJSON())
   }
 
-  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<UserAccountInstance | null> {
-    return await db.UserAccount.findOne({
+  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
+    const result = await db.UserAccount.findOne({
       where: filter,
       attributes: {
         exclude: ['passwordHash', 'otpSecret']
@@ -45,17 +48,28 @@ class UserAccountRepository {
 
       transaction: options.transaction
     })
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async getUserAccountWithSensitiveData(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<UserAccountInstance | null> {
-    return await db.UserAccount.findOne({
+  public async getUserAccountWithSensitiveData(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
+    const result = await db.UserAccount.findOne({
       where: filter,
 
       transaction: options.transaction
     })
+
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async createUserAccount(data: IUserAccount, options: IQueryOptions): Promise<UserAccountInstance> {
+  public async createUserAccount(data: IUserAccount, options: IQueryOptions): Promise<IUserAccount> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
@@ -77,7 +91,7 @@ class UserAccountRepository {
     return affectedCount > 0
   }
 
-  public async updateUserAccount(filter: IUserAccountUniqueFilter, data: Partial<IUserAccount>, options: IQueryOptions): Promise<UserAccountInstance | null> {
+  public async updateUserAccount(filter: IUserAccountUniqueFilter, data: Partial<IUserAccount>, options: IQueryOptions): Promise<IUserAccount | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }

@@ -8,40 +8,13 @@ import ControllerBase from './ControllerBase'
 import { setAuthCookies, decodeState, clearAuthCookies, getAuthCookies } from '@/utils/authentication'
 import SessionService from '@services/SessionService'
 import '../../middleware/authentication'
+import CertificateService from '@services/CertificateService'
 
 export default class LoginController extends ControllerBase {
-  @route(HttpMethod.POST, '/access_token')
-  public async postAccessToken(req: Request, res: Response) {
-    try {
-      if (!req.body || !req.body.grant_type || !req.body.client_id || !req.body.client_secret) {
-        res.status(400).json({ success: false, message: 'Invalid request body' })
-        return
-      }
-
-      const accessTokenRespnse = await AuthenticationService.getAccessToken(
-        req.body.grant_type,
-        req.body.client_id,
-        req.body.client_secret,
-        req.body.code,
-        req.body.refresh_token,
-        { userContext: req.user || null }
-      )
-      res.json(accessTokenRespnse)
-    } catch (err) {
-      res.status(400).json({ success: false, message: err.message })
-    }
-  }
-
-  @route(HttpMethod.GET, '/authorize')
-  @query('client_id', 'response_type', 'redirect_uri')
-  @queryMustEqual('response_type', 'code')
-  public async renderLoginPage(req: Request, res: Response) {
-    if ((await this.validateLoginRequest(req)) === false) {
-      res.status(400).send()
-      return
-    } else {
-      return this.next.render(req, res, '/authorize', req.query)
-    }
+  @route(HttpMethod.GET, '/jwks')
+  public async getJWKS(req: Request, res: Response) {
+    const jwks = CertificateService.getJWKS()
+    res.json({ keys: [jwks] })
   }
 
   @route(HttpMethod.GET, '/logout')
@@ -126,8 +99,18 @@ export default class LoginController extends ControllerBase {
     }
   }
 
+  @route(HttpMethod.GET, '/authorize')
+  @query('client_id', 'response_type', 'redirect_uri')
+  public async renderLoginPage(req: Request, res: Response) {
+    if ((await this.validateLoginRequest(req)) === false) {
+      res.status(400).send()
+      return
+    } else {
+      return this.next.render(req, res, '/authorize', req.query)
+    }
+  }
+
   private async validateLoginRequest(req: Request): Promise<boolean> {
-    const validated = await AuthenticationService.validateRedirectUri(req.query.client_id, req.query.redirect_uri, { userContext: req.user || null })
-    return validated
+    return await AuthenticationService.validateRedirectUri(req.query.client_id, req.query.redirect_uri, { userContext: req.user || null })
   }
 }

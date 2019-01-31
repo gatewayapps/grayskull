@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+   passportClient:
+    image: node:8-slim
+    command: bash -c "cd /www && npm install && npm start"
+    volumes:
+      - ./:/www
+      - /www/node_modules
+    environment:
+      - "AUTH_SERVER_BASE_URL=https://grayskull.gatewayapps.net"
+      - "CLIENT_BASE_URL=http://localhost:5001"
+    ports:
+      - "5001:5001"

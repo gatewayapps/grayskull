@@ -2,7 +2,7 @@ import { IUserClientMeta, IUserClientFilter, IUserClientUniqueFilter } from '@/i
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { IUserClient } from '@data/models/IUserClient'
-import { UserClientInstance } from '@data/models/UserClient'
+
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '@data/IQueryOptions'
 
@@ -15,24 +15,30 @@ class UserClientRepository {
     }
   }
 
-  public async getUserClients(filter: IUserClientFilter | null, options: IQueryOptions): Promise<UserClientInstance[]> {
+  public async getUserClients(filter: IUserClientFilter | null, options: IQueryOptions): Promise<IUserClient[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.UserClient.findAll({
+    const results = await db.UserClient.findAll({
       where,
 
       transaction: options.transaction
     })
+    return results.map((r) => r.toJSON())
   }
 
-  public async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClientInstance | null> {
-    return await db.UserClient.findOne({
+  public async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<IUserClient | null> {
+    const result = await db.UserClient.findOne({
       where: filter,
 
       transaction: options.transaction
     })
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async createUserClient(data: IUserClient, options: IQueryOptions): Promise<UserClientInstance> {
+  public async createUserClient(data: IUserClient, options: IQueryOptions): Promise<IUserClient> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
@@ -54,7 +60,7 @@ class UserClientRepository {
     return affectedCount > 0
   }
 
-  public async updateUserClient(filter: IUserClientUniqueFilter, data: Partial<IUserClient>, options: IQueryOptions): Promise<UserClientInstance | null> {
+  public async updateUserClient(filter: IUserClientUniqueFilter, data: Partial<IUserClient>, options: IQueryOptions): Promise<IUserClient | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }

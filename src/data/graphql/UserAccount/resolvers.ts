@@ -61,7 +61,7 @@ export default {
 
       const serviceOptions = { userContext: context.user || null }
 
-      const { client_id, responseType, redirectUri, scope, state } = args.data
+      const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
 
       if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
         throw new Error('Invalid redirect uri')
@@ -75,7 +75,7 @@ export default {
           pendingScopes
         }
       }
-      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, serviceOptions)
+      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
       const query = [`code=${encodeURIComponent(authCode)}`]
       if (state) {
         query.push(`state=${encodeURIComponent(state)}`)

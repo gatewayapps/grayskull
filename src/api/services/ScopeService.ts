@@ -1,31 +1,37 @@
 import { IScope } from '../../data/models/IScope'
 
-const scopes: IScope[] = [
-  {
-    id: 'read_basic',
-    clientDescription: `Read a user's name and profile image`,
-    userDescription: 'View your basic profile information such as name and profile image'
+export const ScopeMap = {
+  openid: {
+    id: 'openid',
+    clientDescription: 'Access a client specific user identifier',
+    userDescription: 'Access your user account id',
+    required: true
   },
-  {
-    id: 'write_basic',
-    clientDescription: `Update a user's name and profile image`,
-    userDescription: 'Change your basic profile information such as name and profile image'
+  offline_access: {
+    id: 'offline_access',
+    clientDescription: 'Provide the client with a refresh token',
+    userDescription: 'Keep you signed in',
+    required: false
   },
-  {
-    id: 'read_contact',
-    clientDescription: `Read a user's contact information such as email address and phone number`,
-    userDescription: 'View your contact information such as email address and phone number'
+  profile: {
+    id: 'profile',
+    clientDescription: `Access a user's profile information`,
+    userDescription: 'View your profile information such as name and profile image',
+    required: false
   },
-  {
-    id: 'write_contact',
-    clientDescription: `Update a user's contact information such as email address and phone number`,
-    userDescription: 'Change your contact information such as email address and phone number'
+  email: {
+    id: 'email',
+    clientDescription: `Access a user's email address `,
+    userDescription: 'View your email address',
+    required: false
   }
-]
+}
+
+export const Scopes: IScope[] = [ScopeMap.openid, ScopeMap.offline_access, ScopeMap.profile, ScopeMap.email]
 
 class ScopeService {
   getScopes() {
-    return scopes.map((scope) => ({ ...scope }))
+    return Scopes.map((scope) => ({ ...scope }))
   }
 }
 

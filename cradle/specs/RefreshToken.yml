@@ -1,0 +1,18 @@
+RefreshToken:
+  meta:
+    database: true
+    graphql: false
+    graphqlResolvers: false
+  properties:
+    id:  uniqueidentifier primary auto
+    userClientId: uniqueidentifier
+    token: string(500) unique
+    issuedAt: datetime default(NOW)
+    activeAt: datetime default(NOW)
+    expiresAt: datetime?
+    revokedAt: datetime?
+    createdBy: uniqueidentifier?
+    updatedBy: uniqueidentifier?
+    revokedBy: uniqueidentifier?
+    deletedBy: uniqueidentifier?
+    deletedAt: datetime?

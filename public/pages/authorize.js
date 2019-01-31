@@ -17,6 +17,7 @@ const LOAD_AUTHORIZE_QUERY = gql`
 
     scopes {
       id
+      required
       userDescription
     }
   }
@@ -35,16 +36,16 @@ class AuthorizePage extends PureComponent {
           <Query query={LOAD_AUTHORIZE_QUERY} variables={{ client_id: this.props.router.query.client_id }}>
             {({ data, loading }) => {
               if (loading) {
-                return (<LoadingIndicator />)
+                return <LoadingIndicator />
               }
               if (!data || !data.client) {
-                return (<div>Client not found</div>)
+                return <div>Client not found</div>
               }
               return (
                 <div style={{ display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
-                  <div className='container'>
-                    <div className='row'>
-                      <div className='col col-md-8 offset-md-2'>
+                  <div className="container">
+                    <div className="row">
+                      <div className="col col-md-8 offset-md-2">
                         <ClientAuthorization
                           client={data.client}
                           responseType={this.props.router.query.response_type}
@@ -52,6 +53,7 @@ class AuthorizePage extends PureComponent {
                           scope={this.props.router.query.scope}
                           scopes={data.scopes}
                           state={this.props.router.query.state}
+                          nonce={this.props.router.query.nonce}
                         />
                       </div>
                     </div>
@@ -66,8 +68,6 @@ class AuthorizePage extends PureComponent {
   }
 }
 
-AuthorizePage.propTypes = {
-
-}
+AuthorizePage.propTypes = {}
 
 export default withRouter(AuthorizePage)

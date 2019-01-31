@@ -2,7 +2,7 @@ import { IEmailAddressMeta, IEmailAddressFilter, IEmailAddressUniqueFilter } fro
 import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
 import db from '@data/context'
 import { IEmailAddress } from '@data/models/IEmailAddress'
-import { EmailAddressInstance } from '@data/models/EmailAddress'
+
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '@data/IQueryOptions'
 
@@ -15,24 +15,30 @@ class EmailAddressRepository {
     }
   }
 
-  public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<EmailAddressInstance[]> {
+  public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<IEmailAddress[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    return await db.EmailAddress.findAll({
+    const results = await db.EmailAddress.findAll({
       where,
 
       transaction: options.transaction
     })
+    return results.map((r) => r.toJSON())
   }
 
-  public async getEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions): Promise<EmailAddressInstance | null> {
-    return await db.EmailAddress.findOne({
+  public async getEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions): Promise<IEmailAddress | null> {
+    const result = await db.EmailAddress.findOne({
       where: filter,
 
       transaction: options.transaction
     })
+    if (result) {
+      return result.toJSON()
+    } else {
+      return null
+    }
   }
 
-  public async createEmailAddress(data: IEmailAddress, options: IQueryOptions): Promise<EmailAddressInstance> {
+  public async createEmailAddress(data: IEmailAddress, options: IQueryOptions): Promise<IEmailAddress> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
@@ -54,7 +60,7 @@ class EmailAddressRepository {
     return affectedCount > 0
   }
 
-  public async updateEmailAddress(filter: IEmailAddressUniqueFilter, data: Partial<IEmailAddress>, options: IQueryOptions): Promise<EmailAddressInstance | null> {
+  public async updateEmailAddress(filter: IEmailAddressUniqueFilter, data: Partial<IEmailAddress>, options: IQueryOptions): Promise<IEmailAddress | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }

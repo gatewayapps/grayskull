@@ -1,10 +1,14 @@
 import { getInstance } from '@/RealmInstance'
 import ConfigurationManager from '@/config/ConfigurationManager'
-import { pki } from 'node-forge'
+import { pki, md, asn1 } from 'node-forge'
+const pem2jwk = require('pem-jwk').pem2jwk
 import moment = require('moment')
 
 export const ACME_WEBROOT_PATH = '/usr/local/grayskull/acme'
 export const CERTBOT_PATH = '/usr/local/grayskull/ssl'
+const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
+const ACME_ENDPOINT = 'https://acme-v02.api.letsencrypt.org/directory'
+//const ACME_ENDPOINT = IS_DEVELOPMENT ? 'https://acme-staging-v02.api.letsencrypt.org/directory' : 'https://acme-v02.api.letsencrypt.org/directory'
 
 const Greenlock = require('greenlock')
 
@@ -18,7 +22,7 @@ const challenge = require('le-challenge-fs').create({
 
 const greenlock = Greenlock.create({
   version: 'v02',
-  server: 'https://acme-v02.api.letsencrypt.org/directory',
+  server: ACME_ENDPOINT,
   challenges: {
     'http-01': challenge // handles /.well-known/acme-challege keys and tokens
   },
@@ -33,6 +37,20 @@ const greenlock = Greenlock.create({
 export const GreenlockMiddleware = greenlock.middleware
 
 class CertificateService {
+  private jwks:
+    | {
+        kid: string
+        e: string
+        kty: string
+        alg: string
+        n: string
+        use: string
+      }
+    | undefined
+
+  public getJWKS() {
+    return this.jwks
+  }
   public async verifyCertbot(domain: string): Promise<Boolean> {
     const finalDomain = domain.replace('https://', '')
     try {
@@ -55,7 +73,7 @@ class CertificateService {
     })
 
     return {
-      cert: registerResults.cert,
+      cert: registerResults.cert + '\n' + registerResults.chain,
       key: registerResults.privkey
     }
   }
@@ -75,7 +93,7 @@ class CertificateService {
         const results = await greenlock.check({ domains: [domain] })
         if (results) {
           certObj = {
-            cert: results.cert,
+            cert: results.cert + '\n' + results.chain,
             key: results.privkey
           }
         } else {
@@ -88,10 +106,32 @@ class CertificateService {
         }
       }
     }
+    this.updateJWKSFromCertificate(certObj.cert)
     getInstance().updateSecureContext(certObj)
   }
 
-  private generateTemporaryCertificate(): { key: string; cert: string } {
+  private updateJWKSFromCertificate(cert: string) {
+    const certificate = pki.certificateFromPem(cert)
+    const publicKey = certificate.publicKey
+    const publicKeyPem = pki.publicKeyToPem(publicKey)
+
+    const sha = md.sha1.create()
+    sha.update(asn1.toDer(pki.publicKeyToAsn1(publicKey)).getBytes())
+    const thumbprint = sha.digest().toHex()
+
+    const jwks = pem2jwk(publicKeyPem)
+
+    this.jwks = {
+      alg: 'RSA256',
+      kty: jwks.kty,
+      use: 'sig',
+      e: publicKey['e'],
+      n: publicKey['n'],
+      kid: thumbprint
+    }
+  }
+
+  private generateTemporaryCertificate(): { key: string; cert: string; ca: string | undefined } {
     const keys = pki.rsa.generateKeyPair(2048)
     const cert = pki.createCertificate()
 
@@ -156,8 +196,8 @@ class CertificateService {
 
     cert.sign(keys.privateKey)
     const pemCertificate = pki.certificateToPem(cert)
-
-    return { key: pki.privateKeyToPem(keys.privateKey), cert: pemCertificate }
+    cert
+    return { key: pki.privateKeyToPem(keys.privateKey), cert: pemCertificate, ca: undefined }
   }
 }
 

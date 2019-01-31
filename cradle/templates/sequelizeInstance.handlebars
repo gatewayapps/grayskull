@@ -6,43 +6,29 @@ import {{model.Name}}Factory from './models/{{model.Name}}'
 {{/each}}
 
 
-let db
-export function initializeDatabase() {
-  const config = ConfigurationManager.CurrentConfiguration
-  if (config && config.Database) {
-    const dbConfig = config.Database
-    const { databaseName, adminUsername, adminPassword, provider, serverAddress, serverPort } = dbConfig!
+const SQLITE_PATH = `/usr/local/grayskull/meta.db`
 
-    const sequelize = new Sequelize(databaseName, adminUsername, adminPassword, {
-      port: serverPort,
-      host: serverAddress,
-      dialect: provider,
-      dialectOptions: {
-        poolIdleTimeout: 5000
-      }
-    })
+const sequelize = new Sequelize('database', 'username', 'password', {
+  // sqlite! now!
+  dialect: 'sqlite',
 
-    db = {
+  // the storage engine for sqlite
+  // - default ':memory:'
+  storage: SQLITE_PATH
+})
+
+const db = {
       sequelize,
       Sequelize,
       {{#each Models as |model|}}
       {{model.Name}}: {{model.Name}}Factory(sequelize),
       {{/each}}
-    }
+   }
 
-    Object.values(db).forEach((model: any) => {
-      if (model.associate) {
-        model.associate(db)
-      }
-    })
-
- }
-}
-
-initializeDatabase()
-
-export function getContext() {
-  return db
-}
+Object.values(db).forEach((model: any) => {
+  if (model.associate) {
+    model.associate(db)
+  }
+})
 
 export default db

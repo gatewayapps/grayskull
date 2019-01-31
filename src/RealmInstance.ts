@@ -18,6 +18,7 @@ import { schema } from '@data/graphql/graphql'
 import ClientRepository from '@data/repositories/ClientRepository'
 import ConfigurationManager from './config/ConfigurationManager'
 import ScopeService from '@services/ScopeService'
+import OAuthController from './api/controllers/oauthController'
 
 const decache = require('decache')
 const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
@@ -135,7 +136,7 @@ export class RealmInstance {
     } else {
       this.ensureGrayskullClient()
       // Connect route controllers
-      const routeControllers = [new LoginController(this.nextServer), new UserController(this.nextServer)]
+      const routeControllers = [new LoginController(this.nextServer), new UserController(this.nextServer), new OAuthController(this.nextServer)]
       routeControllers.forEach((c) => c.registerRoutes(this.expressApp))
 
       this.expressApp.get('*', (req, res) => {

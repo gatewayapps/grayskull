@@ -12,7 +12,7 @@ import { ALL_CLIENTS_QUERY } from './index'
 
 const UPDATE_CLIENT_QUERY = gql`
   query UPDATE_CLIENT_QUERY($client_id: String!) {
-    client (where: { client_id: $client_id }) {
+    client(where: { client_id: $client_id }) {
       client_id
       name
       logoImageUrl
@@ -27,6 +27,7 @@ const UPDATE_CLIENT_QUERY = gql`
     scopes {
       id
       clientDescription
+      required
     }
   }
 `
@@ -97,8 +98,8 @@ class ClientEditPage extends PureComponent {
     if (res.data && res.data.updateClient) {
       this.setState({
         results: {
-          client_id: res.data.updateClient.client_id,
-        },
+          client_id: res.data.updateClient.client_id
+        }
       })
     }
   }
@@ -108,11 +109,11 @@ class ClientEditPage extends PureComponent {
       <Query query={UPDATE_CLIENT_QUERY} variables={{ client_id: this.props.query.id }}>
         {({ data, error, loading: loadingClient }) => {
           if (loadingClient) {
-            return (<LoadingIndicator />)
+            return <LoadingIndicator />
           }
 
           if (error) {
-            return (<ErrorMessage error={error} />)
+            return <ErrorMessage error={error} />
           }
 
           const { client, scopes } = data
@@ -120,7 +121,7 @@ class ClientEditPage extends PureComponent {
           const parsedClient = {
             ...client,
             redirectUris: JSON.parse(client.redirectUris).map((r) => ({ key: uuid(), value: r })),
-            scopes: JSON.parse(client.scopes),
+            scopes: JSON.parse(client.scopes)
           }
 
           const mergedClient = {
@@ -132,43 +133,34 @@ class ClientEditPage extends PureComponent {
             <Mutation mutation={UPDATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
               {(updateClient, { error: updateError, loading: saving }) => (
                 <Primary>
-                  <div className='container pt-4'>
+                  <div className="container pt-4">
                     <form onSubmit={(e) => this.submitClient(e, mergedClient.client_id, updateClient)}>
-                      <div className='card'>
-                        <div className='card-header'>Update Client</div>
-                        <div className='card-body'>
+                      <div className="card">
+                        <div className="card-header">Update Client</div>
+                        <div className="card-body">
                           <ErrorMessage error={updateError} />
-                          <div className='form-group row'>
+                          <div className="form-group row">
                             <label className="col-sm-12 col-md-3 col-form-label" htmlFor="client_id">
                               Client ID
                             </label>
-                            <div className='col-sm-12 col-md-9'>
-                              <span className='py-2' style={{ verticalAlign: 'middle' }}>{mergedClient.client_id}</span>
+                            <div className="col-sm-12 col-md-9">
+                              <span className="py-2" style={{ verticalAlign: 'middle' }}>
+                                {mergedClient.client_id}
+                              </span>
                             </div>
                           </div>
-                          <ClientForm
-                            client={mergedClient}
-                            onChange={this.handleClientFormChange}
-                            onValidated={this.onClientFormValidated}
-                            scopes={scopes}
-                          />
-                          {this.state.result && (
-                            <div className='alert alert-success'>Success!</div>
-                          )}
+                          <ClientForm client={mergedClient} onChange={this.handleClientFormChange} onValidated={this.onClientFormValidated} scopes={scopes} />
+                          {this.state.result && <div className="alert alert-success">Success!</div>}
                         </div>
-                        <div className='card-footer justify-content-end'>
-                          <div className='btn-toolbar'>
-                            <Link href='/admin/clients'>
-                              <a className='btn btn-outline-secondary mr-3'>
-                                <i className='fal fa-fw fa-times' /> Cancel
+                        <div className="card-footer justify-content-end">
+                          <div className="btn-toolbar">
+                            <Link href="/admin/clients">
+                              <a className="btn btn-outline-secondary mr-3">
+                                <i className="fal fa-fw fa-times" /> Cancel
                               </a>
                             </Link>
-                            <button
-                              className='btn btn-success'
-                              type='submit'
-                              disabled={saving || !this.state.clientFormValid}
-                            >
-                              <i className='fal fa-fw fa-save' /> Update
+                            <button className="btn btn-success" type="submit" disabled={saving || !this.state.clientFormValid}>
+                              <i className="fal fa-fw fa-save" /> Update
                             </button>
                           </div>
                         </div>

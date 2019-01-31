@@ -7,14 +7,8 @@ import UserContext from '../contexts/UserContext'
 import SignOut from '../components/SignOut'
 
 const AUTHORIZE_CLIENT_MUTATION = gql`
-  mutation AUTHORIZE_CLIENT_MUTATION($client_id: String!, $responseType: String!, $redirectUri: String!, $scope: String, $state: String) {
-    authorizeClient(data: {
-      client_id: $client_id,
-      responseType: $responseType,
-      redirectUri: $redirectUri,
-      scope: $scope,
-      state: $state
-    }) {
+  mutation AUTHORIZE_CLIENT_MUTATION($client_id: String!, $responseType: String!, $redirectUri: String!, $scope: String, $state: String, $nonce: String) {
+    authorizeClient(data: { client_id: $client_id, responseType: $responseType, redirectUri: $redirectUri, scope: $scope, state: $state, nonce: $nonce }) {
       pendingScopes
       redirectUri
     }
@@ -23,11 +17,7 @@ const AUTHORIZE_CLIENT_MUTATION = gql`
 
 const UPDATE_CLIENT_SCOPES_MUTATION = gql`
   mutation UPDATE_CLIENT_SCOPES_MUTATION($client_id: String!, $allowedScopes: [String]!, $deniedScopes: [String]!) {
-    updateClientScopes(data: {
-      client_id: $client_id,
-      allowedScopes: $allowedScopes,
-      deniedScopes: $deniedScopes
-    })
+    updateClientScopes(data: { client_id: $client_id, allowedScopes: $allowedScopes, deniedScopes: $deniedScopes })
   }
 `
 
@@ -72,7 +62,8 @@ class ClientAuthorization extends PureComponent {
         responseType: this.props.responseType,
         redirectUri: this.props.redirectUri,
         scope: this.props.scope,
-        state: this.props.state
+        state: this.props.state,
+        nonce: this.props.nonce
       }
     })
     if (data && data.authorizeClient) {
@@ -84,7 +75,7 @@ class ClientAuthorization extends PureComponent {
         this.setState({
           initialized: true,
           allowedScopes: data.authorizeClient.pendingScopes,
-          pendingScopes: data.authorizeClient.pendingScopes,
+          pendingScopes: data.authorizeClient.pendingScopes
         })
       }
     }
@@ -105,10 +96,11 @@ class ClientAuthorization extends PureComponent {
   }
 
   onDenyClicked = async () => {
-    const query = ['error=access_denied']
+    const query = ['error=consent_required']
     if (this.props.state) {
       query.push(`state=${encodeURIComponent(this.props.state)}`)
     }
+
     window.location.replace(`${this.props.redirectUri}?${query.join('&')}`)
   }
 
@@ -125,56 +117,56 @@ class ClientAuthorization extends PureComponent {
         {(apolloClient) => {
           this.apolloClient = apolloClient
           if (!this.state.initialized) {
-            return (<LoadingIndicator />)
+            return <LoadingIndicator />
           }
           return (
             <UserContext.Consumer>
               {({ user }) => (
                 <form onSubmit={this.onSubmit}>
-                  <div className='card'>
-                    <div className='card-header'>Authorize {this.props.client.name}</div>
-                    <div className='card-body'>
-                      <div className='row'>
-                        <div className='col-lg-3'>{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
-                        <div className='col-lg-9'>
-                          <div className='mt-2'><strong>{this.props.client.name}</strong> would like to:</div>
+                  <div className="card">
+                    <div className="card-header">Authorize {this.props.client.name}</div>
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-lg-3">{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
+                        <div className="col-lg-9">
+                          <div className="mt-2">
+                            <strong>{this.props.client.name}</strong> would like to:
+                          </div>
                           {this.props.scopes.filter((s) => this.state.pendingScopes.includes(s.id)).map((scope) => (
-                            <div key={scope.id} className='form-check my-2 mx-4'>
+                            <div key={scope.id} className="form-check my-2 mx-4">
                               <input
-                                type='checkbox'
+                                type="checkbox"
                                 id={scope.id}
+                                disabled={scope.required}
                                 name={scope.id}
-                                className='form-check-input'
+                                className="form-check-input"
                                 checked={this.state.allowedScopes.includes(scope.id)}
                                 onChange={this.handleScopeCheckChanged}
                               />
-                              <label htmlFor={scope.id} className='form-check-label'>
+                              <label htmlFor={scope.id} className="form-check-label">
                                 {scope.userDescription}
                               </label>
                             </div>
                           ))}
                         </div>
                       </div>
-                      <div className='d-flex align-items-center justify-content-center mt-2'>
-                        <div>Logged in as <strong>{user.firstName} {user.lastName}</strong> (<SignOut includeState>Not You?</SignOut>)</div>
+                      <div className="d-flex align-items-center justify-content-center mt-2">
+                        <div>
+                          Logged in as{' '}
+                          <strong>
+                            {user.firstName} {user.lastName}
+                          </strong>{' '}
+                          (<SignOut includeState>Not You?</SignOut>)
+                        </div>
                       </div>
                     </div>
-                    <div className='card-footer clearfix'>
-                      <div className='btn-toolbar float-right'>
-                        <button
-                          type='button'
-                          className='btn btn-outline-danger mr-3'
-                          disabled={this.state.isSaving}
-                          onClick={this.onDenyClicked}
-                        >
-                          <i className='fal fa-times fa-fw' /> Deny
+                    <div className="card-footer clearfix">
+                      <div className="btn-toolbar float-right">
+                        <button type="button" className="btn btn-outline-danger mr-3" disabled={this.state.isSaving} onClick={this.onDenyClicked}>
+                          <i className="fal fa-times fa-fw" /> Deny
                         </button>
-                        <button
-                          type='submit'
-                          className='btn btn-success'
-                          disabled={this.state.isSaving}
-                        >
-                          <i className='fal fa-check fa-fw' /> Authorize
+                        <button type="submit" className="btn btn-success" disabled={this.state.isSaving}>
+                          <i className="fal fa-check fa-fw" /> Authorize
                         </button>
                       </div>
                     </div>
@@ -198,11 +190,14 @@ ClientAuthorization.propTypes = {
   responseType: PropTypes.string.isRequired,
   redirectUri: PropTypes.string.isRequired,
   scope: PropTypes.string,
-  scopes: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    userDescription: PropTypes.string.isRequired,
-  })).isRequired,
+  scopes: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      userDescription: PropTypes.string.isRequired
+    })
+  ).isRequired,
   state: PropTypes.string,
+  nonce: PropTypes.string
 }
 
 export default ClientAuthorization
