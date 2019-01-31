@@ -67,6 +67,7 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
 
   req.user = user
   req.session = session
+  res.locals.userContext = user
 
   return next()
 }

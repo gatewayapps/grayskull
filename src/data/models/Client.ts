@@ -8,9 +8,11 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
   const attributes: SequelizeAttributes<IClient> = {
     client_id: {
       primaryKey: true,
+      allowNull: false,
       type: Sequelize.STRING(50)
     },
     name: {
+      allowNull: false,
       type: Sequelize.STRING(50)
     },
     logoImageUrl: {
@@ -22,9 +24,11 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING(500)
     },
     secret: {
+      allowNull: false,
       type: Sequelize.STRING(500)
     },
     baseUrl: {
+      allowNull: false,
       type: Sequelize.STRING
     },
     homePageUrl: {
@@ -32,9 +36,11 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING
     },
     redirectUris: {
+      allowNull: false,
       type: Sequelize.STRING(1000)
     },
     scopes: {
+      allowNull: false,
       type: Sequelize.STRING(1000)
     },
     public: {
@@ -43,6 +49,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     },
     isActive: {
       defaultValue: true,
+      allowNull: false,
       type: Sequelize.BOOLEAN
     },
     createdBy: {
@@ -51,6 +58,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     updatedBy: {
@@ -59,6 +67,7 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     },
     updatedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     deletedBy: {

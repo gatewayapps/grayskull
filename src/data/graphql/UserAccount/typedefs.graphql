@@ -4,8 +4,10 @@ type UserAccount {
 	lastName: String!
 	lastActive: Date!
 	lastPasswordChange: Date!
-	phoneNumber: String!
-	profileImageUrl: String!
+	phoneNumber: String
+	gender: String
+	birthday: Date
+	profileImageUrl: String
 	permissions: Int!
 	otpEnabled: Boolean!
 	isActive: Boolean!
@@ -73,7 +75,7 @@ input RegisterUserArgs {
 	password: String!
 	confirm: String!
 	client_id: String
-	firstName: String! 
+	firstName: String!
 	lastName: String!
 	otpSecret: String
 }
@@ -115,6 +117,16 @@ input UserAccountFilter {
 	phoneNumber_endsWith: String
 	phoneNumber_equals: String
 	phoneNumber_notEquals: String
+	gender_contains: String
+	gender_notContains: String
+	gender_startsWith: String
+	gender_endsWith: String
+	gender_equals: String
+	gender_notEquals: String
+	birthday_lessThan: Date
+	birthday_greaterThan: Date
+	birthday_equals: Date
+	birthday_notEquals: Date
 	profileImageUrl_contains: String
 	profileImageUrl_notContains: String
 	profileImageUrl_startsWith: String

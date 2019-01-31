@@ -25,6 +25,8 @@ import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import ClientRepository from '@data/repositories/ClientRepository'
+import AuthenticationService from './AuthenticationService'
+import { authenticator } from 'otplib'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -151,11 +153,14 @@ class UserAccountService {
       data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
       const user = await this.createUserAccountWithPassword(data, password, newOptions)
 
+      const verificationSecret = encrypt(authenticator.generateSecret())
+
       // 4. Create the user account email
       const emailAddressData: IEmailAddress = {
         userAccountId: user.userAccountId!,
         emailAddress: emailAddress,
-        primary: true
+        primary: true,
+        verificationSecret
       }
       await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
 

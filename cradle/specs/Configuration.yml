@@ -39,6 +39,8 @@ SecurityConfiguration:
     invitationExpirationSeconds: integer
     accessTokenExpirationSeconds: integer
     globalSecret: string
+    domainWhitelist: string(1024)
+    allowSignup: boolean default(0)
 
 
 Configuration:

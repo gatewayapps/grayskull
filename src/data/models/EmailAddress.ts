@@ -9,21 +9,30 @@ function EmailAddressFactory(sequelize: Sequelize.Sequelize) {
     emailAddressId: {
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
+      allowNull: false,
       type: Sequelize.UUID
     },
     userAccountId: {
+      allowNull: false,
       type: Sequelize.UUID
     },
     emailAddress: {
       unique: true,
+      allowNull: false,
+      type: Sequelize.STRING
+    },
+    verificationSecret: {
+      allowNull: false,
       type: Sequelize.STRING
     },
     verified: {
       defaultValue: false,
+      allowNull: false,
       type: Sequelize.BOOLEAN
     },
     primary: {
       defaultValue: false,
+      allowNull: false,
       type: Sequelize.BOOLEAN
     },
     createdBy: {
@@ -32,6 +41,7 @@ function EmailAddressFactory(sequelize: Sequelize.Sequelize) {
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     updatedBy: {
@@ -40,6 +50,7 @@ function EmailAddressFactory(sequelize: Sequelize.Sequelize) {
     },
     updatedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     deletedBy: {

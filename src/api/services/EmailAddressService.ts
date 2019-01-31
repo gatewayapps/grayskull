@@ -8,6 +8,7 @@ import { Permissions } from '@/utils/permissions'
 import authorization from '@/utils/AuthorizationHelper'
 import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
+import ConfigurationManager from '@/config/ConfigurationManager'
 
 class EmailAddressService {
   @hasPermission(Permissions.User)
@@ -25,7 +26,11 @@ class EmailAddressService {
   }
 
   public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
-    return await EmailAddressRepository.createEmailAddress(data, options)
+    const result = await EmailAddressRepository.createEmailAddress(data, options)
+    const domain = data.emailAddress.split('@')[1]
+    if (ConfigurationManager.Security!.requireEmailAddressVerification === false && !ConfigurationManager.Security!.domainWhitelist) {
+      return result
+    }
   }
 
   @hasPermission(Permissions.User)
