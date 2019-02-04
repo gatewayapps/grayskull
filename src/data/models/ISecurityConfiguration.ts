@@ -13,4 +13,6 @@ export interface ISecurityConfiguration {
   invitationExpirationSeconds: number
   accessTokenExpirationSeconds: number
   globalSecret: string
+  domainWhitelist: string
+  allowSignup?: boolean
 }

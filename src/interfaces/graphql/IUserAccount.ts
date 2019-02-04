@@ -31,6 +31,15 @@ export interface IUserAccountFilter {
   phoneNumber_endsWith?: string
   phoneNumber_equals?: string
   phoneNumber_notEquals?: string
+  gender_contains?: string
+  gender_startsWith?: string
+  gender_endsWith?: string
+  gender_equals?: string
+  gender_notEquals?: string
+  birthday_lessThan?: Date
+  birthday_greaterThan?: Date
+  birthday_equals?: Date
+  birthday_notEquals?: Date
   profileImageUrl_contains?: string
   profileImageUrl_startsWith?: string
   profileImageUrl_endsWith?: string

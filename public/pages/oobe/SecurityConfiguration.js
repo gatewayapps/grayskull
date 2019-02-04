@@ -20,7 +20,8 @@ export class SecurityConfiguration extends React.Component {
       passwordRequiresSymbol: PropTypes.bool,
       passwordMinimumLength: PropTypes.string,
       multifactorRequired: PropTypes.bool,
-      accessTokenExpirationSeconds: PropTypes.number
+      accessTokenExpirationSeconds: PropTypes.number,
+      domainWhitelist: PropTypes.string
     })
   }
 
@@ -128,6 +129,15 @@ export class SecurityConfiguration extends React.Component {
                 name="multifactorRequired"
                 type="checkbox"
                 checked={this.props.data.multifactorRequired}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                labelColumnWidth={4}
+                validationErrors={validationErrors}
+                label="Allowed Domains for Sign Up"
+                name="domainWhitelist"
+                type="text"
+                checked={this.props.data.domainWhitelist}
                 onChange={(e) => this.handleChange(e, validate)}
               />
             </div>

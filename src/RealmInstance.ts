@@ -135,6 +135,12 @@ export class RealmInstance {
       })
     } else {
       this.ensureGrayskullClient()
+
+      //disallow oobe
+      this.expressApp.all('/oobe', (req, res) => {
+        res.redirect('/')
+      })
+
       // Connect route controllers
       const routeControllers = [new LoginController(this.nextServer), new UserController(this.nextServer), new OAuthController(this.nextServer)]
       routeControllers.forEach((c) => c.registerRoutes(this.expressApp))

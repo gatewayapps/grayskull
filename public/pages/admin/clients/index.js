@@ -5,6 +5,9 @@ import { Query } from 'react-apollo'
 import Primary from '../../../layouts/primary'
 import ErrorMessage from '../../../components/ErrorMessage'
 import LoadingIndicator from '../../../components/LoadingIndicator'
+import AuthenticatedRoute from '../../../layouts/authenticatedRoute';
+import Permissions from '../../../utils/permissions';
+import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission';
 
 const ALL_CLIENTS_QUERY = gql`
   query ALL_CLIENTS_QUERY {
@@ -19,18 +22,20 @@ const ALL_CLIENTS_QUERY = gql`
 
 const ClientsIndexPage = () => {
   return (
-    <Primary>
+    <AuthenticatedRoute permission={Permissions.ADMIN}>
       <div className="container pt-4">
         <div className="row">
           <div className="col">
             <h1>Clients</h1>
           </div>
           <div className="col-auto">
+          <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN+1 }>
             <Link href="/admin/clients/add">
               <a className="btn btn-outline-primary">
                 <i className="fal fa-plus" /> Add Client
               </a>
             </Link>
+            </RequirePermission>
           </div>
         </div>
         <Query query={ALL_CLIENTS_QUERY}>
@@ -72,7 +77,7 @@ const ClientsIndexPage = () => {
           }}
         </Query>
       </div>
-    </Primary>
+    </AuthenticatedRoute>
   )
 }
 

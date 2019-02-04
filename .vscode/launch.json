@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Current TS File",
+      "name": "Start Debugging",
       "type": "node",
       "request": "launch",
       "console": "integratedTerminal",

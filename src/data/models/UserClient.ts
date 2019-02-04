@@ -9,24 +9,30 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
     userClientId: {
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
+      allowNull: false,
       type: Sequelize.UUID
     },
     userAccountId: {
       unique: 'userClient',
+      allowNull: false,
       type: Sequelize.UUID
     },
     client_id: {
       unique: 'userClient',
+      allowNull: false,
       type: Sequelize.STRING(50)
     },
     allowedScopes: {
+      allowNull: false,
       type: Sequelize.STRING(1000)
     },
     deniedScopes: {
+      allowNull: false,
       type: Sequelize.STRING(1000)
     },
     revoked: {
       defaultValue: false,
+      allowNull: false,
       type: Sequelize.BOOLEAN
     },
     revokedBy: {
@@ -43,6 +49,7 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     updatedBy: {
@@ -51,6 +58,7 @@ function UserClientFactory(sequelize: Sequelize.Sequelize) {
     },
     updatedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     deletedBy: {

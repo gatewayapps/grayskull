@@ -15,7 +15,7 @@ MailConfiguration:
     serverAddress: string
     username: string
     password: string
-    sslEnabled: boolean
+    tlsSslRequired: boolean
     port: integer
     fromAddress: string
 
@@ -39,6 +39,8 @@ SecurityConfiguration:
     invitationExpirationSeconds: integer
     accessTokenExpirationSeconds: integer
     globalSecret: string
+    domainWhitelist: string(1024)
+    allowSignup: boolean default(0)
 
 
 Configuration:

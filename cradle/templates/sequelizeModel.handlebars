@@ -59,6 +59,7 @@ function {{Name}}Factory(sequelize: Sequelize.Sequelize) {
       {{#hasDefaultValue prop}}
       defaultValue: {{{prop.DefaultValue}}},
       {{/hasDefaultValue}}
+      allowNull: false,
       type: Sequelize.{{prop.TypeName}}{{#if prop.MaximumLength}}({{prop.MaximumLength}}){{/if}}
     },
     {{/isBaseDataType}}

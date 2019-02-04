@@ -33,6 +33,7 @@ const REGISTER_USER_MUTATION = gql`
   mutation REGISTER_USER_MUTATION($emailAddress: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
     registerUser(data: { emailAddress: $emailAddress, firstName: $firstName, lastName: $lastName, password: $password, confirm: $confirm, otpSecret: $otpSecret }) {
       success
+      message
       error
     }
   }
@@ -51,6 +52,8 @@ class RegisterPage extends PureComponent {
         confirm: '',
         otpSecret: undefined
       },
+      accountCreated: false,
+      message: '',
       userDataValid: false,
       requireMfaVerification: false,
       step: RegistrationSteps.UserData
@@ -108,17 +111,22 @@ class RegisterPage extends PureComponent {
 
       case RegistrationSteps.Multifactor:
         const { data } = await registerUser()
+        console.log(data)
         if (data && data.registerUser) {
           if (data.registerUser.success) {
-            if (this.props.router.query.state) {
-              const parsedState = parseRoutingState(this.props.router.query.state)
-              console.log(parsedState)
-              if (parsedState) {
-                this.props.router.push(parsedState)
-                return
-              }
-            }
-            this.props.router.push('/home')
+            // if (this.props.router.query.state) {
+            //   const parsedState = parseRoutingState(this.props.router.query.state)
+            //   console.log(parsedState)
+            //   if (parsedState) {
+            //     this.props.router.push(parsedState)
+            //     return
+            //   }
+            // }
+
+            this.setState({
+              accountCreated: true,
+              message: data.registerUser.message
+            })
           } else {
             this.setState({ error: data.registerUser.error })
           }
@@ -150,32 +158,45 @@ class RegisterPage extends PureComponent {
                       e.preventDefault()
                     }}>
                     <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0 }}>
-                      <div className="card mt-1 d-flex flex-column mx-auto" style={{ maxHeight: '100%', maxWidth: '960px' }}>
+                      <div className="card mt-5 d-flex flex-column mx-auto" style={{ maxHeight: '100%', maxWidth: '960px' }}>
                         <div className="card-header">Register for {serverConfiguration.realmName}</div>
                         <div className="card-body flex-fill" style={{ overflowY: 'auto' }}>
                           {error && <div className="alert alert-danger">{error.message}</div>}
                           {this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
-                          {this.state.step === RegistrationSteps.UserData && (
-                            <RegistrationForm configuration={securityConfiguration} data={this.state.data} onChange={this.onFormValueChanged} onValidated={this.onFormValidated} />
-                          )}
-                          {this.state.step === RegistrationSteps.Multifactor && (
-                            <MultiFactorSetup
-                              emailAddress={this.state.data.emailAddress}
-                              required={securityConfiguration.multifactorRequired}
-                              onCancel={() => this.setRequireMfaVerification(false)}
-                              onEnabled={() => this.setRequireMfaVerification(true)}
-                              onVerified={this.onMfaVerified}
-                            />
+                          {this.state.message && <div className="alert alert-success">{this.state.message}</div>}
+                          {!this.state.accountCreated && (
+                            <div>
+                              {this.state.step === RegistrationSteps.UserData && (
+                                <RegistrationForm
+                                  configuration={securityConfiguration}
+                                  data={this.state.data}
+                                  onChange={this.onFormValueChanged}
+                                  onValidated={this.onFormValidated}
+                                />
+                              )}
+                              {this.state.step === RegistrationSteps.Multifactor && (
+                                <MultiFactorSetup
+                                  emailAddress={this.state.data.emailAddress}
+                                  required={securityConfiguration.multifactorRequired}
+                                  onCancel={() => this.setRequireMfaVerification(false)}
+                                  onEnabled={() => this.setRequireMfaVerification(true)}
+                                  onVerified={this.onMfaVerified}
+                                />
+                              )}
+                            </div>
                           )}
                         </div>
-                        <div className="card-footer">
-                          <div className="btn-toolbar float-right">
-                            <button type="submit" className="btn btn-primary" disabled={!this.isValid(securityConfiguration)} onClick={() => this.onSubmitClick(registerUser)}>
-                              {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
-                            </button>
+                        {!this.state.accountCreated && (
+                          <div className="card-footer">
+                            <div className="btn-toolbar float-right">
+                              <button type="submit" className="btn btn-primary" disabled={!this.isValid(securityConfiguration)} onClick={() => this.onSubmitClick(registerUser)}>
+                                {loading && <i className="fa fa-fw fa-spin fa-spinner mr-2" />}
+                                {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
+                              </button>
+                            </div>
+                            <div className="clearfix" />
                           </div>
-                          <div className="clearfix" />
-                        </div>
+                        )}
                       </div>
                     </div>
                   </form>

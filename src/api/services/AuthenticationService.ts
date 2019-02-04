@@ -23,6 +23,7 @@ import TokenService from './TokenService'
 import { IRefreshToken } from '@data/models/IRefreshToken'
 import { ScopeMap } from './ScopeService'
 import RefreshTokenRepository from '@data/repositories/RefreshTokenRepository'
+import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -53,6 +54,7 @@ interface IAuthenticateUserResult {
   session?: ISession
   message?: string
   otpRequired?: boolean
+  emailVerificationRequired?: boolean
 }
 
 interface IRefreshTokenPayload {
@@ -80,6 +82,7 @@ class AuthenticationService {
     options: IQueryOptions
   ): Promise<IAuthenticateUserResult> {
     // 1. Find the user account for the email address
+
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
 
     if (!user) {
@@ -94,6 +97,17 @@ class AuthenticationService {
     const passwordMatch = await bcrypt.compare(password, user.passwordHash)
     if (!passwordMatch) {
       throw new Error('Invalid email address/password combination')
+    }
+
+    // 2b. Verify the email address has been verified
+    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
+    if (email && !email.verified) {
+      return {
+        success: false,
+        otpRequired: false,
+        emailVerificationRequired: true,
+        message: 'You must verify your e-mail address before signing in.'
+      }
     }
 
     // 3. Determine if the user requires a OTP to login
@@ -243,7 +257,7 @@ class AuthenticationService {
     const backupCode = otplib.authenticator.generate(otpSecret)
     this.localCache.set(emailAddress, backupCode, 16 * 60)
     const body = `Your login code is: ${backupCode}<br/><br/>This code will expire in 15 minutes.`
-    MailService.sendMail(emailAddress, 'Login Code', body)
+    //MailService.sendMail(emailAddress, 'Login Code', body)
     return true
   }
 

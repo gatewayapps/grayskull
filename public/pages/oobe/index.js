@@ -57,6 +57,7 @@ export default class OobeIndex extends React.Component {
           port: '25',
           username: '',
           password: '',
+          tlsSslRequired: false,
           fromAddress: 'admin@grayskull.io'
         },
         Security: {
@@ -66,7 +67,8 @@ export default class OobeIndex extends React.Component {
           passwordRequiresSymbol: false,
           passwordMinimumLength: '8',
           multifactorRequired: false,
-          accessTokenExpirationSeconds: 1800
+          accessTokenExpirationSeconds: 1800,
+          domainWhitelist: ''
         }
       }
     }
@@ -201,8 +203,11 @@ export default class OobeIndex extends React.Component {
                                     const config = this.state.configuration
                                     delete config.Server.certBotState
                                     config.Mail.port = parseInt(config.Mail.port)
+                                    config.Mail.tlsSslRequired = config.Mail.tlsSslRequired.toLowerCase() === 'true'
+
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
                                     config.Security.accessTokenExpirationSeconds = parseInt(config.Security.accessTokenExpirationSeconds)
+                                    config.Security.domainWhitelist = JSON.stringify(config.Security.domainWhitelist.split(';'))
 
                                     const { data } = await apolloClient.mutate({ mutation: SAVE_CONFIGURATION, variables: { configuration: config } })
                                   }}

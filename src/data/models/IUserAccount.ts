@@ -5,8 +5,10 @@ export interface IUserAccount {
   lastActive?: Date
   lastPasswordChange: Date
   passwordHash: string
-  phoneNumber: string
-  profileImageUrl: string
+  phoneNumber?: string
+  gender?: string
+  birthday?: Date
+  profileImageUrl?: string
   permissions?: number
   otpSecret?: string
   otpEnabled?: boolean

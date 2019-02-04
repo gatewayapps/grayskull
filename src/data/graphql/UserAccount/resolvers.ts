@@ -9,6 +9,8 @@ import { setAuthCookies } from '@/utils/authentication'
 import UserClientService from '@services/UserClientService'
 import SessionService from '@services/SessionService'
 import { hasPermission } from '@decorators/permissionDecorator'
+import MailService from '@services/MailService'
+import ConfigurationManager from '@/config/ConfigurationManager'
 
 export default {
   Query: {
@@ -46,7 +48,8 @@ export default {
             return {
               success: authResult.success,
               message: authResult.message,
-              otpRequired: authResult.otpRequired
+              otpRequired: authResult.otpRequired,
+              emailVerificationRequired: authResult.emailVerificationRequired
             }
           }
         }
@@ -111,6 +114,7 @@ export default {
         const serviceOptions = { userContext: context.user || null }
         await AuthenticationService.validatePassword(password, confirm, serviceOptions)
         const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password, serviceOptions)
+
         const fingerprint = context.req.header('x-fingerprint')
         if (fingerprint) {
           const session = await SessionService.createSession(
@@ -121,9 +125,12 @@ export default {
             },
             serviceOptions
           )
-          setAuthCookies(context.res, session)
+          // setAuthCookies(context.res, session)
         }
-        return { success: true }
+        return {
+          success: true,
+          message: `Your account has been created and a verification e-mail has been sent to ${emailAddress}.  You must click the link in the message before you can sign in.`
+        }
       } catch (err) {
         if (err instanceof GrayskullError) {
           return { success: false, error: err.code, message: err.message }
@@ -136,6 +143,10 @@ export default {
     },
     verifyMfaKey: (obj, args, context, info) => {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token, { userContext: context.user || null })
+    },
+    resendVerification: async (obj, args, context, info) => {
+      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, { userContext: context.user || null })
+      return !!result
     },
     sendBackupCode: async (obj, args, context, info) => {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })

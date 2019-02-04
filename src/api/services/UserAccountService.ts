@@ -25,6 +25,8 @@ import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import ClientRepository from '@data/repositories/ClientRepository'
+import AuthenticationService from './AuthenticationService'
+import { authenticator } from 'otplib'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -111,7 +113,7 @@ class UserAccountService {
     This link will expire in ${relativeTime}.
     `
 
-    MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
+    //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
   }
 
   public async processCPT(cpt: string, removeFromCache: boolean = true, options: IQueryOptions): Promise<ICPTToken> {
@@ -155,7 +157,8 @@ class UserAccountService {
       const emailAddressData: IEmailAddress = {
         userAccountId: user.userAccountId!,
         emailAddress: emailAddress,
-        primary: true
+        primary: true,
+        verificationSecret: ''
       }
       await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
 
@@ -190,7 +193,7 @@ class UserAccountService {
 
   private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance, options: IQueryOptions) {
     const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
-    MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
+    //MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
   }
 
   private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, options: IQueryOptions) {
@@ -205,7 +208,7 @@ class UserAccountService {
     <p>This link will expire in ${relativeTime}.</p>
     `
 
-    MailService.sendMail(emailAddress, `${clientName} Invitation`, body)
+    //MailService.sendMail(emailAddress, `${clientName} Invitation`, body)
   }
 
   private generateCPT(emailAddress: string, expiresIn: number, client_id?: string, invitedById?: number): string {

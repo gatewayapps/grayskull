@@ -9,32 +9,49 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     userAccountId: {
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
+      allowNull: false,
       type: Sequelize.UUID
     },
     firstName: {
+      allowNull: false,
       type: Sequelize.STRING(30)
     },
     lastName: {
+      allowNull: false,
       type: Sequelize.STRING(30)
     },
     lastActive: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     lastPasswordChange: {
+      allowNull: false,
       type: Sequelize.DATE
     },
     passwordHash: {
+      allowNull: false,
       type: Sequelize.STRING
     },
     phoneNumber: {
+      allowNull: true,
       type: Sequelize.STRING
     },
+    gender: {
+      allowNull: true,
+      type: Sequelize.STRING
+    },
+    birthday: {
+      allowNull: true,
+      type: Sequelize.DATE
+    },
     profileImageUrl: {
+      allowNull: true,
       type: Sequelize.STRING
     },
     permissions: {
       defaultValue: 0,
+      allowNull: false,
       type: Sequelize.INTEGER
     },
     otpSecret: {
@@ -43,10 +60,12 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     },
     otpEnabled: {
       defaultValue: false,
+      allowNull: false,
       type: Sequelize.BOOLEAN
     },
     isActive: {
       defaultValue: true,
+      allowNull: false,
       type: Sequelize.BOOLEAN
     },
     createdBy: {
@@ -55,6 +74,7 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     updatedBy: {
@@ -63,6 +83,7 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     },
     updatedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     deletedBy: {

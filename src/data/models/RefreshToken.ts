@@ -9,20 +9,26 @@ function RefreshTokenFactory(sequelize: Sequelize.Sequelize) {
     id: {
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
+      allowNull: false,
       type: Sequelize.UUID
     },
     userClientId: {
+      allowNull: false,
       type: Sequelize.UUID
     },
     token: {
+      unique: true,
+      allowNull: false,
       type: Sequelize.STRING(500)
     },
     issuedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     activeAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     expiresAt: {

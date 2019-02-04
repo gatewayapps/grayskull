@@ -7,3 +7,4 @@ LoginResponse:
     success: boolean
     message: string?
     otpRequired: boolean?
+    emailVerificationRequired: boolean?

@@ -9,12 +9,15 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
     sessionId: {
       primaryKey: true,
       defaultValue: Sequelize.UUIDV4,
+      allowNull: false,
       type: Sequelize.UUID
     },
     fingerprint: {
+      allowNull: false,
       type: Sequelize.STRING
     },
     userAccountId: {
+      allowNull: false,
       type: Sequelize.UUID
     },
     name: {
@@ -22,13 +25,16 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
       type: Sequelize.STRING(100)
     },
     ipAddress: {
+      allowNull: false,
       type: Sequelize.STRING(50)
     },
     lastUsedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     expiresAt: {
+      allowNull: false,
       type: Sequelize.DATE
     },
     createdBy: {
@@ -37,6 +43,7 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
     },
     createdAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     },
     updatedBy: {
@@ -45,6 +52,7 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
     },
     updatedAt: {
       defaultValue: Sequelize.NOW,
+      allowNull: false,
       type: Sequelize.DATE
     }
   }

@@ -13,8 +13,10 @@ UserAccount:
     lastActive: datetime default(NOW)
     lastPasswordChange: datetime
     passwordHash: string
-    phoneNumber: string
-    profileImageUrl: string
+    phoneNumber: string?
+    gender: string?
+    birthday: datetime?
+    profileImageUrl: string?
     permissions: integer default(0)
     otpSecret: string?
     otpEnabled: boolean default(false)
@@ -75,6 +77,11 @@ UserAccount:
       arguments:
         secret: string
         token: string
+    # Send Verification Email #
+    resendVerification:
+      returns: boolean
+      arguments:
+        emailAddress: string
     # Send Backup Code #
     sendBackupCode:
       returns: boolean
