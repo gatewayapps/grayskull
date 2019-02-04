@@ -113,7 +113,7 @@ class UserAccountService {
     This link will expire in ${relativeTime}.
     `
 
-    MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
+    //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
   }
 
   public async processCPT(cpt: string, removeFromCache: boolean = true, options: IQueryOptions): Promise<ICPTToken> {
@@ -153,14 +153,12 @@ class UserAccountService {
       data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
       const user = await this.createUserAccountWithPassword(data, password, newOptions)
 
-      const verificationSecret = encrypt(authenticator.generateSecret())
-
       // 4. Create the user account email
       const emailAddressData: IEmailAddress = {
         userAccountId: user.userAccountId!,
         emailAddress: emailAddress,
         primary: true,
-        verificationSecret
+        verificationSecret: ''
       }
       await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
 
@@ -195,7 +193,7 @@ class UserAccountService {
 
   private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance, options: IQueryOptions) {
     const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
-    MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
+    //MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
   }
 
   private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, options: IQueryOptions) {
@@ -210,7 +208,7 @@ class UserAccountService {
     <p>This link will expire in ${relativeTime}.</p>
     `
 
-    MailService.sendMail(emailAddress, `${clientName} Invitation`, body)
+    //MailService.sendMail(emailAddress, `${clientName} Invitation`, body)
   }
 
   private generateCPT(emailAddress: string, expiresIn: number, client_id?: string, invitedById?: number): string {

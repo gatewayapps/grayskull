@@ -243,7 +243,7 @@ class AuthenticationService {
     const backupCode = otplib.authenticator.generate(otpSecret)
     this.localCache.set(emailAddress, backupCode, 16 * 60)
     const body = `Your login code is: ${backupCode}<br/><br/>This code will expire in 15 minutes.`
-    MailService.sendMail(emailAddress, 'Login Code', body)
+    //MailService.sendMail(emailAddress, 'Login Code', body)
     return true
   }
 

@@ -9,6 +9,10 @@ import authorization from '@/utils/AuthorizationHelper'
 import AuthorizationHelper from '@/utils/AuthorizationHelper'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { encrypt } from '@/utils/cipher'
+import { authenticator } from 'otplib'
+import { randomBytes } from 'crypto'
+import { ForbiddenError } from 'apollo-server'
 
 class EmailAddressService {
   @hasPermission(Permissions.User)
@@ -26,10 +30,20 @@ class EmailAddressService {
   }
 
   public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
+    const domain = data.emailAddress.split('@')[1].toLowerCase()
+    if (ConfigurationManager.Security!.domainWhitelist) {
+      const allowedDomains: string[] = JSON.parse(ConfigurationManager.Security!.domainWhitelist.toLowerCase())
+      if (allowedDomains.length > 0 && !allowedDomains.includes(domain) && !allowedDomains.includes(`@${domain}`)) {
+        throw new ForbiddenError(`E-mail addresses for @${domain} are not permitted`)
+      }
+    }
+
+    data.verificationSecret = randomBytes(16).toString('hex')
+
     const result = await EmailAddressRepository.createEmailAddress(data, options)
-    const domain = data.emailAddress.split('@')[1]
-    if (ConfigurationManager.Security!.requireEmailAddressVerification === false && !ConfigurationManager.Security!.domainWhitelist) {
-      return result
+
+    if (ConfigurationManager.Security!.requireEmailAddressVerification || ConfigurationManager.Security!.domainWhitelist) {
+      // send email address verification message
     }
   }
 
