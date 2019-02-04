@@ -53,6 +53,10 @@ class CertificateService {
   }
   public async verifyCertbot(domain: string): Promise<Boolean> {
     const finalDomain = domain.replace('https://', '')
+    const results = await greenlock.check({ domains: [finalDomain] })
+    if (results) {
+      return true
+    }
     try {
       const registerResults = await this.getCertificateFromACMEProvider(finalDomain)
       return !!registerResults

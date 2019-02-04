@@ -57,6 +57,7 @@ export default class OobeIndex extends React.Component {
           port: '25',
           username: '',
           password: '',
+          tlsSslRequired: false,
           fromAddress: 'admin@grayskull.io'
         },
         Security: {
@@ -201,6 +202,8 @@ export default class OobeIndex extends React.Component {
                                     const config = this.state.configuration
                                     delete config.Server.certBotState
                                     config.Mail.port = parseInt(config.Mail.port)
+                                    config.Mail.tlsSslRequired = config.Mail.tlsSslRequired.toLowerCase() === 'true'
+
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
                                     config.Security.accessTokenExpirationSeconds = parseInt(config.Security.accessTokenExpirationSeconds)
 

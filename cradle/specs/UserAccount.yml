@@ -77,6 +77,11 @@ UserAccount:
       arguments:
         secret: string
         token: string
+    # Send Verification Email #
+    resendVerification:
+      returns: boolean
+      arguments:
+        emailAddress: string
     # Send Backup Code #
     sendBackupCode:
       returns: boolean

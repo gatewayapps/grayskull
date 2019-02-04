@@ -1,6 +1,6 @@
 import nodemailer, { SendMailOptions } from 'nodemailer'
 import ConfigurationManager from '@/config/ConfigurationManager'
-import { join } from 'path'
+import { join, normalize } from 'path'
 import handlebars from 'handlebars'
 import { existsSync, readFileSync } from 'fs'
 
@@ -26,16 +26,22 @@ class MailService {
       text: textBody,
       html: htmlBody
     }
-
-    return await transport.sendMail(messageOptions)
+    try {
+      const mailResult = await transport.sendMail(messageOptions)
+      console.log(mailResult)
+      return mailResult
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
   }
 
   public sendEmailTemplate(templateName: string, to: string, subject: string, context: object): Promise<any> {
     const textTemplateFileName = `${templateName}.text.handlebars`
     const htmlTemplateFileName = `${templateName}.html.handlebars`
 
-    const textTemplatePath = join(TEMPLATE_PATH, textTemplateFileName)
-    const htmlTemplatePath = join(TEMPLATE_PATH, htmlTemplateFileName)
+    const textTemplatePath = normalize(join(__dirname, TEMPLATE_PATH, textTemplateFileName))
+    const htmlTemplatePath = normalize(join(__dirname, TEMPLATE_PATH, htmlTemplateFileName))
 
     if (!existsSync(textTemplatePath) && !existsSync(htmlTemplatePath)) {
       throw new Error(`No template found in ${TEMPLATE_PATH} with name ${templateName} - looked for ${textTemplateFileName}, ${htmlTemplateFileName}`)

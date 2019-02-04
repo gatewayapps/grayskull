@@ -29,7 +29,6 @@ class LoginPage extends React.PureComponent {
     if (this.props.router.query.state) {
       const parsedState = parseRoutingState(this.props.router.query.state)
       if (parsedState) {
-        
         this.props.router.push(parsedState)
         return
       }
@@ -38,9 +37,14 @@ class LoginPage extends React.PureComponent {
   }
 
   render() {
+    let headerMessage
+    if (this.props.query.emailVerified) {
+      headerMessage = <div className="alert alert-success">E-mail address verified</div>
+    }
+
     return (
       <Primary>
-        <Query fetchPolicy='' query={GET_CLIENT_QUERY} variables={{ client_id: this.props.query.client_id || 'grayskull' }}>
+        <Query fetchPolicy="" query={GET_CLIENT_QUERY} variables={{ client_id: this.props.query.client_id || 'grayskull' }}>
           {({ loading, error, data }) => {
             if (loading) {
               return <LoadingIndicator />
@@ -51,11 +55,9 @@ class LoginPage extends React.PureComponent {
             } else {
               return (
                 <BackgroundCover>
-                  <div className='px-3'>
-                    <LoginForm
-                      client={data.client}
-                      onAuthenticated={this.onAuthenticated}
-                    />
+                  <div className="px-3">
+                    {headerMessage}
+                    <LoginForm client={data.client} onAuthenticated={this.onAuthenticated} />
                   </div>
                 </BackgroundCover>
               )

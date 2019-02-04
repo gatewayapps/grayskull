@@ -7,24 +7,19 @@ import { Mutation } from 'react-apollo'
 import generateFingerprint from '../utils/generateFingerprint'
 
 const LOGIN_MUTATION = gql`
-  mutation LOGIN_MUTATION(
-    $emailAddress: String!
-    $password: String!
-    $otpToken: String
-    $fingerprint: String!
-  ) {
-    login(
-      data: {
-        emailAddress: $emailAddress
-        password: $password
-        otpToken: $otpToken
-        fingerprint: $fingerprint
-      }
-    ) {
+  mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!) {
+    login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint }) {
       success
       message
       otpRequired
+      emailVerificationRequired
     }
+  }
+`
+
+const RESEND_VERIFICATION_MUTATION = gql`
+  mutation RESEND_VERIFICATION_MUTATION($emailAddress: String!) {
+    resendVerification(data: { emailAddress: $emailAddress })
   }
 `
 
@@ -42,7 +37,9 @@ class LoginForm extends PureComponent {
     fingerprint: '',
     otpRequired: false,
     message: undefined,
-    backupCodeSent: false
+    backupCodeSent: false,
+    emailVerificationRequired: false,
+    emailVerificationSent: false
   }
 
   async componentDidMount() {
@@ -64,6 +61,8 @@ class LoginForm extends PureComponent {
         this.props.onAuthenticated()
       } else if (data.login.otpRequired === true) {
         this.setState({ otpRequired: true, message: data.login.message })
+      } else if (data.login.emailVerificationRequired === true) {
+        this.setState({ emailVerificationRequired: true, message: data.login.message })
       } else {
         this.setState({ message: data.login.message })
       }
@@ -81,6 +80,14 @@ class LoginForm extends PureComponent {
     }
   }
 
+  onSendVerificationEmail = async (sendVerification) => {
+    const { data } = await sendVerification()
+
+    if (data && data.resendVerification) {
+      this.setState({ emailVerificationSent: true })
+    }
+  }
+
   render() {
     return (
       <Mutation mutation={LOGIN_MUTATION}>
@@ -89,58 +96,72 @@ class LoginForm extends PureComponent {
             onSubmit={(e) => {
               e.preventDefault()
             }}>
-            <div className='card'>
-              <div className='card-header'>Login to {this.props.client.name}</div>
-              <div className='card-body'>
-                <div className='row'>
-                  <div className='col-lg-3'>{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
-                  <div className='col-lg-9'>
+            <div className="card">
+              <div className="card-header">Login to {this.props.client.name}</div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-lg-3">{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
+                  <div className="col-lg-9">
                     {!this.state.otpRequired && (
                       <>
-                        <div className='form-group'>
-                          <label htmlFor='name'>E-mail Address:</label>
-                          <input type='email' className='form-control' name='emailAddress' value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
+                        <div className="form-group">
+                          <label htmlFor="name">E-mail Address:</label>
+                          <input type="email" className="form-control" name="emailAddress" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
                         </div>
-                        <div className='form-group'>
-                          <label htmlFor='password'>Password:</label>
-                          <input type='password' className='form-control' name='password' value={this.state.password} onChange={this.handleChange} />
+                        <div className="form-group">
+                          <label htmlFor="password">Password:</label>
+                          <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
                         </div>
                         <div>
                           Need an account?
                           <Link href={{ pathname: '/register', query: this.props.router.query }}>
-                            <a className='ml-2'>Create one!</a>
+                            <a className="ml-2">Create one!</a>
                           </Link>
                         </div>
-                        <div className='mt-3'>
-                          <Link href='/resetPassword'>
+                        <div className="mt-3">
+                          <Link href="/resetPassword">
                             <a>Forgot Password</a>
                           </Link>
+
+                          {this.state.emailVerificationRequired &&
+                            !this.state.emailVerificationSent && (
+                              <div className="d-inline ml-2">
+                                <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                                  {(sendVerification, { loading }) => (
+                                    <button type="button" disabled={loading} onClick={() => this.onSendVerificationEmail(sendVerification)} className="btn btn-link text-danger">
+                                      Re-send Verification E-Mail
+                                    </button>
+                                  )}
+                                </Mutation>
+                              </div>
+                            )}
+                          {this.state.emailVerificationSent && <div className="alert alert-secondary">A verification e-mail has been sent to {this.state.emailAddress}</div>}
                         </div>
                       </>
                     )}
                     {this.state.otpRequired && (
-                      <div className='form-group'>
-                        <label htmlFor='otpToken'>Multi-Factor Authentication Code:</label>
-                        <input type='text' className='form-control' name='otpToken' value={this.state.otpToken} onChange={this.handleChange} />
+                      <div className="form-group">
+                        <label htmlFor="otpToken">Multi-Factor Authentication Code:</label>
+                        <input type="text" className="form-control" name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
                         {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
                         <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
                           {(sendBackupCode, { loading }) => (
-                            <button className='btn btn-link pl-0' disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
+                            <button className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
                               {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
                             </button>
                           )}
                         </Mutation>
                       </div>
                     )}
-                    {this.state.message && <div className='alert alert-info'>{this.state.message}</div>}
-                    {error && error.message && <div className='alert alert-danger'>{error.message}</div>}
+                    {this.state.message && <div className="alert alert-info">{this.state.message}</div>}
+                    {error && error.message && <div className="alert alert-danger">{error.message}</div>}
                   </div>
                 </div>
               </div>
-              <div className='card-footer'>
-                <div className='btn-toolbar float-right'>
-                  <button type='submit' className='btn btn-outline-info' disabled={loading} onClick={() => this.attemptLogin(login)}>
-                    <i className='fal fa-sign-in' /> Login
+              <div className="card-footer">
+                <div className="btn-toolbar float-right">
+                  <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
+                    <i className="fal fa-sign-in" /> Login
                   </button>
                 </div>
               </div>

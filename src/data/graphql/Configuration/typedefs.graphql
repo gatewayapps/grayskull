@@ -29,6 +29,7 @@ input MailConfigurationInput {
 	password: String!
 	port: Int!
 	fromAddress: String!
+	tlsSslRequired: Boolean!
 }
 
 input ServerConfigurationInput {

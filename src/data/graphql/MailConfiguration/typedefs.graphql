@@ -2,7 +2,7 @@ type MailConfiguration {
 	serverAddress: String!
 	username: String!
 	password: String!
-	sslEnabled: Boolean!
+	tlsSslRequired: Boolean!
 	port: Int!
 	fromAddress: String!
 }
