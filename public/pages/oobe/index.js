@@ -67,7 +67,8 @@ export default class OobeIndex extends React.Component {
           passwordRequiresSymbol: false,
           passwordMinimumLength: '8',
           multifactorRequired: false,
-          accessTokenExpirationSeconds: 1800
+          accessTokenExpirationSeconds: 1800,
+          domainWhitelist: ''
         }
       }
     }
@@ -206,6 +207,7 @@ export default class OobeIndex extends React.Component {
 
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
                                     config.Security.accessTokenExpirationSeconds = parseInt(config.Security.accessTokenExpirationSeconds)
+                                    config.Security.domainWhitelist = JSON.stringify(config.Security.domainWhitelist.split(';'))
 
                                     const { data } = await apolloClient.mutate({ mutation: SAVE_CONFIGURATION, variables: { configuration: config } })
                                   }}
