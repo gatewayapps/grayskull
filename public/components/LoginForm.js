@@ -6,6 +6,8 @@ import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import generateFingerprint from '../utils/generateFingerprint'
 import RequireConfiguration from './RequireConfiguration'
+import ResponsiveForm from './ResponsiveForm'
+import ResponsiveInput from './ResponsiveInput'
 
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!) {
@@ -97,27 +99,37 @@ class LoginForm extends PureComponent {
             <Mutation mutation={LOGIN_MUTATION}>
               {(login, { error, loading }) => (
                 <form
+                  autocomplete="off"
                   onSubmit={(e) => {
                     e.preventDefault()
                   }}>
-                  <div className="card">
-                    <div className="card-header">Login to {this.props.client.name}</div>
-                    <div className="card-body">
+                  <ResponsiveForm
+                    formHeader={
+                      <span>
+                        <img className="d-inline d-md-none header-logo mr-2" src={this.props.client.logoImageUrl} />
+                        Login to {this.props.client.name}
+                      </span>
+                    }
+                    formBody={
                       <div className="row">
-                        <div className="col-12 col-md-3 text-center">
-                          {this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '90%', height: '35vh' }} />}
+                        <div className="d-none d-md-block col-md-4 text-center">
+                          {this.props.client.logoImageUrl && <img className="body-logo align-self-start w-100 my-2" src={this.props.client.logoImageUrl} />}
                         </div>
-                        <div className="col-12 col-md-9 ">
+                        <div className="col-12 col-md-8 ">
                           {!this.state.otpRequired && (
                             <div>
-                              <div className="form-group">
-                                <label htmlFor="name">E-mail Address:</label>
-                                <input type="email" className="form-control" name="emailAddress" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
-                              </div>
-                              <div className="form-group">
-                                <label htmlFor="password">Password:</label>
-                                <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
-                              </div>
+                              <ResponsiveInput
+                                autoComplete="nope"
+                                name="emailAddress"
+                                type="email"
+                                label="E-mail Address"
+                                value={this.state.emailAddress}
+                                onChange={this.handleChange}
+                                autoFocus
+                              />
+
+                              <ResponsiveInput type="password" name="password" value={this.state.password} onChange={this.handleChange} label="Password" />
+
                               {configuration.securityConfiguration.allowSignup && (
                                 <div>
                                   Need an account?
@@ -169,15 +181,15 @@ class LoginForm extends PureComponent {
                           {error && error.message && <div className="alert alert-danger">{error.message}</div>}
                         </div>
                       </div>
-                    </div>
-                    <div className="card-footer">
+                    }
+                    formFooter={
                       <div className="btn-toolbar float-right">
                         <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
                           <i className="fal fa-sign-in" /> Login
                         </button>
                       </div>
-                    </div>
-                  </div>
+                    }
+                  />
                 </form>
               )}
             </Mutation>
