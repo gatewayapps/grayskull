@@ -230,7 +230,7 @@ export class RealmInstance {
           client_id: 'grayskull',
           name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
           secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
-          logoImageUrl: '/static/grayskull.gif',
+          logoImageUrl: '/static/grayskull.svg',
           baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
           homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
           redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),

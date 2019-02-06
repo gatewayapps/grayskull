@@ -1,19 +1,19 @@
 export interface IClient {
   client_id: string
   name: string
-  logoImageUrl?: string
-  description?: string
+  logoImageUrl?: string | null
+  description?: string | null
   secret: string
   baseUrl: string
-  homePageUrl?: string
+  homePageUrl?: string | null
   redirectUris: string
   scopes: string
-  public?: boolean
+  public?: boolean | null
   isActive?: boolean
-  createdBy?: string
+  createdBy?: string | null
   createdAt?: Date
-  updatedBy?: string
+  updatedBy?: string | null
   updatedAt?: Date
-  deletedBy?: string
-  deletedAt?: Date
+  deletedBy?: string | null
+  deletedAt?: Date | null
 }

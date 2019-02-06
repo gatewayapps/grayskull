@@ -1,5 +1,5 @@
 export interface IRegisterUserResponse {
   success: boolean
-  error?: string
-  message?: string
+  error?: string | null
+  message?: string | null
 }

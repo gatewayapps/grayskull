@@ -68,7 +68,8 @@ export default class OobeIndex extends React.Component {
           passwordMinimumLength: '8',
           multifactorRequired: false,
           accessTokenExpirationSeconds: 1800,
-          domainWhitelist: ''
+          domainWhitelist: '',
+          allowSignup: true
         }
       }
     }

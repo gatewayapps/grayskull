@@ -2,12 +2,12 @@ export interface ISession {
   sessionId?: string
   fingerprint: string
   userAccountId: string
-  name?: string
+  name?: string | null
   ipAddress: string
   lastUsedAt?: Date
   expiresAt: Date
-  createdBy?: string
+  createdBy?: string | null
   createdAt?: Date
-  updatedBy?: string
+  updatedBy?: string | null
   updatedAt?: Date
 }

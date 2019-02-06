@@ -33,7 +33,8 @@ export default {
         passwordRequiresUppercase: ConfigurationManager.Security!.passwordRequiresUppercase,
         passwordRequiresNumber: ConfigurationManager.Security!.passwordRequiresNumber,
         passwordRequiresSymbol: ConfigurationManager.Security!.passwordRequiresSymbol,
-        passwordMinimumLength: ConfigurationManager.Security!.passwordMinimumLength
+        passwordMinimumLength: ConfigurationManager.Security!.passwordMinimumLength,
+        allowSignup: ConfigurationManager.Security!.allowSignup
       }
     },
     serverConfiguration: (obj, args, context, info) => {

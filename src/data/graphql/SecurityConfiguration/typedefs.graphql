@@ -9,4 +9,5 @@ type SecurityConfiguration {
 	multifactorRequired: Boolean!
 	invitationExpirationSeconds: Int!
 	accessTokenExpirationSeconds: Int!
+	allowSignup: Boolean!
 }

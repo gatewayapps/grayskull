@@ -5,6 +5,7 @@ import { Mutation, Query } from 'react-apollo'
 import Primary from '../layouts/primary'
 import LoadingIndicator from '../components/LoadingIndicator'
 import MultiFactorSetup from '../components/MultiFactorSetup'
+import RequireConfiguration from '../components/RequireConfiguration'
 import RegistrationForm from '../components/RegistrationForm'
 import { parseRoutingState } from '../utils/routing'
 
@@ -12,22 +13,6 @@ const RegistrationSteps = {
   UserData: 1,
   Multifactor: 2
 }
-
-const GET_CONFIGURATION_QUERY = gql`
-  query GET_CONFIGURATION_QUERY {
-    securityConfiguration {
-      multifactorRequired
-      passwordRequiresNumber
-      passwordRequiresSymbol
-      passwordRequiresLowercase
-      passwordRequiresUppercase
-      passwordMinimumLength
-    }
-    serverConfiguration {
-      realmName
-    }
-  }
-`
 
 const REGISTER_USER_MUTATION = gql`
   mutation REGISTER_USER_MUTATION($emailAddress: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
@@ -142,14 +127,9 @@ class RegisterPage extends PureComponent {
   render() {
     return (
       <Primary>
-        <Query query={GET_CONFIGURATION_QUERY}>
-          {({ data, loading, error }) => {
-            if (loading) {
-              return <LoadingIndicator />
-            }
-
-            const { securityConfiguration, serverConfiguration } = data
-
+        <RequireConfiguration>
+          {(configuration) => {
+            const { securityConfiguration, serverConfiguration } = configuration
             return (
               <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
                 {(registerUser, { loading, error }) => (
@@ -204,7 +184,7 @@ class RegisterPage extends PureComponent {
               </Mutation>
             )
           }}
-        </Query>
+        </RequireConfiguration>
       </Primary>
     )
   }

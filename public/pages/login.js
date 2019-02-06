@@ -55,7 +55,7 @@ class LoginPage extends React.PureComponent {
             } else {
               return (
                 <BackgroundCover>
-                  <div className="px-3">
+                  <div className="container">
                     {headerMessage}
                     <LoginForm client={data.client} onAuthenticated={this.onAuthenticated} />
                   </div>

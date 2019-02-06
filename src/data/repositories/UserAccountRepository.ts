@@ -20,7 +20,7 @@ class UserAccountRepository {
     const results = await db.UserAccount.findAll({
       where,
       attributes: {
-        exclude: ['passwordHash', 'otpSecret']
+        exclude: ['passwordHash', 'otpSecret', 'resetPasswordToken', 'resetPasswordTokenExpiresAt']
       },
 
       transaction: options.transaction
@@ -43,7 +43,7 @@ class UserAccountRepository {
     const result = await db.UserAccount.findOne({
       where: filter,
       attributes: {
-        exclude: ['passwordHash', 'otpSecret']
+        exclude: ['passwordHash', 'otpSecret', 'resetPasswordToken', 'resetPasswordTokenExpiresAt']
       },
 
       transaction: options.transaction

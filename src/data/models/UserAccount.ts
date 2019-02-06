@@ -63,6 +63,14 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       allowNull: false,
       type: Sequelize.BOOLEAN
     },
+    resetPasswordToken: {
+      allowNull: true,
+      type: Sequelize.STRING
+    },
+    resetPasswordTokenExpiresAt: {
+      allowNull: true,
+      type: Sequelize.DATE
+    },
     isActive: {
       defaultValue: true,
       allowNull: false,
