@@ -6,22 +6,22 @@ const ConfigurationContext = React.createContext({
 })
 
 export default ConfigurationContext
-export class ConfigurationProvider extends PureComponent {
-  state = {
-    configuration: undefined
-  }
+// export class ConfigurationProvider extends PureComponent {
+//   state = {
+//     configuration: undefined
+//   }
 
-  setConfiguration = (configuration) => {
-    this.setState({ configuration })
-  }
+//   setConfiguration = (configuration) => {
+//     this.setState({ configuration })
+//   }
 
-  render() {
-    return <ConfigurationContext.Provider value={{ ...this.state, setConfiguration: this.setConfiguration }}>{this.props.children}</ConfigurationContext.Provider>
-  }
-}
+//   render() {
+//     return <ConfigurationContext.Provider value={{ ...this.state, setConfiguration: this.setConfiguration }}>{this.props.children}</ConfigurationContext.Provider>
+//   }
+// }
 
-export const ConfigurationConsumer = (props) => <ConfigurationContext.Consumer>{props.children}</ConfigurationContext.Consumer>
+// export const ConfigurationConsumer = (props) => <ConfigurationContext.Consumer>{props.children}</ConfigurationContext.Consumer>
 
-ConfigurationConsumer.propTypes = {
-  children: PropTypes.func.isRequired
-}
+// ConfigurationConsumer.propTypes = {
+//   children: PropTypes.func.isRequired
+// }

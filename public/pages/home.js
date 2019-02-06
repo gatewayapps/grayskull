@@ -1,11 +1,18 @@
 import React from 'react'
-import Primary from '../layouts/primary'
-
+import AuthenticatedRoute from '../layouts/authenticatedRoute'
+import UserContext from '../contexts/UserContext'
 const HomePage = () => {
   return (
-    <Primary>
-      <div className='jumbotron'>I am the home page!</div>
-    </Primary>
+    <AuthenticatedRoute>
+      <UserContext.Consumer>
+        {({ user }) => (
+          <div className="jumbotron">
+            I am {user.firstName}
+            's home page!
+          </div>
+        )}
+      </UserContext.Consumer>
+    </AuthenticatedRoute>
   )
 }
 

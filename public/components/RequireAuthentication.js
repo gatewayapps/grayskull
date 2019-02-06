@@ -20,40 +20,40 @@ const GET_ME_QUERY = gql`
 class RequireAuthentication extends Component {
   state = {
     initialized: false,
-    user: undefined,
+    user: undefined
   }
 
-  async componentDidMount() {
+  async componentDidMount(setUser) {
     const { data } = await this.apolloClient.query({
       query: GET_ME_QUERY,
       fetchPolicy: 'network-only'
     })
     if (data && data.me) {
-      this.setState({
-        initialized: true,
-        user: data.me
-      })
+      this.setUser(data.me)
     } else {
       const state = generateRoutingState(this.props.router)
+      this.setUser(undefined)
       window.location.replace(`/login?state=${state}`)
     }
   }
 
   render() {
     return (
-      <ApolloConsumer>
-        {(apolloClient) => {
-          this.apolloClient = apolloClient
-          if (!this.state.initialized) {
-            return (<LoadingIndicator />)
-          }
-          return (
-            <UserContext.Provider value={{ user: this.state.user }}>
-              {this.props.children}
-            </UserContext.Provider>
-          )
-        }}
-      </ApolloConsumer>
+      <UserContext.Consumer>
+        {({ user, setUser }) => (
+          <ApolloConsumer>
+            {(apolloClient) => {
+              this.apolloClient = apolloClient
+              this.setUser = setUser
+              if (!user) {
+                return <LoadingIndicator />
+              }
+
+              return this.props.children
+            }}
+          </ApolloConsumer>
+        )}
+      </UserContext.Consumer>
     )
   }
 }

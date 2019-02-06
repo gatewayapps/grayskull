@@ -25,40 +25,19 @@ const GET_CONFIGURATION_QUERY = gql`
 `
 
 class RequireConfiguration extends Component {
-  state = {
-    initialized: false,
-    configuration: undefined
-  }
-
-  async componentDidMount() {
-    const { data } = await this.apolloClient.query({
-      query: GET_CONFIGURATION_QUERY,
-      fetchPolicy: 'network-only'
-    })
-    if (data && data.securityConfiguration && data.serverConfiguration) {
-      this.setState({
-        initialized: true,
-        configuration: data
-      })
-    } else {
-      const state = generateRoutingState(this.props.router)
-      window.location.replace(`/login?state=${state}`)
-    }
-  }
-
   render() {
     return (
-      <ApolloConsumer>
-        {(apolloClient) => {
-          this.apolloClient = apolloClient
-          if (!this.state.initialized) {
+      <ConfigurationContext.Consumer>
+        {(configuration) => {
+          if (configuration) {
+            return this.props.children(configuration)
+          } else {
             return <LoadingIndicator />
           }
-          return <ConfigurationContext.Provider value={{ configuration: this.state.user }}>{this.props.children(this.state.configuration)}</ConfigurationContext.Provider>
         }}
-      </ApolloConsumer>
+      </ConfigurationContext.Consumer>
     )
   }
 }
 
-export default withRouter(RequireConfiguration)
+export default RequireConfiguration

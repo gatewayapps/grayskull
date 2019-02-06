@@ -2,10 +2,11 @@ import 'bootswatch/dist/materia/bootstrap.css'
 import 'titatoggle/dist/titatoggle-dist-min.css'
 import '../styles/global.css'
 import PropTypes from 'prop-types'
-import RequireAuthentication from '../components/RequireAuthentication';
-import { RequirePermission } from '../components/RequirePermission';
-import Permissions from '../utils/permissions';
-export default class AuthenticatedRoute  extends React.Component {
+import RequireAuthentication from '../components/RequireAuthentication'
+import { RequirePermission } from '../components/RequirePermission'
+import Permissions from '../utils/permissions'
+import Header from '../components/Header'
+export default class AuthenticatedRoute extends React.Component {
   static propTypes = {
     permission: PropTypes.number
   }
@@ -14,11 +15,13 @@ export default class AuthenticatedRoute  extends React.Component {
     permission: Permissions.USER
   }
   render() {
-    return <RequireAuthentication>
-      <RequirePermission permission={this.props.permission}>
-      {this.props.children}
-      </RequirePermission>
+    return (
+      <RequireAuthentication>
+        <RequirePermission permission={this.props.permission}>
+          <Header />
+          {this.props.children}
+        </RequirePermission>
       </RequireAuthentication>
+    )
   }
 }
- 
