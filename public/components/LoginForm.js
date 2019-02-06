@@ -1,10 +1,11 @@
-import gql from 'graphql-tag'
 import Link from 'next/link'
 import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import generateFingerprint from '../utils/generateFingerprint'
+import RequireConfiguration from './RequireConfiguration'
 
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!) {
@@ -90,85 +91,99 @@ class LoginForm extends PureComponent {
 
   render() {
     return (
-      <Mutation mutation={LOGIN_MUTATION}>
-        {(login, { error, loading }) => (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault()
-            }}>
-            <div className="card">
-              <div className="card-header">Login to {this.props.client.name}</div>
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-lg-3">{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
-                  <div className="col-lg-9">
-                    {!this.state.otpRequired && (
-                      <>
-                        <div className="form-group">
-                          <label htmlFor="name">E-mail Address:</label>
-                          <input type="email" className="form-control" name="emailAddress" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
+      <RequireConfiguration>
+        {(configuration) => {
+          return (
+            <Mutation mutation={LOGIN_MUTATION}>
+              {(login, { error, loading }) => (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                  }}>
+                  <div className="card">
+                    <div className="card-header">Login to {this.props.client.name}</div>
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-12 col-md-3 text-center">
+                          {this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '90%', height: '35vh' }} />}
                         </div>
-                        <div className="form-group">
-                          <label htmlFor="password">Password:</label>
-                          <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
-                        </div>
-                        <div>
-                          Need an account?
-                          <Link href={{ pathname: '/register', query: this.props.router.query }}>
-                            <a className="ml-2">Create one!</a>
-                          </Link>
-                        </div>
-                        <div className="mt-3">
-                          <Link href="/resetPassword">
-                            <a>Forgot Password</a>
-                          </Link>
-
-                          {this.state.emailVerificationRequired &&
-                            !this.state.emailVerificationSent && (
-                              <div className="d-inline ml-2">
-                                <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
-                                  {(sendVerification, { loading }) => (
-                                    <button type="button" disabled={loading} onClick={() => this.onSendVerificationEmail(sendVerification)} className="btn btn-link text-danger">
-                                      Re-send Verification E-Mail
-                                    </button>
-                                  )}
-                                </Mutation>
+                        <div className="col-12 col-md-9 ">
+                          {!this.state.otpRequired && (
+                            <div>
+                              <div className="form-group">
+                                <label htmlFor="name">E-mail Address:</label>
+                                <input type="email" className="form-control" name="emailAddress" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
                               </div>
-                            )}
-                          {this.state.emailVerificationSent && <div className="alert alert-secondary">A verification e-mail has been sent to {this.state.emailAddress}</div>}
-                        </div>
-                      </>
-                    )}
-                    {this.state.otpRequired && (
-                      <div className="form-group">
-                        <label htmlFor="otpToken">Multi-Factor Authentication Code:</label>
-                        <input type="text" className="form-control" name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
-                        {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
-                        <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
-                          {(sendBackupCode, { loading }) => (
-                            <button className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
-                              {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
-                            </button>
+                              <div className="form-group">
+                                <label htmlFor="password">Password:</label>
+                                <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleChange} />
+                              </div>
+                              {configuration.securityConfiguration.allowSignup && (
+                                <div>
+                                  Need an account?
+                                  <Link href={{ pathname: '/register', query: this.props.router.query }}>
+                                    <a className="ml-2">Create one!</a>
+                                  </Link>
+                                </div>
+                              )}
+                              <div className="mt-3">
+                                <Link href="/resetPassword">
+                                  <a>Forgot Password</a>
+                                </Link>
+
+                                {this.state.emailVerificationRequired &&
+                                  !this.state.emailVerificationSent && (
+                                    <div className="d-inline ml-2">
+                                      <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                                        {(sendVerification, { loading }) => (
+                                          <button
+                                            type="button"
+                                            disabled={loading}
+                                            onClick={() => this.onSendVerificationEmail(sendVerification)}
+                                            className="btn btn-link text-danger">
+                                            Re-send Verification E-Mail
+                                          </button>
+                                        )}
+                                      </Mutation>
+                                    </div>
+                                  )}
+                                {this.state.emailVerificationSent && <div className="alert alert-secondary">A verification e-mail has been sent to {this.state.emailAddress}</div>}
+                              </div>
+                            </div>
                           )}
-                        </Mutation>
+                          {this.state.otpRequired && (
+                            <div className="form-group">
+                              <label htmlFor="otpToken">Multi-Factor Authentication Code:</label>
+                              <input type="text" className="form-control" name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
+                              {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
+                              <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                                {(sendBackupCode, { loading }) => (
+                                  <button className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
+                                    {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
+                                  </button>
+                                )}
+                              </Mutation>
+                            </div>
+                          )}
+                          {this.state.message && <div className="alert alert-info">{this.state.message}</div>}
+                          {error && error.message && <div className="alert alert-danger">{error.message}</div>}
+                        </div>
                       </div>
-                    )}
-                    {this.state.message && <div className="alert alert-info">{this.state.message}</div>}
-                    {error && error.message && <div className="alert alert-danger">{error.message}</div>}
+                    </div>
+                    <div className="card-footer">
+                      <div className="btn-toolbar float-right">
+                        <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
+                          <i className="fal fa-sign-in" /> Login
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="btn-toolbar float-right">
-                  <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
-                    <i className="fal fa-sign-in" /> Login
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        )}
-      </Mutation>
+                </form>
+              )}
+            </Mutation>
+          )
+        }}
+      </RequireConfiguration>
     )
   }
 }
