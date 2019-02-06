@@ -112,10 +112,10 @@ class LoginForm extends PureComponent {
                     }
                     formBody={
                       <div className="row">
-                        <div className="d-none d-md-block col-md-4 text-center">
+                        <div className="d-none d-md-block col-md-2 text-center">
                           {this.props.client.logoImageUrl && <img className="body-logo align-self-start w-100 my-2" src={this.props.client.logoImageUrl} />}
                         </div>
-                        <div className="col-12 col-md-8 ">
+                        <div className="col-12 col-md-10 ">
                           {!this.state.otpRequired && (
                             <div>
                               <ResponsiveInput
