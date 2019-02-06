@@ -1,6 +1,9 @@
 ServerConfiguration:
   meta:
     topLevel: false
+    sensitive:
+      - enableCertbot
+      - privateKey
   properties:
     baseUrl: string(1024)
     realmName: string(512)
@@ -11,6 +14,13 @@ ServerConfiguration:
 MailConfiguration:
   meta:
     topLevel: false
+    sensitive:
+      - username
+      - password
+      - serverAddress
+      - tlsSslRequired
+      - port
+      - fromAddress
   properties:
     serverAddress: string
     username: string

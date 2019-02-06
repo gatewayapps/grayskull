@@ -35,10 +35,11 @@ input VerifyMfaKeyArgs {
 	token: String!
 }
 
-input SendBackupCodeArgs {
+input ResendVerificationArgs {
 	emailAddress: String!
 }
-input ResentVerificationArgs {
+
+input SendBackupCodeArgs {
 	emailAddress: String!
 }
 
@@ -49,12 +50,6 @@ input ResetPasswordArgs {
 input ValidatePasswordArgs {
 	password: String!
 	confirm: String!
-}
-
-input ChangePasswordArgs {
-	password: String!
-	confirm: String!
-	cpt: String!
 }
 
 input LoginArgs {
@@ -71,6 +66,13 @@ input AuthorizeClientArgs {
 	scope: String
 	state: String
 	nonce: String
+}
+
+input ChangePasswordArgs {
+	emailAddress: String!
+	newPassword: String!
+	confirmPassword: String!
+	token: String
 }
 
 input RegisterUserArgs {
@@ -184,12 +186,12 @@ type Mutation {
 	updateClientScopes(data: UpdateClientScopesArgs!): Boolean 
 	generateMfaKey(data: GenerateMfaKeyArgs!): String 
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
+	resendVerification(data: ResendVerificationArgs!): Boolean 
 	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
-	resendVerification(data: ResentVerificationArgs!): Boolean
 	resetPassword(data: ResetPasswordArgs!): Boolean 
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
-	changePassword(data: ChangePasswordArgs!): Boolean 
 	login(data: LoginArgs!): LoginResponse 
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
+	changePassword(data: ChangePasswordArgs!): OperationResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

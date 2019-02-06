@@ -5,12 +5,12 @@ export interface IUserClient {
   allowedScopes: string
   deniedScopes: string
   revoked?: boolean
-  revokedBy?: string
-  RevokedAt?: Date
-  createdBy?: string
+  revokedBy?: string | null
+  RevokedAt?: Date | null
+  createdBy?: string | null
   createdAt?: Date
-  updatedBy?: string
+  updatedBy?: string | null
   updatedAt?: Date
-  deletedBy?: string
-  deletedAt?: Date
+  deletedBy?: string | null
+  deletedAt?: Date | null
 }

@@ -5,10 +5,10 @@ export interface IEmailAddress {
   verificationSecret: string
   verified?: boolean
   primary?: boolean
-  createdBy?: string
+  createdBy?: string | null
   createdAt?: Date
-  updatedBy?: string
+  updatedBy?: string | null
   updatedAt?: Date
-  deletedBy?: string
-  deletedAt?: Date
+  deletedBy?: string | null
+  deletedAt?: Date | null
 }

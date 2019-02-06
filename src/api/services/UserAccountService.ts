@@ -27,6 +27,8 @@ import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import ClientRepository from '@data/repositories/ClientRepository'
 import AuthenticationService from './AuthenticationService'
 import { authenticator } from 'otplib'
+import { randomBytes } from 'crypto'
+import { ConfigurationService } from './ConfigurationService'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -48,38 +50,31 @@ class UserAccountService {
     data.userAccountId = uuid()
     data.passwordHash = await this.hashPassword(password)
     data.lastPasswordChange = new Date()
-    if (data.otpSecret !== undefined && data.otpSecret.length > 0) {
+    if (data.otpSecret && data.otpSecret.length > 0) {
       data.otpSecret = encrypt(data.otpSecret)
       data.otpEnabled = true
     }
     return UserAccountRepository.createUserAccount(data, options)
   }
 
-  @hasPermission(Permissions.User)
   public async changeUserPassword(userAccountId: string, password: string, options: IQueryOptions) {
-    if (!AuthorizationHelper.isAdmin(options.userContext)) {
-      if (!AuthorizationHelper.isSelf(options.userContext, userAccountId)) {
-        throw new Error('Not authorized')
-      }
-    }
     const passwordHash = await this.hashPassword(password)
-    await UserAccountRepository.updateUserAccount({ userAccountId }, { passwordHash, lastPasswordChange: new Date() }, options)
+    await UserAccountRepository.updateUserAccount(
+      { userAccountId },
+      { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null },
+      options
+    )
   }
-  @hasPermission(Permissions.User)
+
   public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<IUserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
       return null
     }
-    if (!AuthorizationHelper.isAdmin(options.userContext)) {
-      if (!AuthorizationHelper.isSelf(options.userContext, email.userAccountId)) {
-        throw new Error('Not authorized')
-      }
-    }
     return this.getUserAccount({ userAccountId: email.userAccountId }, options)
   }
-  @hasPermission(Permissions.Admin)
+
   public async userAccountsMeta(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccountMeta> {
     return UserAccountRepository.userAccountsMeta(filter, options)
   }
@@ -96,44 +91,42 @@ class UserAccountService {
     return UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId: email.userAccountId }, options)
   }
 
-  @hasPermission(Permissions.User)
   public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
     return UserAccountRepository.getUserAccount(filter, options)
   }
 
-  public async sendResetPasswordMessage(emailAddress: string, baseUrl: string, options: IQueryOptions) {
-    const cpt = this.generateCPT(emailAddress, INVITATION_EXPIRES_IN, undefined)
-    const relativeTime = moment()
-      .add(INVITATION_EXPIRES_IN, 'seconds')
-      .fromNow(true)
-
-    const body = `Please click the following link to reset your password.
-    <a href='${baseUrl}/resetPassword?cpt=${cpt}' target='_blank'>Rest Password</a>
-
-    This link will expire in ${relativeTime}.
-    `
-
-    //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
+  public async validateResetPasswordToken(emailAddress: string, token: string, options: IQueryOptions) {
+    const userAccount = await this.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
+    if (!userAccount || !userAccount.resetPasswordToken || !userAccount.resetPasswordTokenExpiresAt) {
+      return false
+    }
+    if (userAccount.resetPasswordToken !== token || userAccount.resetPasswordTokenExpiresAt < new Date()) {
+      return false
+    }
+    return true
   }
 
-  public async processCPT(cpt: string, removeFromCache: boolean = true, options: IQueryOptions): Promise<ICPTToken> {
-    const decoded = this.decodeCPT(cpt, options)
-    const emailAddress = decoded.emailAddress
-    const invitedById = decoded.invitedById
-    let client
-    if (decoded.client_id) {
-      client = await ClientRepository.getClient({ client_id: decoded.client_id }, options)
-    } else if (decoded.admin) {
-      client = { name: `${ConfigurationManager.Server!.realmName} Global Administrator` }
+  public async resetPassword(emailAddress: string, options: IQueryOptions) {
+    const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
+    if (userAccount) {
+      const resetToken = randomBytes(16).toString('hex')
+
+      const expirationTime = moment().add(INVITATION_EXPIRES_IN, 'seconds')
+
+      userAccount.resetPasswordToken = resetToken
+      userAccount.resetPasswordTokenExpiresAt = expirationTime.toDate()
+
+      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
+
+      const resetPasswordLink = `${ConfigurationManager.Server!.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      await MailService.sendEmailTemplate('resetPasswordTemplate', emailAddress, `${ConfigurationManager.Server!.realmName} Password Reset`, {
+        resetLink: resetPasswordLink,
+        realmName: ConfigurationManager.Server!.realmName,
+        user: userAccount
+      })
     }
-    if (removeFromCache) {
-      TokenCache.del(cpt)
-    }
-    return {
-      client,
-      emailAddress,
-      invitedById
-    }
+
+    //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
   }
 
   public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<IUserAccount> {
@@ -170,63 +163,6 @@ class UserAccountService {
       await newOptions.transaction.rollback()
       throw err
     }
-  }
-
-  public validateCPT(token: string, options: IQueryOptions): boolean {
-    if (TokenCache.get<number | undefined>(token) !== 1) {
-      return false
-    }
-    try {
-      return !!jwt.verify(token, ConfigurationManager.Security!.globalSecret)
-    } catch (err) {
-      return false
-    }
-  }
-
-  public decodeCPT(token: string, options: IQueryOptions): any {
-    if (this.validateCPT(token, options) === false) {
-      return undefined
-    } else {
-      return jwt.decode(token)
-    }
-  }
-
-  private sendNewClientAccess(emailAddress: string, client: ClientInstance, invitedByUser: UserAccountInstance, options: IQueryOptions) {
-    const body = `${invitedByUser.firstName} ${invitedByUser.lastName} has given you access to <a href="${client.homePageUrl || client.baseUrl}">${client.name}</a>.`
-    //MailService.sendMail(emailAddress, `${client.name} Invitation`, body)
-  }
-
-  private sendInvitation(emailAddress: string, clientName: string, token: string, baseUrl: string, options: IQueryOptions) {
-    const relativeTime = moment()
-      .add(INVITATION_EXPIRES_IN, 'seconds')
-      .fromNow(true)
-
-    const invitedByMessage = options.userContext ? `<p>${options.userContext.firstName} ${options.userContext.lastName} has invited you to start using ${clientName}.</p>` : ''
-
-    const body = `${invitedByMessage}<p>Please click the following link to accept your invitation to register for ${clientName}
-    <a href='${baseUrl}/register?cpt=${token}' target='_blank'>Register</a></p>
-    <p>This link will expire in ${relativeTime}.</p>
-    `
-
-    //MailService.sendMail(emailAddress, `${clientName} Invitation`, body)
-  }
-
-  private generateCPT(emailAddress: string, expiresIn: number, client_id?: string, invitedById?: number): string {
-    const newToken = jwt.sign(
-      {
-        emailAddress,
-        client_id,
-        invitedById
-      },
-      ConfigurationManager.Security!.globalSecret,
-      {
-        expiresIn
-      }
-    )
-
-    TokenCache.set(newToken, 1)
-
-    return newToken
   }
 
   private hashPassword(password: string): Promise<string> {

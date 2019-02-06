@@ -13,9 +13,9 @@ export interface I{{Name}} {
   {{/isObject}}
   {{#isBaseDataType prop}}
   {{#ifEquals prop.TypeName 'UniqueIdentifier'}}
-  {{prop.Name}}?: string
+  {{prop.Name}}?: string | null
   {{else}}
-  {{prop.Name}}?: {{prop.TypeName}}
+  {{prop.Name}}?: {{prop.TypeName}} | null
   {{/ifEquals}}
   {{/isBaseDataType}}
   {{else}}

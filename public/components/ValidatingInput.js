@@ -32,7 +32,7 @@ export default class ValidatingInput extends React.PureComponent {
       }
       case 'checkbox': {
         inputComponent = (
-          <div class="form-check checkbox-slider-md checkbox-slider--b nofocus">
+          <div className="form-check checkbox-slider-md checkbox-slider--b nofocus">
             <label className="m-0">
               <input id={name} name={name} type="checkbox" {...props} className={`${this.props.className || 'nofocus'}`} />
               <span className="nofocus" />

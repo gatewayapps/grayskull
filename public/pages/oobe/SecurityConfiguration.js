@@ -21,7 +21,8 @@ export class SecurityConfiguration extends React.Component {
       passwordMinimumLength: PropTypes.string,
       multifactorRequired: PropTypes.bool,
       accessTokenExpirationSeconds: PropTypes.number,
-      domainWhitelist: PropTypes.string
+      domainWhitelist: PropTypes.string,
+      allowSignup: PropTypes.bool
     })
   }
 
@@ -134,12 +135,23 @@ export class SecurityConfiguration extends React.Component {
               <ResponsiveValidatingInput
                 labelColumnWidth={4}
                 validationErrors={validationErrors}
-                label="Allowed Domains for Sign Up"
-                name="domainWhitelist"
-                type="text"
-                checked={this.props.data.domainWhitelist}
+                label="Allow Registration"
+                name="allowSignup"
+                type="checkbox"
+                checked={this.props.data.allowSignup}
                 onChange={(e) => this.handleChange(e, validate)}
               />
+              {this.props.data.allowSignup && (
+                <ResponsiveValidatingInput
+                  labelColumnWidth={4}
+                  validationErrors={validationErrors}
+                  label="Allowed Domains for Sign Up"
+                  name="domainWhitelist"
+                  type="text"
+                  value={this.props.data.domainWhitelist}
+                  onChange={(e) => this.handleChange(e, validate)}
+                />
+              )}
             </div>
           )}
         </FormValidation>

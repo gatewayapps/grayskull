@@ -11,6 +11,9 @@ import SessionService from '@services/SessionService'
 import { hasPermission } from '@decorators/permissionDecorator'
 import MailService from '@services/MailService'
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { IQueryOptions } from '@data/IQueryOptions'
+import { IOperationResponse } from '@data/models/IOperationResponse'
+import { IUserAccount } from '@data/models/IUserAccount'
 
 export default {
   Query: {
@@ -100,13 +103,48 @@ export default {
       // Insert your validatePassword implementation here
       throw new Error('validatePassword is not implemented')
     },
-    changePassword: (obj, args, context, info) => {
+    changePassword: async (obj, args, context, info) => {
       // Insert your changePassword implementation here
-      throw new Error('changePassword is not implemented')
+      let result: IOperationResponse
+      const { emailAddress, token, newPassword, confirmPassword } = args.data
+      const userContext: IUserAccount = context.user || null
+
+      //  Only check token if user is not signed in
+      const isTokenValid = userContext === null ? await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext }) : true
+      if (!isTokenValid) {
+        result = {
+          success: false,
+          message: 'Invalid email address or token'
+        }
+      } else {
+        try {
+          AuthenticationService.validatePassword(newPassword, confirmPassword, { userContext })
+          if (!userContext) {
+            const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, { userContext })
+            await UserAccountService.changeUserPassword(userAccount!.userAccountId!, newPassword, { userContext })
+          } else {
+            await UserAccountService.changeUserPassword(userContext.userAccountId!, newPassword, { userContext })
+          }
+          result = { success: true }
+        } catch (err) {
+          result = {
+            success: false,
+            error: err.message,
+            message: err.message
+          }
+        }
+      }
+      return result
     },
-    resetPassword: (obj, args, context, info) => {
+    resetPassword: async (obj, args, context, info) => {
       // Insert your resetPassword implementation here
-      throw new Error('resetPassword is not implemented')
+      const options: IQueryOptions = { userContext: context.user || null }
+      try {
+        await UserAccountService.resetPassword(args.data.emailAddress, options)
+        return true
+      } catch (err) {
+        return false
+      }
     },
     registerUser: async (obj, args, context, info): Promise<IRegisterUserResponse> => {
       try {

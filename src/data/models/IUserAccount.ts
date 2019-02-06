@@ -5,18 +5,20 @@ export interface IUserAccount {
   lastActive?: Date
   lastPasswordChange: Date
   passwordHash: string
-  phoneNumber?: string
-  gender?: string
-  birthday?: Date
-  profileImageUrl?: string
+  phoneNumber?: string | null
+  gender?: string | null
+  birthday?: Date | null
+  profileImageUrl?: string | null
   permissions?: number
-  otpSecret?: string
+  otpSecret?: string | null
   otpEnabled?: boolean
+  resetPasswordToken?: string | null
+  resetPasswordTokenExpiresAt?: Date | null
   isActive?: boolean
-  createdBy?: string
+  createdBy?: string | null
   createdAt?: Date
-  updatedBy?: string
+  updatedBy?: string | null
   updatedAt?: Date
-  deletedBy?: string
-  deletedAt?: Date
+  deletedBy?: string | null
+  deletedAt?: Date | null
 }

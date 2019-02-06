@@ -3,6 +3,8 @@ UserAccount:
     sensitive:
       - passwordHash
       - otpSecret
+      - resetPasswordToken
+      - resetPasswordTokenExpiresAt
     database: true
     graphql: true
     graphqlResolvers: true
@@ -20,6 +22,8 @@ UserAccount:
     permissions: integer default(0)
     otpSecret: string?
     otpEnabled: boolean default(false)
+    resetPasswordToken: string?
+    resetPasswordTokenExpiresAt: datetime?
     isActive: boolean default(true)
     createdBy: uniqueidentifier?
     createdAt: datetime default(NOW)
@@ -100,9 +104,10 @@ UserAccount:
         confirm: string
     # Change Password #
     changePassword:
-      returns: boolean
+      returns: OperationResponse
       arguments:
-        password: string
-        confirm: string
-        cpt: string
+        emailAddress: string
+        newPassword: string
+        confirmPassword: string
+        token: string?
 
