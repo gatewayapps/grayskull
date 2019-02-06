@@ -7,6 +7,7 @@ import FormValidation, { FormValidationRule } from './FormValidation'
 import RequireConfiguration from './RequireConfiguration'
 import gql from 'graphql-tag'
 import { Mutation, Query } from 'react-apollo'
+import ResponsiveForm from './ResponsiveForm'
 
 const CHANGE_PASSWORD = gql`
   mutation CHANGE_PASSWORD($emailAddress: String!, $newPassword: String!, $confirmPassword: String!, $token: String) {
@@ -73,43 +74,43 @@ export default class ChangePasswordForm extends React.Component {
           return (
             <FormValidation validations={validations} data={this.state} onValidated={this.onValidated}>
               {({ validate, validationErrors }) => (
-                <div className="card">
-                  <div className="card-header">Change your password</div>
+                <ResponsiveForm
+                  formHeader={<span>Change your password</span>}
+                  formBody={
+                    <div>
+                      <p className="card-text">Please enter your new password below, then re-type it to confirm.</p>
 
-                  <div className="card-body">
-                    <p className="card-text">Please enter your new password below, then re-type it to confirm.</p>
+                      <ResponsiveValidatingInput
+                        validationErrors={validationErrors}
+                        label="New Password"
+                        autoComplete="new-password"
+                        type="password"
+                        name="newPassword"
+                        value={this.state.newPassword}
+                        onChange={(e) => handleChange(e, validate)}
+                      />
 
-                    <ResponsiveValidatingInput
-                      validationErrors={validationErrors}
-                      label="New Password"
-                      autoComplete="new-password"
-                      type="password"
-                      name="newPassword"
-                      value={this.state.newPassword}
-                      onChange={(e) => handleChange(e, validate)}
-                    />
-
-                    <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
-                      <div className="alert-heading">Password requirements</div>
-                      <div>
-                        <PasswordComplexity configuration={securityConfiguration} password={this.state.newPassword} />
+                      <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                        <div className="alert-heading">Password requirements</div>
+                        <div>
+                          <PasswordComplexity configuration={securityConfiguration} password={this.state.newPassword} />
+                        </div>
                       </div>
+
+                      <ResponsiveValidatingInput
+                        type="password"
+                        label="Confirm Password"
+                        validationErrors={validationErrors}
+                        autoComplete="new-password"
+                        name="confirmPassword"
+                        value={this.state.confirmPassword}
+                        onChange={(e) => handleChange(e, validate)}
+                      />
+                      {this.state.passwordChanged && <div className="alert alert-success mx-4">Your password has been changed.</div>}
+                      {this.state.message && <div className="alert alert-info mx-4">{this.state.message}</div>}
                     </div>
-
-                    <ResponsiveValidatingInput
-                      type="password"
-                      label="Confirm Password"
-                      validationErrors={validationErrors}
-                      autoComplete="new-password"
-                      name="confirmPassword"
-                      value={this.state.confirmPassword}
-                      onChange={(e) => handleChange(e, validate)}
-                    />
-                    {this.state.passwordChanged && <div className="alert alert-success mx-4">Your password has been changed.</div>}
-                    {this.state.message && <div className="alert alert-info mx-4">{this.state.message}</div>}
-                  </div>
-
-                  <div className="card-footer">
+                  }
+                  formFooter={
                     <div className="btn-toolbar float-right">
                       <Mutation mutation={CHANGE_PASSWORD} variables={mutationVariables}>
                         {(changePassword, { loading }) => {
@@ -129,8 +130,8 @@ export default class ChangePasswordForm extends React.Component {
                         }}
                       </Mutation>
                     </div>
-                  </div>
-                </div>
+                  }
+                />
               )}
             </FormValidation>
           )
