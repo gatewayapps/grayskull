@@ -17,7 +17,7 @@ module.exports = new cradle.EmitterOptions(
     shouldTypeIncludeProperty: (model, propertyName, propertyType) => (!utils.isFieldSensitive(model, propertyName)),
     shouldTypeIncludeReference: (model, referenceName, referenceType) => (!utils.isFieldSensitive(model, referenceName)),
     overwriteExisting: true,
-    verbose: true,
+    verbose: false,
     onComplete: utils.lintAndPretty,
     registerCustomHelpers: utils.registerHandleBarHelpers
   }, console)

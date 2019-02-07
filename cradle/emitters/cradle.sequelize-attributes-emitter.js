@@ -10,6 +10,9 @@ module.exports = new cradle.EmitterOptions(
     overwriteExisting: true,
     languageType: 'ts',
     onFilesEmitted: utils.lintAndPretty,
+    shouldEmit: (model) => {
+      return  model.Name !== 'Configuration'
+    },
     registerCustomHelpers: utils.registerHandleBarHelpers,
   }, console)
 )

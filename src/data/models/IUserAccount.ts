@@ -5,7 +5,6 @@ export interface IUserAccount {
   lastActive?: Date
   lastPasswordChange: Date
   passwordHash: string
-  phoneNumber?: string | null
   gender?: string | null
   birthday?: Date | null
   profileImageUrl?: string | null

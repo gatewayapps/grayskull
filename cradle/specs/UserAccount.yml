@@ -15,7 +15,6 @@ UserAccount:
     lastActive: datetime default(NOW)
     lastPasswordChange: datetime
     passwordHash: string
-    phoneNumber: string?
     gender: string?
     birthday: datetime?
     profileImageUrl: string?
