@@ -5,9 +5,9 @@ import { Query } from 'react-apollo'
 import Primary from '../../../layouts/primary'
 import ErrorMessage from '../../../components/ErrorMessage'
 import LoadingIndicator from '../../../components/LoadingIndicator'
-import AuthenticatedRoute from '../../../layouts/authenticatedRoute';
-import Permissions from '../../../utils/permissions';
-import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission';
+import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
+import Permissions from '../../../utils/permissions'
+import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission'
 
 const ALL_CLIENTS_QUERY = gql`
   query ALL_CLIENTS_QUERY {
@@ -24,17 +24,17 @@ const ClientsIndexPage = () => {
   return (
     <AuthenticatedRoute permission={Permissions.ADMIN}>
       <div className="container pt-4">
-        <div className="row">
+        <div className="row mb-2">
           <div className="col">
             <h1>Clients</h1>
           </div>
           <div className="col-auto">
-          <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN+1 }>
-            <Link href="/admin/clients/add">
-              <a className="btn btn-outline-primary">
-                <i className="fal fa-plus" /> Add Client
-              </a>
-            </Link>
+            <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
+              <Link href="/admin/clients/add">
+                <a className="btn btn-outline-success">
+                  <i className="fal fa-plus" /> Add Client
+                </a>
+              </Link>
             </RequirePermission>
           </div>
         </div>
@@ -63,7 +63,7 @@ const ClientsIndexPage = () => {
                       </td>
                       <td>
                         <Link href={{ pathname: '/admin/clients/edit', query: { id: client.client_id } }}>
-                          <a className='mr-3'>Edit</a>
+                          <a className="mr-3">Edit</a>
                         </Link>
                         <Link href={{ pathname: '/admin/clients/view', query: { id: client.client_id } }}>
                           <a>View</a>

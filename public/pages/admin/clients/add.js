@@ -5,11 +5,14 @@ import React, { PureComponent } from 'react'
 import { ApolloConsumer, Mutation, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
 import ErrorMessage from '../../../components/ErrorMessage'
-import Primary from '../../../layouts/primary'
+
 import generateSecret from '../../../utils/generateSecret'
 import { ALL_CLIENTS_QUERY } from './index'
 import LoadingIndicator from '../../../components/LoadingIndicator'
 import ClientForm from '../../../components/ClientForm'
+
+import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
+import Permissions from '../../../utils/permissions'
 
 const CREATE_CLIENT_MUTATION = gql`
   mutation CREATE_CLIENT_MUTATION($data: CreateClientArgs!) {
@@ -145,20 +148,20 @@ class ClientAddPage extends PureComponent {
 
   render() {
     return (
-      <Query query={GET_SCOPES_FOR_CLIENT_QUERY}>
-        {({ data, error, loading: loadingScopes }) => {
-          if (loadingScopes) {
-            return <LoadingIndicator />
-          }
+      <AuthenticatedRoute permission={Permissions.ADMIN}>
+        <Query query={GET_SCOPES_FOR_CLIENT_QUERY}>
+          {({ data, error, loading: loadingScopes }) => {
+            if (loadingScopes) {
+              return <LoadingIndicator />
+            }
 
-          if (error) {
-            return <ErrorMessage error={error} />
-          }
+            if (error) {
+              return <ErrorMessage error={error} />
+            }
 
-          return (
-            <Mutation mutation={CREATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
-              {(createClient, { error, loading }) => (
-                <Primary>
+            return (
+              <Mutation mutation={CREATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
+                {(createClient, { error, loading }) => (
                   <div className="container pt-4">
                     <form onSubmit={(e) => this.submitClient(e, createClient)}>
                       <div className="card">
@@ -206,8 +209,8 @@ class ClientAddPage extends PureComponent {
                           {this.state.result && (
                             <div className="alert alert-success">
                               <p>
-                                Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as
-                                this is the only time the client_secret will be visible.
+                                Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is the only time
+                                the client_secret will be visible.
                               </p>
                               <div>
                                 <strong>Client Id:</strong> {this.state.result.client_id}
@@ -235,12 +238,12 @@ class ClientAddPage extends PureComponent {
                       </div>
                     </form>
                   </div>
-                </Primary>
-              )}
-            </Mutation>
-          )
-        }}
-      </Query>
+                )}
+              </Mutation>
+            )
+          }}
+        </Query>
+      </AuthenticatedRoute>
     )
   }
 }
