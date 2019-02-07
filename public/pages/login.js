@@ -33,7 +33,7 @@ class LoginPage extends React.PureComponent {
         return
       }
     }
-    this.props.router.push('/home')
+    this.props.router.push('/')
   }
 
   render() {

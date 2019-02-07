@@ -18,6 +18,11 @@ export interface IUserAccountFilter {
   lastName_endsWith?: string
   lastName_equals?: string
   lastName_notEquals?: string
+  displayName_contains?: string
+  displayName_startsWith?: string
+  displayName_endsWith?: string
+  displayName_equals?: string
+  displayName_notEquals?: string
   lastActive_lessThan?: Date
   lastActive_greaterThan?: Date
   lastActive_equals?: Date

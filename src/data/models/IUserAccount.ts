@@ -2,6 +2,7 @@ export interface IUserAccount {
   userAccountId?: string
   firstName: string
   lastName: string
+  displayName?: string | null
   lastActive?: Date
   lastPasswordChange: Date
   passwordHash: string

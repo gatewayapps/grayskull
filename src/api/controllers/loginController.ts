@@ -65,7 +65,7 @@ export default class LoginController extends ControllerBase {
 
       // 2. Redirect to returnUrl or home page
       const state = decodeState(req.query.state)
-      const returnPath = state && state.returnPath ? state.returnPath : '/home'
+      const returnPath = state && state.returnPath ? state.returnPath : '/'
       res.redirect(returnPath)
     } catch (err) {
       console.error(err)

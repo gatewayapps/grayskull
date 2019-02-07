@@ -1,6 +1,9 @@
 type UserProfile {
   firstName: String!
   lastName: String!
+  displayName: String
+  gender: String
+  birthday: Date
   profileImageUrl: String
   permissions: Int!
 }

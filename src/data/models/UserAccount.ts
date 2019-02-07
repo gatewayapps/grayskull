@@ -20,6 +20,10 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       allowNull: false,
       type: Sequelize.STRING(30)
     },
+    displayName: {
+      allowNull: true,
+      type: Sequelize.STRING(30)
+    },
     lastActive: {
       defaultValue: Sequelize.NOW,
       allowNull: false,

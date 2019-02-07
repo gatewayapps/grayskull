@@ -2,13 +2,14 @@ import Link from 'next/link'
 import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import gql from 'graphql-tag'
-import { Mutation } from 'react-apollo'
+
 import generateFingerprint from '../utils/generateFingerprint'
 import RequireConfiguration from './RequireConfiguration'
 import ResponsiveForm from './ResponsiveForm'
 import ResponsiveInput from './ResponsiveInput'
 
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!) {
     login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint }) {
@@ -118,15 +119,7 @@ class LoginForm extends PureComponent {
                         <div className="col-12 col-md-10 ">
                           {!this.state.otpRequired && (
                             <div>
-                              <ResponsiveInput
-                                autoComplete="nope"
-                                name="emailAddress"
-                                type="email"
-                                label="E-mail Address"
-                                value={this.state.emailAddress}
-                                onChange={this.handleChange}
-                                autoFocus
-                              />
+                              <ResponsiveInput autoComplete="nope" name="emailAddress" type="email" label="E-mail Address" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
 
                               <ResponsiveInput type="password" name="password" value={this.state.password} onChange={this.handleChange} label="Password" />
 
@@ -148,11 +141,7 @@ class LoginForm extends PureComponent {
                                     <div className="d-inline ml-2">
                                       <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
                                         {(sendVerification, { loading }) => (
-                                          <button
-                                            type="button"
-                                            disabled={loading}
-                                            onClick={() => this.onSendVerificationEmail(sendVerification)}
-                                            className="btn btn-link text-danger">
+                                          <button type="button" disabled={loading} onClick={() => this.onSendVerificationEmail(sendVerification)} className="btn btn-link text-danger">
                                             Re-send Verification E-Mail
                                           </button>
                                         )}

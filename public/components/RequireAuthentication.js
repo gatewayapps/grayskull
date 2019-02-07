@@ -11,6 +11,9 @@ const GET_ME_QUERY = gql`
     me {
       firstName
       lastName
+      displayName
+      birthday
+      gender
       profileImageUrl
       permissions
     }

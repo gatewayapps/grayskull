@@ -18,8 +18,10 @@ export default class AuthenticatedRoute extends React.Component {
     return (
       <RequireAuthentication>
         <RequirePermission permission={this.props.permission}>
-          <Header />
-          {this.props.children}
+          <div>
+            <Header />
+            {this.props.children}
+          </div>
         </RequirePermission>
       </RequireAuthentication>
     )

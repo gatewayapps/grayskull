@@ -5,14 +5,19 @@ export default class ValidatingInput extends React.PureComponent {
     blurred: false
   }
   render = () => {
-    const { name, validationErrors, ...props } = this.props
-
+    const { name, validationErrors, className, ...props } = this.props
+    const finalId = this.props.readOnly ? `ro-${name}` : name
+    const validationClass = validationErrors[name] ? 'is-invalid' : 'is-valid'
     let inputComponent
     switch (props.type) {
+      case 'photo': {
+        inputComponent = <img className={className} {...props} src={props.value} />
+        break
+      }
       case 'textarea': {
         inputComponent = (
           <textarea
-            id={name}
+            id={finalId}
             name={name}
             onBlur={() => {
               this.setState({ blurred: true })
@@ -24,7 +29,7 @@ export default class ValidatingInput extends React.PureComponent {
               fontSize: '8pt'
             }}
             aria-describedby={`${name}HelpBlock`}
-            className={`form-control ${(this.state.blurred || this.props.value) && (validationErrors[name] ? 'is-invalid' : 'is-valid')}`}
+            className={`form-control ${className || ''} ${(this.state.blurred || this.props.value) && validationClass}`}
             {...props}
           />
         )
@@ -34,7 +39,7 @@ export default class ValidatingInput extends React.PureComponent {
         inputComponent = (
           <div className="form-check checkbox-slider-md checkbox-slider--b nofocus">
             <label className="m-0">
-              <input id={name} name={name} type="checkbox" {...props} className={`${this.props.className || 'nofocus'}`} />
+              <input id={finalId} name={name} type="checkbox" {...props} className={`${className || 'nofocus'}`} style={{ fontSize: '1.15rem', paddingBottom: 0 }} />
               <span className="nofocus" />
             </label>
           </div>
@@ -44,13 +49,14 @@ export default class ValidatingInput extends React.PureComponent {
       default: {
         inputComponent = (
           <input
-            id={name}
+            id={finalId}
+            style={{ fontSize: '1.15rem', paddingBottom: 0 }}
             name={name}
             onBlur={() => {
               this.setState({ blurred: true })
             }}
             aria-describedby={`${name}HelpBlock`}
-            className={`form-control ${(this.state.blurred || this.props.value) && (validationErrors[name] ? 'is-invalid' : 'is-valid')}`}
+            className={`form-control ${className || ''} ${(this.state.blurred || this.props.value) && validationClass}`}
             {...props}
           />
         )

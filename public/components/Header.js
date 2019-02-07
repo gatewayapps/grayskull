@@ -49,7 +49,7 @@ const Header = () => (
                     <Link href="/admin/clients" as="/admin/clients">
                       <a className="dropdown-item">Clients</a>
                     </Link>
-                    <div class="dropdown-divider" />
+                    <div className="dropdown-divider" />
                     <Link href="/admin/config/server" as="/admin/config/server">
                       <a className="dropdown-item">Server Options</a>
                     </Link>
