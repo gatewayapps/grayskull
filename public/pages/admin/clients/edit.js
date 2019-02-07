@@ -7,8 +7,11 @@ import uuid from 'uuid/v4'
 import ClientForm from '../../../components/ClientForm'
 import ErrorMessage from '../../../components/ErrorMessage'
 import LoadingIndicator from '../../../components/LoadingIndicator'
-import Primary from '../../../layouts/primary'
+
 import { ALL_CLIENTS_QUERY } from './index'
+
+import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
+import Permissions from '../../../utils/permissions'
 
 const UPDATE_CLIENT_QUERY = gql`
   query UPDATE_CLIENT_QUERY($client_id: String!) {
@@ -106,33 +109,33 @@ class ClientEditPage extends PureComponent {
 
   render() {
     return (
-      <Query query={UPDATE_CLIENT_QUERY} variables={{ client_id: this.props.query.id }}>
-        {({ data, error, loading: loadingClient }) => {
-          if (loadingClient) {
-            return <LoadingIndicator />
-          }
+      <AuthenticatedRoute permission={Permissions.ADMIN}>
+        <Query query={UPDATE_CLIENT_QUERY} variables={{ client_id: this.props.query.id }}>
+          {({ data, error, loading: loadingClient }) => {
+            if (loadingClient) {
+              return <LoadingIndicator />
+            }
 
-          if (error) {
-            return <ErrorMessage error={error} />
-          }
+            if (error) {
+              return <ErrorMessage error={error} />
+            }
 
-          const { client, scopes } = data
+            const { client, scopes } = data
 
-          const parsedClient = {
-            ...client,
-            redirectUris: JSON.parse(client.redirectUris).map((r) => ({ key: uuid(), value: r })),
-            scopes: JSON.parse(client.scopes)
-          }
+            const parsedClient = {
+              ...client,
+              redirectUris: JSON.parse(client.redirectUris).map((r) => ({ key: uuid(), value: r })),
+              scopes: JSON.parse(client.scopes)
+            }
 
-          const mergedClient = {
-            ...parsedClient,
-            ...this.state.client
-          }
+            const mergedClient = {
+              ...parsedClient,
+              ...this.state.client
+            }
 
-          return (
-            <Mutation mutation={UPDATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
-              {(updateClient, { error: updateError, loading: saving }) => (
-                <Primary>
+            return (
+              <Mutation mutation={UPDATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
+                {(updateClient, { error: updateError, loading: saving }) => (
                   <div className="container pt-4">
                     <form onSubmit={(e) => this.submitClient(e, mergedClient.client_id, updateClient)}>
                       <div className="card">
@@ -167,12 +170,12 @@ class ClientEditPage extends PureComponent {
                       </div>
                     </form>
                   </div>
-                </Primary>
-              )}
-            </Mutation>
-          )
-        }}
-      </Query>
+                )}
+              </Mutation>
+            )
+          }}
+        </Query>
+      </AuthenticatedRoute>
     )
   }
 }

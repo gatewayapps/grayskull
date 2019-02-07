@@ -21,6 +21,8 @@ input SecurityConfigurationInput {
 	passwordMinimumLength: Int!
 	multifactorRequired: Boolean!
 	accessTokenExpirationSeconds: Int!
+	allowSignup: Boolean!
+	domainWhitelist: String!
 }
 
 input MailConfigurationInput {

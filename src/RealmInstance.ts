@@ -21,7 +21,7 @@ import ScopeService from '@services/ScopeService'
 import OAuthController from './api/controllers/oauthController'
 
 const decache = require('decache')
-const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
+const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', '@zeit/next-typescript', 'mini-css-extract-plugin']
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 
 let REALM_INSTANCE: RealmInstance
@@ -155,7 +155,8 @@ export class RealmInstance {
   private createNextServer(): NextServer {
     const withCss = require('@zeit/next-css')
     const withSass = require('@zeit/next-sass')
-    const NEXT_CONFIG = withSass(withCss())
+    const withTypescript = require('@zeit/next-typescript')
+    const NEXT_CONFIG = withTypescript(withSass(withCss()))
     return next({ dev: IS_DEVELOPMENT, dir: './public', conf: NEXT_CONFIG })
   }
 
@@ -232,7 +233,7 @@ export class RealmInstance {
           secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
           logoImageUrl: '/static/grayskull.svg',
           baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
-          homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/home`,
+          homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/`,
           redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
           scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
           public: true

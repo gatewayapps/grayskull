@@ -2,7 +2,8 @@ import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
-import Primary from '../../../layouts/primary'
+import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
+import Permissions from '../../../utils/permissions'
 import LoadingIndicator from '../../../components/LoadingIndicator'
 import ErrorMessage from '../../../components/ErrorMessage'
 
@@ -34,7 +35,7 @@ class ClientView extends PureComponent {
 
   render() {
     return (
-      <Primary>
+      <AuthenticatedRoute permission={Permissions.ADMIN}>
         <div className="container pt-4">
           <Query query={SINGLE_CLIENT_QUERY} variables={{ client_id: this.props.query.id }}>
             {({ data, error, loading }) => {
@@ -61,7 +62,7 @@ class ClientView extends PureComponent {
                       <ul>
                         {scopes.map((scope) => {
                           if (clientScopes.includes(scope.id)) {
-                            return (<li key={scope.id}>{scope.clientDescription}</li>)
+                            return <li key={scope.id}>{scope.clientDescription}</li>
                           } else {
                             return null
                           }
@@ -74,7 +75,7 @@ class ClientView extends PureComponent {
             }}
           </Query>
         </div>
-      </Primary>
+      </AuthenticatedRoute>
     )
   }
 }

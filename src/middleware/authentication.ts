@@ -6,6 +6,7 @@ import UserAccountService from '@services/UserAccountService'
 import SessionService from '@services/SessionService'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import SessionRepository from '@data/repositories/SessionRepository'
+import ConfigurationManager from '@/config/ConfigurationManager'
 
 let FIRST_USER_CREATED = false
 
@@ -30,7 +31,22 @@ export async function firstUserMiddleware(req: Request, res: Response, next: any
     FIRST_USER_CREATED = userMeta.count > 0
   }
   res.locals['NEEDS_FIRST_USER'] = !FIRST_USER_CREATED
+  res.locals.configuration = {
+    securityConfiguration: {
+      multifactorRequired: ConfigurationManager.Security!.multifactorRequired,
+      passwordRequiresLowercase: ConfigurationManager.Security!.passwordRequiresLowercase,
+      passwordRequiresUppercase: ConfigurationManager.Security!.passwordRequiresUppercase,
+      passwordRequiresNumber: ConfigurationManager.Security!.passwordRequiresNumber,
+      passwordRequiresSymbol: ConfigurationManager.Security!.passwordRequiresSymbol,
+      passwordMinimumLength: ConfigurationManager.Security!.passwordMinimumLength,
+      allowSignup: ConfigurationManager.Security!.allowSignup
+    },
 
+    serverConfiguration: {
+      realmName: ConfigurationManager.Server!.realmName,
+      baseUrl: ConfigurationManager.Server!.baseUrl
+    }
+  }
   next()
 }
 

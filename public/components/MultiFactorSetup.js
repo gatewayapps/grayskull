@@ -102,7 +102,7 @@ class MultiFactorSetup extends PureComponent {
   renderEnable = (client) => {
     return (
       <div>
-        <p>Make your account more secure and require an one-time authentication code to login.</p>
+        <p>Make your account more secure and require a one-time authentication code to login.</p>
         <button
           className='btn btn-primary'
           onClick={() => this.generateSecret(client)}

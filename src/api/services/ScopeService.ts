@@ -24,10 +24,16 @@ export const ScopeMap = {
     clientDescription: `Access a user's email address `,
     userDescription: 'View your email address',
     required: false
+  },
+  'profile:write': {
+    id: 'profile:write',
+    clientDescription: `Modify a user's profile information`,
+    userDescription: 'Modify your profile information including name and profile image',
+    required: false
   }
 }
 
-export const Scopes: IScope[] = [ScopeMap.openid, ScopeMap.offline_access, ScopeMap.profile, ScopeMap.email]
+export const Scopes: IScope[] = [ScopeMap.openid, ScopeMap.offline_access, ScopeMap.profile, ScopeMap.email, ScopeMap['profile:write']]
 
 class ScopeService {
   getScopes() {
