@@ -13,7 +13,7 @@ module.exports = new cradle.EmitterOptions(
     onFilesEmitted: utils.lintAndPretty,
     registerCustomHelpers: utils.registerHandleBarHelpers,
     shouldEmit: (model) => {
-      return model.Meta !== undefined && model.Meta.database === true
+      return  model.Meta !== undefined && model.Meta.database === true
     },
   }, console)
 )

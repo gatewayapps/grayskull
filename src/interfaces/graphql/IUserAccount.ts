@@ -26,11 +26,6 @@ export interface IUserAccountFilter {
   lastPasswordChange_greaterThan?: Date
   lastPasswordChange_equals?: Date
   lastPasswordChange_notEquals?: Date
-  phoneNumber_contains?: string
-  phoneNumber_startsWith?: string
-  phoneNumber_endsWith?: string
-  phoneNumber_equals?: string
-  phoneNumber_notEquals?: string
   gender_contains?: string
   gender_startsWith?: string
   gender_endsWith?: string

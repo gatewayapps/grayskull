@@ -4,7 +4,6 @@ type UserAccount {
 	lastName: String!
 	lastActive: Date!
 	lastPasswordChange: Date!
-	phoneNumber: String
 	gender: String
 	birthday: Date
 	profileImageUrl: String
@@ -116,12 +115,6 @@ input UserAccountFilter {
 	lastPasswordChange_greaterThan: Date
 	lastPasswordChange_equals: Date
 	lastPasswordChange_notEquals: Date
-	phoneNumber_contains: String
-	phoneNumber_notContains: String
-	phoneNumber_startsWith: String
-	phoneNumber_endsWith: String
-	phoneNumber_equals: String
-	phoneNumber_notEquals: String
 	gender_contains: String
 	gender_notContains: String
 	gender_startsWith: String

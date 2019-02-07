@@ -1,0 +1,18 @@
+PhoneNumber:
+  meta:
+    database: true
+    graphql: true
+    graphqlResolvers: true
+  properties:
+    phoneNumberId: uniqueidentifier primary auto
+    userAccountId: uniqueidentifier
+    phoneNumber: string unique
+    verificationSecret: string
+    verified: boolean default(false)
+    primary: boolean default(false)
+    createdBy: uniqueidentifier?
+    createdAt: datetime default(NOW)
+    updatedBy: uniqueidentifier?
+    updatedAt: datetime default(NOW)
+    deletedBy: uniqueidentifier?
+    deletedAt: datetime?

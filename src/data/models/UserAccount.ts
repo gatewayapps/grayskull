@@ -33,10 +33,6 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
       allowNull: false,
       type: Sequelize.STRING
     },
-    phoneNumber: {
-      allowNull: true,
-      type: Sequelize.STRING
-    },
     gender: {
       allowNull: true,
       type: Sequelize.STRING

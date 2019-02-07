@@ -7,6 +7,7 @@ import UserAccountFactory from './models/UserAccount'
 import UserClientFactory from './models/UserClient'
 import SessionFactory from './models/Session'
 import RefreshTokenFactory from './models/RefreshToken'
+import PhoneNumberFactory from './models/PhoneNumber'
 
 const SQLITE_PATH = `/usr/local/grayskull/meta.db`
 
@@ -27,7 +28,8 @@ const db = {
   UserAccount: UserAccountFactory(sequelize),
   UserClient: UserClientFactory(sequelize),
   Session: SessionFactory(sequelize),
-  RefreshToken: RefreshTokenFactory(sequelize)
+  RefreshToken: RefreshTokenFactory(sequelize),
+  PhoneNumber: PhoneNumberFactory(sequelize)
 }
 
 Object.values(db).forEach((model: any) => {
