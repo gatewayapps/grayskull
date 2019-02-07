@@ -4,6 +4,7 @@ import uuid from 'uuid/v4'
 import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import FormValidationMessage from './FormValidationMessage'
+import FileDropArea from './FileDropArea'
 
 class ClientForm extends PureComponent {
   handleChange = (e, validate) => {
@@ -111,6 +112,9 @@ class ClientForm extends PureComponent {
                 Logo Image Url
               </label>
               <div className="col-sm-12 col-md-9">
+                <FileDropArea imagesOnly onUploadComplete={({ url }) => this.props.onChange('logoImageUrl', url)}>
+                  Drag an image here
+                </FileDropArea>
                 <input
                   type="url"
                   className={`form-control ${validationErrors['logoImageUrl'] ? 'is-invalid' : 'is-valid'}`}

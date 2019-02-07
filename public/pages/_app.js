@@ -2,15 +2,34 @@ import React from 'react'
 import App, { Container } from 'next/app'
 import Head from 'next/head'
 import fetch from 'isomorphic-fetch'
-import ApolloClient from 'apollo-boost'
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { onError } from 'apollo-link-error'
+import { ApolloLink } from 'apollo-link'
+import { createUploadLink } from 'apollo-upload-client'
 import { ApolloProvider } from 'react-apollo'
 import generateFingerprint from '../utils/generateFingerprint'
 import UserContext from '../contexts/UserContext'
 import ConfigurationContext from '../contexts/ConfigurationContext'
 
 const apolloClient = new ApolloClient({
-  uri: '/api/graphql',
-  fetch: fetch,
+  cache: new InMemoryCache(),
+  link: ApolloLink.from([
+    onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors) {
+        graphQLErrors.map(({ message, locations, path }) => {
+          console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+        })
+      }
+      if (networkError) {
+        console.error(`[Network error]: ${networkError}`)
+      }
+    }),
+    createUploadLink({
+      uri: '/api/graphql',
+      fetch: fetch
+    })
+  ]),
   request: async (operation) => {
     const fingerprint = await generateFingerprint()
     operation.setContext({

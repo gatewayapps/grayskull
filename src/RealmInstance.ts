@@ -208,6 +208,10 @@ export class RealmInstance {
       },
       context: ({ req, res }) => {
         return { req, res, user: req.user }
+      },
+      uploads: {
+        maxFileSize: 10000000,
+        maxFiles: 10
       }
     })
     apollo.applyMiddleware({ app: this.expressApp, path: '/api/graphql' })

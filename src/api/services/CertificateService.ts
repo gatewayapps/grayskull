@@ -1,11 +1,12 @@
 import { getInstance } from '@/RealmInstance'
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { CONFIG_DIR } from '@/constants'
 import { pki, md, asn1 } from 'node-forge'
 const pem2jwk = require('pem-jwk').pem2jwk
 import moment = require('moment')
 
-export const ACME_WEBROOT_PATH = '/usr/local/grayskull/acme'
-export const CERTBOT_PATH = '/usr/local/grayskull/ssl'
+export const ACME_WEBROOT_PATH = `${CONFIG_DIR}/acme`
+export const CERTBOT_PATH = `${CONFIG_DIR}/ssl`
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const ACME_ENDPOINT = 'https://acme-v02.api.letsencrypt.org/directory'
 //const ACME_ENDPOINT = IS_DEVELOPMENT ? 'https://acme-staging-v02.api.letsencrypt.org/directory' : 'https://acme-v02.api.letsencrypt.org/directory'
