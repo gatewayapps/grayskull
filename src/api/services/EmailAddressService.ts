@@ -1,7 +1,7 @@
 import { IEmailAddressUniqueFilter, IEmailAddressFilter, IEmailAddressMeta } from '@/interfaces/graphql/IEmailAddress'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import { IEmailAddress } from '@data/models/IEmailAddress'
-
+import _ from 'lodash'
 import { EmailAddressInstance } from '@data/models/EmailAddress'
 import { hasPermission } from '@decorators/permissionDecorator'
 import { Permissions } from '@/utils/permissions'
@@ -34,7 +34,7 @@ class EmailAddressService {
   public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
     const domain = data.emailAddress.split('@')[1].toLowerCase()
     if (ConfigurationManager.Security!.domainWhitelist) {
-      const allowedDomains: string[] = JSON.parse(ConfigurationManager.Security!.domainWhitelist.toLowerCase())
+      const allowedDomains: string[] = _.compact(JSON.parse(ConfigurationManager.Security!.domainWhitelist.toLowerCase()))
       if (allowedDomains.length > 0 && !allowedDomains.includes(domain) && !allowedDomains.includes(`@${domain}`)) {
         throw new ForbiddenError(`E-mail addresses for @${domain} are not permitted`)
       }

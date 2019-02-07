@@ -64,7 +64,7 @@ class UserClientService {
     try {
       const allowedScopes: string[] = JSON.parse(userClient.allowedScopes)
       return allowedScopes.includes(scope)
-    } catch {
+    } catch (err) {
       return false
     }
   }
