@@ -1,10 +1,5 @@
 scalar Date
-type Query {
-  securityConfiguration: SecurityConfiguration!
-  serverConfiguration: ServerConfiguration!
-}
-
-
+scalar Upload
 
 enum Role {
   None
@@ -19,3 +14,12 @@ directive @auth(
 directive @authOrSelf(
   requires: Role
 ) on OBJECT | FIELD_DEFINITION
+
+type Query {
+  securityConfiguration: SecurityConfiguration!
+  serverConfiguration: ServerConfiguration!
+}
+
+type Mutation {
+  uploadFile(file: Upload!): UploadFileResponse
+}

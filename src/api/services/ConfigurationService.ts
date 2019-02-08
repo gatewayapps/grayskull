@@ -6,11 +6,11 @@ import { ensureDirSync } from 'fs-extra'
 import { join } from 'path'
 import { RealmInstance, getInstance } from '@/RealmInstance'
 import { loadConfigurationFromDisk } from '@/config/ConfigurationManager'
+import { CONFIG_DIR } from '@/constants'
 import { randomBytes } from 'crypto'
 
 const SECRET_LENGTH = 128
 
-const CONFIG_DIR = '/usr/local/grayskull'
 const CONFIG_FILENAME = 'grayskull.config.js'
 const CONFIG_FILE_PATH = join(CONFIG_DIR, CONFIG_FILENAME)
 

@@ -4,6 +4,7 @@ import uuid from 'uuid/v4'
 import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import FormValidationMessage from './FormValidationMessage'
+import ImageDropArea from './ImageDropArea'
 
 class ClientForm extends PureComponent {
   handleChange = (e, validate) => {
@@ -39,6 +40,13 @@ class ClientForm extends PureComponent {
     } else {
       const scopes = this.props.client.scopes.filter((scope) => scope !== name)
       this.props.onChange('scopes', scopes)
+    }
+  }
+
+  handleImageUpload = (name, url, validate) => {
+    this.props.onChange(name, url)
+    if (validate) {
+      validate()
     }
   }
 
@@ -111,16 +119,15 @@ class ClientForm extends PureComponent {
                 Logo Image Url
               </label>
               <div className="col-sm-12 col-md-9">
-                <input
-                  type="url"
-                  className={`form-control ${validationErrors['logoImageUrl'] ? 'is-invalid' : 'is-valid'}`}
-                  name="logoImageUrl"
+                <ImageDropArea
+                  className={validationErrors['logoImageUrl'] ? 'is-invalid' : ''}
+                  disabled={this.props.readOnly}
+                  onUploadComplete={({ url }) => this.handleImageUpload('logoImageUrl', url, validate)}
+                  style={{ width: '150px', height: '150px' }}
                   value={this.props.client.logoImageUrl}
-                  onChange={(e) => this.handleChange(e, validate)}
-                  required
-                  readOnly={this.props.readOnly}
-                  aria-describedby="logoImageUrlErrorBlock"
-                />
+                  aria-describedby="logoImageUrlErrorBlock">
+                  <div className="p-3">Click or drag an image here to set the client logo</div>
+                </ImageDropArea>
                 <FormValidationMessage id="logoImageUrlErrorBlock" validationErrors={validationErrors['logoImageUrl']} />
               </div>
             </div>

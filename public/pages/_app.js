@@ -1,25 +1,12 @@
 import React from 'react'
 import App, { Container } from 'next/app'
 import Head from 'next/head'
-import fetch from 'isomorphic-fetch'
-import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from 'react-apollo'
-import generateFingerprint from '../utils/generateFingerprint'
+import createApolloClient from '../utils/createApolloClient'
 import UserContext from '../contexts/UserContext'
 import ConfigurationContext from '../contexts/ConfigurationContext'
 
-const apolloClient = new ApolloClient({
-  uri: '/api/graphql',
-  fetch: fetch,
-  request: async (operation) => {
-    const fingerprint = await generateFingerprint()
-    operation.setContext({
-      headers: {
-        'x-fingerprint': fingerprint
-      }
-    })
-  }
-})
+const apolloClient = createApolloClient()
 
 export default class MyApp extends App {
   state = {

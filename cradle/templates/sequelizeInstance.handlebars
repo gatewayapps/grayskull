@@ -1,12 +1,13 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import Sequelize from 'sequelize'
+import { CONFIG_DIR } from '@/constants'
 
 {{#each Models as |model|}}
 import {{model.Name}}Factory from './models/{{model.Name}}'
 {{/each}}
 
 
-const SQLITE_PATH = `/usr/local/grayskull/meta.db`
+const SQLITE_PATH = `${CONFIG_DIR}/meta.db`
 
 const sequelize = new Sequelize('database', 'username', 'password', {
   // sqlite! now!
