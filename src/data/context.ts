@@ -1,5 +1,6 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
 import Sequelize from 'sequelize'
+import { CONFIG_DIR } from '@/constants'
 
 import ClientFactory from './models/Client'
 import EmailAddressFactory from './models/EmailAddress'
@@ -9,7 +10,7 @@ import SessionFactory from './models/Session'
 import RefreshTokenFactory from './models/RefreshToken'
 import PhoneNumberFactory from './models/PhoneNumber'
 
-const SQLITE_PATH = `/usr/local/grayskull/meta.db`
+const SQLITE_PATH = `${CONFIG_DIR}/meta.db`
 
 const sequelize = new Sequelize('database', 'username', 'password', {
   // sqlite! now!

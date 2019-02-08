@@ -1,9 +1,11 @@
 import ConfigurationManager from '@/config/ConfigurationManager'
+import { GraphQLUpload } from 'apollo-server-express'
 import { GraphQLScalarType, Kind, GraphQLEnumType } from 'graphql'
 import { Permissions } from '@/utils/permissions'
-//import { Permissions } from '@/utils/permissions'
+import UploadService from '@services/UploadService'
 
 export default {
+  Upload: GraphQLUpload,
   Role: {
     None: Permissions.None,
     User: Permissions.User,
@@ -39,6 +41,11 @@ export default {
     },
     serverConfiguration: (obj, args, context, info) => {
       return ConfigurationManager.Server
+    }
+  },
+  Mutation: {
+    uploadFile: async (obj, args, context, info) => {
+      return UploadService.createUpload(args.file)
     }
   }
 }
