@@ -7,7 +7,6 @@ import Permissions from '../utils/permissions'
 const Header = () => (
   <ConfigurationContext.Consumer>
     {(configuration) => {
-      console.log('config is', configuration)
       return (
         <div className="my-2 w-100" style={{ borderBottom: '1px solid #ddd' }}>
           <div className="container">

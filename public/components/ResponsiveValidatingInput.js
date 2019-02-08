@@ -7,7 +7,7 @@ export default class ResponsiveValidatingInput extends React.PureComponent {
     labelColumnWidth: PropTypes.number,
     labelStyles: PropTypes.object,
     helpText: PropTypes.string,
-    validationErrors: PropTypes.array
+    validationErrors: PropTypes.any
   }
 
   static defaultProps = {

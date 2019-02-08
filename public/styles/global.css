@@ -18,4 +18,13 @@
 .nofocus,.nofocus:before,.nofocus:after {
   outline: none!important;
 }
+.react-datepicker-wrapper {flex: 1!important;}
+.react-datepicker-wrapper .react-datepicker__input-container{width: 100%!important;}
 
+.react-datepicker__month-select,.react-datepicker__year-select{
+  -moz-appearance: menulist!important;
+  -webkit-appearance:menulist!important;
+  appearance:menulist!important;
+}
+
+.form-control{font-size: 1.15rem;}
