@@ -198,7 +198,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                             }}
                             className="btn btn-outline-success"
                             type="button">
-                            {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-save" />} Save
+                            {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-save" />} Save Info
                           </button>
                         )
                       }}
@@ -210,7 +210,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                     onClick={() => {
                       this.setState({ editing: true })
                     }}>
-                    <i className="fa fa-fw fa-pencil" /> Edit
+                    <i className="fa fa-fw fa-pencil" /> Edit Info
                   </button>
                 )}
               </div>
