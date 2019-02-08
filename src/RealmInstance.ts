@@ -19,6 +19,7 @@ import ClientRepository from '@data/repositories/ClientRepository'
 import ConfigurationManager from './config/ConfigurationManager'
 import ScopeService from '@services/ScopeService'
 import OAuthController from './api/controllers/oauthController'
+import { CONFIG_DIR } from './constants'
 
 const decache = require('decache')
 const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', '@zeit/next-typescript', 'mini-css-extract-plugin']
@@ -117,6 +118,8 @@ export class RealmInstance {
 
       //
       server.use(getUserContext)
+
+      server.use('/uploads', express.static(`${CONFIG_DIR}/uploads`))
     }
 
     return server
