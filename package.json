@@ -27,6 +27,7 @@
     "@gatewayapps/cradle": "^0.4.1",
     "@gatewayapps/cradle-apollo-emitter": "^0.4.0",
     "@gatewayapps/cradle-template-emitter": "^0.4.0",
+    "@types/apollo-upload-client": "^8.1.1",
     "@types/bcrypt": "^3.0.0",
     "@types/bluebird": "^3.5.24",
     "@types/classnames": "^2.2.7",
