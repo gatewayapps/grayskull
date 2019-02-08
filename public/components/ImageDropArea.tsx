@@ -6,7 +6,7 @@ import { Mutation, MutationFn } from 'react-apollo'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
 
-const MAX_FILE_SIZE = 5000000 // 5MB
+const MAX_FILE_SIZE = 10000000 // 10MB
 
 export interface IUploadedFile {
   url: string
