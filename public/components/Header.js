@@ -7,7 +7,6 @@ import Permissions from '../utils/permissions'
 const Header = () => (
   <ConfigurationContext.Consumer>
     {(configuration) => {
-      console.log('config is', configuration)
       return (
         <div className="my-2 w-100" style={{ borderBottom: '1px solid #ddd' }}>
           <div className="container">
@@ -16,7 +15,10 @@ const Header = () => (
                 <img style={{ height: '64px' }} src="/static/grayskull.svg" /> {configuration.serverConfiguration.realmName} Account Management
               </h3>
             </div>
-            <ul className="nav nav-tabs flex-no-wrap" style={{ overflowX: 'auto' }} role="navigation" style={{ fontSize: '1.05rem' }}>
+            <ul
+              className="nav nav-tabs flex-no-wrap"
+              style={{ whiteSpace: 'nowrap', overflowX: 'auto', overflowY: 'hidden', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }}
+              role="navigation">
               <li className="nav-item">
                 <Link href="/" as="/">
                   <a className="nav-link">Home</a>
@@ -49,7 +51,7 @@ const Header = () => (
                     <Link href="/admin/clients" as="/admin/clients">
                       <a className="dropdown-item">Clients</a>
                     </Link>
-                    <div class="dropdown-divider" />
+                    <div className="dropdown-divider" />
                     <Link href="/admin/config/server" as="/admin/config/server">
                       <a className="dropdown-item">Server Options</a>
                     </Link>

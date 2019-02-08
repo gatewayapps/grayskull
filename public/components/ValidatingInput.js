@@ -1,61 +1,22 @@
 import FormValidationMessage from './FormValidationMessage'
 import React from 'react'
+import AdaptiveInput from './AdaptiveInput'
 export default class ValidatingInput extends React.PureComponent {
   state = {
     blurred: false
   }
   render = () => {
-    const { name, validationErrors, ...props } = this.props
+    const { name, validationErrors, className, ...props } = this.props
 
-    let inputComponent
-    switch (props.type) {
-      case 'textarea': {
-        inputComponent = (
-          <textarea
-            id={name}
-            name={name}
-            onBlur={() => {
-              this.setState({ blurred: true })
-            }}
-            style={{
-              whiteSpace: 'pre',
-              overflowWrap: 'normal',
-              overflowX: 'scroll',
-              fontSize: '8pt'
-            }}
-            aria-describedby={`${name}HelpBlock`}
-            className={`form-control ${(this.state.blurred || this.props.value) && (validationErrors[name] ? 'is-invalid' : 'is-valid')}`}
-            {...props}
-          />
-        )
-        break
-      }
-      case 'checkbox': {
-        inputComponent = (
-          <div className="form-check checkbox-slider-md checkbox-slider--b nofocus">
-            <label className="m-0">
-              <input id={name} name={name} type="checkbox" {...props} className={`${this.props.className || 'nofocus'}`} />
-              <span className="nofocus" />
-            </label>
-          </div>
-        )
-        break
-      }
-      default: {
-        inputComponent = (
-          <input
-            id={name}
-            name={name}
-            onBlur={() => {
-              this.setState({ blurred: true })
-            }}
-            aria-describedby={`${name}HelpBlock`}
-            className={`form-control ${(this.state.blurred || this.props.value) && (validationErrors[name] ? 'is-invalid' : 'is-valid')}`}
-            {...props}
-          />
-        )
-      }
-    }
+    const readOnlyClass = props.readOnly ? 'border-bottom-0' : ''
+    const validationClass = validationErrors[name] ? 'is-invalid' : props.readOnly ? '' : 'is-valid'
+
+    const finalProps = Object.assign(props, {
+      id: this.props.id || name,
+      name: name,
+      className: `${className} ${readOnlyClass} ${validationClass}`
+    })
+    const inputComponent = <AdaptiveInput {...finalProps} />
 
     return (
       <div>

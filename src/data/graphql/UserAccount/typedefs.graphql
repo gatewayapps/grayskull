@@ -2,6 +2,7 @@ type UserAccount {
 	userAccountId: ID!
 	firstName: String!
 	lastName: String!
+	displayName: String
 	lastActive: Date!
 	lastPasswordChange: Date!
 	gender: String
@@ -74,6 +75,16 @@ input ChangePasswordArgs {
 	token: String
 }
 
+input UpdateArgs {
+	userAccountId: String
+	firstName: String
+	lastName: String
+	displayName: String
+	gender: String
+	birthday: Date
+	profileImageUrl: String
+}
+
 input RegisterUserArgs {
 	emailAddress: String!
 	password: String!
@@ -107,6 +118,12 @@ input UserAccountFilter {
 	lastName_endsWith: String
 	lastName_equals: String
 	lastName_notEquals: String
+	displayName_contains: String
+	displayName_notContains: String
+	displayName_startsWith: String
+	displayName_endsWith: String
+	displayName_equals: String
+	displayName_notEquals: String
 	lastActive_lessThan: Date
 	lastActive_greaterThan: Date
 	lastActive_equals: Date
@@ -186,5 +203,6 @@ type Mutation {
 	login(data: LoginArgs!): LoginResponse 
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	changePassword(data: ChangePasswordArgs!): OperationResponse 
+	update(data: UpdateArgs!): OperationResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

@@ -12,6 +12,7 @@ UserAccount:
     userAccountId: uniqueidentifier primary auto
     firstName: string(30)
     lastName: string(30)
+    displayName: string(30)?
     lastActive: datetime default(NOW)
     lastPasswordChange: datetime
     passwordHash: string
@@ -33,6 +34,17 @@ UserAccount:
   references:
     emailAddresses: multiple of EmailAddress
   operations:
+    # Update User #
+    update:
+      returns: OperationResponse
+      arguments:
+        userAccountId: string?
+        firstName: string?
+        lastName: string?
+        displayName: string?
+        gender: string?
+        birthday: datetime?
+        profileImageUrl: string?
     # Login User #
     login:
       returns: LoginResponse

@@ -14,6 +14,15 @@ import ConfigurationManager from '@/config/ConfigurationManager'
 import { IQueryOptions } from '@data/IQueryOptions'
 import { IOperationResponse } from '@data/models/IOperationResponse'
 import { IUserAccount } from '@data/models/IUserAccount'
+import UserAccountRepository from '@data/repositories/UserAccountRepository'
+
+function isValidDate(d: any) {
+  try {
+    return d instanceof Date && !isNaN(d.getTime())
+  } catch {
+    return false
+  }
+}
 
 export default {
   Query: {
@@ -30,6 +39,9 @@ export default {
       throw new Error('userAccount is not implemented')
     },
     me: (obj, args, context, info) => {
+      if (context.user && context.user.birthday && !isValidDate(context.user.birthday)) {
+        delete context.user.birthday
+      }
       return context.user
     }
   },
@@ -145,6 +157,29 @@ export default {
       } catch (err) {
         return false
       }
+    },
+    update: async (obj, args, context, info): Promise<IOperationResponse> => {
+      const userAccount = context.user
+      let result: IOperationResponse
+      if (!userAccount) {
+        result = {
+          success: false,
+          message: 'You must be signed in to do that'
+        }
+      } else {
+        const updatedUser = await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, args.data, { userContext: userAccount })
+        if (updatedUser) {
+          result = {
+            success: true
+          }
+        } else {
+          result = {
+            success: false,
+            message: 'Invalid user account'
+          }
+        }
+      }
+      return result
     },
     registerUser: async (obj, args, context, info): Promise<IRegisterUserResponse> => {
       try {
