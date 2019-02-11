@@ -19,6 +19,7 @@ const LOAD_AUTHORIZE_QUERY = gql`
       id
       required
       userDescription
+      permissionLevel
     }
   }
 `

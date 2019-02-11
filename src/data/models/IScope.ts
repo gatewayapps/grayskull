@@ -3,4 +3,5 @@ export interface IScope {
   clientDescription: string
   userDescription: string
   required: boolean
+  permissionLevel: number
 }

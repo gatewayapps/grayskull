@@ -8,3 +8,4 @@ Scope:
     clientDescription: string
     userDescription: string
     required: boolean
+    permissionLevel: integer

@@ -155,7 +155,7 @@ class TokenService {
         const emailAddresses = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: userAccount.userAccountId }, options)
         const primaryEmailAddress = emailAddresses.find((e) => e.primary === true)
         result.email = primaryEmailAddress!.emailAddress
-        result.email_verified = false
+        result.email_verified = primaryEmailAddress!.verified
       }
       return result
     }
