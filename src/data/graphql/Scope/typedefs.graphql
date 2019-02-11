@@ -3,4 +3,5 @@ type Scope {
 	clientDescription: String!
 	userDescription: String!
 	required: Boolean!
+	permissionLevel: Int!
 }

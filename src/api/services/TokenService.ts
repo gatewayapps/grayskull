@@ -117,8 +117,8 @@ class TokenService {
   }
 
   public async validateAndDecodeAccessToken(accessToken: string): Promise<IClientRequestOptions> {
-    const decoded: any = jwt.decode(accessToken)
-    if (decoded) {
+    const decoded: IAccessToken | null = jwt.decode(accessToken) as IAccessToken
+    if (decoded !== null) {
       const userClient = await UserClientRepository.getUserClient({ userClientId: decoded.sub }, { userContext: null })
       const client = await ClientRepository.getClientWithSensitiveData({ client_id: userClient!.client_id }, { userContext: null })
       if (client && jwt.verify(accessToken, client.secret)) {
@@ -131,7 +131,8 @@ class TokenService {
         if (userAccount) {
           return {
             client,
-            userAccount
+            userAccount,
+            accessToken: decoded
           }
         }
       }
@@ -154,7 +155,7 @@ class TokenService {
         const emailAddresses = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: userAccount.userAccountId }, options)
         const primaryEmailAddress = emailAddresses.find((e) => e.primary === true)
         result.email = primaryEmailAddress!.emailAddress
-        result.email_verified = false
+        result.email_verified = primaryEmailAddress!.verified
       }
       return result
     }

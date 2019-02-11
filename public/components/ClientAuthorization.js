@@ -31,7 +31,6 @@ class ClientAuthorization extends PureComponent {
   }
 
   componentDidMount() {
-    console.log()
     this.authorizeClient()
   }
 
@@ -132,7 +131,7 @@ class ClientAuthorization extends PureComponent {
                           <div className="mt-2">
                             <strong>{this.props.client.name}</strong> would like to:
                           </div>
-                          {this.props.scopes.filter((s) => this.state.pendingScopes.includes(s.id)).map((scope) => (
+                          {this.props.scopes.filter((s) => this.state.pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions).map((scope) => (
                             <div key={scope.id} className="form-check my-2 mx-4">
                               <input
                                 type="checkbox"

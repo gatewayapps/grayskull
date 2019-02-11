@@ -15,10 +15,7 @@ const Header = () => (
                 <img style={{ height: '64px' }} src="/static/grayskull.svg" /> {configuration.serverConfiguration.realmName} Account Management
               </h3>
             </div>
-            <ul
-              className="nav nav-tabs flex-no-wrap"
-              style={{ whiteSpace: 'nowrap', overflowX: 'auto', overflowY: 'hidden', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }}
-              role="navigation">
+            <ul className="nav nav-tabs flex-no-wrap" style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }} role="navigation">
               <li className="nav-item">
                 <Link href="/" as="/">
                   <a className="nav-link">Home</a>
