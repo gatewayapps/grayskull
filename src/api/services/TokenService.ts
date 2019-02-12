@@ -102,8 +102,10 @@ class TokenService {
     const profile = await this.getUserProfileForClient(client, userAccount, options)
     let at_hash: string | undefined = undefined
     if (accessToken) {
-      const buf = Buffer.from(accessToken)
-      const finalBytes = buf.slice(0, 15)
+      const hmac = crypto.createHmac('sha256', client.secret)
+      const digest = hmac.update(accessToken).digest()
+
+      const finalBytes = digest.slice(0, 15)
       at_hash = finalBytes.toString('base64')
     }
 
