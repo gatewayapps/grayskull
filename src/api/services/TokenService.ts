@@ -47,6 +47,7 @@ export interface IProfileClaim {
   name?: string
   given_name?: string
   family_name?: string
+  nickname?: string | null
   profile?: string
   picture?: string
   updated_at?: number
@@ -158,6 +159,7 @@ class TokenService {
       if (UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.profile.id)) {
         result.given_name = userAccount.firstName
         result.family_name = userAccount.lastName
+        result.nickname = userAccount.displayName
         result.updated_at = moment(userAccount.updatedAt).unix()
         result.name = `${userAccount.firstName} ${userAccount.lastName}`
       }

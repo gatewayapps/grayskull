@@ -5,7 +5,7 @@ const request = require('request')
 const { Strategy, Issuer } = require('openid-client')
 const config = require('./config')
 const session = require('express-session')
-
+const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 
@@ -21,7 +21,7 @@ const params = {
   client_id: config.clientId,
   client_secret: config.secret,
   redirect_uri: `${config.clientBaseUrl}/callback`,
-  response_type: 'code',
+  response_type: 'id_token',
   scope: 'openid profile offline_access email'
 }
 
@@ -47,16 +47,18 @@ passport.use(
       usePKCE
     },
     (tokenset, userinfo, done) => {
-      userinfo.expiresAt = tokenset.claims.exp
-      userinfo.refreshToken = tokenset.refresh_token
-      return done(null, userinfo)
+      console.log(tokenset)
+      console.log(userinfo)
+      const idToken = jwt.verify(tokenset.id_token, config.secret)
+      console.log(idToken)
+      //userinfo.expiresAt = tokenset.claims.exp
+      //userinfo.refreshToken = tokenset.refresh_token
+      return done(null, idToken)
     }
   )
 )
 
 passport.serializeUser(function(user, done) {
-  console.log('SERIALIZING USER')
-  console.log(user)
   done(null, JSON.stringify(user))
 })
 
