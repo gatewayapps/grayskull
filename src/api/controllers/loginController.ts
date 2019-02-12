@@ -54,16 +54,6 @@ export default class LoginController extends ControllerBase {
   @query('code')
   public async getSignin(req: Request, res: Response) {
     try {
-      // 1. Get accessToken via AuthenticationService
-      const accessToken = await AuthenticationService.getAccessToken('authorization_code', 'grayskull', ConfigurationManager.Security!.globalSecret, req.query.code, null, {
-        userContext: req.user || null
-      })
-
-      if (!accessToken) {
-        throw new Error('Unable to create access token')
-      }
-
-      // 2. Redirect to returnUrl or home page
       const state = decodeState(req.query.state)
       const returnPath = state && state.returnPath ? state.returnPath : '/'
       res.redirect(returnPath)

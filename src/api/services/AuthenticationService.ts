@@ -73,14 +73,7 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
-  public async authenticateUser(
-    emailAddress: string,
-    password: string,
-    fingerprint: string,
-    ipAddress: string,
-    otpToken: string | null,
-    options: IQueryOptions
-  ): Promise<IAuthenticateUserResult> {
+  public async authenticateUser(emailAddress: string, password: string, fingerprint: string, ipAddress: string, otpToken: string | null, options: IQueryOptions): Promise<IAuthenticateUserResult> {
     // 1. Find the user account for the email address
 
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
@@ -184,7 +177,7 @@ class AuthenticationService {
         }
 
         if (authCodeCacheResult.scope.includes(ScopeMap.openid.id)) {
-          id_token = await TokenService.createIDToken(client, userAccount, authCodeCacheResult.nonce, options)
+          id_token = await TokenService.createIDToken(client, userAccount, authCodeCacheResult.nonce, undefined, options)
         }
         if (authCodeCacheResult.scope.includes(ScopeMap.offline_access.id)) {
           finalRefreshToken = await TokenService.createRefreshToken(client, userAccount, null, options)
@@ -212,7 +205,7 @@ class AuthenticationService {
         userAccount = await UserAccountRepository.getUserAccount({ userAccountId: userClient.userAccountId }, options)
 
         if (userAccount && UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-          id_token = await TokenService.createIDToken(client, userAccount, undefined, options)
+          id_token = await TokenService.createIDToken(client, userAccount, undefined, undefined, options)
         }
         break
       }

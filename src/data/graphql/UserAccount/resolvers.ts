@@ -8,13 +8,19 @@ import UserAccountService from '@services/UserAccountService'
 import { setAuthCookies } from '@/utils/authentication'
 import UserClientService from '@services/UserClientService'
 import SessionService from '@services/SessionService'
-import { hasPermission } from '@decorators/permissionDecorator'
-import MailService from '@services/MailService'
-import ConfigurationManager from '@/config/ConfigurationManager'
+
+import _ from 'lodash'
+
 import { IQueryOptions } from '@data/IQueryOptions'
 import { IOperationResponse } from '@data/models/IOperationResponse'
 import { IUserAccount } from '@data/models/IUserAccount'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
+import TokenService from '@services/TokenService'
+import ClientRepository from '@data/repositories/ClientRepository'
+import { ScopeMap } from '@services/ScopeService'
+import ConfigurationManager from '@/config/ConfigurationManager'
+
+const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
 function isValidDate(d: any) {
   try {
@@ -84,23 +90,53 @@ export default {
       if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
         throw new Error('Invalid redirect uri')
       }
-      if (responseType !== 'code') {
-        throw new Error('Invalid response type')
-      }
+
       const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(context.user.userAccountId, client_id, scope, serviceOptions)
       if (pendingScopes && pendingScopes.length > 0) {
         return {
           pendingScopes
         }
       }
-      const authCode = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
-      const query = [`code=${encodeURIComponent(authCode)}`]
+
+      const client = await ClientRepository.getClientWithSensitiveData({ client_id }, serviceOptions)
+      if (!client) {
+        throw new Error('Invalid client_id')
+      }
+      if (!approvedScopes || approvedScopes.length === 0) {
+        throw new Error('You have not approved any scopes')
+      }
+
+      const responseTypes: string[] = responseType.split(' ')
+
+      if (!responseTypes.every((rt) => VALID_RESPONSE_TYPES.includes(rt))) {
+        throw new Error('Invalid response type')
+      }
+
+      const queryParts: any = {}
+
+      if (responseTypes.includes('code')) {
+        queryParts['code'] = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
+      }
+      if (responseTypes.includes('token')) {
+        queryParts['token'] = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
+        queryParts['token_type'] = 'Bearer'
+        queryParts['expires_in'] = ConfigurationManager.Security!.accessTokenExpirationSeconds
+      }
+      if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
+        queryParts['id_token'] = await TokenService.createIDToken(client, context.user, nonce, queryParts['token'], serviceOptions)
+      }
+
+      const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
+
       if (state) {
         query.push(`state=${encodeURIComponent(state)}`)
       }
-      return {
-        redirectUri: `${redirectUri}?${query.join('&')}`
+
+      const result = {
+        redirectUri: `${redirectUri}${query.length > 0 ? '?' + query.join('&') : ''}`
       }
+
+      return result
     },
     updateClientScopes: async (obj, args, context, info) => {
       if (!context.user) {
