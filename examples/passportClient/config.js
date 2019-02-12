@@ -1,6 +1,6 @@
 module.exports = {
-  authServerBaseUrl: process.env.AUTH_SERVER_BASE_URL || 'https://grayskull-dev.gatewayapps.net',
+  authServerBaseUrl: process.env.AUTH_SERVER_BASE_URL || 'https://daniel.gatewayapps.net',
   clientBaseUrl: process.env.CLIENT_BASE_URL || 'http://daniel.gatewayapps.net:5001',
-  clientId: process.env.CLIENT_ID || '796bbe42-de97-4b00-b46d-83b8b6cd4be8',
-  secret: process.env.CLIENT_SECRET || '3cc77bafb9fc388b87ea0d154ede3f1065eef757d200e09d28c8d96dc2193e27'
+  clientId: process.env.CLIENT_ID || '7d6fdd88-6a3f-4fbd-bd84-7df9ae53a6ff',
+  secret: process.env.CLIENT_SECRET || '64b60da4a8a633ae6774f3c9380477fcd11ee4b86f07aa3c19fe0ee1493be31a'
 }
