@@ -107,10 +107,12 @@ export class RealmInstance {
     server.use(GreenlockMiddleware())
 
     // Require https for everything
-    server.use('/', httpsRedirect(true))
 
     // Wire up authentication middlewares
     if (this.config && this.config.Security) {
+      if (this.config.Server!.forceHttpsRedirect) {
+        server.use('/', httpsRedirect(true))
+      }
       server.use(cookieParser(this.config.Security!.globalSecret))
 
       // Set a NEEDS_FIRST_USER header if no user exists

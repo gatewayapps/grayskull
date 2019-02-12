@@ -52,6 +52,16 @@ input ValidatePasswordArgs {
 	confirm: String!
 }
 
+input UpdateArgs {
+	userAccountId: String
+	firstName: String
+	lastName: String
+	displayName: String
+	gender: String
+	birthday: Date
+	profileImageUrl: String
+}
+
 input LoginArgs {
 	emailAddress: String!
 	password: String!
@@ -73,16 +83,6 @@ input ChangePasswordArgs {
 	newPassword: String!
 	confirmPassword: String!
 	token: String
-}
-
-input UpdateArgs {
-	userAccountId: String
-	firstName: String
-	lastName: String
-	displayName: String
-	gender: String
-	birthday: Date
-	profileImageUrl: String
 }
 
 input RegisterUserArgs {
@@ -200,9 +200,9 @@ type Mutation {
 	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
 	resetPassword(data: ResetPasswordArgs!): Boolean 
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
+	update(data: UpdateArgs!): OperationResponse 
 	login(data: LoginArgs!): LoginResponse 
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	changePassword(data: ChangePasswordArgs!): OperationResponse 
-	update(data: UpdateArgs!): OperationResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

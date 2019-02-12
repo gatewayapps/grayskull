@@ -8,7 +8,7 @@ const Header = () => (
   <ConfigurationContext.Consumer>
     {(configuration) => {
       return (
-        <div className="my-2 w-100" style={{ borderBottom: '1px solid #ddd' }}>
+        <div className="my-2 w-100" style={{ borderBottom: '1px solid #ddd', backgroundColor: 'white', position: 'sticky', top: 0, zIndex: 2050 }}>
           <div className="container">
             <div>
               <h3>

@@ -4,6 +4,7 @@ import { CONFIG_DIR } from '@/constants'
 import { pki, md, asn1 } from 'node-forge'
 const pem2jwk = require('pem-jwk').pem2jwk
 import moment = require('moment')
+import ConfigurationService from './ConfigurationService'
 
 export const ACME_WEBROOT_PATH = `${CONFIG_DIR}/acme`
 export const CERTBOT_PATH = `${CONFIG_DIR}/ssl`
@@ -105,9 +106,18 @@ class CertificateService {
           certObj = await this.getCertificateFromACMEProvider(domain)
         }
       } else {
-        certObj = {
-          key: ConfigurationManager.Server!.privateKey || '',
-          cert: ConfigurationManager.Server!.certificate || ''
+        if (ConfigurationManager.Server!.privateKey) {
+          certObj = {
+            key: ConfigurationManager.Server!.privateKey || '',
+            cert: ConfigurationManager.Server!.certificate || ''
+          }
+        } else {
+          throw Error('No certificate available')
+          // certObj = this.generateTemporaryCertificate()
+          // ConfigurationManager.Server!.privateKey = certObj.key
+          // ConfigurationManager.Server!.certificate = certObj.cert
+          // ConfigurationService.writeConfiguration(ConfigurationManager.CurrentConfiguration!)
+          // return
         }
       }
     }
@@ -136,7 +146,7 @@ class CertificateService {
     }
   }
 
-  private generateTemporaryCertificate(): { key: string; cert: string; ca: string | undefined } {
+  public generateTemporaryCertificate(): { key: string; cert: string; ca: string | undefined } {
     const keys = pki.rsa.generateKeyPair(2048)
     const cert = pki.createCertificate()
 

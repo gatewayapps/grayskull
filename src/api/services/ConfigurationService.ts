@@ -8,6 +8,7 @@ import { RealmInstance, getInstance } from '@/RealmInstance'
 import { loadConfigurationFromDisk } from '@/config/ConfigurationManager'
 import { CONFIG_DIR } from '@/constants'
 import { randomBytes } from 'crypto'
+import CertificateService from './CertificateService'
 
 const SECRET_LENGTH = 128
 
@@ -23,6 +24,12 @@ export class ConfigurationService {
       config.Security!.globalSecret = currentConfig.Security!.globalSecret
     } else {
       config.Security!.globalSecret = randomBytes(SECRET_LENGTH).toString('hex')
+    }
+
+    if (!config.Server!.certificate) {
+      const tempCert = CertificateService.generateTemporaryCertificate()
+      config.Server!.certificate = tempCert.cert
+      config.Server!.privateKey = tempCert.key
     }
 
     const fileContents = `module.exports = ${JSON.stringify(config, null, 2)}`
