@@ -36,6 +36,7 @@ export interface ISubject {
 
 export interface IIDToken extends ISubject {
   iss: string
+  at_hash: string | undefined
   aud: string
   exp: number
   iat: number
@@ -94,11 +95,17 @@ class TokenService {
     }
   }
 
-  public async createIDToken(client: IClient, userAccount: IUserAccount, nonce: string | undefined, options: IQueryOptions): Promise<string> {
+  public async createIDToken(client: IClient, userAccount: IUserAccount, nonce: string | undefined, accessToken: string | undefined, options: IQueryOptions): Promise<string> {
     const security = ConfigurationManager.Security!
     const serverConfig = ConfigurationManager.Server!
 
     const profile = await this.getUserProfileForClient(client, userAccount, options)
+    let at_hash: string | undefined = undefined
+    if (accessToken) {
+      const buf = Buffer.from(accessToken)
+      const finalBytes = buf.slice(0, 15)
+      at_hash = finalBytes.toString('base64')
+    }
 
     const tokenBase: IIDToken = {
       iat: moment().unix(),
@@ -107,6 +114,7 @@ class TokenService {
         .unix(),
       aud: client.client_id,
       sub: profile.sub,
+      at_hash: at_hash,
       iss: serverConfig.baseUrl,
       nonce: nonce
     }

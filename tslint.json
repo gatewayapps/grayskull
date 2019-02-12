@@ -39,7 +39,8 @@
             "check-catch",
             "check-else",
             "check-whitespace"
-        ],
+        ], 
+        "ordered-imports": false,
         "radix": true,
         "semicolon": [
             true,

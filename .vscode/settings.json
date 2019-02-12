@@ -17,6 +17,8 @@
   "[jsonc]": {
     "editor.formatOnSave": false
   },
+  "tslint.enable": true,
+  "tslint.autoFixOnSave": false,
   "prettier.tslintIntegration": true,
   "files.insertFinalNewline": true,
   "files.exclude": {

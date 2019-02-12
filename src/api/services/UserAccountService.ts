@@ -6,29 +6,23 @@ import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IEmailAddress } from '@data/models/IEmailAddress'
 import { IUserAccount } from '@data/models/IUserAccount'
-import { UserAccountInstance } from '@data/models/UserAccount'
 
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+
 import moment from 'moment'
 import Cache from 'node-cache'
 
 import uuid from 'uuid/v4'
-import ClientService from './ClientService'
+
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import { IUserAccountUniqueFilter, IUserAccountFilter, IUserAccountMeta } from '@/interfaces/graphql/IUserAccount'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import { hasPermission } from '@decorators/permissionDecorator'
-import AuthorizationHelper from '@/utils/AuthorizationHelper'
+
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
-import ClientRepository from '@data/repositories/ClientRepository'
-import AuthenticationService from './AuthenticationService'
-import { authenticator } from 'otplib'
+
 import { randomBytes } from 'crypto'
-import { ConfigurationService } from './ConfigurationService'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -59,11 +53,7 @@ class UserAccountService {
 
   public async changeUserPassword(userAccountId: string, password: string, options: IQueryOptions) {
     const passwordHash = await this.hashPassword(password)
-    await UserAccountRepository.updateUserAccount(
-      { userAccountId },
-      { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null },
-      options
-    )
+    await UserAccountRepository.updateUserAccount({ userAccountId }, { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null }, options)
   }
 
   public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<IUserAccount | null> {
