@@ -35,7 +35,8 @@ export class ServerConfiguration extends React.Component {
       enableCertbot: PropTypes.bool,
       certBotState: PropTypes.string,
       privateKey: PropTypes.string,
-      certificate: PropTypes.string
+      certificate: PropTypes.string,
+      forceHttpsRedirect: PropTypes.bool
     })
   }
 
@@ -67,8 +68,11 @@ export class ServerConfiguration extends React.Component {
   }
 
   render() {
-    const validateFormStatus = (fieldName, enableCertbot, certBotState, privateKey, certificate) => {
-      console.log({ fieldName, enableCertbot, certBotState, privateKey, certificate })
+    const validateFormStatus = (fieldName, enableCertbot, certBotState, privateKey, certificate, forceHttpsRedirect) => {
+      if (!forceHttpsRedirect) {
+        return true
+      }
+
       if (enableCertbot) {
         return certBotState === CERTBOT_STATES.VALIDATED
       }
@@ -77,26 +81,28 @@ export class ServerConfiguration extends React.Component {
 
     const validations = [
       new FormValidationRule('baseUrl', 'isEmpty', false, 'Server Base URL is required'),
-      new FormValidationRule('baseUrl', 'startsWith', true, 'Server Base URL must start with https', ['https']),
       new FormValidationRule('baseUrl', 'isURL', true, 'Server Base URL must be a valid URL'),
       new FormValidationRule('realmName', 'isEmpty', false, 'Realm Name is required'),
       new FormValidationRule('privateKey', validateFormStatus, true, 'You must validate certbot OR provide a private key and certificate', [
         this.props.data.enableCertbot,
         this.props.data.certBotState,
         this.props.data.privateKey,
-        this.props.data.certificate
+        this.props.data.certificate,
+        this.props.data.forceHttpsRedirect
       ]),
       new FormValidationRule('certificate', validateFormStatus, true, 'You must validate certbot OR provide a private key and certificate', [
         this.props.data.enableCertbot,
         this.props.data.certBotState,
         this.props.data.privateKey,
-        this.props.data.certificate
+        this.props.data.certificate,
+        this.props.data.forceHttpsRedirect
       ]),
       new FormValidationRule('certBotState', validateFormStatus, true, 'You must validate certbot OR provide a private key and certificate', [
         this.props.data.enableCertbot,
         this.props.data.certBotState,
         this.props.data.privateKey,
-        this.props.data.certificate
+        this.props.data.certificate,
+        this.props.data.forceHttpsRedirect
       ])
       // new FormValidationRule('privateKey', 'isEmpty', false, 'You must provide a private key'),
       // new FormValidationRule('certificate', 'isEmpty', false, 'You must provide a certificate')
@@ -126,6 +132,16 @@ export class ServerConfiguration extends React.Component {
                 type="text"
                 name="realmName"
                 value={this.props.data.realmName}
+                onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Force HTTPS"
+                autoComplete="off"
+                helpText={`Redirect HTTP traffice to HTTPS`}
+                type="checkbox"
+                name="forceHttpsRedirect"
+                checked={this.props.data.forceHttpsRedirect}
                 onChange={(e) => this.handleChange(e, validate)}
               />
               <ResponsiveValidatingInput

@@ -50,7 +50,8 @@ export default class OobeIndex extends React.Component {
           enableCertbot: true,
           certBotState: 'NOT_VALIDATED',
           privateKey: '',
-          certificate: ''
+          certificate: '',
+          forceHttpsRedirect: true
         },
         Mail: {
           serverAddress: '127.0.0.1',
