@@ -7,6 +7,7 @@ ServerConfiguration:
   properties:
     baseUrl: string(1024)
     realmName: string(512)
+    realmLogo: string(512)
     forceHttpsRedirect: boolean default(1)
     enableCertbot: boolean default(0)
     privateKey: string?(16384)

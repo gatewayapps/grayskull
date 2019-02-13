@@ -6,6 +6,7 @@ import ResponsiveValidatingInput from '../../components/ResponsiveValidatingInpu
 import StateButton from '../../components/StateButton'
 import gql from 'graphql-tag'
 import { ApolloConsumer } from 'react-apollo'
+import ImageDropArea from '../../components/ImageDropArea'
 
 const VERIFY_CERTBOT = gql`
   mutation VERIFY_CERTBOT($domain: String!) {
@@ -133,6 +134,16 @@ export class ServerConfiguration extends React.Component {
                 name="realmName"
                 value={this.props.data.realmName}
                 onChange={(e) => this.handleChange(e, validate)}
+              />
+              <ResponsiveValidatingInput
+                validationErrors={validationErrors}
+                label="Realm Logo"
+                type="photo"
+                style={{ height: '100px', border: '1px dashed black' }}
+                name="realmLogo"
+                value={this.props.data.realmLogo}
+                onChange={(e) => this.handleChange(e, validate)}
+                helpText="You can drag and drop an image here or click to select one"
               />
               <ResponsiveValidatingInput
                 validationErrors={validationErrors}

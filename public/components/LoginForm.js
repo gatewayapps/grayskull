@@ -107,14 +107,14 @@ class LoginForm extends PureComponent {
                   <ResponsiveForm
                     formHeader={
                       <span>
-                        <img className="d-inline d-md-none header-logo mr-2" src={'/static/grayskull.svg'} />
+                        <img className="d-inline d-md-none header-logo mr-2" src={configuration.serverConfiguration.realmLogo} />
                         Login to {configuration.serverConfiguration.realmName}
                       </span>
                     }
                     formBody={
                       <div className="row">
                         <div className="d-none d-md-block col-md-2 text-center">
-                          <img className="body-logo align-self-start w-100 my-2" src={'/static/grayskull.svg'} />
+                          <img className="body-logo align-self-start w-100 my-2" src={configuration.serverConfiguration.realmLogo} />
                         </div>
                         <div className="col-12 col-md-10 ">
                           {!this.state.otpRequired && (

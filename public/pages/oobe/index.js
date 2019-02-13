@@ -46,6 +46,7 @@ export default class OobeIndex extends React.Component {
       configuration: {
         Server: {
           realmName: 'Grayskull',
+          realmLogo: '/static/grayskull.svg',
           baseUrl: 'https://127.0.0.1',
           enableCertbot: true,
           certBotState: 'NOT_VALIDATED',

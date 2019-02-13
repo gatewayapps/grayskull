@@ -1,9 +1,9 @@
 import gql from 'graphql-tag'
-import { withRouter } from 'next/router'
+import DocumentTitle from 'react-document-title'
 import React, { Component } from 'react'
-import { ApolloConsumer } from 'react-apollo'
+
 import ConfigurationContext from '../contexts/ConfigurationContext'
-import { generateRoutingState } from '../utils/routing'
+
 import LoadingIndicator from './LoadingIndicator'
 
 const GET_CONFIGURATION_QUERY = gql`
@@ -19,6 +19,7 @@ const GET_CONFIGURATION_QUERY = gql`
     }
     serverConfiguration {
       realmName
+      realmLogo
       baseUrl
     }
   }

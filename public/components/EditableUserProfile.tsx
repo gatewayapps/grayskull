@@ -7,8 +7,8 @@ import FormValidation, { FormValidationRule } from './FormValidation'
 import moment from 'moment'
 
 const UPDATE_USER_MUTATION = gql`
-  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date) {
-    update(data: { firstName: $firstName, lastName: $lastName, displayName: $displayName, gender: $gender, birthday: $birthday }) {
+  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String) {
+    update(data: { firstName: $firstName, lastName: $lastName, displayName: $displayName, gender: $gender, birthday: $birthday, profileImageUrl: $profileImageUrl }) {
       success
       message
     }
@@ -64,6 +64,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
     const validDate = (d) => !d || moment(d).format('L') === d
 
     const finalUser = Object.assign(this.props.user, this.state.modifiedState)
+
     if (!this.state.modifiedState.birthday && this.props.user.birthday) {
       finalUser.birthday = moment(this.props.user.birthday).format('L')
     }
@@ -87,11 +88,14 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
               <ResponsiveValidatingInput
                 label="Photo"
                 type="photo"
+                onChange={(e) => {
+                  this.handleChange(e, validate)
+                }}
                 readOnly={!this.state.editing}
                 name="profileImageUrl"
                 value={finalUser.profileImageUrl || '/static/profile-default.jpg'}
-                className="ml-auto float-right rounded-circle mr-4"
-                style={{ height: '80px' }}
+                className="ml-auto mr-4"
+                style={{ width: '100px', height: '100px', padding: '4px', border: this.state.editing ? '1px dashed black' : '0px none' }}
               />
 
               <ResponsiveValidatingInput
