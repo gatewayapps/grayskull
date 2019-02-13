@@ -25,7 +25,7 @@ const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 function isValidDate(d: any) {
   try {
     return d instanceof Date && !isNaN(d.getTime())
-  } catch {
+  } catch (err) {
     return false
   }
 }

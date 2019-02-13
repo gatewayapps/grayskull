@@ -125,7 +125,13 @@ class UserAccountService {
     if (!emailAddressAvailable) {
       throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
     }
-    const newOptions = Object.assign({}, options)
+    let newOptions: IQueryOptions
+    if (options.userContext) {
+      newOptions = Object.assign({}, options)
+    } else {
+      newOptions = { userContext: null }
+    }
+
     // 2. Start a transaction
     newOptions.transaction = await db.sequelize.transaction()
 
@@ -155,10 +161,16 @@ class UserAccountService {
     }
   }
 
-  private hashPassword(password: string): Promise<string> {
+  private async hashPassword(password: string): Promise<string> {
     const PASSWORD_SALT_ROUNDS = 10
 
-    return bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
+    try {
+      const result = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
+      return result
+    } catch (err) {
+      console.error(err)
+      throw err
+    }
   }
 }
 

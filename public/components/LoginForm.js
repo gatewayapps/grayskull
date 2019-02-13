@@ -107,14 +107,14 @@ class LoginForm extends PureComponent {
                   <ResponsiveForm
                     formHeader={
                       <span>
-                        <img className="d-inline d-md-none header-logo mr-2" src={this.props.client.logoImageUrl} />
-                        Login to {this.props.client.name}
+                        <img className="d-inline d-md-none header-logo mr-2" src={'/static/grayskull.svg'} />
+                        Login to {configuration.serverConfiguration.realmName}
                       </span>
                     }
                     formBody={
                       <div className="row">
                         <div className="d-none d-md-block col-md-2 text-center">
-                          {this.props.client.logoImageUrl && <img className="body-logo align-self-start w-100 my-2" src={this.props.client.logoImageUrl} />}
+                          <img className="body-logo align-self-start w-100 my-2" src={'/static/grayskull.svg'} />
                         </div>
                         <div className="col-12 col-md-10 ">
                           {!this.state.otpRequired && (
@@ -190,11 +190,6 @@ class LoginForm extends PureComponent {
 }
 
 LoginForm.propTypes = {
-  client: PropTypes.shape({
-    client_id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    logoImageUrl: PropTypes.string.isRequired
-  }).isRequired,
   onAuthenticated: PropTypes.func.isRequired
 }
 
