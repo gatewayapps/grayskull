@@ -49,7 +49,7 @@ export interface IProfileClaim {
   family_name?: string
   nickname?: string | null
   profile?: string
-  picture?: string
+  picture?: string | null
   updated_at?: number
 }
 
@@ -160,6 +160,7 @@ class TokenService {
         result.given_name = userAccount.firstName
         result.family_name = userAccount.lastName
         result.nickname = userAccount.displayName
+        result.picture = userAccount.profileImageUrl
         result.updated_at = moment(userAccount.updatedAt).unix()
         result.name = `${userAccount.firstName} ${userAccount.lastName}`
       }

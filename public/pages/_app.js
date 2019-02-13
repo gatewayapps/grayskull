@@ -11,7 +11,8 @@ const apolloClient = createApolloClient()
 export default class MyApp extends App {
   state = {
     configuration: undefined,
-    user: undefined
+    user: undefined,
+    refresh: undefined
   }
 
   static async getInitialProps({ Component, ctx }) {
@@ -39,7 +40,10 @@ export default class MyApp extends App {
 
   render() {
     const { Component, pageProps, configuration } = this.props
-
+    let title = 'Grayskull'
+    if (this.props.configuration && this.props.configuration.serverConfiguration) {
+      title = this.props.configuration.serverConfiguration.realmName
+    }
     return (
       <Container>
         <ApolloProvider client={apolloClient}>
@@ -49,12 +53,18 @@ export default class MyApp extends App {
                 user: this.state.user,
                 setUser: (user) => {
                   this.setState({ user })
+                },
+                refresh: this.state.refresh,
+                setRefresh: (refresh) => {
+                  this.setState({ refresh })
                 }
               }}>
               <div>
                 <Head>
                   <meta name="viewport" content="width=device-width, initial-scale=1" />
-                  <title>Grayskull {pageProps.pageTitle && '| ' + pageProps.pageTitle}</title>
+                  <title>
+                    {title} {pageProps.pageTitle && '| ' + pageProps.pageTitle}
+                  </title>
                 </Head>
 
                 <Component {...pageProps} />

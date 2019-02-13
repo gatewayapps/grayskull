@@ -73,6 +73,15 @@ class AuthenticationService {
     this.localCache = new NodeCache()
   }
 
+  public async verifyPassword(userAccountId: string, password: string, options: IQueryOptions) {
+    const user = await UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId }, options)
+    if (user) {
+      return await bcrypt.compare(password, user.passwordHash)
+    } else {
+      return false
+    }
+  }
+
   public async authenticateUser(emailAddress: string, password: string, fingerprint: string, ipAddress: string, otpToken: string | null, options: IQueryOptions): Promise<IAuthenticateUserResult> {
     // 1. Find the user account for the email address
 

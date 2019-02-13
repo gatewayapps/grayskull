@@ -8,6 +8,7 @@ export interface IAppProps {
   onSuccess: any
   onFail: any
   busyContent: any
+  disabled: boolean
   content: any
 }
 
@@ -17,6 +18,7 @@ export default class IApp extends React.Component<IAppProps, any> {
       <Mutation mutation={this.props.mutation} variables={this.props.variables}>
         {(mutationFn: MutationFn<any, OperationVariables>, result: MutationResult<any>) => (
           <button
+            disabled={this.props.disabled || result.loading}
             className={this.props.className}
             onClick={async () => {
               try {

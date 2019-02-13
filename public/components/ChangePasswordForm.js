@@ -22,6 +22,7 @@ export default class ChangePasswordForm extends React.Component {
   state = {
     isValid: false,
     newPassword: '',
+    oldPassword: '',
     confirmPassword: '',
     passwordChanged: false,
     message: ''
@@ -50,6 +51,7 @@ export default class ChangePasswordForm extends React.Component {
     const mutationVariables = {
       emailAddress: this.props.emailAddress,
       token: this.props.token,
+      oldPassword: this.props.oldPassword,
       newPassword: this.state.newPassword,
       confirmPassword: this.state.confirmPassword
     }
@@ -78,6 +80,21 @@ export default class ChangePasswordForm extends React.Component {
                   formHeader={<span>Change your password</span>}
                   formBody={
                     <div>
+                      {!this.props.token && (
+                        <div>
+                          <p className="card-text">Enter your current password here</p>
+                          <ResponsiveValidatingInput
+                            validationErrors={validationErrors}
+                            label="Current Password"
+                            autoComplete="current-password"
+                            type="password"
+                            name="oldPassword"
+                            value={this.state.oldPassword}
+                            onChange={(e) => handleChange(e, validate)}
+                          />
+                        </div>
+                      )}
+
                       <p className="card-text">Please enter your new password below, then re-type it to confirm.</p>
 
                       <ResponsiveValidatingInput
