@@ -37,6 +37,7 @@ input MailConfigurationInput {
 input ServerConfigurationInput {
 	baseUrl: String!
 	realmName: String!
+	realmLogo: String!
 	privateKey: String!
 	enableCertbot: Boolean!
 	certificate: String!

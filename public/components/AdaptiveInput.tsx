@@ -3,6 +3,7 @@ import InputMask from 'react-input-mask'
 import moment from 'moment'
 import Select from 'react-select'
 import Creatable from 'react-select/lib/Creatable'
+import ImageDropArea from './ImageDropArea'
 
 export interface AdaptiveInputProps {
   type: string
@@ -37,7 +38,26 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
     }
   }
 
-  private renderPhotoInput = (props: any, className: string | undefined) => <img className={className} {...props} src={props.value} />
+  private renderPhotoInput = (props: any, className: string | undefined) => {
+    if (props.readOnly) {
+      return (
+        <div className={className} {...props}>
+          <img className="d-block ml-auto mr-auto" style={{ maxHeight: '100%', maxWidth: '100%' }} src={props.value} />
+        </div>
+      )
+    } else {
+      return (
+        <ImageDropArea
+          className={className}
+          {...props}
+          src={props.value}
+          onUploadComplete={(file) => {
+            this.props.onChange({ target: { name: props.name, value: file.url } })
+          }}
+        />
+      )
+    }
+  }
 
   private renderTextInput = (props: object, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} />
 

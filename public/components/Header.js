@@ -12,7 +12,7 @@ const Header = () => (
           <div className="container">
             <div>
               <h3>
-                <img style={{ height: '64px' }} src="/static/grayskull.svg" /> {configuration.serverConfiguration.realmName} Account Management
+                <img style={{ height: '64px' }} src={configuration.serverConfiguration.realmLogo} /> {configuration.serverConfiguration.realmName} Account Management
               </h3>
             </div>
             <ul className="nav nav-tabs flex-no-wrap" style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }} role="navigation">

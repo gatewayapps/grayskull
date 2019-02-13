@@ -44,6 +44,7 @@ export async function firstUserMiddleware(req: Request, res: Response, next: any
 
     serverConfiguration: {
       realmName: ConfigurationManager.Server!.realmName,
+      realmLogo: ConfigurationManager.Server!.realmLogo || '/static/grayskull.svg',
       baseUrl: ConfigurationManager.Server!.baseUrl
     }
   }
