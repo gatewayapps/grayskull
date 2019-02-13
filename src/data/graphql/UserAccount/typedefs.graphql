@@ -79,7 +79,8 @@ input AuthorizeClientArgs {
 }
 
 input ChangePasswordArgs {
-	emailAddress: String!
+	emailAddress: String
+	oldPassword: String
 	newPassword: String!
 	confirmPassword: String!
 	token: String

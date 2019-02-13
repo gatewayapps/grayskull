@@ -6,6 +6,7 @@ type UserProfile {
   birthday: Date
   profileImageUrl: String
   permissions: Int!
+  lastPasswordChange: Date
 }
 
 type Query {

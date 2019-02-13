@@ -16,6 +16,7 @@ const GET_ME_QUERY = gql`
       gender
       profileImageUrl
       permissions
+      lastPasswordChange
     }
   }
 `
@@ -26,13 +27,19 @@ class RequireAuthentication extends Component {
     user: undefined
   }
 
-  async componentDidMount(setUser) {
+  componentDidMount() {
+    this.fetchUserData()
+  }
+
+  fetchUserData = async () => {
+    console.log('fetching user data')
     const { data } = await this.apolloClient.query({
       query: GET_ME_QUERY,
       fetchPolicy: 'network-only'
     })
     if (data && data.me) {
       this.setUser(data.me)
+      this.setRefresh(this.fetchUserData)
     } else {
       const state = generateRoutingState(this.props.router)
       this.setUser(undefined)
@@ -43,11 +50,12 @@ class RequireAuthentication extends Component {
   render() {
     return (
       <UserContext.Consumer>
-        {({ user, setUser }) => (
+        {({ user, setUser, setRefresh }) => (
           <ApolloConsumer>
             {(apolloClient) => {
               this.apolloClient = apolloClient
               this.setUser = setUser
+              this.setRefresh = setRefresh
               if (!user) {
                 return <LoadingIndicator />
               }

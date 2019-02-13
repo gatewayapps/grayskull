@@ -154,7 +154,7 @@ export default {
     changePassword: async (obj, args, context, info) => {
       // Insert your changePassword implementation here
       let result: IOperationResponse
-      const { emailAddress, token, newPassword, confirmPassword } = args.data
+      const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data
       const userContext: IUserAccount = context.user || null
 
       //  Only check token if user is not signed in
@@ -166,14 +166,25 @@ export default {
         }
       } else {
         try {
-          AuthenticationService.validatePassword(newPassword, confirmPassword, { userContext })
+          const passwordValid = await AuthenticationService.validatePassword(newPassword, confirmPassword, { userContext })
           if (!userContext) {
             const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, { userContext })
+
             await UserAccountService.changeUserPassword(userAccount!.userAccountId!, newPassword, { userContext })
+            result = { success: true }
           } else {
-            await UserAccountService.changeUserPassword(userContext.userAccountId!, newPassword, { userContext })
+            if (newPassword === oldPassword) {
+              throw new Error('New password cannot be the same as the old password')
+            }
+
+            const passwordVerified = await AuthenticationService.verifyPassword(userContext.userAccountId!, oldPassword, { userContext })
+            if (passwordVerified) {
+              await UserAccountService.changeUserPassword(userContext.userAccountId!, newPassword, { userContext })
+              result = { success: true }
+            } else {
+              throw new Error('Current password is not correct')
+            }
           }
-          result = { success: true }
         } catch (err) {
           result = {
             success: false,

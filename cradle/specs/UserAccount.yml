@@ -117,7 +117,8 @@ UserAccount:
     changePassword:
       returns: OperationResponse
       arguments:
-        emailAddress: string
+        emailAddress: string?
+        oldPassword: string?
         newPassword: string
         confirmPassword: string
         token: string?
