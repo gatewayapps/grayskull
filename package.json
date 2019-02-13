@@ -1,6 +1,6 @@
 {
   "name": "grayskull",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "scripts": {
@@ -96,7 +96,6 @@
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "decache": "^4.5.0",
-    "emailjs": "^2.2.0",
     "express": "^4.16.3",
     "express-https-redirect": "^1.0.0",
     "graphql": "^14.1.1",
