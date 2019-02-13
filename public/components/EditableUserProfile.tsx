@@ -1,5 +1,5 @@
 import * as React from 'react'
-import ResponsiveStaticField from './ResponsiveStaticField'
+
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
