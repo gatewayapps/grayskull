@@ -139,7 +139,7 @@ export class RealmInstance {
         res.redirect('/oobe')
       })
     } else {
-      this.ensureGrayskullClient()
+      // this.ensureGrayskullClient()
 
       //disallow oobe
       this.expressApp.all('/oobe', (req, res) => {
@@ -229,26 +229,5 @@ export class RealmInstance {
     await db.sequelize.sync().catch((err) => {
       console.error(err)
     })
-  }
-
-  /** Ensure the default Grayskull client application is created in the database */
-  private async ensureGrayskullClient(): Promise<void> {
-    const grayskullClient = await ClientRepository.getClient({ client_id: 'grayskull' }, { userContext: null })
-    if (!grayskullClient) {
-      await ClientRepository.createClient(
-        {
-          client_id: 'grayskull',
-          name: ConfigurationManager.CurrentConfiguration!.Server!.realmName,
-          secret: ConfigurationManager.CurrentConfiguration!.Security!.globalSecret,
-          logoImageUrl: '/static/grayskull.svg',
-          baseUrl: ConfigurationManager.CurrentConfiguration!.Server!.baseUrl,
-          homePageUrl: `${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/`,
-          redirectUris: JSON.stringify([`${ConfigurationManager.CurrentConfiguration!.Server!.baseUrl}/signin`]),
-          scopes: JSON.stringify(ScopeService.getScopes().map((s) => s.id)),
-          public: true
-        },
-        { userContext: null }
-      )
-    }
   }
 }

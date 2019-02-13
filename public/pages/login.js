@@ -9,16 +9,6 @@ import LoginForm from '../components/LoginForm'
 import Primary from '../layouts/primary'
 import { parseRoutingState } from '../utils/routing'
 
-const GET_CLIENT_QUERY = gql`
-  query GET_CLIENT($client_id: String!) {
-    client(where: { client_id: $client_id }) {
-      client_id
-      name
-      logoImageUrl
-    }
-  }
-`
-
 class LoginPage extends React.PureComponent {
   static async getInitialProps({ req, query, res }) {
     const locals = res ? res.locals : {}
@@ -44,26 +34,12 @@ class LoginPage extends React.PureComponent {
 
     return (
       <Primary>
-        <Query fetchPolicy="" query={GET_CLIENT_QUERY} variables={{ client_id: this.props.query.client_id || 'grayskull' }}>
-          {({ loading, error, data }) => {
-            if (loading) {
-              return <LoadingIndicator />
-            } else if (error) {
-              return <ErrorMessage error={error} />
-            } else if (!data || !data.client) {
-              return <div>No client found</div>
-            } else {
-              return (
-                <BackgroundCover>
-                  <div className="container">
-                    {headerMessage}
-                    <LoginForm client={data.client} onAuthenticated={this.onAuthenticated} />
-                  </div>
-                </BackgroundCover>
-              )
-            }
-          }}
-        </Query>
+        <BackgroundCover>
+          <div className="container">
+            {headerMessage}
+            <LoginForm onAuthenticated={this.onAuthenticated} />
+          </div>
+        </BackgroundCover>
       </Primary>
     )
   }
