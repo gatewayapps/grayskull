@@ -3,6 +3,7 @@ import React from 'react'
 import MutationButton from './MutationButton'
 import MultiFactorSetup from './MultiFactorSetup'
 import ResponsiveInput from './ResponsiveInput'
+import RequireConfiguration from './RequireConfiguration'
 
 const SET_OTP_SECRET = gql`
   mutation SET_OTP_SECRET($otpSecret: String!, $password: String!) {
@@ -25,7 +26,6 @@ export interface SecurityMutifactorStatusState {
   promptForDisable: boolean
   isValid: boolean
   password: string
-  passwordChanged: boolean
   message: string
   otpSecret: string
   otpUpdated: boolean
@@ -42,6 +42,7 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
       password: '',
       isValid: false,
       message: '',
+      otpSecret: '',
       otpUpdated: false
     }
   }
@@ -210,28 +211,35 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
 
   renderDefaultFooter = () => {
     return (
-      <div className="btn-toolbar ml-auto">
-        {this.props.user.otpEnabled && (
-          <button
-            className="btn btn-danger mr-2"
-            onClick={() => {
-              this.setState({ promptForDisable: true })
-            }}>
-            <i className="fa fa-fw fa-skull-crossbones" /> Disable
-          </button>
-        )}
-        <button
-          className="btn btn-secondary"
-          onClick={() => {
-            if (this.props.user.otpEnabled) {
-              this.setState({ promptForChange: true })
-            } else {
-              this.setState({ changing: true })
-            }
-          }}>
-          <i className="fa fa-fw fa-wrench" /> Configure App
-        </button>
-      </div>
+      <RequireConfiguration>
+        {(configuration) => {
+          return (
+            <div className="btn-toolbar ml-auto">
+              {this.props.user.otpEnabled &&
+                !configuration.securityConfiguration.multifactorRequired && (
+                  <button
+                    className="btn btn-danger mr-2"
+                    onClick={() => {
+                      this.setState({ promptForDisable: true })
+                    }}>
+                    <i className="fa fa-fw fa-skull-crossbones" /> Disable
+                  </button>
+                )}
+              <button
+                className="btn btn-secondary"
+                onClick={() => {
+                  if (this.props.user.otpEnabled) {
+                    this.setState({ promptForChange: true })
+                  } else {
+                    this.setState({ changing: true })
+                  }
+                }}>
+                <i className="fa fa-fw fa-wrench" /> Configure App
+              </button>
+            </div>
+          )
+        }}
+      </RequireConfiguration>
     )
   }
 

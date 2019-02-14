@@ -20,6 +20,7 @@ import ClientRepository from '@data/repositories/ClientRepository'
 import { ScopeMap } from '@services/ScopeService'
 import ConfigurationManager from '@/config/ConfigurationManager'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
+import { encrypt } from '@/utils/cipher'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -273,9 +274,16 @@ export default {
             }
           }
 
+          if (!args.data.otpSecret && ConfigurationManager.Security!.multifactorRequired) {
+            return {
+              success: false,
+              message: `${ConfigurationManager.Server!.realmName} security policy requires you to have an Authenticator App configured`
+            }
+          }
+
           await UserAccountRepository.updateUserAccount(
             { userAccountId: context.user.userAccountId },
-            { otpSecret: args.data.otpSecret, otpEnabled: !!args.data.otpSecret },
+            { otpSecret: args.data.otpSecret ? encrypt(args.data.otpSecret) : '', otpEnabled: !!args.data.otpSecret },
             { userContext: context.user }
           )
 

@@ -16,21 +16,21 @@ const Header = () => (
               </h3>
             </div>
             <ul className="nav nav-tabs flex-no-wrap" style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }} role="navigation">
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link href="/" as="/">
                   <a className="nav-link">Home</a>
                 </Link>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link href="/personal-info" as="/personal-info">
                   <a className="nav-link">Personal Info</a>
                 </Link>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link href="/applications" as="/applications">
                   <a className="nav-link">Applications</a>
                 </Link>
-              </li>
+              </li> */}
               <li className="nav-item">
                 <Link href="/security" as="/security">
                   <a className="nav-link">Security</a>
@@ -62,10 +62,15 @@ const Header = () => (
                 </li>
               </RequirePermission>
               <li className="nav-item ml-auto">
+                <a href="/logout" className="nav-link">
+                  Logout
+                </a>
+              </li>
+              {/* <li className="nav-item">
                 <Link href="/help" as="/help">
                   <a className="nav-link">Help</a>
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
