@@ -67,6 +67,7 @@ input LoginArgs {
 	password: String!
 	otpToken: String
 	fingerprint: String!
+	extendedSession: Boolean!
 }
 
 input AuthorizeClientArgs {
@@ -76,6 +77,11 @@ input AuthorizeClientArgs {
 	scope: String
 	state: String
 	nonce: String
+}
+
+input SetOtpSecretArgs {
+	password: String!
+	otpSecret: String!
 }
 
 input ChangePasswordArgs {
@@ -204,6 +210,7 @@ type Mutation {
 	update(data: UpdateArgs!): OperationResponse 
 	login(data: LoginArgs!): LoginResponse 
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
+	setOtpSecret(data: SetOtpSecretArgs!): OperationResponse 
 	changePassword(data: ChangePasswordArgs!): OperationResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

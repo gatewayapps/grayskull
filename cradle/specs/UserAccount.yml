@@ -53,6 +53,7 @@ UserAccount:
         password: string
         otpToken: string?
         fingerprint: string
+        extendedSession: boolean default(0)
     # Authorize Client #
     authorizeClient:
       returns: AuthorizeClientResponse
@@ -113,6 +114,12 @@ UserAccount:
       arguments:
         password: string
         confirm: string
+    # Replace OTP Secret
+    setOtpSecret:
+      returns: OperationResponse
+      arguments:
+        password: string
+        otpSecret: string
     # Change Password #
     changePassword:
       returns: OperationResponse

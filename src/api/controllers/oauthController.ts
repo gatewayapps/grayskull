@@ -1,14 +1,10 @@
-import ConfigurationManager from '@/config/ConfigurationManager'
-import { query, queryMustEqual } from '@decorators/paramDecorator'
 import { HttpMethod, route } from '@decorators/routeDecorator'
 import AuthenticationService from '@services/AuthenticationService'
-import UserAccountService from '@services/UserAccountService'
+
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
-import { setAuthCookies, decodeState, clearAuthCookies, getAuthCookies } from '@/utils/authentication'
-import SessionService from '@services/SessionService'
+
 import '../../middleware/authentication'
-import CertificateService from '@services/CertificateService'
 
 export default class OAuthController extends ControllerBase {
   @route(HttpMethod.POST, '/token')
@@ -20,14 +16,9 @@ export default class OAuthController extends ControllerBase {
         return
       }
 
-      const accessTokenRespnse = await AuthenticationService.getAccessToken(
-        req.body.grant_type,
-        clientCredentials.client_id,
-        clientCredentials.client_secret,
-        req.body.code,
-        req.body.refresh_token,
-        { userContext: req.user || null }
-      )
+      const accessTokenRespnse = await AuthenticationService.getAccessToken(req.body.grant_type, clientCredentials.client_id, clientCredentials.client_secret, req.body.code, req.body.refresh_token, {
+        userContext: req.user || null
+      })
       res.json(accessTokenRespnse)
     } catch (err) {
       res.status(400).json({ success: false, message: err.message })

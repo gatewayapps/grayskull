@@ -39,9 +39,11 @@ class RegisterPage extends PureComponent {
         confirm: '',
         otpSecret: undefined
       },
+
       accountCreated: false,
       message: '',
       userDataValid: false,
+      showMfaForm: false,
       requireMfaVerification: false,
       step: RegistrationSteps.UserData
     }
@@ -123,7 +125,7 @@ class RegisterPage extends PureComponent {
   }
 
   setRequireMfaVerification = (enabled) => {
-    this.setState({ requireMfaVerification: enabled })
+    this.setState({ requireMfaVerification: enabled, showMfaForm: enabled })
   }
 
   render() {
@@ -151,21 +153,29 @@ class RegisterPage extends PureComponent {
                               {!this.state.accountCreated && (
                                 <div>
                                   {this.state.step === RegistrationSteps.UserData && (
-                                    <RegistrationForm
-                                      configuration={securityConfiguration}
-                                      data={this.state.data}
-                                      onChange={this.onFormValueChanged}
-                                      onValidated={this.onFormValidated}
-                                    />
+                                    <RegistrationForm configuration={securityConfiguration} data={this.state.data} onChange={this.onFormValueChanged} onValidated={this.onFormValidated} />
                                   )}
                                   {this.state.step === RegistrationSteps.Multifactor && (
-                                    <MultiFactorSetup
-                                      emailAddress={this.state.data.emailAddress}
-                                      required={securityConfiguration.multifactorRequired}
-                                      onCancel={() => this.setRequireMfaVerification(false)}
-                                      onEnabled={() => this.setRequireMfaVerification(true)}
-                                      onVerified={this.onMfaVerified}
-                                    />
+                                    <div>
+                                      {securityConfiguration.multifactorRequired && <p>Multi-factor authentication is required to complete account registration.</p>}
+                                      {!this.state.showMfaForm &&
+                                        !securityConfiguration.multifactorRequired && (
+                                          <div>
+                                            <p>Make your account more secure and require a one-time authentication code to login.</p>
+                                            <button className="btn btn-primary" onClick={() => this.setRequireMfaVerification(true)}>
+                                              Enable Mulit-Factor Authentication
+                                            </button>
+                                          </div>
+                                        )}
+                                      {(this.state.showMfaForm || securityConfiguration.multifactorRequired) && (
+                                        <MultiFactorSetup
+                                          emailAddress={this.state.data.emailAddress}
+                                          required={securityConfiguration.multifactorRequired}
+                                          onCancel={() => this.setRequireMfaVerification(false)}
+                                          onVerified={this.onMfaVerified}
+                                        />
+                                      )}
+                                    </div>
                                   )}
                                 </div>
                               )}

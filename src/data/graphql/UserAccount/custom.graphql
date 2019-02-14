@@ -7,8 +7,11 @@ type UserProfile {
   profileImageUrl: String
   permissions: Int!
   lastPasswordChange: Date
+  emailAddress: String
+  otpEnabled: Boolean
 }
 
 type Query {
   me: UserProfile
 }
+

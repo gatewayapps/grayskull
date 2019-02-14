@@ -17,6 +17,8 @@ const GET_ME_QUERY = gql`
       profileImageUrl
       permissions
       lastPasswordChange
+      emailAddress
+      otpEnabled
     }
   }
 `
