@@ -25,6 +25,12 @@ export default class MyApp extends App {
         })
         ctx.res.end()
       }
+      if (ctx.req.url === '/' || ctx.req.url === '') {
+        ctx.res.writeHead(302, {
+          Location: '/personal-info'
+        })
+        ctx.res.end()
+      }
       configuration = ctx.res.locals.configuration
     }
     if (Component.getInitialProps) {
