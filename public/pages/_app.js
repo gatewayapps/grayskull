@@ -46,14 +46,17 @@ export default class MyApp extends App {
 
   render() {
     const { Component, pageProps, configuration } = this.props
+    if (configuration) {
+      this.configuration = configuration
+    }
     let title = 'Grayskull'
-    if (this.props.configuration && this.props.configuration.serverConfiguration) {
-      title = this.props.configuration.serverConfiguration.realmName
+    if (this.configuration && this.configuration.serverConfiguration) {
+      title = this.configuration.serverConfiguration.realmName
     }
     return (
       <Container>
         <ApolloProvider client={apolloClient}>
-          <ConfigurationContext.Provider value={this.state.configuration}>
+          <ConfigurationContext.Provider value={this.configuration}>
             <UserContext.Provider
               value={{
                 user: this.state.user,
