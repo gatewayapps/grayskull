@@ -19,6 +19,7 @@ import TokenService from '@services/TokenService'
 import ClientRepository from '@data/repositories/ClientRepository'
 import { ScopeMap } from '@services/ScopeService'
 import ConfigurationManager from '@/config/ConfigurationManager'
+import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -53,12 +54,12 @@ export default {
   },
   Mutation: {
     login: async (obj, args, context, info): Promise<ILoginResponse> => {
-      const { emailAddress, password, otpToken, fingerprint } = args.data
+      const { emailAddress, password, otpToken, fingerprint, extendedSession } = args.data
       try {
         if (!fingerprint) {
           throw new Error('Invalid login request')
         } else {
-          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken, { userContext: context.user || null })
+          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken, extendedSession, { userContext: context.user || null })
           if (authResult.session) {
             setAuthCookies(context.res, authResult.session)
 
@@ -243,6 +244,7 @@ export default {
               userAccountId: userAccount.userAccountId!,
               ipAddress: context.req.ip
             },
+            false,
             serviceOptions
           )
           // setAuthCookies(context.res, session)
@@ -258,6 +260,39 @@ export default {
         return { success: false, message: err.message }
       }
     },
+    setOtpSecret: async (obj, args, context, info) => {
+      if (!context.user) {
+        throw new Error('You must be signed in to do that')
+      } else {
+        try {
+          const passwordValid = await AuthenticationService.verifyPassword(context.user.userAccountId, args.data.password, { userContext: context.user })
+          if (!passwordValid) {
+            return {
+              success: false,
+              message: 'Your password is not correct'
+            }
+          }
+
+          await UserAccountRepository.updateUserAccount(
+            { userAccountId: context.user.userAccountId },
+            { otpSecret: args.data.otpSecret, otpEnabled: !!args.data.otpSecret },
+            { userContext: context.user }
+          )
+
+          // IN THE FUTURE WE SHOULD EXPIRE ALL SESSIONS HERE
+
+          return {
+            success: true
+          }
+        } catch (err) {
+          return {
+            success: false,
+            error: err.message,
+            message: err.message
+          }
+        }
+      }
+    },
     generateMfaKey: (obj, args, context, info) => {
       return AuthenticationService.generateOtpSecret(args.data.emailAddress)
     },
@@ -270,6 +305,16 @@ export default {
     },
     sendBackupCode: async (obj, args, context, info) => {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })
+    }
+  },
+  UserProfile: {
+    emailAddress: async (obj, args, context, info) => {
+      const result = await EmailAddressRepository.getEmailAddresses({ primary_equals: true, userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
+      if (result.length > 0) {
+        return result[0].emailAddress
+      } else {
+        return null
+      }
     }
   },
   UserAccount: {

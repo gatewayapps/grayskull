@@ -4,21 +4,18 @@ import qrcode from 'qrcode'
 import React, { PureComponent } from 'react'
 import { ApolloConsumer } from 'react-apollo'
 import urlParse from 'url-parse'
+import LoadingIndicator from './LoadingIndicator'
+import CopyTextField from './CopyTextField'
 
 const GENERATE_MFA_KEY = gql`
   mutation GENERATE_MFA_KEY($emailAddress: String!) {
-    generateMfaKey(data: {
-      emailAddress: $emailAddress
-    })
+    generateMfaKey(data: { emailAddress: $emailAddress })
   }
 `
 
 const VERIFY_MFA_KEY = gql`
   mutation VERIFY_MFA_KEY($secret: String!, $token: String!) {
-    verifyMfaKey(data: {
-      secret: $secret,
-      token: $token
-    })
+    verifyMfaKey(data: { secret: $secret, token: $token })
   }
 `
 
@@ -31,8 +28,12 @@ class MultiFactorSetup extends PureComponent {
       qrcodeImage: '',
       token: '',
       isVerified: false,
-      showSecret: false,
+      showSecret: false
     }
+  }
+
+  componentDidMount = () => {
+    this.generateSecret(this.apolloClient)
   }
 
   cancelSetup = () => {
@@ -40,18 +41,21 @@ class MultiFactorSetup extends PureComponent {
       return
     }
 
-    this.setState({
-      keyUri: '',
-      otpSecret: '',
-      qrcodeImage: '',
-      token: '',
-      isVerified: false,
-      showSecret: false,
-    }, () => {
-      if (this.props.onCancel) {
-        this.props.onCancel()
+    this.setState(
+      {
+        keyUri: '',
+        otpSecret: '',
+        qrcodeImage: '',
+        token: '',
+        isVerified: false,
+        showSecret: false
+      },
+      () => {
+        if (this.props.onCancel) {
+          this.props.onCancel()
+        }
       }
-    })
+    )
   }
 
   handleTokenChanged = (e) => {
@@ -61,7 +65,7 @@ class MultiFactorSetup extends PureComponent {
   generateSecret = async (client) => {
     const { data } = await client.mutate({
       mutation: GENERATE_MFA_KEY,
-      variables: { emailAddress: this.props.emailAddress },
+      variables: { emailAddress: this.props.emailAddress, userAccountId: this.props.userAccountId }
     })
     if (data && data.generateMfaKey) {
       qrcode.toDataURL(data.generateMfaKey, (err, qrcodeImage) => {
@@ -77,11 +81,7 @@ class MultiFactorSetup extends PureComponent {
           qrcodeImage,
           token: '',
           isVerified: false,
-          showSecret: false,
-        }, () => {
-          if (this.props.onEnabled) {
-            this.props.onEnabled()
-          }
+          showSecret: false
         })
       })
     }
@@ -99,44 +99,27 @@ class MultiFactorSetup extends PureComponent {
     }
   }
 
-  renderEnable = (client) => {
-    return (
-      <div>
-        <p>Make your account more secure and require a one-time authentication code to login.</p>
-        <button
-          className='btn btn-primary'
-          onClick={() => this.generateSecret(client)}
-        >
-          Enable Mulit-Factor Authentication
-        </button>
-      </div>
-    )
-  }
-
   renderVerify = (client) => {
     return (
       <div>
-        {this.props.required && (
-          <p>Multi-factor authentication is required to complete account registration.</p>
-        )}
         <ol>
           <li>Install an "authenticator" app from the app store on your phone.</li>
           <li>Open the app.</li>
           <li>
             Scan this barcode with your authenticator app.
-            <div><img src={this.state.qrcodeImage} /></div>
+            <div>
+              <img src={this.state.qrcodeImage} />
+            </div>
             {!this.state.showSecret && (
-              <button
-                className='btn btn-link'
-                onClick={this.displaySecret}
-              >
+              <button className="btn btn-link" onClick={this.displaySecret}>
                 I can't scan the bar code
               </button>
             )}
             {this.state.showSecret && (
               <p>
-                Type the following key into your authenticator app:
-                <div><code>{this.state.otpSecret}</code></div>
+                <div>
+                  <CopyTextField label="Type the following key into your authenticator app" text={this.state.otpSecret} />
+                </div>
               </p>
             )}
           </li>
@@ -144,34 +127,21 @@ class MultiFactorSetup extends PureComponent {
             <li>
               <p>Verify the authenticator app is setup correctly by entering a code below.</p>
               <p>
-                <input
-                  type='text'
-                  className='form-control'
-                  value={this.state.token}
-                  onChange={this.handleTokenChanged}
-                />
+                <input type="text" className="form-control" placeholder="Enter code here" value={this.state.token} onChange={this.handleTokenChanged} />
               </p>
               <div>
-                <button
-                  className='btn btn-primary'
-                  onClick={() => this.verifyToken(client)}
-                >
+                <button className="btn btn-primary" onClick={() => this.verifyToken(client)}>
                   Verify Code
                 </button>
-                {!this.required && (
-                  <button
-                    className='btn btn-link'
-                    onClick={this.cancelSetup}
-                  >
+                {!this.props.required && (
+                  <button className="btn btn-link" onClick={this.cancelSetup}>
                     Cancel
                   </button>
                 )}
               </div>
             </li>
           )}
-          {this.state.isVerified && (
-            <li>Authentication code verified!</li>
-          )}
+          {this.state.isVerified && <li>Authentication code verified!</li>}
         </ol>
       </div>
     )
@@ -185,13 +155,12 @@ class MultiFactorSetup extends PureComponent {
     return (
       <ApolloConsumer>
         {(apolloClient) => {
-          if (this.props.required === true && !this.state.keyUri) {
-            this.generateSecret(apolloClient)
-          }
+          this.apolloClient = apolloClient
+
           return (
             <div>
               <h5>Multi-Factor Authentication</h5>
-              {this.state.keyUri ? this.renderVerify(apolloClient) : this.renderEnable(apolloClient)}
+              {this.state.keyUri ? this.renderVerify(apolloClient) : <LoadingIndicator />}
             </div>
           )
         }}
@@ -203,9 +172,9 @@ class MultiFactorSetup extends PureComponent {
 MultiFactorSetup.propTypes = {
   emailAddress: PropTypes.string.isRequired,
   required: PropTypes.bool,
+
   onCancel: PropTypes.func,
-  onEnabled: PropTypes.func,
-  onVerified: PropTypes.func.isRequired,
+  onVerified: PropTypes.func.isRequired
 }
 
 export default MultiFactorSetup

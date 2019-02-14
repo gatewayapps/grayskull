@@ -82,7 +82,15 @@ class AuthenticationService {
     }
   }
 
-  public async authenticateUser(emailAddress: string, password: string, fingerprint: string, ipAddress: string, otpToken: string | null, options: IQueryOptions): Promise<IAuthenticateUserResult> {
+  public async authenticateUser(
+    emailAddress: string,
+    password: string,
+    fingerprint: string,
+    ipAddress: string,
+    otpToken: string | null,
+    extendedSession: boolean,
+    options: IQueryOptions
+  ): Promise<IAuthenticateUserResult> {
     // 1. Find the user account for the email address
 
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
@@ -139,6 +147,7 @@ class AuthenticationService {
         userAccountId: user.userAccountId!,
         ipAddress
       },
+      extendedSession,
       options
     )
 
@@ -150,7 +159,8 @@ class AuthenticationService {
 
   public generateOtpSecret(emailAddress: string): string {
     const secret = otplib.authenticator.generateSecret()
-    return otplib.authenticator.keyuri(emailAddress, ConfigurationManager.Server!.realmName, secret)
+    const result = otplib.authenticator.keyuri(encodeURIComponent(emailAddress), encodeURIComponent(ConfigurationManager.Server!.realmName), secret)
+    return result
   }
 
   public async getAccessToken(

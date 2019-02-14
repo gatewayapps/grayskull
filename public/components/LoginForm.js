@@ -11,8 +11,8 @@ import ResponsiveInput from './ResponsiveInput'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 const LOGIN_MUTATION = gql`
-  mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!) {
-    login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint }) {
+  mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!, $extendedSession: Boolean!) {
+    login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint, extendedSession: $extendedSession }) {
       success
       message
       otpRequired
@@ -43,7 +43,8 @@ class LoginForm extends PureComponent {
     message: undefined,
     backupCodeSent: false,
     emailVerificationRequired: false,
-    emailVerificationSent: false
+    emailVerificationSent: false,
+    extendedSession: false
   }
 
   async componentDidMount() {
@@ -56,7 +57,8 @@ class LoginForm extends PureComponent {
       emailAddress: this.state.emailAddress,
       password: this.state.password,
       otpToken: this.state.otpToken,
-      fingerprint: this.state.fingerprint
+      fingerprint: this.state.fingerprint,
+      extendedSession: this.state.extendedSession
     }
 
     const { data } = await login({ variables })
@@ -122,6 +124,21 @@ class LoginForm extends PureComponent {
                               <ResponsiveInput autoComplete="nope" name="emailAddress" type="email" label="E-mail Address" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
 
                               <ResponsiveInput type="password" name="password" value={this.state.password} onChange={this.handleChange} label="Password" />
+
+                              <div class="form-check mb-3">
+                                <input
+                                  id="extendedSessionCheck"
+                                  class="form-check-input"
+                                  type="checkbox"
+                                  checked={this.state.extendedSession}
+                                  onChange={() => {
+                                    this.setState({ extendedSession: !this.state.extendedSession })
+                                  }}
+                                />
+                                <label class="form-check-label" for="extendedSessionCheck">
+                                  Keep me signed in
+                                </label>
+                              </div>
 
                               {configuration.securityConfiguration.allowSignup && (
                                 <div>

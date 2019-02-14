@@ -8,7 +8,6 @@ import ResponsiveInput from './ResponsiveInput'
 import PasswordComplexity from './PasswordComplexity'
 import MutationButton from './MutationButton'
 import gql from 'graphql-tag'
-import { Mutation, Query } from 'react-apollo'
 
 const CHANGE_PASSWORD = gql`
   mutation CHANGE_PASSWORD($oldPassword: String!, $newPassword: String!, $confirmPassword: String!) {
@@ -62,7 +61,6 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
   }
 
   private renderDefault = () => {
-    console.log(this.props.user)
     return (
       <div>
         <ResponsiveInput label="Last Changed" value={moment(this.props.user.lastPasswordChange).fromNow()} type="static" className="form-control form-control-static" readOnly />
@@ -88,7 +86,6 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
             <FormValidation validations={validations} data={this.state} onValidated={this.onValidated}>
               {({ validate, validationErrors }) => (
                 <div>
-                  <p className="card-text">Enter your current password here</p>
                   <ResponsiveValidatingInput
                     validationErrors={validationErrors}
                     label="Current Password"
@@ -98,8 +95,6 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
                     value={this.state.oldPassword}
                     onChange={(e) => this.handleChange(e, validate)}
                   />
-
-                  <p className="card-text">Please enter your new password below, then re-type it to confirm.</p>
 
                   <ResponsiveValidatingInput
                     validationErrors={validationErrors}
