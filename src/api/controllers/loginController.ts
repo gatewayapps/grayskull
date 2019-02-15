@@ -5,10 +5,11 @@ import AuthenticationService from '@services/AuthenticationService'
 import UserAccountService from '@services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
-import {  decodeState, clearAuthCookies, getAuthCookies } from '@/utils/authentication'
+import { decodeState, clearAuthCookies, getAuthCookies } from '@/utils/authentication'
 import SessionService from '@services/SessionService'
 import '../../middleware/authentication'
 import CertificateService from '@services/CertificateService'
+import ClientRepository from '@data/repositories/ClientRepository'
 
 export default class LoginController extends ControllerBase {
   @route(HttpMethod.GET, '/jwks')
@@ -24,7 +25,16 @@ export default class LoginController extends ControllerBase {
       await SessionService.deleteSession({ sessionId }, { userContext: req.user || null })
     }
     clearAuthCookies(res)
-    const redirectUrl = `/login${req.query.state ? `?state=${encodeURIComponent(req.query.state)}` : ''}`
+
+    let redirectUrl = `/login${req.query.state ? `?state=${encodeURIComponent(req.query.state)}` : ''}`
+
+    if (req.query.client_id) {
+      const client = await ClientRepository.getClient({ client_id: req.query.client_id }, { userContext: null })
+      if (client && client.homePageUrl) {
+        redirectUrl = client.homePageUrl
+      }
+    }
+
     res.redirect(redirectUrl)
   }
 
