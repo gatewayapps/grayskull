@@ -57,20 +57,22 @@ class RequireAuthentication extends Component {
   render() {
     return (
       <UserContext.Consumer>
-        {({ user, setUser, setRefresh }) => (
-          <ApolloConsumer>
-            {(apolloClient) => {
-              this.apolloClient = apolloClient
-              this.setUser = setUser
-              this.setRefresh = setRefresh
-              if (!user) {
-                return <LoadingIndicator />
-              }
+        {({ user, setUser, setRefresh }) => {
+          return (
+            <ApolloConsumer>
+              {(apolloClient) => {
+                this.apolloClient = apolloClient
+                this.setUser = setUser
+                this.setRefresh = setRefresh
+                if (!user) {
+                  return <LoadingIndicator />
+                }
 
-              return this.props.children
-            }}
-          </ApolloConsumer>
-        )}
+                return this.props.children
+              }}
+            </ApolloConsumer>
+          )
+        }}
       </UserContext.Consumer>
     )
   }

@@ -29,7 +29,6 @@ export default {
       if (!context.user) {
         throw new Error('You must be logged in to update a client')
       }
-      console.log(args)
       const { client_id, ...data } = args.data
       return ClientService.updateClient({ client_id }, data, { userContext: context.user || null })
     }

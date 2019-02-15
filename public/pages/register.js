@@ -100,18 +100,8 @@ class RegisterPage extends PureComponent {
 
       case RegistrationSteps.Multifactor:
         const { data } = await registerUser()
-        console.log(data)
         if (data && data.registerUser) {
           if (data.registerUser.success) {
-            // if (this.props.router.query.state) {
-            //   const parsedState = parseRoutingState(this.props.router.query.state)
-            //   console.log(parsedState)
-            //   if (parsedState) {
-            //     this.props.router.push(parsedState)
-            //     return
-            //   }
-            // }
-
             this.setState({
               accountCreated: true,
               message: data.registerUser.message
