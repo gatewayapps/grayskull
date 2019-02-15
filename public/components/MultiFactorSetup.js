@@ -70,7 +70,6 @@ class MultiFactorSetup extends PureComponent {
     if (data && data.generateMfaKey) {
       qrcode.toDataURL(data.generateMfaKey, (err, qrcodeImage) => {
         if (err) {
-          console.log('Error with QR')
           console.error(err)
           return
         }

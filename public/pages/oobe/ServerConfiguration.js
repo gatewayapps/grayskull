@@ -60,7 +60,6 @@ export class ServerConfiguration extends React.Component {
   }
 
   onValidated = (isValid, errors) => {
-    console.log('in onvalidated', isValid, errors)
     this.props.onValidationChanged(this.props.stepIndex, isValid, errors)
   }
 

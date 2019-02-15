@@ -34,15 +34,20 @@ class RequireAuthentication extends Component {
   }
 
   fetchUserData = async () => {
-    console.log('fetching user data')
-    const { data } = await this.apolloClient.query({
-      query: GET_ME_QUERY,
-      fetchPolicy: 'network-only'
-    })
-    if (data && data.me) {
-      this.setUser(data.me)
-      this.setRefresh(this.fetchUserData)
-    } else {
+    try {
+      const { data } = await this.apolloClient.query({
+        query: GET_ME_QUERY,
+        fetchPolicy: 'network-only'
+      })
+      if (data && data.me) {
+        this.setUser(data.me)
+        this.setRefresh(this.fetchUserData)
+      } else {
+        const state = generateRoutingState(this.props.router)
+        this.setUser(undefined)
+        window.location.replace(`/login?state=${state}`)
+      }
+    } catch (err) {
       const state = generateRoutingState(this.props.router)
       this.setUser(undefined)
       window.location.replace(`/login?state=${state}`)
@@ -52,20 +57,22 @@ class RequireAuthentication extends Component {
   render() {
     return (
       <UserContext.Consumer>
-        {({ user, setUser, setRefresh }) => (
-          <ApolloConsumer>
-            {(apolloClient) => {
-              this.apolloClient = apolloClient
-              this.setUser = setUser
-              this.setRefresh = setRefresh
-              if (!user) {
-                return <LoadingIndicator />
-              }
+        {({ user, setUser, setRefresh }) => {
+          return (
+            <ApolloConsumer>
+              {(apolloClient) => {
+                this.apolloClient = apolloClient
+                this.setUser = setUser
+                this.setRefresh = setRefresh
+                if (!user) {
+                  return <LoadingIndicator />
+                }
 
-              return this.props.children
-            }}
-          </ApolloConsumer>
-        )}
+                return this.props.children
+              }}
+            </ApolloConsumer>
+          )
+        }}
       </UserContext.Consumer>
     )
   }

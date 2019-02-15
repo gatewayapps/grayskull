@@ -28,7 +28,6 @@ class MailService {
     }
     try {
       const mailResult = await transport.sendMail(messageOptions)
-      console.log(mailResult)
       return mailResult
     } catch (err) {
       console.error(err)
