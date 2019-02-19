@@ -1,4 +1,5 @@
 type UserProfile {
+  userAccountId: String!
   firstName: String!
   lastName: String!
   displayName: String

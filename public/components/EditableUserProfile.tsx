@@ -7,8 +7,8 @@ import FormValidation, { FormValidationRule } from './FormValidation'
 import moment from 'moment'
 
 const UPDATE_USER_MUTATION = gql`
-  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String) {
-    update(data: { firstName: $firstName, lastName: $lastName, displayName: $displayName, gender: $gender, birthday: $birthday, profileImageUrl: $profileImageUrl }) {
+  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $userAccountId: String) {
+    update(data: { firstName: $firstName, lastName: $lastName, displayName: $displayName, gender: $gender, birthday: $birthday, profileImageUrl: $profileImageUrl, userAccountId: $userAccountId }) {
       success
       message
     }
@@ -17,6 +17,7 @@ const UPDATE_USER_MUTATION = gql`
 
 export interface EditableUserProfileProps {
   user: {
+    userAccountId: string | null | undefined
     profileImageUrl: string | null | undefined
     firstName: string
     lastName: string
@@ -183,6 +184,8 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                             disabled={loading || !this.state.valid}
                             onClick={async () => {
                               const payload = this.state.modifiedState
+                              console.log(this.props.user)
+                              payload.userAccountId = this.props.user.userAccountId
                               if (payload.birthday) {
                                 payload.birthday = moment(payload.birthday, 'L').toDate()
                               }

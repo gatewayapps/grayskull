@@ -21,6 +21,7 @@ import { ScopeMap } from '@services/ScopeService'
 import ConfigurationManager from '@/config/ConfigurationManager'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import { encrypt } from '@/utils/cipher'
+import { Permissions } from '@/utils/permissions'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -216,15 +217,22 @@ export default {
           message: 'You must be signed in to do that'
         }
       } else {
-        const updatedUser = await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, args.data, { userContext: userAccount })
-        if (updatedUser) {
-          result = {
-            success: true
-          }
-        } else {
+        if (context.user.permissions < Permissions.Admin && context.user.userAccountId !== args.data.userAccountId) {
           result = {
             success: false,
-            message: 'Invalid user account'
+            message: 'You do not have permission to do that'
+          }
+        } else {
+          const updatedUser = await UserAccountRepository.updateUserAccount({ userAccountId: args.data.userAccountId }, args.data, { userContext: userAccount })
+          if (updatedUser) {
+            result = {
+              success: true
+            }
+          } else {
+            result = {
+              success: false,
+              message: 'Invalid user account'
+            }
           }
         }
       }
