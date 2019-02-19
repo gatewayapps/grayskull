@@ -206,7 +206,6 @@ export default class OobeIndex extends React.Component {
                                     const config = this.state.configuration
                                     delete config.Server.certBotState
                                     config.Mail.port = parseInt(config.Mail.port)
-                                    console.log(JSON.stringify(config.Mail))
                                     config.Mail.tlsSslRequired = config.Mail.tlsSslRequired
 
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)

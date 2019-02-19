@@ -70,7 +70,6 @@ class ClientAddPage extends PureComponent {
       variables: { client_id: this.state.client.client_id },
       fetchPolicy: 'network-only'
     })
-    console.log(data)
     if (data && data.client) {
       this.setState({ clientIdValid: false })
     } else {

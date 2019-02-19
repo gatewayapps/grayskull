@@ -7,6 +7,8 @@ import SessionService from '@services/SessionService'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import SessionRepository from '@data/repositories/SessionRepository'
 import ConfigurationManager from '@/config/ConfigurationManager'
+import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
+import { findValuesRemovedFromEnums } from 'graphql/utilities/findBreakingChanges'
 
 let FIRST_USER_CREATED = false
 
@@ -75,16 +77,21 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
   }
 
   const user = await UserAccountRepository.getUserAccount({ userAccountId: session.userAccountId }, { userContext: null })
+
   if (!user) {
     clearAuthCookies(res)
     return next()
   }
 
+  const primaryEmail = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: session.userAccountId, primary_equals: true }, { userContext: null })
+
   setAuthCookies(res, session)
 
-  req.user = user
+  const finalUser = Object.assign(user, { emailAddress: primaryEmail[0].emailAddress })
+
+  req.user = finalUser
   req.session = session
-  res.locals.userContext = user
+  res.locals.userContext = finalUser
 
   return next()
 }

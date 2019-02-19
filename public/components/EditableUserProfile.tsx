@@ -186,8 +186,6 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                               if (payload.birthday) {
                                 payload.birthday = moment(payload.birthday, 'L').toDate()
                               }
-
-                              console.log('sending payload', payload)
                               const result = await updateUser({ variables: payload })
 
                               const newState = {
