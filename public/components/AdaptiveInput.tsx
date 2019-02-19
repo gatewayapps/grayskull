@@ -1,6 +1,6 @@
 import * as React from 'react'
-import InputMask from 'react-input-mask'
-import moment from 'moment'
+
+import Cleave from 'cleave.js/react'
 import Select from 'react-select'
 import Creatable from 'react-select/lib/Creatable'
 import ImageDropArea from './ImageDropArea'
@@ -23,6 +23,8 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
       case 'email':
       case 'number':
         return this.renderTextInput(props, className)
+      case 'masked':
+        return this.renderMaskedInput(props, className)
       case 'textarea':
         return this.renderTextAreaInput(props, className)
       case 'date':
@@ -59,7 +61,7 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
     }
   }
 
-  private renderTextInput = (props: object, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} />
+  private renderTextInput = (props: object, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
 
   private renderTextAreaInput = (props: object, className: string | undefined) => (
     <textarea
@@ -75,8 +77,31 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
   )
 
   private renderDateInput = (props: any, className: string | undefined) => {
+    return (
+      <Cleave
+        {...props}
+        onChange={(e) => {
+          this.props.onChange({ target: { name: props.name, value: e.target.value } })
+        }}
+        options={{ blocks: [2, 2, 4], delimiter: '/' }}
+        type={undefined}
+        placeholder={'MM/DD/YYYY'}
+        className={`form-control ${className || ''}`}
+      />
+    )
+  }
+
+  private renderMaskedInput = (props: any, className: string | undefined) => {
     delete props.type
-    return <InputMask {...props} maskChar=" " placeholder="MM/DD/YYYY" mask="99/99/9999" className={`form-control ${className || ''}`} />
+    return (
+      <Cleave
+        {...props}
+        className={`form-control ${className || ''}`}
+        onChange={(e) => {
+          this.props.onChange({ target: { name: props.name, value: e.target.rawValue } })
+        }}
+      />
+    )
   }
 
   private renderCheckboxInput = (props: object, className: string | undefined) => (
@@ -90,13 +115,14 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
 
   private renderSelectInput = (props: any, className: string | undefined) => {
     if (props.readOnly) {
-      return this.renderTextInput(props, className)
+      return this.renderTextInput({ name: props.name, defaultValue: props.value }, className)
     }
     const { options, allowCustom, ...finalProps } = props
+
     if (allowCustom) {
       return (
         <Creatable
-          {...props}
+          {...finalProps}
           onChange={(e: any) => {
             props.onChange({ target: { name: props.name, value: e } })
           }}
@@ -111,7 +137,7 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
         <Select
           options={options}
           className={`form-control ${className}`}
-          {...props}
+          {...finalProps}
           placeholder={props.value || props.placeholder}
           onChange={(e: any) => {
             props.onChange({ target: { name: props.name, value: e } })

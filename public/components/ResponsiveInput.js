@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import ValidatingInput from './ValidatingInput'
-export default class ResponsiveValidatingInput extends React.PureComponent {
+import AdaptiveInput from './AdaptiveInput'
+
+export default class ResponsiveInput extends React.PureComponent {
   static propTypes = {
     label: PropTypes.string,
     labelColumnWidth: PropTypes.number,
@@ -18,60 +19,33 @@ export default class ResponsiveValidatingInput extends React.PureComponent {
     blurred: false
   }
 
-  renderControl = () => {
-    const { name, ...props } = this.props
-
-    let inputComponent = null
-    switch (props.type) {
-      case 'textarea': {
-        inputComponent = (
-          <textarea
-            id={name}
-            placeholder={this.props.label}
-            name={name}
-            style={{
-              whiteSpace: 'pre',
-              overflowWrap: 'normal',
-              overflowX: 'scroll',
-              fontSize: '8pt'
-            }}
-            aria-describedby={`${name}HelpBlock`}
-            className={`form-control`}
-            {...props}
-          />
-        )
-        break
-      }
-      case 'checkbox': {
-        inputComponent = (
-          <div className="form-check checkbox-slider-md checkbox-slider--b nofocus">
-            <label className="m-0">
-              <input id={name} name={name} type="checkbox" {...props} className={`${this.props.className || 'nofocus'}`} />
-              <span className="nofocus" />
-            </label>
-          </div>
-        )
-        break
-      }
-      default: {
-        inputComponent = <input placeholder={this.props.label} id={name} name={name} aria-describedby={`${name}HelpBlock`} className={`form-control`} {...props} />
-      }
-    }
-    return inputComponent
-  }
-
   render = () => {
-    const { label, labelColumnWidth, ...props } = this.props
+    const { name, validationErrors, className, label, labelColumnWidth, ...props } = this.props
+
+    const readOnlyClass = props.readOnly ? 'border-bottom-0' : ''
+
+    const finalProps = Object.assign(props, {
+      id: this.props.id || name,
+      name: name,
+      className: `${className} ${readOnlyClass}`
+    })
 
     const labelMediumColumnClass = `col-md-${labelColumnWidth}`
     const inputMediumColumnClass = `col-md-${12 - labelColumnWidth}`
 
+    const finalClassName = `${this.props.readOnly ? 'form-control-plaintext border-bottom-0' : ''} ${this.props.className || ''}`
+
     return (
-      <div className="form-group row">
-        <label className={`d-none d-md-block col-sm-12 ${labelMediumColumnClass} col-form-label noselect`} style={this.props.labelStyles} htmlFor={props.name}>
+      <div className="form-group row align-items-start my-1">
+        <label
+          className={`d-md-block col-sm-12 ${labelMediumColumnClass} col-form-label noselect`}
+          style={{ fontSize: '0.725rem', textTransform: 'uppercase', opacity: 0.75, paddingTop: '1.25rem' }}
+          htmlFor={props.name}>
           {label}
         </label>
-        <div className={`col-sm-12 ${inputMediumColumnClass}`}>{this.renderControl()}</div>
+        <div className={`col-sm-12 ${inputMediumColumnClass}`}>
+          <AdaptiveInput {...finalProps} />
+        </div>
         {this.props.helpText && <small className="form-text text-muted col-12 py-0 my-0">{this.props.helpText}</small>}
       </div>
     )

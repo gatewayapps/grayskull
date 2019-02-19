@@ -10,6 +10,7 @@ import ResponsiveInput from './ResponsiveInput'
 
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
+import AdaptiveInput from './AdaptiveInput'
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!, $extendedSession: Boolean!) {
     login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint, extendedSession: $extendedSession }) {
@@ -102,7 +103,7 @@ class LoginForm extends PureComponent {
             <Mutation mutation={LOGIN_MUTATION}>
               {(login, { error, loading }) => (
                 <form
-                  autocomplete="off"
+                  autoComplete="off"
                   onSubmit={(e) => {
                     e.preventDefault()
                   }}>
@@ -125,17 +126,17 @@ class LoginForm extends PureComponent {
 
                               <ResponsiveInput type="password" name="password" value={this.state.password} onChange={this.handleChange} label="Password" />
 
-                              <div class="form-check mb-3">
+                              <div className="form-check mb-3">
                                 <input
                                   id="extendedSessionCheck"
-                                  class="form-check-input"
+                                  className="form-check-input"
                                   type="checkbox"
                                   checked={this.state.extendedSession}
                                   onChange={() => {
                                     this.setState({ extendedSession: !this.state.extendedSession })
                                   }}
                                 />
-                                <label class="form-check-label" for="extendedSessionCheck">
+                                <label className="form-check-label" htmlFor="extendedSessionCheck">
                                   Keep me signed in
                                 </label>
                               </div>
@@ -171,8 +172,7 @@ class LoginForm extends PureComponent {
                           )}
                           {this.state.otpRequired && (
                             <div className="form-group">
-                              <label htmlFor="otpToken">Multi-Factor Authentication Code:</label>
-                              <input type="text" className="form-control" name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
+                              <ResponsiveInput label="Authentication Code" type="number" style={{ fontSize: '2rem' }} name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
                               {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
                               <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
                                 {(sendBackupCode, { loading }) => (
