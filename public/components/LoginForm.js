@@ -172,14 +172,7 @@ class LoginForm extends PureComponent {
                           )}
                           {this.state.otpRequired && (
                             <div className="form-group">
-                              <ResponsiveInput
-                                label="Multi-Factor Authentication Code"
-                                options={{ blocks: [3, 3], delimiter: '-' }}
-                                type="masked"
-                                name="otpToken"
-                                value={this.state.otpToken}
-                                onChange={this.handleChange}
-                              />
+                              <ResponsiveInput label="Authentication Code" type="number" style={{ fontSize: '2rem' }} name="otpToken" value={this.state.otpToken} onChange={this.handleChange} />
                               {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
                               <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
                                 {(sendBackupCode, { loading }) => (
