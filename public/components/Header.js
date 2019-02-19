@@ -41,7 +41,7 @@ const Header = () => (
                   <a id="adminDropdown" className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     Admin
                   </a>
-                  <div className="dropdown-menu" aria-labeledby="adminDropdown">
+                  <div className="dropdown-menu" aria-labelledby="adminDropdown">
                     <Link href="/admin/users" as="/admin/users">
                       <a className="dropdown-item">Users</a>
                     </Link>
