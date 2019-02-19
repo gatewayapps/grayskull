@@ -101,7 +101,7 @@ export default class ImageDropArea extends React.PureComponent<IImageDropAreaPro
 
               return (
                 <DropArea {...getRootProps()} className={dropAreaClasses} style={this.props.style}>
-                  <input {...getInputProps()} aria-describedBy={this.props['aria-describedby']} />
+                  <input {...getInputProps()} aria-describedby={this.props['aria-describedby']} />
                   {this.props.value ? <img className="d-block ml-auto mr-auto" src={this.props.value} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }} /> : this.props.children}
                 </DropArea>
               )

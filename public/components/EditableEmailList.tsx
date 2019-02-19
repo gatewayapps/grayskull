@@ -123,7 +123,7 @@ export default class EditableEmailList extends React.Component<EditableEmailList
                     <h5 className="card-title">Email Addresses</h5>
                     <ul className="list-group">
                       {result.data.myEmailAddresses.map((e) => (
-                        <EmailAddressListItem refetch={result.refetch} emailAddress={e} />
+                        <EmailAddressListItem key={e.emailAddressId} refetch={result.refetch} emailAddress={e} />
                       ))}
                     </ul>
 
