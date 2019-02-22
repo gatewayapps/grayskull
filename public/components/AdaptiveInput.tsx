@@ -84,8 +84,9 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
           this.props.onChange({ target: { name: props.name, value: e.target.value } })
         }}
         options={{ blocks: [2, 2, 4], delimiter: '/' }}
-        type={undefined}
         placeholder={'MM/DD/YYYY'}
+        type={undefined}
+        value={props.value || ''}
         className={`form-control ${className || ''}`}
       />
     )
@@ -97,6 +98,7 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
       <Cleave
         {...props}
         className={`form-control ${className || ''}`}
+        value={props.value || ''}
         onChange={(e) => {
           this.props.onChange({ target: { name: props.name, value: e.target.rawValue } })
         }}

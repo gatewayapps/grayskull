@@ -44,6 +44,7 @@ class RequireAuthentication extends Component {
         this.setUser(data.me)
         this.setRefresh(this.fetchUserData)
       } else {
+        console.log('DID NOT GET ME')
         const state = generateRoutingState(this.props.router)
         this.setUser(undefined)
         window.location.replace(`/login?state=${state}`)
