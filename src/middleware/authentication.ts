@@ -83,7 +83,6 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
     clearAuthCookies(res)
     return next()
   }
-  console.log(moment().diff(moment(user.lastActive), 'minutes'), 'minutes')
   //await UserAccountService.updateUserActive(session.userAccountId, { userContext: user })
 
   const primaryEmail = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: session.userAccountId, primary_equals: true }, { userContext: null })

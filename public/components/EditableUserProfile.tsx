@@ -48,7 +48,7 @@ const CREATE_USER_MUTATION = gql`
 `
 
 export interface EditableUserProfileProps {
-  showPermissionSelector: boolean
+  showPermissionSelector?: boolean
   onSave?: () => void
   onCancel?: () => void
   isEditing?: boolean
@@ -81,10 +81,6 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
       message: '',
       valid: false
     }
-  }
-
-  renderViewComponent() {
-    return <div />
   }
 
   public handleChange = (e: { target: { name: string; value: any } }, validate: any) => {
@@ -133,12 +129,9 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
       genderOptions.push(finalUser.gender)
     }
 
-    console.log('FINAL USER', finalUser)
-
     return (
       <FormValidation validations={validations} data={finalUser} onValidated={this.onValidated}>
         {({ validate, validationErrors }) => {
-          console.log(validationErrors)
           return (
             <div className="card">
               <div className="card-body">
@@ -277,8 +270,6 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                                 if (payload.birthday) {
                                   payload.birthday = moment(payload.birthday, 'L').toDate()
                                 }
-
-                                console.log('PAYLOAD', payload)
 
                                 const result = await updateUser({ variables: payload })
 
