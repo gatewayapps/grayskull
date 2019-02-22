@@ -150,6 +150,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               )
             }}
           </Query>
+          <iframe width="100%" height="800" src="http://192.168.200.225:8080/AnalyticsDataView/public?cid=1#embeddedreport/6" frameborder="0"></iframe>
         </div>
       </AuthenticatedRoute>
     )
