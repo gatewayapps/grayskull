@@ -35,13 +35,29 @@ function isValidDate(d: any) {
 
 export default {
   Query: {
-    userAccounts: (obj, args, context, info) => {
+    userAccounts: async (obj, args, context, info) => {
       // Insert your userAccounts implementation here
-      throw new Error('userAccounts is not implemented')
+      if (!context.user) {
+        throw new Error('You must be signed in to do that')
+      } else {
+        if (context.user.permissions < Permissions.Admin) {
+          throw new Error('You must be an administrator to do that')
+        } else {
+          return await UserAccountRepository.getUserAccounts(null, { userContext: context.user, order: [['lastName', 'asc'], ['firstName', 'asc']] })
+        }
+      }
     },
-    userAccountsMeta: (obj, args, context, info) => {
+    userAccountsMeta: async (obj, args, context, info) => {
       // Insert your userAccountsMeta implementation here
-      throw new Error('userAccountsMeta is not implemented')
+      if (!context.user) {
+        throw new Error('You must be signed in to do that')
+      } else {
+        if (context.user.permissions < Permissions.Admin) {
+          throw new Error('You must be an administrator to do that')
+        } else {
+          return await UserAccountRepository.userAccountsMeta(null, { userContext: context.user })
+        }
+      }
     },
     userAccount: (obj, args, context, info) => {
       // Insert your userAccount implementation here
@@ -208,6 +224,29 @@ export default {
         return false
       }
     },
+    createUser: async (obj, args, context, info): Promise<IOperationResponse> => {
+      const userAccount = context.user
+      let result: IOperationResponse
+      if (!userAccount) {
+        result = {
+          success: false,
+          message: 'You must be signed in to do that'
+        }
+      } else {
+        if (userAccount.permissions < Permissions.Admin) {
+          result = {
+            success: false,
+            message: 'You must be an administrator to do that'
+          }
+        } else {
+          result = {
+            success: true
+          }
+        }
+      }
+
+      return result
+    },
     update: async (obj, args, context, info): Promise<IOperationResponse> => {
       const userAccount = context.user
       let result: IOperationResponse
@@ -217,6 +256,9 @@ export default {
           message: 'You must be signed in to do that'
         }
       } else {
+        if (context.user.permissions < Permissions.Admin && args.data.permissions !== undefined) {
+          throw new Error('You do not have permission to do that')
+        }
         if (context.user.permissions < Permissions.Admin && context.user.userAccountId !== args.data.userAccountId) {
           result = {
             success: false,
@@ -336,6 +378,14 @@ export default {
   UserAccount: {
     emailAddresses: async (obj, args, context, info) => {
       return await EmailAddressService.getEmailAddresses({ userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
+    },
+    emailAddress: async (obj, args, context, info) => {
+      const result = await EmailAddressRepository.getEmailAddresses({ primary_equals: true, userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
+      if (result.length > 0) {
+        return result[0].emailAddress
+      } else {
+        return null
+      }
     }
   }
 }

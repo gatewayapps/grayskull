@@ -19,6 +19,10 @@ class PhoneNumberRepository {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.PhoneNumber.findAll({
       where,
+      include: options.include,
+      order: options.order,
+      limit: options.limit,
+      offset: options.offset,
 
       transaction: options.transaction
     })

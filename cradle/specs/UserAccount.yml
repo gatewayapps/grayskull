@@ -34,6 +34,17 @@ UserAccount:
   references:
     emailAddresses: multiple of EmailAddress
   operations:
+    createUser:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        firstName: string
+        lastName: string
+        permissions: integer
+        displayName: string?
+        gender: string?
+        birthday: datetime?
+        profileImageUrl: string?
     # Update User #
     update:
       returns: OperationResponse
@@ -41,6 +52,7 @@ UserAccount:
         userAccountId: string?
         firstName: string?
         lastName: string?
+        permissions: integer?
         displayName: string?
         gender: string?
         birthday: datetime?

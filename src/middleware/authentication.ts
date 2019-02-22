@@ -9,6 +9,7 @@ import SessionRepository from '@data/repositories/SessionRepository'
 import ConfigurationManager from '@/config/ConfigurationManager'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import { findValuesRemovedFromEnums } from 'graphql/utilities/findBreakingChanges'
+import moment = require('moment')
 
 let FIRST_USER_CREATED = false
 
@@ -82,6 +83,8 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
     clearAuthCookies(res)
     return next()
   }
+  console.log(moment().diff(moment(user.lastActive), 'minutes'), 'minutes')
+  //await UserAccountService.updateUserActive(session.userAccountId, { userContext: user })
 
   const primaryEmail = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: session.userAccountId, primary_equals: true }, { userContext: null })
 
