@@ -51,6 +51,10 @@ class UserAccountService {
     return UserAccountRepository.createUserAccount(data, options)
   }
 
+  public async updateUserActive(userAccountId: string, options: IQueryOptions) {
+    await UserAccountRepository.updateUserAccount({ userAccountId }, { lastActive: new Date() }, options)
+  }
+
   public async changeUserPassword(userAccountId: string, password: string, options: IQueryOptions) {
     const passwordHash = await this.hashPassword(password)
     await UserAccountRepository.updateUserAccount({ userAccountId }, { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null }, options)

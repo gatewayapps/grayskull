@@ -268,8 +268,13 @@ class AuthenticationService {
 
     const backupCode = otplib.authenticator.generate(otpSecret)
     this.localCache.set(emailAddress, backupCode, 16 * 60)
-    const body = `Your login code is: ${backupCode}<br/><br/>This code will expire in 15 minutes.`
-    //MailService.sendMail(emailAddress, 'Login Code', body)
+
+    await MailService.sendEmailTemplate('backupCode', emailAddress, `${ConfigurationManager.Server!.realmName} Backup Code`, {
+      realmName: ConfigurationManager.Server!.realmName,
+      user,
+      backupCode
+    })
+
     return true
   }
 

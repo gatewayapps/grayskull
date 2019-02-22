@@ -9,6 +9,7 @@ import LoadingIndicator from './LoadingIndicator'
 const GET_ME_QUERY = gql`
   query GET_ME_QUERY {
     me {
+      userAccountId
       firstName
       lastName
       displayName

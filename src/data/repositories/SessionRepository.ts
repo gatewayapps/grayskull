@@ -19,6 +19,10 @@ class SessionRepository {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.Session.findAll({
       where,
+      include: options.include,
+      order: options.order,
+      limit: options.limit,
+      offset: options.offset,
 
       transaction: options.transaction
     })

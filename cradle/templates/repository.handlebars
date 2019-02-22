@@ -18,7 +18,7 @@ class {{Name}}Repository {
     }
   }
 
-  public async get{{pluralize Name}}(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<I{{Name}}[]> {
+  public async get{{pluralize Name}}(filter: I{{Name}}Filter | null,  options: IQueryOptions): Promise<I{{Name}}[]> {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.{{Name}}.findAll({
       where,
@@ -27,6 +27,10 @@ class {{Name}}Repository {
         exclude: [{{#each Meta.sensitive as |s|}}'{{s}}',{{/each}}],
       },
       {{/if}}
+      include: options.include,
+      order: options.order,
+      limit: options.limit,
+      offset: options.offset,
       
       transaction: options.transaction,
     })

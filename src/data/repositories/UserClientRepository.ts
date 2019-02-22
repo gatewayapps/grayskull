@@ -19,6 +19,10 @@ class UserClientRepository {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.UserClient.findAll({
       where,
+      include: options.include,
+      order: options.order,
+      limit: options.limit,
+      offset: options.offset,
 
       transaction: options.transaction
     })

@@ -52,10 +52,22 @@ input ValidatePasswordArgs {
 	confirm: String!
 }
 
+input CreateUserArgs {
+	firstName: String!
+	lastName: String!
+	permissions: Int!
+	displayName: String
+	gender: String
+	birthday: Date
+	profileImageUrl: String
+	emailAddress: String!
+}
+
 input UpdateArgs {
 	userAccountId: String
 	firstName: String
 	lastName: String
+	permissions: Int
 	displayName: String
 	gender: String
 	birthday: Date
@@ -207,6 +219,7 @@ type Mutation {
 	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
 	resetPassword(data: ResetPasswordArgs!): Boolean 
 	validatePassword(data: ValidatePasswordArgs!): Boolean 
+	createUser(data: CreateUserArgs!): OperationResponse 
 	update(data: UpdateArgs!): OperationResponse 
 	login(data: LoginArgs!): LoginResponse 
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 

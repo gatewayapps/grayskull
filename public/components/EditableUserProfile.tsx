@@ -5,10 +5,42 @@ import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import moment from 'moment'
+import Permissions from '../utils/permissions'
 
 const UPDATE_USER_MUTATION = gql`
-  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String) {
-    update(data: { firstName: $firstName, lastName: $lastName, displayName: $displayName, gender: $gender, birthday: $birthday, profileImageUrl: $profileImageUrl }) {
+  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $userAccountId: String, $permissions: Int) {
+    update(
+      data: {
+        firstName: $firstName
+        lastName: $lastName
+        displayName: $displayName
+        gender: $gender
+        birthday: $birthday
+        profileImageUrl: $profileImageUrl
+        userAccountId: $userAccountId
+        permissions: $permissions
+      }
+    ) {
+      success
+      message
+    }
+  }
+`
+
+const CREATE_USER_MUTATION = gql`
+  mutation CREATE_USER_MUTATION($firstName: String!, $lastName: String!, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $permissions: Int!, $emailAddress: String!) {
+    createUser(
+      data: {
+        firstName: $firstName
+        lastName: $lastName
+        displayName: $displayName
+        gender: $gender
+        birthday: $birthday
+        profileImageUrl: $profileImageUrl
+        emailAddress: $emailAddress
+        permissions: $permissions
+      }
+    ) {
       success
       message
     }
@@ -16,13 +48,19 @@ const UPDATE_USER_MUTATION = gql`
 `
 
 export interface EditableUserProfileProps {
+  showPermissionSelector: boolean
+  onSave?: () => void
+  onCancel?: () => void
+  isEditing?: boolean
   user: {
+    userAccountId: string | null | undefined
     profileImageUrl: string | null | undefined
     firstName: string
     lastName: string
     displayName: string | null | undefined
     birthday: Date | null | undefined
     gender: string | null | undefined
+    permissions: number
   }
 }
 
@@ -38,8 +76,8 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
     super(props)
 
     this.state = {
-      modifiedState: {},
-      editing: false,
+      modifiedState: { permissions: props.user.permissions },
+      editing: props.isEditing || false,
       message: '',
       valid: false
     }
@@ -74,151 +112,211 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
       new FormValidationRule('birthday', validDate, true, 'Birthday must be in format MM/DD/YYYY')
     ]
 
+    if (!finalUser.userAccountId) {
+      validations.push(new FormValidationRule('emailAddress', 'isEmpty', false, 'Email Address is required'))
+    }
+
+    const permissionOptions = [
+      {
+        label: 'User',
+        value: Permissions.USER
+      },
+      {
+        label: 'Administrator',
+        value: Permissions.ADMIN
+      }
+    ]
+    const selectedPermission = finalUser.permissions === Permissions.ADMIN ? permissionOptions[1] : permissionOptions[0]
+
     const genderOptions = ['Male', 'Female']
     if (finalUser.gender && genderOptions.includes(finalUser.gender) === false) {
       genderOptions.push(finalUser.gender)
     }
 
+    console.log('FINAL USER', finalUser)
+
     return (
       <FormValidation validations={validations} data={finalUser} onValidated={this.onValidated}>
-        {({ validate, validationErrors }) => (
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Profile</h5>
-              <ResponsiveValidatingInput
-                label="Photo"
-                type="photo"
-                onChange={(e) => {
-                  this.handleChange(e, validate)
-                }}
-                readOnly={!this.state.editing}
-                name="profileImageUrl"
-                value={finalUser.profileImageUrl || '/static/profile-default.jpg'}
-                className="ml-auto mr-4"
-                style={{ width: '100px', height: '100px', padding: '4px', border: this.state.editing ? '1px dashed black' : '0px none' }}
-              />
-
-              <ResponsiveValidatingInput
-                validationErrors={validationErrors}
-                onChange={(e) => {
-                  this.handleChange(e, validate)
-                }}
-                autoFocus
-                label="Given Name"
-                type="text"
-                name="firstName"
-                value={finalUser.firstName}
-                readOnly={!this.state.editing}
-              />
-
-              <ResponsiveValidatingInput
-                validationErrors={validationErrors}
-                onChange={(e) => {
-                  this.handleChange(e, validate)
-                }}
-                label="Family Name"
-                type="text"
-                name="familyName"
-                value={finalUser.lastName}
-                readOnly={!this.state.editing}
-              />
-
-              <ResponsiveValidatingInput
-                onChange={(e) => {
-                  this.handleChange(e, validate)
-                }}
-                label="Display Name"
-                validationErrors={validationErrors}
-                placeholder="Not Set"
-                type="text"
-                name="displayName"
-                value={finalUser.displayName}
-                readOnly={!this.state.editing}
-              />
-
-              <ResponsiveValidatingInput
-                validationErrors={validationErrors}
-                onChange={(e) => {
-                  this.handleChange(e, validate)
-                }}
-                label="Birthday"
-                type="date"
-                name="birthday"
-                value={finalUser.birthday}
-                readOnly={!this.state.editing}
-              />
-
-              <ResponsiveValidatingInput
-                onChange={(e) => {
-                  this.handleChange(e, validate)
-                }}
-                label="Gender"
-                type="select"
-                allowCustom
-                helpText="You can enter a custom gender here"
-                options={genderOptions}
-                getOptionValue={(option) => option}
-                getOptionLabel={(option) => option}
-                name="gender"
-                value={finalUser.gender}
-                readOnly={!this.state.editing}
-              />
-              {this.state.message && <div className="alert alert-warning">{this.state.message}</div>}
-            </div>
-            <div className="card-footer w-100">
-              <div className="btn-toolbar">
-                {this.state.editing ? (
-                  <div className="ml-auto">
-                    <button
-                      className="btn btn-secondary mr-2"
-                      onClick={() => {
-                        this.setState({ editing: false, modifiedState: {} })
-                      }}>
-                      <i className="fa fa-fw fa-times" /> Cancel
-                    </button>
-                    <Mutation mutation={UPDATE_USER_MUTATION}>
-                      {(updateUser: (payload: any) => Promise<any>, { loading }) => {
-                        return (
-                          <button
-                            disabled={loading || !this.state.valid}
-                            onClick={async () => {
-                              const payload = this.state.modifiedState
-                              if (payload.birthday) {
-                                payload.birthday = moment(payload.birthday, 'L').toDate()
-                              }
-                              const result = await updateUser({ variables: payload })
-
-                              const newState = {
-                                editing: !result.data.update.success,
-                                message: result.data.update.message,
-                                modifiedState: this.state.modifiedState
-                              }
-                              if (!newState.editing) {
-                                newState.modifiedState = {}
-                              }
-                              this.setState(newState)
-                            }}
-                            className="btn btn-outline-success"
-                            type="button">
-                            {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-save" />} Save Info
-                          </button>
-                        )
-                      }}
-                    </Mutation>
-                  </div>
-                ) : (
-                  <button
-                    className="btn btn-outline-info  ml-auto"
-                    onClick={() => {
-                      this.setState({ editing: true })
-                    }}>
-                    <i className="fa fa-fw fa-pencil" /> Edit Info
-                  </button>
+        {({ validate, validationErrors }) => {
+          console.log(validationErrors)
+          return (
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Profile</h5>
+                {!this.props.user.userAccountId && (
+                  <ResponsiveValidatingInput
+                    label="E-mail Address"
+                    type="email"
+                    validationErrors={validationErrors}
+                    onChange={(e) => {
+                      this.handleChange(e, validate)
+                    }}
+                    readOnly={!this.state.editing}
+                    name="emailAddress"
+                    value={finalUser.emailAddress}
+                  />
                 )}
+                <ResponsiveValidatingInput
+                  label="Photo"
+                  type="photo"
+                  onChange={(e) => {
+                    this.handleChange(e, validate)
+                  }}
+                  readOnly={!this.state.editing}
+                  name="profileImageUrl"
+                  value={finalUser.profileImageUrl || '/static/profile-default.jpg'}
+                  className="ml-auto mr-4"
+                  style={{ width: '100px', height: '100px', padding: '4px', border: this.state.editing ? '1px dashed black' : '0px none' }}
+                />
+
+                <ResponsiveValidatingInput
+                  validationErrors={validationErrors}
+                  onChange={(e) => {
+                    this.handleChange(e, validate)
+                  }}
+                  autoFocus
+                  label="Given Name"
+                  type="text"
+                  name="firstName"
+                  value={finalUser.firstName}
+                  readOnly={!this.state.editing}
+                />
+
+                <ResponsiveValidatingInput
+                  validationErrors={validationErrors}
+                  onChange={(e) => {
+                    this.handleChange(e, validate)
+                  }}
+                  label="Family Name"
+                  type="text"
+                  name="lastName"
+                  value={finalUser.lastName}
+                  readOnly={!this.state.editing}
+                />
+
+                <ResponsiveValidatingInput
+                  onChange={(e) => {
+                    this.handleChange(e, validate)
+                  }}
+                  label="Display Name"
+                  validationErrors={validationErrors}
+                  placeholder="Not Set"
+                  type="text"
+                  name="displayName"
+                  value={finalUser.displayName}
+                  readOnly={!this.state.editing}
+                />
+
+                <ResponsiveValidatingInput
+                  validationErrors={validationErrors}
+                  onChange={(e) => {
+                    this.handleChange(e, validate)
+                  }}
+                  label="Birthday"
+                  type="date"
+                  name="birthday"
+                  value={finalUser.birthday}
+                  readOnly={!this.state.editing}
+                />
+
+                <ResponsiveValidatingInput
+                  onChange={(e) => {
+                    this.handleChange(e, validate)
+                  }}
+                  label="Gender"
+                  type="select"
+                  allowCustom
+                  helpText="You can enter a custom gender here"
+                  options={genderOptions}
+                  getOptionValue={(option) => option}
+                  getOptionLabel={(option) => option}
+                  name="gender"
+                  value={finalUser.gender}
+                  readOnly={!this.state.editing}
+                />
+
+                {this.props.showPermissionSelector && (
+                  <ResponsiveValidatingInput
+                    onChange={(e) => {
+                      this.handleChange({ target: { name: 'permissions', value: e.target.value.value } }, validate)
+                    }}
+                    label="Role"
+                    type="select"
+                    options={permissionOptions}
+                    name="permissions"
+                    value={this.state.editing ? selectedPermission : selectedPermission.label}
+                    readOnly={!this.state.editing}
+                  />
+                )}
+
+                {this.state.message && <div className="alert alert-warning">{this.state.message}</div>}
+              </div>
+              <div className="card-footer w-100">
+                <div className="btn-toolbar">
+                  {this.state.editing ? (
+                    <div className="ml-auto">
+                      <button
+                        className="btn btn-secondary mr-2"
+                        onClick={() => {
+                          this.setState({ editing: false, modifiedState: {} })
+                          if (this.props.onCancel) {
+                            this.props.onCancel()
+                          }
+                        }}>
+                        <i className="fa fa-fw fa-times" /> Cancel
+                      </button>
+                      <Mutation mutation={finalUser.userAccountId ? UPDATE_USER_MUTATION : CREATE_USER_MUTATION}>
+                        {(updateUser: (payload: any) => Promise<any>, { loading }) => {
+                          return (
+                            <button
+                              disabled={loading || !this.state.valid}
+                              onClick={async () => {
+                                const payload = this.state.modifiedState
+
+                                payload.userAccountId = this.props.user.userAccountId
+                                if (payload.birthday) {
+                                  payload.birthday = moment(payload.birthday, 'L').toDate()
+                                }
+
+                                console.log('PAYLOAD', payload)
+
+                                const result = await updateUser({ variables: payload })
+
+                                const newState = {
+                                  editing: !result.data.update.success,
+                                  message: result.data.update.message,
+                                  modifiedState: this.state.modifiedState
+                                }
+                                if (!newState.editing) {
+                                  newState.modifiedState = {}
+                                }
+                                this.setState(newState)
+                                if (!newState.editing && this.props.onSave) {
+                                  this.props.onSave()
+                                }
+                              }}
+                              className="btn btn-outline-success"
+                              type="button">
+                              {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-save" />} Save Info
+                            </button>
+                          )
+                        }}
+                      </Mutation>
+                    </div>
+                  ) : (
+                    <button
+                      className="btn btn-outline-info  ml-auto"
+                      onClick={() => {
+                        this.setState({ editing: true })
+                      }}>
+                      <i className="fa fa-fw fa-pencil" /> Edit Info
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )
+        }}
       </FormValidation>
     )
   }

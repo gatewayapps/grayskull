@@ -22,6 +22,10 @@ class UserAccountRepository {
       attributes: {
         exclude: ['passwordHash', 'otpSecret', 'resetPasswordToken', 'resetPasswordTokenExpiresAt']
       },
+      include: options.include,
+      order: options.order,
+      limit: options.limit,
+      offset: options.offset,
 
       transaction: options.transaction
     })
