@@ -207,10 +207,6 @@ export class RealmInstance {
       schema,
       playground: IS_DEVELOPMENT,
       introspection: IS_DEVELOPMENT,
-      formatError: (error) => {
-        console.log(error)
-        return new Error('Internal server error')
-      },
       context: ({ req, res }) => {
         return { req, res, user: req.user }
       },
