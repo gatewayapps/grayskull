@@ -1,6 +1,6 @@
 import cn from 'classnames'
 import gql from 'graphql-tag'
-import prettyBytes from 'pretty-bytes'
+import prettyBytes from 'pretty-bytes-es5'
 import * as React from 'react'
 import { Mutation, MutationFn } from 'react-apollo'
 import Dropzone from 'react-dropzone'
