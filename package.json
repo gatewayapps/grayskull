@@ -41,6 +41,7 @@
     "@types/jsonwebtoken": "^7.2.8",
     "@types/lodash": "^4.14.116",
     "@types/next": "^7.0.0",
+    "@types/node": "^11.13.2",
     "@types/node-cache": "^4.1.1",
     "@types/node-forge": "^0.7.11",
     "@types/nodemailer": "^4.6.5",

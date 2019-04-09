@@ -185,19 +185,23 @@ export class RealmInstance {
 
   /** Start http and https servers */
   private async startServer() {
-    this.httpServer.listen(80, (err: Error) => {
+    this.httpServer.on('error', (err: Error) => {
       if (err) {
         throw err
       }
     })
+    this.httpServer.listen(80, () => {
+      console.log(`Grayskull http server is ready`)
+    })
 
-    this.httpsServer.listen(443, async (err: Error) => {
+    this.httpsServer.on('error', (err: Error) => {
       if (err) {
         throw err
       }
-
+    })
+    this.httpsServer.listen(443, async () => {
       await this.nextServer.prepare()
-      console.log(`Grayskull server is ready`)
+      console.log(`Grayskull https server is ready`)
     })
   }
 
