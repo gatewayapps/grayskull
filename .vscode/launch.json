@@ -29,7 +29,8 @@
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
       }
     },
     {
