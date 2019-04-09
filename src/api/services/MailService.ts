@@ -13,10 +13,12 @@ class MailService {
       host: mailConfig.serverAddress,
       port: mailConfig.port,
       secure: mailConfig.tlsSslRequired,
-      auth: {
-        user: mailConfig.username,
-        pass: mailConfig.password
-      }
+      auth: mailConfig.username
+        ? {
+            user: mailConfig.username,
+            pass: mailConfig.password
+          }
+        : undefined
     })
 
     const messageOptions: SendMailOptions = {
