@@ -10,6 +10,11 @@ const BackgroundCover = styled.div`
   background-image: url('/static/bg.jpg');
   overflow-y: auto;
   padding: 1rem;
+
+  .container {
+    margin-left: 0;
+    margin-right: 0;
+  }
 `
 
 export default BackgroundCover

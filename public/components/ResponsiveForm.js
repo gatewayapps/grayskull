@@ -43,7 +43,7 @@ export default styled(ResponsiveForm)`
   }
 
   .card-body {
-    flex: 1;
+    flex: 1 1 auto;
     overflow-y: auto;
   }
 `
