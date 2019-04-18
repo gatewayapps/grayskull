@@ -228,24 +228,23 @@ export default {
       const userAccount = context.user
       let result: IOperationResponse
       if (!userAccount) {
-        result = {
+        return {
           success: false,
           message: 'You must be signed in to do that'
         }
-      } else {
-        if (userAccount.permissions < Permissions.Admin) {
-          result = {
-            success: false,
-            message: 'You must be an administrator to do that'
-          }
-        } else {
-          result = {
-            success: true
-          }
+      }
+
+      if (userAccount.permissions < Permissions.Admin) {
+        return {
+          success: false,
+          message: 'You must be an administrator to do that'
         }
       }
 
-      return result
+      const { emailAddress, ...userData } = args.data
+      await UserAccountService.createUserAccount(userData, emailAddress, { userContext: userAccount })
+
+      return { success: true }
     },
     update: async (obj, args, context, info): Promise<IOperationResponse> => {
       const userAccount = context.user

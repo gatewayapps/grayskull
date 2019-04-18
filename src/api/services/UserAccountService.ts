@@ -6,23 +6,19 @@ import db from '@data/context'
 import { ClientInstance } from '@data/models/Client'
 import { IEmailAddress } from '@data/models/IEmailAddress'
 import { IUserAccount } from '@data/models/IUserAccount'
-
 import bcrypt from 'bcrypt'
-
 import moment from 'moment'
 import Cache from 'node-cache'
-
 import uuid from 'uuid/v4'
-
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import { IUserAccountUniqueFilter, IUserAccountFilter, IUserAccountMeta } from '@/interfaces/graphql/IUserAccount'
-
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
-
 import { randomBytes } from 'crypto'
+import { ForbiddenError } from 'apollo-server'
+import { hasPermission } from '@decorators/permissionDecorator'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -35,6 +31,52 @@ interface ICPTToken {
 }
 
 class UserAccountService {
+  @hasPermission(Permissions.Admin)
+  public async createUserAccount(data: IUserAccount, emailAddress: string, options: IQueryOptions): Promise<IUserAccount> {
+    const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
+    if (!emailAddressAvailable) {
+      throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
+    }
+
+    options.transaction = await db.sequelize.transaction()
+
+    try {
+      data.userAccountId = uuid()
+      data.passwordHash = ''
+      data.lastPasswordChange = new Date('1900-01-01')
+
+      const resetToken = randomBytes(16).toString('hex')
+      const expirationTime = moment().add(INVITATION_EXPIRES_IN, 'seconds')
+      data.resetPasswordToken = resetToken
+      data.resetPasswordTokenExpiresAt = expirationTime.toDate()
+
+      const user = await UserAccountRepository.createUserAccount(data, options)
+
+      const emailAddressData: IEmailAddress = {
+        userAccountId: user.userAccountId!,
+        emailAddress: emailAddress,
+        primary: true,
+        verificationSecret: ''
+      }
+      await EmailAddressRepository.createEmailAddress(emailAddressData, options)
+
+      const activateLink = `${ConfigurationManager.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
+      await MailService.sendEmailTemplate('activateAccountTemplate', emailAddress, `Activate Your ${ConfigurationManager.Server!.realmName} Account`, {
+        activateLink,
+        realmName: ConfigurationManager.Server!.realmName,
+        user: user,
+        createdBy: options.userContext
+      })
+
+      await options.transaction.commit()
+
+      return user
+    } catch (err) {
+      await options.transaction.rollback()
+      throw err
+    }
+  }
+
   /**
    *
    * @param data
@@ -124,6 +166,10 @@ class UserAccountService {
   }
 
   public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<IUserAccount> {
+    if (!EmailAddressService.isDomainAllowed(emailAddress)) {
+      throw new ForbiddenError(`Self registration is not permitted for your email domain`)
+    }
+
     // 1. Verify that a user has not already been registered with this email address
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
     if (!emailAddressAvailable) {

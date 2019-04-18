@@ -53,7 +53,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
             <div className="col">
               <h1>Users</h1>
             </div>
-            {/* <div className="col-auto">
+            <div className="col-auto">
               <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
                 <button
                   type="button"
@@ -71,7 +71,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                   <i className="fal fa-plus" /> Add User
                 </button>
               </RequirePermission>
-            </div> */}
+            </div>
           </div>
           <Query query={ALL_USERS_QUERY}>
             {({ data, error, loading, refetch }) => {
