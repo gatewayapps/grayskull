@@ -81,7 +81,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               if (error) {
                 return <ErrorMessage error={error} />
               }
-              if (!data || !data.userAccounts) {
+              if (!data || !Array.isArray(data.userAccounts)) {
                 return <p>No Users found</p>
               }
               return (
@@ -150,7 +150,6 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               )
             }}
           </Query>
-          <iframe width="100%" height="800" src="http://192.168.200.225:8080/AnalyticsDataView/public?cid=1#embeddedreport/6" frameborder="0"></iframe>
         </div>
       </AuthenticatedRoute>
     )

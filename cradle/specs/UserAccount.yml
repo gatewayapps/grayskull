@@ -141,4 +141,8 @@ UserAccount:
         newPassword: string
         confirmPassword: string
         token: string?
-
+    loadActivation:
+      returns: UserAccount
+      arguments:
+        emailAddress: string
+        token: string
