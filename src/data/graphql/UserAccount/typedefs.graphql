@@ -53,6 +53,7 @@ input ValidatePasswordArgs {
 }
 
 input CreateUserArgs {
+	emailAddress: String!
 	firstName: String!
 	lastName: String!
 	permissions: Int!
@@ -60,7 +61,6 @@ input CreateUserArgs {
 	gender: String
 	birthday: Date
 	profileImageUrl: String
-	emailAddress: String!
 }
 
 input UpdateArgs {
@@ -102,6 +102,14 @@ input ChangePasswordArgs {
 	newPassword: String!
 	confirmPassword: String!
 	token: String
+}
+
+input ActivateAccountArgs {
+	emailAddress: String!
+	token: String!
+	password: String!
+	confirmPassword: String!
+	otpSecret: String
 }
 
 input RegisterUserArgs {
@@ -225,5 +233,6 @@ type Mutation {
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	setOtpSecret(data: SetOtpSecretArgs!): OperationResponse 
 	changePassword(data: ChangePasswordArgs!): OperationResponse 
+	activateAccount(data: ActivateAccountArgs!): OperationResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }

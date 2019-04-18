@@ -31,6 +31,38 @@ interface ICPTToken {
 }
 
 class UserAccountService {
+  public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
+    const options: IQueryOptions = {
+      userContext: null
+    }
+
+    const userAccount = await this.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
+    if (!userAccount) {
+      throw new Error('Unable to find a user with that email address')
+    }
+
+    options.transaction = await db.sequelize.transaction()
+
+    try {
+      const passwordHash = await this.hashPassword(password)
+
+      const updates: Partial<IUserAccount> = {
+        passwordHash,
+        otpEnabled: !!otpSecret,
+        otpSecret
+      }
+
+      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId! }, updates, options)
+
+      await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verified: true }, options)
+
+      await options.transaction.commit()
+    } catch (err) {
+      await options.transaction.rollback()
+      throw err
+    }
+  }
+
   @hasPermission(Permissions.Admin)
   public async createUserAccount(data: IUserAccount, emailAddress: string, options: IQueryOptions): Promise<IUserAccount> {
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)

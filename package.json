@@ -66,6 +66,7 @@
     "typescript-estree": "^1.1.0"
   },
   "dependencies": {
+    "@gatewayapps/react-form-validation": "^1.1.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-sass": "^1.0.1",
     "@zeit/next-typescript": "^1.1.1",

@@ -13,11 +13,7 @@ const ActivatePage: React.FunctionComponent<WithRouterProps<ActivatePageProps>> 
   return (
     <Primary>
       <BackgroundCover>
-        <div style={{ flex: 1 }} />
-        <div>
-          <AccountActivation emailAddress={props.router.query.emailAddress} token={props.router.query.token} />
-        </div>
-        <div style={{ flex: 1 }} />
+        <AccountActivation emailAddress={props.router.query.emailAddress} token={props.router.query.token} />
       </BackgroundCover>
     </Primary>
   )
