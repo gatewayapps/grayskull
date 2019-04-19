@@ -33,7 +33,7 @@ interface AccountActivationState {
   accountActivated: boolean
   data: {
     password: string
-    confirm: string
+    confirmPassword: string
     otpSecret?: string
   }
   error?: string
@@ -51,7 +51,7 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
       accountActivated: false,
       data: {
         password: '',
-        confirm: '',
+        confirmPassword: '',
         otpSecret: undefined
       },
       error: undefined,
@@ -117,11 +117,15 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
         const result = await activateAccount()
         if (result && result.data) {
           const { activateAccount } = result.data
-          this.setState({
-            accountActivated: activateAccount.success,
-            error: activateAccount.error,
-            message: activateAccount.message
-          })
+          if (activateAccount.success) {
+            window.location.replace('/login')
+          } else {
+            this.setState({
+              accountActivated: activateAccount.success,
+              error: activateAccount.error,
+              message: activateAccount.message
+            })
+          }
         }
         break
     }
@@ -146,17 +150,17 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
         {(configuration) => {
           const { securityConfiguration, serverConfiguration } = configuration
           const validations = [
-            new FormValidationRule('newPassword', 'isEmpty', false, 'New password is required'),
-            new FormValidationRule('newPassword', validatePassword, true, 'New password does not meet complexity requirements', [securityConfiguration]),
+            new FormValidationRule('password', 'isEmpty', false, 'New password is required'),
+            new FormValidationRule('password', validatePassword, true, 'New password does not meet complexity requirements', [securityConfiguration]),
             new FormValidationRule('confirmPassword', 'isEmpty', false, 'Confirm password is required'),
             new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [this.state.data.password])
           ]
 
           return (
-            <FormValidation validations={validations} data={this.state.data}>
+            <FormValidation validations={validations} data={this.state.data} onValidated={this.onFormValidated}>
               {({ validate, validationErrors }) => (
-                <Mutation mutation={ACTIVATE_ACCOUNT_MUTATION} variables={mutationVariables}>
-                  {(activateAccount, { loading, error }) => (
+                <Mutation mutation={ACTIVATE_ACCOUNT_MUTATION} variables={{ data: mutationVariables }}>
+                  {(activateAccount: any, { loading, error }) => (
                     <form
                       onSubmit={(e) => {
                         e.preventDefault()
@@ -192,7 +196,7 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
                                   validationErrors={validationErrors}
                                   autoComplete="new-password"
                                   name="confirmPassword"
-                                  value={this.state.data.confirm}
+                                  value={this.state.data.confirmPassword}
                                   onChange={(e) => this.handleChange(e, validate)}
                                 />
                               </>

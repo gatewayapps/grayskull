@@ -47,9 +47,11 @@ class UserAccountService {
       const passwordHash = await this.hashPassword(password)
 
       const updates: Partial<IUserAccount> = {
-        passwordHash,
         otpEnabled: !!otpSecret,
-        otpSecret
+        otpSecret,
+        passwordHash,
+        resetPasswordToken: null,
+        resetPasswordTokenExpiresAt: null
       }
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId! }, updates, options)

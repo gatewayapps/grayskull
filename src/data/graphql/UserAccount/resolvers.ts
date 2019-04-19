@@ -364,7 +364,7 @@ export default {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })
     },
     activateAccount: async (obj, args, context, info): Promise<IOperationResponse> => {
-      const { emailAddress, token, password, confirm, otpSecret } = args.data
+      const { emailAddress, token, password, confirmPassword, otpSecret } = args.data
       if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null }))) {
         return {
           success: false,
@@ -372,7 +372,7 @@ export default {
         }
       }
 
-      if (!(await AuthenticationService.validatePassword(password, confirm, { userContext: null }))) {
+      if (!(await AuthenticationService.validatePassword(password, confirmPassword, { userContext: null }))) {
         return {
           success: false,
           message: 'Password does not meet complexity requirements or password and confirm password do not match'
