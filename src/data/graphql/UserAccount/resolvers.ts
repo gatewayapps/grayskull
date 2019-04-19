@@ -228,24 +228,23 @@ export default {
       const userAccount = context.user
       let result: IOperationResponse
       if (!userAccount) {
-        result = {
+        return {
           success: false,
           message: 'You must be signed in to do that'
         }
-      } else {
-        if (userAccount.permissions < Permissions.Admin) {
-          result = {
-            success: false,
-            message: 'You must be an administrator to do that'
-          }
-        } else {
-          result = {
-            success: true
-          }
+      }
+
+      if (userAccount.permissions < Permissions.Admin) {
+        return {
+          success: false,
+          message: 'You must be an administrator to do that'
         }
       }
 
-      return result
+      const { emailAddress, ...userData } = args.data
+      await UserAccountService.createUserAccount(userData, emailAddress, { userContext: userAccount })
+
+      return { success: true }
     },
     update: async (obj, args, context, info): Promise<IOperationResponse> => {
       const userAccount = context.user
@@ -363,6 +362,28 @@ export default {
     },
     sendBackupCode: async (obj, args, context, info) => {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })
+    },
+    activateAccount: async (obj, args, context, info): Promise<IOperationResponse> => {
+      const { emailAddress, token, password, confirmPassword, otpSecret } = args.data
+      if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null }))) {
+        return {
+          success: false,
+          message: 'Invalid email address or token'
+        }
+      }
+
+      if (!(await AuthenticationService.validatePassword(password, confirmPassword, { userContext: null }))) {
+        return {
+          success: false,
+          message: 'Password does not meet complexity requirements or password and confirm password do not match'
+        }
+      }
+
+      await UserAccountService.activateAccount(emailAddress, password, otpSecret)
+
+      return {
+        success: true
+      }
     }
   },
   UserProfile: {

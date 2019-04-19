@@ -141,4 +141,11 @@ UserAccount:
         newPassword: string
         confirmPassword: string
         token: string?
-
+    activateAccount:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        token: string
+        password: string
+        confirmPassword: string
+        otpSecret: string?

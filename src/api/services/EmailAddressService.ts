@@ -31,15 +31,18 @@ class EmailAddressService {
     return existingEmail === null
   }
 
-  public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
-    const domain = data.emailAddress.split('@')[1].toLowerCase()
+  public isDomainAllowed(emailAddress: string): boolean {
+    const domain = emailAddress.split('@')[1].toLowerCase()
     if (ConfigurationManager.Security!.domainWhitelist) {
       const allowedDomains: string[] = _.compact(JSON.parse(ConfigurationManager.Security!.domainWhitelist.toLowerCase()))
       if (allowedDomains.length > 0 && !allowedDomains.includes(domain) && !allowedDomains.includes(`@${domain}`)) {
-        throw new ForbiddenError(`E-mail addresses for @${domain} are not permitted`)
+        return false
       }
     }
+    return true
+  }
 
+  public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
     data.verificationSecret = '' // sendVerificationEmail will set this correctly
     const result = await EmailAddressRepository.createEmailAddress(data, options)
 

@@ -272,10 +272,11 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                                 }
 
                                 const result = await updateUser({ variables: payload })
+                                const opResponse = result.data.update || result.data.createUser
 
                                 const newState = {
-                                  editing: !result.data.update.success,
-                                  message: result.data.update.message,
+                                  editing: !opResponse.success,
+                                  message: opResponse.message,
                                   modifiedState: this.state.modifiedState
                                 }
                                 if (!newState.editing) {

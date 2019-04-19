@@ -53,7 +53,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
             <div className="col">
               <h1>Users</h1>
             </div>
-            {/* <div className="col-auto">
+            <div className="col-auto">
               <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
                 <button
                   type="button"
@@ -71,7 +71,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                   <i className="fal fa-plus" /> Add User
                 </button>
               </RequirePermission>
-            </div> */}
+            </div>
           </div>
           <Query query={ALL_USERS_QUERY}>
             {({ data, error, loading, refetch }) => {
@@ -81,7 +81,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               if (error) {
                 return <ErrorMessage error={error} />
               }
-              if (!data || !data.userAccounts) {
+              if (!data || !Array.isArray(data.userAccounts)) {
                 return <p>No Users found</p>
               }
               return (
@@ -150,7 +150,6 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               )
             }}
           </Query>
-          <iframe width="100%" height="800" src="http://192.168.200.225:8080/AnalyticsDataView/public?cid=1#embeddedreport/6" frameborder="0"></iframe>
         </div>
       </AuthenticatedRoute>
     )
