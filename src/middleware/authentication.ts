@@ -2,14 +2,12 @@ import { Request, Response, NextFunction } from 'express'
 import { setAuthCookies, getAuthCookies, clearAuthCookies } from '../utils/authentication'
 import { ISession } from '@data/models/ISession'
 import { IUserAccount } from '@data/models/IUserAccount'
-import UserAccountService from '@services/UserAccountService'
+
 import SessionService from '@services/SessionService'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import SessionRepository from '@data/repositories/SessionRepository'
 import ConfigurationManager from '@/config/ConfigurationManager'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
-import { findValuesRemovedFromEnums } from 'graphql/utilities/findBreakingChanges'
-import moment = require('moment')
 
 let FIRST_USER_CREATED = false
 
