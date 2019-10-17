@@ -180,6 +180,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                             this.setState({ importingUser: false })
                             refetch()
                           }}
+                          refetch={refetch}
                           isImporting
                           showPermissionSelector
                           user={this.state.importingUser}

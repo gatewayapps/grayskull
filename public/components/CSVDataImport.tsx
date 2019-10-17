@@ -1,7 +1,6 @@
 import * as React from 'react'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import FormValidation, { FormValidationRule } from './FormValidation'
 import Permissions from '../utils/permissions'
 import { CSVReader } from 'react-papaparse'
 
@@ -32,6 +31,7 @@ export interface CSVDataImportProps {
   user: {
     permissions: number
   }
+  refetch?: () => void
 }
 
 export interface CSVDataImportState {
@@ -71,7 +71,6 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
   }
 
   render() {
-    const finalUser = Object.assign(this.props.user, this.state.modifiedState)
     const permissionOptions = [
       {
         label: 'User',
@@ -82,11 +81,6 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
         value: Permissions.ADMIN
       }
     ]
-    const validations = [new FormValidationRule('firstName', 'isEmpty', false, 'Given name is required'), new FormValidationRule('lastName', 'isEmpty', false, 'Family name is required')]
-
-    if (!finalUser.userAccountId) {
-      validations.push(new FormValidationRule('emailAddress', 'isEmpty', false, 'Email Address is required'))
-    }
     return (
       <div className="card">
         <div className="card-body">
@@ -124,9 +118,9 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                           className="btn btn-outline-success"
                           type="button"
                           onClick={() => {
-                            let result
+                            let successCount = []
                             const CSVData = this.state.importedCSVData.data
-                            const mappedData = CSVData.map((item, i) => {
+                            CSVData.map((item, i) => {
                               let payload = {
                                 emailAddress: item[0],
                                 firstName: item[1],
@@ -134,10 +128,16 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                 permissions: item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value
                               }
                               createUser({ variables: payload })
-                            })
+                                .then((result) => {
+                                  successCount.push(result.data.createUser.success)
 
-                            Promise.all(mappedData).then(() => {
-                              this.props.onSave()
+                                  if (successCount.length === CSVData.length) {
+                                    this.props.onSave()
+                                  }
+                                })
+                                .catch((err) => {
+                                  console.log('err: ', err)
+                                })
                             })
                           }}>
                           Import users
