@@ -10,6 +10,7 @@ import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
 import Permissions from '../../../utils/permissions'
 import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission'
 import EditableUserProfile from '../../../components/EditableUserProfile'
+import CSVDataImport from '../../../components/CSVDataImport'
 
 const ALL_USERS_QUERY = gql`
   query ALL_USERS_QUERY {
@@ -34,6 +35,7 @@ export interface UsersIndexPageProps {}
 
 export interface UsersIndexPageState {
   editingUser: any
+  importingUser: any
 }
 
 class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPageState> {
@@ -41,7 +43,8 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
     super(props)
 
     this.state = {
-      editingUser: undefined
+      editingUser: undefined,
+      importingUser: undefined
     }
   }
 
@@ -54,6 +57,21 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               <h1>Users</h1>
             </div>
             <div className="col-auto">
+              <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
+                <button
+                  style={{ marginRight: '20px' }}
+                  type="button"
+                  className="btn btn-outline-success"
+                  onClick={() => {
+                    this.setState({
+                      importingUser: {
+                        permissions: Permissions.USER
+                      }
+                    })
+                  }}>
+                  <i className="fal fa-plus" /> Import Users
+                </button>
+              </RequirePermission>
               <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
                 <button
                   type="button"
@@ -142,6 +160,29 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                           isEditing
                           showPermissionSelector
                           user={this.state.editingUser}
+                        />
+                      </ModalBody>
+                    </Modal>
+                  )}
+                  {this.state.importingUser && (
+                    <Modal
+                      isOpen
+                      size="lg"
+                      toggle={() => {
+                        this.setState({ importingUser: undefined })
+                      }}>
+                      <ModalBody>
+                        <CSVDataImport
+                          onCancel={() => {
+                            this.setState({ importingUser: undefined })
+                          }}
+                          onSave={() => {
+                            this.setState({ importingUser: false })
+                            refetch()
+                          }}
+                          isImporting
+                          showPermissionSelector
+                          user={this.state.importingUser}
                         />
                       </ModalBody>
                     </Modal>
