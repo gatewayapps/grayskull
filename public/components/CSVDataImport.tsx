@@ -37,9 +37,12 @@ export interface CSVDataImportProps {
 export interface CSVDataImportState {
   modifiedState: any
   importing: boolean
-  message: string
+  successMessage: string
+  loadingMessage: string
   valid: boolean
   importedCSVData: any
+  errorMessage: string
+  loading: boolean
 }
 
 export default class CSVDataImport extends React.Component<CSVDataImportProps, CSVDataImportState> {
@@ -50,9 +53,12 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
     this.state = {
       modifiedState: { permissions: props.user.permissions },
       importing: props.isImporting || false,
-      message: '',
+      successMessage: '',
+      loadingMessage: '',
       valid: false,
-      importedCSVData: undefined
+      importedCSVData: undefined,
+      errorMessage: '',
+      loading: false
     }
   }
 
@@ -85,11 +91,24 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">Upload your CSV file containing the list of users</h5>
-
-          {this.state.message && <div className="alert alert-warning">{this.state.message}</div>}
         </div>
         <form>
           <div className="form-group" />
+          {this.state.loadingMessage && (
+            <div className="alert alert-warning" style={{ width: '60%', margin: '20px auto' }}>
+              {this.state.loadingMessage}
+            </div>
+          )}
+          {this.state.successMessage && (
+            <div className="alert alert-success" style={{ width: '60%', margin: '20px auto' }}>
+              {this.state.successMessage}
+            </div>
+          )}
+          {this.state.errorMessage && (
+            <div className="alert alert-danger" style={{ width: '60%', margin: '20px auto' }}>
+              {this.state.errorMessage}
+            </div>
+          )}
         </form>
         <div className="card-footer w-100">
           <div className="btn-toolbar">
@@ -109,7 +128,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                   {(createUser: (payload: any) => Promise<any>, { loading }) => {
                     return (
                       <>
-                        <CSVReader onFileLoaded={this.handleReadCSV} inputRef={this.fileInput} style={{ display: 'none' }} onError={this.handleOnError} />
+                        <CSVReader onFileLoaded={this.handleReadCSV} inputRef={this.fileInput} style={{ display: 'none' }} onError={this.handleOnError} configOptions={{ skipEmptyLines: 'greedy' }} />
                         <button className="btn btn-outline-success" style={{ width: 'auto' }} onClick={this.handleImportOffer}>
                           Upload CSV file
                         </button>
@@ -119,26 +138,48 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                           type="button"
                           onClick={() => {
                             let successCount = []
-                            const CSVData = this.state.importedCSVData.data
-                            CSVData.map((item, i) => {
-                              let payload = {
-                                emailAddress: item[0],
-                                firstName: item[1],
-                                lastName: item[2],
-                                permissions: item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value
-                              }
-                              createUser({ variables: payload })
-                                .then((result) => {
-                                  successCount.push(result.data.createUser.success)
+                            this.setState({ loadingMessage: 'Please wait while we import your users', loading: true })
+                            if (this.state.importedCSVData) {
+                              const CSVData = this.state.importedCSVData.data
+                              CSVData.map((item, i) => {
+                                let payload = {
+                                  emailAddress: item[0],
+                                  firstName: item[1],
+                                  lastName: item[2],
+                                  permissions: item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value
+                                }
+                                createUser({ variables: payload })
+                                  .then((result) => {
+                                    successCount.push(result.data.createUser.success)
 
-                                  if (successCount.length === CSVData.length) {
-                                    this.props.onSave()
-                                  }
-                                })
-                                .catch((err) => {
-                                  console.log('err: ', err)
-                                })
-                            })
+                                    if (successCount.length === CSVData.length) {
+                                      this.setState({
+                                        successMessage: `Users have been successfully imported! - Number of users imported successfully: (${successCount.length} out of ${CSVData.length})`,
+                                        loadingMessage: '',
+                                        loading: false
+                                      })
+                                      setTimeout(() => {
+                                        this.props.onSave()
+                                      }, 2000)
+                                    }
+                                  })
+                                  .catch((err) => {
+                                    console.log('successcount: ', successCount.length)
+                                    let errMessage = err.message.substring(err.message.indexOf(':') + 1)
+                                    if (err.message.includes('SQLITE_BUSY: database is locked')) {
+                                      errMessage = `Sorry, we were not able to process all of the users at this time. Please try again.`
+                                    }
+                                    this.setState({
+                                      errorMessage: `${errMessage} - Number of users imported successfully: (${successCount.length} out of ${CSVData.length})`,
+                                      loadingMessage: '',
+                                      loading: false
+                                    })
+                                  })
+                              })
+                            } else {
+                              this.setState({ loadingMessage: '' })
+                              this.setState({ errorMessage: 'Please upload a valid .csv file', loadingMessage: '', loading: false })
+                            }
                           }}>
                           Import users
                         </button>
