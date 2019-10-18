@@ -42,6 +42,7 @@ export interface CSVDataImportState {
   valid: boolean
   importedCSVData: any
   errorMessage: string
+  currentlyImportingUsers: boolean
 }
 
 export default class CSVDataImport extends React.Component<CSVDataImportProps, CSVDataImportState> {
@@ -56,7 +57,8 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
       loadingMessage: '',
       valid: false,
       importedCSVData: undefined,
-      errorMessage: ''
+      errorMessage: '',
+      currentlyImportingUsers: false
     }
   }
 
@@ -115,27 +117,36 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
         <div className="card-footer w-100">
           <div className="btn-toolbar">
             {this.state.importing && (
-              <div className="ml-auto" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <button
-                  className="btn btn-secondary mr-2"
-                  onClick={() => {
-                    this.setState({ importing: false, modifiedState: {} })
-                    if (this.props.onCancel) {
-                      this.props.onCancel()
-                    }
-                  }}>
-                  <i className="fa fa-fw fa-times" /> Cancel
-                </button>
+              <div
+                className="ml-auto"
+                style={{
+                  gridTemplateColumns: '3fr 1fr 1fr',
+                  display: 'grid',
+                  width: '100%'
+                }}>
                 <Mutation mutation={CREATE_USER_MUTATION}>
                   {(createUser: (payload: any) => Promise<any>, { loading }) => {
                     return (
                       <>
                         <CSVReader onFileLoaded={this.handleReadCSV} inputRef={this.fileInput} style={{ display: 'none' }} onError={this.handleOnError} configOptions={{ skipEmptyLines: 'greedy' }} />
-                        <button className="btn btn-outline-success" style={{ width: 'auto' }} onClick={this.handleImportOffer}>
+                        <button disabled={this.state.importedCSVData} className="btn btn-outline-success" style={{ width: '40%' }} onClick={this.handleImportOffer}>
                           Upload CSV file
                         </button>
                         <button
-                          disabled={loading}
+                          disabled={this.state.currentlyImportingUsers}
+                          style={{ width: '90%' }}
+                          className="btn btn-secondary mr-2"
+                          onClick={() => {
+                            this.setState({ importing: false, modifiedState: {} })
+                            if (this.props.onCancel) {
+                              this.props.onCancel()
+                            }
+                          }}>
+                          <i className="fa fa-fw fa-times" /> Cancel
+                        </button>
+                        <button
+                          style={{ width: '90%' }}
+                          disabled={loading || this.state.importedCSVData === undefined}
                           className="btn btn-outline-success"
                           type="button"
                           onClick={async () => {
@@ -148,6 +159,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 
                               for (let i = 0; i < CSVData.length; i++) {
                                 const item = CSVData[i]
+                                this.setState({ currentlyImportingUsers: true })
                                 if (item[0] !== 'Email') {
                                   let payload = {
                                     emailAddress: item[0],
@@ -165,7 +177,11 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                     successfulImports = successCount.length
                                     TotalUsersToImport = CSVData.length - 1
 
-                                    if (successCount.length === CSVData.length - 1) {
+                                    if (i === TotalUsersToImport) {
+                                      this.setState({ currentlyImportingUsers: false })
+                                    }
+
+                                    if (successCount.length === TotalUsersToImport) {
                                       this.setState({
                                         successMessage: `Users have been successfully imported! - Number of users imported successfully: (${successfulImports} out of ${TotalUsersToImport})`,
                                         loadingMessage: ''
@@ -183,16 +199,6 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                   }
                                 }
                               }
-
-                              CSVData.map((item, i) => {
-                                if (item[0] === 'Email') {
-                                  return
-                                }
-
-                              })
-                            } else {
-                              this.setState({ loadingMessage: '' })
-                              this.setState({ errorMessage: 'Please upload a valid .csv file', loadingMessage: '' })
                             }
                           }}>
                           Import users
