@@ -6,7 +6,18 @@ import { CSVReader } from 'react-papaparse'
 
 const CREATE_USER_MUTATION = gql`
   mutation CREATE_USER_MUTATION($firstName: String!, $lastName: String!, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $permissions: Int!, $emailAddress: String!) {
-    createUser(data: { firstName: $firstName, lastName: $lastName, displayName: $displayName, gender: $gender, birthday: $birthday, emailAddress: $emailAddress, permissions: $permissions }) {
+    createUser(
+      data: {
+        firstName: $firstName
+        lastName: $lastName
+        displayName: $displayName
+        gender: $gender
+        birthday: $birthday
+        profileImageUrl: $profileImageUrl
+        emailAddress: $emailAddress
+        permissions: $permissions
+      }
+    ) {
       success
       message
     }
