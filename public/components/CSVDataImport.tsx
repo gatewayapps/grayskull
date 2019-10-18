@@ -176,9 +176,6 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                   })
                                   .catch((err) => {
                                     let errMessage = err.message.substring(err.message.indexOf(':') + 1)
-                                    if (err.message.includes('SQLITE_BUSY: database is locked')) {
-                                      errMessage = `Sorry, we were not able to process all of the users at this time. Please try again.`
-                                    }
                                     this.setState({
                                       errorMessage: `${errMessage} - Number of users imported successfully: (${successfulImports} out of ${TotalUsersToImport})`,
                                       loadingMessage: ''
