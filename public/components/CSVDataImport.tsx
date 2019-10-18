@@ -138,28 +138,29 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                           disabled={loading}
                           className="btn btn-outline-success"
                           type="button"
-                          onClick={() => {
+                          onClick={async () => {
                             let successCount = []
                             let successfulImports
                             let TotalUsersToImport
                             this.setState({ loadingMessage: 'Please wait while we import your users' })
                             if (this.state.importedCSVData) {
                               const CSVData = this.state.importedCSVData.data
-                              CSVData.map((item, i) => {
-                                if (item[0] === 'Email') {
-                                  return
-                                }
-                                let payload = {
-                                  emailAddress: item[0],
-                                  firstName: item[1],
-                                  lastName: item[2],
-                                  permissions: item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value,
-                                  gender: item[4],
-                                  displayName: item[5],
-                                  birthday: item[6]
-                                }
-                                createUser({ variables: payload })
-                                  .then((result) => {
+
+                              for (let i = 0; i < CSVData.length; i++) {
+                                const item = CSVData[i]
+                                if (item[0] !== 'Email') {
+                                  let payload = {
+                                    emailAddress: item[0],
+                                    firstName: item[1],
+                                    lastName: item[2],
+                                    permissions: item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value,
+                                    gender: item[4],
+                                    displayName: item[5],
+                                    birthday: item[6]
+                                  }
+                                  try {
+                                    const result = await createUser({ variables: payload })
+
                                     successCount.push(result.data.createUser.success)
                                     successfulImports = successCount.length
                                     TotalUsersToImport = CSVData.length - 1
@@ -173,14 +174,21 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                         this.props.onSave()
                                       }, 2000)
                                     }
-                                  })
-                                  .catch((err) => {
+                                  } catch (err) {
                                     let errMessage = err.message.substring(err.message.indexOf(':') + 1)
                                     this.setState({
                                       errorMessage: `${errMessage} - Number of users imported successfully: (${successfulImports} out of ${TotalUsersToImport})`,
                                       loadingMessage: ''
                                     })
-                                  })
+                                  }
+                                }
+                              }
+
+                              CSVData.map((item, i) => {
+                                if (item[0] === 'Email') {
+                                  return
+                                }
+
                               })
                             } else {
                               this.setState({ loadingMessage: '' })
