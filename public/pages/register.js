@@ -173,7 +173,11 @@ class RegisterPage extends PureComponent {
                           }
                           formFooter={
                             <div className="btn-toolbar float-right">
-                              <button type="submit" className="btn btn-primary" disabled={!this.isValid(securityConfiguration)} onClick={() => this.onSubmitClick(registerUser)}>
+                              <button
+                                type="submit"
+                                className="btn btn-primary"
+                                disabled={!this.isValid(securityConfiguration) || this.state.accountCreated}
+                                onClick={() => this.onSubmitClick(registerUser)}>
                                 {loading && <i className="fa fa-fw fa-spin fa-spinner mr-2" />}
                                 {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
                               </button>
