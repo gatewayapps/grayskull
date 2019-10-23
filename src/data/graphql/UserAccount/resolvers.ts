@@ -22,6 +22,7 @@ import ConfigurationManager from '@/config/ConfigurationManager'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 import { encrypt } from '@/utils/cipher'
 import { Permissions } from '@/utils/permissions'
+import EmailAddressFactory from '@data/models/EmailAddress'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -359,6 +360,16 @@ export default {
     resendVerification: async (obj, args, context, info) => {
       const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, { userContext: context.user || null })
       return !!result
+    },
+    resendAllVerificationEmails: async (obj, args, context, info) => {
+      const unverifiedEmails = await EmailAddressRepository.getEmailAddresses({ primary_equals: true, verified_equals: false }, { userContext: context.user || null })
+      await Promise.all(
+        unverifiedEmails.map(async (e) => {
+          await EmailAddressService.sendVerificationEmail(e.emailAddress, { userContext: context.user || null })
+        })
+      )
+
+      return true
     },
     sendBackupCode: async (obj, args, context, info) => {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })

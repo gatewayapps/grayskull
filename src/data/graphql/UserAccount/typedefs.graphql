@@ -39,6 +39,10 @@ input ResendVerificationArgs {
 	emailAddress: String!
 }
 
+input ResendAllVerificationEmailsArgs {
+	dryRun: Boolean
+}
+
 input SendBackupCodeArgs {
 	emailAddress: String!
 }
@@ -224,6 +228,7 @@ type Mutation {
 	generateMfaKey(data: GenerateMfaKeyArgs!): String 
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
 	resendVerification(data: ResendVerificationArgs!): Boolean 
+	resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean 
 	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
 	resetPassword(data: ResetPasswordArgs!): Boolean 
 	validatePassword(data: ValidatePasswordArgs!): Boolean 

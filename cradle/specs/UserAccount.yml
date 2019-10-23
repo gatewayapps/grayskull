@@ -110,6 +110,10 @@ UserAccount:
       returns: boolean
       arguments:
         emailAddress: string
+    resendAllVerificationEmails:
+      returns: boolean
+      arguments:
+        dryRun: boolean? default(0)
     # Send Backup Code #
     sendBackupCode:
       returns: boolean

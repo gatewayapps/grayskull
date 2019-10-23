@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 import React from 'react'
-import { Query } from 'react-apollo'
-import { Modal, ModalBody, ModalHeader } from 'reactstrap'
+import { Query, Mutation } from 'react-apollo'
+import { Modal, ModalBody } from 'reactstrap'
 import moment from 'moment'
 import ErrorMessage from '../../../components/ErrorMessage'
 import LoadingIndicator from '../../../components/LoadingIndicator'
@@ -11,6 +11,18 @@ import Permissions from '../../../utils/permissions'
 import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission'
 import EditableUserProfile from '../../../components/EditableUserProfile'
 import CSVDataImport from '../../../components/CSVDataImport'
+
+const RESEND_ALL_VERIFICATIONS_MUTATION = gql`
+  mutation RESEND_ALL_VERIFICATIONS_MUTATION {
+    resendAllVerificationEmails(data: {})
+  }
+`
+
+const RESEND_VERIFICATION_MUTATION = gql`
+  mutation RESEND_VERIFICATION_MUTATION($emailAddress: String!) {
+    resendVerification(data: { emailAddress: $emailAddress })
+  }
+`
 
 const ALL_USERS_QUERY = gql`
   query ALL_USERS_QUERY {
@@ -24,9 +36,14 @@ const ALL_USERS_QUERY = gql`
       profileImageUrl
       permissions
       lastPasswordChange
-      emailAddress
       otpEnabled
+      isActive
       lastActive
+      emailAddresses {
+        primary
+        verified
+        emailAddress
+      }
     }
   }
 `
@@ -57,6 +74,21 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               <h1>Users</h1>
             </div>
             <div className="col-auto">
+              <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
+                <Mutation mutation={RESEND_ALL_VERIFICATIONS_MUTATION}>
+                  {(executeMutation) => (
+                    <button
+                      style={{ marginRight: '20px' }}
+                      type="button"
+                      className="btn btn-outline-info"
+                      onClick={() => {
+                        executeMutation()
+                      }}>
+                      <i className="fal fa-plus" /> Resend All Activation Emails
+                    </button>
+                  )}
+                </Mutation>
+              </RequirePermission>
               <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
                 <button
                   style={{ marginRight: '20px' }}
@@ -113,32 +145,47 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                         <th>Email Address</th>
                         <th>Last Active</th>
                         <th> </th>
+                        <th> </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {data.userAccounts.map((user) => (
-                        <tr key={user.userAccountId}>
-                          <td>{user.lastName}</td>
-                          <td>{user.firstName}</td>
-                          <td>{user.displayName || ''}</td>
-                          <td>{user.emailAddress}</td>
-                          <td>{moment(user.lastActive).fromNow()}</td>
-                          <td>
-                            <div className="w-100 d-flex">
-                              <div className="btn-toolbar ml-auto">
-                                <button
-                                  title="Edit User"
-                                  className="btn btn-sm btn-outline-primary"
-                                  onClick={() => {
-                                    this.setState({ editingUser: user })
-                                  }}>
-                                  <i className="fa fa-fw fa-edit" /> Edit
-                                </button>
+                      {data.userAccounts.map((user) => {
+                        const emailAddress = user.emailAddresses.find((e) => e.primary)
+                        return (
+                          <tr key={user.userAccountId}>
+                            <td>{user.lastName}</td>
+                            <td>{user.firstName}</td>
+                            <td>{user.displayName || ''}</td>
+                            <td>{emailAddress.emailAddress}</td>
+                            <td>{moment(user.lastActive).fromNow()}</td>
+                            <td>
+                              {!emailAddress.verified && (
+                                <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: emailAddress.emailAddress }}>
+                                  {(resendVerification) => (
+                                    <button className="btn btn-sm btn-outline-info" onClick={resendVerification}>
+                                      Resend Activation
+                                    </button>
+                                  )}
+                                </Mutation>
+                              )}
+                            </td>
+                            <td>
+                              <div className="w-100 d-flex">
+                                <div className="btn-toolbar ml-auto">
+                                  <button
+                                    title="Edit User"
+                                    className="btn btn-sm btn-outline-primary"
+                                    onClick={() => {
+                                      this.setState({ editingUser: user })
+                                    }}>
+                                    <i className="fa fa-fw fa-edit" /> Edit
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                   {this.state.editingUser && (
