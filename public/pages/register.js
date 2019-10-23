@@ -109,8 +109,10 @@ class RegisterPage extends PureComponent {
               message: data.registerUser.message
             })
           } else {
-            this.setState({ error: data.registerUser.error })
+            this.setState({ error: data.registerUser.error, creatingAccount: false })
           }
+        } else {
+          this.setState({ creatingAccount: false })
         }
         break
     }
