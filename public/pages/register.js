@@ -1,13 +1,13 @@
 import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
 import React, { PureComponent } from 'react'
-import { Mutation, Query } from 'react-apollo'
+import { Mutation } from 'react-apollo'
 import Primary from '../layouts/primary'
-import LoadingIndicator from '../components/LoadingIndicator'
+
 import MultiFactorSetup from '../components/MultiFactorSetup'
 import RequireConfiguration from '../components/RequireConfiguration'
 import RegistrationForm from '../components/RegistrationForm'
-import { parseRoutingState } from '../utils/routing'
+
 import BackgroundCover from '../components/BackgroundCover'
 import ResponsiveForm from '../components/ResponsiveForm'
 
@@ -39,7 +39,7 @@ class RegisterPage extends PureComponent {
         confirm: '',
         otpSecret: undefined
       },
-
+      creatingAccount: false,
       accountCreated: false,
       message: '',
       userDataValid: false,
@@ -99,10 +99,12 @@ class RegisterPage extends PureComponent {
         break
 
       case RegistrationSteps.Multifactor:
+        this.setState({ creatingAccount: true })
         const { data } = await registerUser()
         if (data && data.registerUser) {
           if (data.registerUser.success) {
             this.setState({
+              creatingAccount: false,
               accountCreated: true,
               message: data.registerUser.message
             })
@@ -176,7 +178,7 @@ class RegisterPage extends PureComponent {
                               <button
                                 type="submit"
                                 className="btn btn-primary"
-                                disabled={!this.isValid(securityConfiguration) || this.state.accountCreated}
+                                disabled={!this.isValid(securityConfiguration) || this.state.creatingAccount || this.state.accountCreated}
                                 onClick={() => this.onSubmitClick(registerUser)}>
                                 {loading && <i className="fa fa-fw fa-spin fa-spinner mr-2" />}
                                 {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}
