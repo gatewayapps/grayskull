@@ -2,14 +2,15 @@ import { Request, Response, NextFunction } from 'express'
 import { setAuthCookies, getAuthCookies, clearAuthCookies } from '../utils/authentication'
 import { ISession } from '@data/models/ISession'
 import { IUserAccount } from '@data/models/IUserAccount'
-
 import SessionService from '@services/SessionService'
+import UserAccountService from '@services/UserAccountService'
 import UserAccountRepository from '@data/repositories/UserAccountRepository'
 import SessionRepository from '@data/repositories/SessionRepository'
 import ConfigurationManager from '@/config/ConfigurationManager'
 import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
 
 let FIRST_USER_CREATED = false
+const MIN_TIME_TO_UPDATE_LAST_ACTIVE = 60 * 1000 // 1 minute
 
 export interface IRefreshAccessTokenResult {
   access_token: string
@@ -81,7 +82,10 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
     clearAuthCookies(res)
     return next()
   }
-  //await UserAccountService.updateUserActive(session.userAccountId, { userContext: user })
+
+  if (!user.lastActive || Date.now() - user.lastActive.getTime() > MIN_TIME_TO_UPDATE_LAST_ACTIVE) {
+    await UserAccountService.updateUserActive(session.userAccountId, { userContext: user })
+  }
 
   const primaryEmail = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: session.userAccountId, primary_equals: true }, { userContext: null })
 
