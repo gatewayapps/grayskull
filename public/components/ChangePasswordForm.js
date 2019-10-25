@@ -2,12 +2,15 @@ import PropTypes from 'prop-types'
 import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import LoadingIndicator from './LoadingIndicator'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import RequireConfiguration from './RequireConfiguration'
 import gql from 'graphql-tag'
-import { Mutation, Query } from 'react-apollo'
+import { Mutation } from 'react-apollo'
 import ResponsiveForm from './ResponsiveForm'
+import Router from 'next/router'
+import Link from 'next/link'
+
+const CHANGE_PASSWORD_REDIRECT_COUNTDOWN = 5
 
 const CHANGE_PASSWORD = gql`
   mutation CHANGE_PASSWORD($emailAddress: String!, $newPassword: String!, $confirmPassword: String!, $token: String) {
@@ -25,7 +28,8 @@ export default class ChangePasswordForm extends React.Component {
     oldPassword: '',
     confirmPassword: '',
     passwordChanged: false,
-    message: ''
+    message: '',
+    redirectCountdown: CHANGE_PASSWORD_REDIRECT_COUNTDOWN
   }
 
   static propTypes = {
@@ -33,11 +37,27 @@ export default class ChangePasswordForm extends React.Component {
     token: PropTypes.string
   }
 
+  componentWillUnmount() {
+    if (this.redirectInterval) {
+      window.clearTimeout(this.redirectInterval)
+    }
+  }
+
   onChangePassword = async (changePassword) => {
     const result = await changePassword()
     const { data } = result
     if (data.changePassword.success) {
       this.setState({ passwordChanged: true })
+      this.redirectInterval = window.setInterval(() => {
+        const redirectCountdown = this.state.redirectCountdown - 1
+        if (redirectCountdown <= 0) {
+          window.clearTimeout(this.redirectInterval)
+          this.redirectInterval = undefined
+          Router.push('/login')
+        } else {
+          this.setState({ redirectCountdown })
+        }
+      }, 1000)
     } else {
       this.setState({ message: data.changePassword.message })
     }
@@ -123,7 +143,16 @@ export default class ChangePasswordForm extends React.Component {
                         value={this.state.confirmPassword}
                         onChange={(e) => handleChange(e, validate)}
                       />
-                      {this.state.passwordChanged && <div className="alert alert-success mx-4">Your password has been changed.</div>}
+                      {this.state.passwordChanged && (
+                        <div className="alert alert-success mx-4">
+                          Your password has been changed. You will be redirected to the login page in {this.state.redirectCountdown}
+                          {this.state.redirectCountdown === 1 ? ' second' : ' seconds'} or{' '}
+                          <Link href="/login">
+                            <a>click here</a>
+                          </Link>{' '}
+                          to go to login now.
+                        </div>
+                      )}
                       {this.state.message && <div className="alert alert-info mx-4">{this.state.message}</div>}
                     </div>
                   }
@@ -139,7 +168,7 @@ export default class ChangePasswordForm extends React.Component {
                                   this.onChangePassword(changePassword)
                                 }}
                                 className="btn btn-outline-success"
-                                type="button">
+                                type="submit">
                                 {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-check" />} Set Password
                               </button>
                             </div>
