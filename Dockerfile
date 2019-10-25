@@ -1,16 +1,17 @@
-FROM node:8-slim AS build
+FROM node:10-slim AS build
 
 WORKDIR /www
-COPY ./package.json ./package.json
 RUN apt-get update
-RUN apt-get install -y make gcc build-essential python
-#COPY ./package-lock.json ./package-lock.json
+RUN apt-get install -y make gcc build-essential python yarn
+COPY ./.npmrc ./.npmrc
+COPY ./package.json ./package.json
+COPY ./yarn.lock ./yarn.lock
 RUN NODE_ENV=development
-RUN npm install
+RUN yarn install
 COPY . /www
-RUN npm run build
+RUN yarn build
 
-FROM node:8-slim AS prod
+FROM node:10-slim AS prod
 RUN apt-get -y update
 RUN apt-get install -y sqlite3 libsqlite3-dev
 
