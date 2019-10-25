@@ -154,18 +154,17 @@ class LoginForm extends PureComponent {
                                   <a>Forgot Password</a>
                                 </Link>
 
-                                {this.state.emailVerificationRequired &&
-                                  !this.state.emailVerificationSent && (
-                                    <div className="d-inline ml-2">
-                                      <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
-                                        {(sendVerification, { loading }) => (
-                                          <button type="button" disabled={loading} onClick={() => this.onSendVerificationEmail(sendVerification)} className="btn btn-link text-danger">
-                                            Re-send Verification E-Mail
-                                          </button>
-                                        )}
-                                      </Mutation>
-                                    </div>
-                                  )}
+                                {this.state.emailVerificationRequired && !this.state.emailVerificationSent && (
+                                  <div className="d-inline ml-2">
+                                    <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                                      {(sendVerification, { loading }) => (
+                                        <button type="button" disabled={loading} onClick={() => this.onSendVerificationEmail(sendVerification)} className="btn btn-link text-danger">
+                                          Re-send Verification E-Mail
+                                        </button>
+                                      )}
+                                    </Mutation>
+                                  </div>
+                                )}
                                 {this.state.emailVerificationSent && <div className="alert alert-secondary">A verification e-mail has been sent to {this.state.emailAddress}</div>}
                               </div>
                             </div>
@@ -183,7 +182,7 @@ class LoginForm extends PureComponent {
                               {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
                               <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
                                 {(sendBackupCode, { loading }) => (
-                                  <button className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
+                                  <button type="button" className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
                                     {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
                                   </button>
                                 )}
