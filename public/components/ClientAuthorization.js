@@ -1,10 +1,11 @@
-import gql from 'graphql-tag'
-import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { ApolloConsumer } from 'react-apollo'
+import gql from 'graphql-tag'
 import LoadingIndicator from './LoadingIndicator'
-import UserContext from '../contexts/UserContext'
+import PropTypes from 'prop-types'
 import SignOut from '../components/SignOut'
+
+import UserContext from '../contexts/UserContext'
 
 const AUTHORIZE_CLIENT_MUTATION = gql`
   mutation AUTHORIZE_CLIENT_MUTATION($client_id: String!, $responseType: String!, $redirectUri: String!, $scope: String, $state: String, $nonce: String) {
@@ -131,22 +132,24 @@ class ClientAuthorization extends PureComponent {
                           <div className="mt-2">
                             <strong>{this.props.client.name}</strong> would like to:
                           </div>
-                          {this.props.scopes.filter((s) => this.state.pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions).map((scope) => (
-                            <div key={scope.id} className="form-check my-2 mx-4">
-                              <input
-                                type="checkbox"
-                                id={scope.id}
-                                disabled={scope.required}
-                                name={scope.id}
-                                className="form-check-input"
-                                checked={this.state.allowedScopes.includes(scope.id)}
-                                onChange={this.handleScopeCheckChanged}
-                              />
-                              <label htmlFor={scope.id} className="form-check-label">
-                                {scope.userDescription}
-                              </label>
-                            </div>
-                          ))}
+                          {this.props.scopes
+                            .filter((s) => this.state.pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions)
+                            .map((scope) => (
+                              <div key={scope.id} className="form-check my-2 mx-4">
+                                <input
+                                  type="checkbox"
+                                  id={scope.id}
+                                  disabled={scope.required}
+                                  name={scope.id}
+                                  className="form-check-input"
+                                  checked={this.state.allowedScopes.includes(scope.id)}
+                                  onChange={this.handleScopeCheckChanged}
+                                />
+                                <label htmlFor={scope.id} className="form-check-label">
+                                  {scope.userDescription}
+                                </label>
+                              </div>
+                            ))}
                         </div>
                       </div>
                       <div className="d-flex align-items-center justify-content-center mt-2">

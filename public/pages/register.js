@@ -1,6 +1,7 @@
+import React, { PureComponent } from 'react'
 import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
-import React, { PureComponent } from 'react'
+
 import { Mutation } from 'react-apollo'
 import Primary from '../layouts/primary'
 
@@ -152,15 +153,14 @@ class RegisterPage extends PureComponent {
                                   {this.state.step === RegistrationSteps.Multifactor && (
                                     <div>
                                       {securityConfiguration.multifactorRequired && <p>Multi-factor authentication is required to complete account registration.</p>}
-                                      {!this.state.showMfaForm &&
-                                        !securityConfiguration.multifactorRequired && (
-                                          <div>
-                                            <p>Make your account more secure and require a one-time authentication code to login.</p>
-                                            <button className="btn btn-primary" onClick={() => this.setRequireMfaVerification(true)}>
-                                              Enable Mulit-Factor Authentication
-                                            </button>
-                                          </div>
-                                        )}
+                                      {!this.state.showMfaForm && !securityConfiguration.multifactorRequired && (
+                                        <div>
+                                          <p>Make your account more secure and require a one-time authentication code to login.</p>
+                                          <button className="btn btn-primary" onClick={() => this.setRequireMfaVerification(true)}>
+                                            Enable Mulit-Factor Authentication
+                                          </button>
+                                        </div>
+                                      )}
                                       {(this.state.showMfaForm || securityConfiguration.multifactorRequired) && (
                                         <MultiFactorSetup
                                           emailAddress={this.state.data.emailAddress}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import Primary from '../../layouts/primary'
 import ChangePasswordForm from '../../components/ChangePasswordForm'
@@ -13,8 +14,6 @@ class ChangePassword extends React.PureComponent {
   }
 
   render() {
-    const { props } = this
-
     return (
       <Primary>
         <div>

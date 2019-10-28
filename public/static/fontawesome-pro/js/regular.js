@@ -5,27 +5,25 @@
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -33,7 +31,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -41,12 +41,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -62,20 +62,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -86,9 +86,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -115,7 +115,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "abacus": [576, 512, [], "f640", "M552 0c-13.25 0-24 10.74-24 24v48h-48V48c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H240V48c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48V48c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H48V24C48 10.74 37.25 0 24 0S0 10.74 0 24v476c0 6.63 5.37 12 12 12h24c6.63 0 12-5.37 12-12v-60h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h192v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v60c0 6.63 5.37 12 12 12h24c6.63 0 12-5.37 12-12V24c0-13.26-10.75-24-24-24zM96 120v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h192v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v112H336v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H48V120h48zm384 272v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H240v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H48V280h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h192v112h-48z"],
   "acorn": [448, 512, [], "f6ae", "M352 64H251.5c3.4-9.4 8.47-18.18 15.16-26.04 5.56-6.52 5.31-15.91-.62-21.86L254.69 4.78c-3.12-3.16-7.72-5.14-11.97-4.72-4.38.14-8.5 2.08-11.31 5.3-14.75 16.8-24.55 37.06-29.39 58.65H96c-53.02 0-96 42.98-96 96v32c0 17.67 14.33 32 32 32v32c0 98.06 55.4 187.7 143.11 231.55L224 512l48.89-24.45C360.6 443.7 416 354.06 416 256v-32c17.67 0 32-14.33 32-32v-32c0-53.02-42.98-96-96-96zM48 160c0-26.47 21.53-48 48-48h256c26.47 0 48 21.53 48 48v16H48v-16zm320 96c0 80.39-44.67 152.67-116.57 188.62L224 458.33l-27.43-13.71C124.67 408.67 80 336.39 80 256v-32h288v32z"],
   "ad": [512, 512, [], "f641", "M101.42 352h16.94c6.81 0 12.88-4.32 15.12-10.75l7.38-21.25h70.29l7.38 21.25A16 16 0 0 0 233.65 352h16.94c11.01 0 18.73-10.85 15.12-21.25L212 176.13A24.004 24.004 0 0 0 189.33 160h-26.66c-10.22 0-19.32 6.47-22.67 16.12L86.31 330.75C82.7 341.15 90.42 352 101.42 352zM176 218.78L194.48 272h-36.96L176 218.78zM352 352c9.93 0 19.4-2.02 28.02-5.68 2.94 3.41 7.13 5.68 11.98 5.68h16c8.84 0 16-7.16 16-16V176c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v36.42c-7.54-2.69-15.54-4.42-24-4.42-39.7 0-72 32.3-72 72s32.3 72 72 72zm0-96c13.23 0 24 10.77 24 24s-10.77 24-24 24-24-10.77-24-24 10.77-24 24-24zM464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zm0 336H48V112h416v288z"],

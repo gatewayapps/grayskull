@@ -52,11 +52,13 @@ class ClientForm extends PureComponent {
 
   componentDidMount() {
     const scopes = this.props.client.scopes
-    this.props.scopes.filter((scope) => scope.required).forEach((scope) => {
-      if (!scopes.includes(scope.id)) {
-        scopes.push(scope.id)
-      }
-    })
+    this.props.scopes
+      .filter((scope) => scope.required)
+      .forEach((scope) => {
+        if (!scopes.includes(scope.id)) {
+          scopes.push(scope.id)
+        }
+      })
     this.props.onChange('scopes', scopes)
   }
 

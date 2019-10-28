@@ -1,12 +1,11 @@
 import { default as FormValidation, FormValidationRule } from '../../components/FormValidation'
-import ValidatingInput from '../../components/ValidatingInput'
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import ResponsiveValidatingInput from '../../components/ResponsiveValidatingInput'
 import StateButton from '../../components/StateButton'
 import gql from 'graphql-tag'
 import { ApolloConsumer } from 'react-apollo'
-import ImageDropArea from '../../components/ImageDropArea'
 
 const VERIFY_CERTBOT = gql`
   mutation VERIFY_CERTBOT($domain: String!) {
@@ -32,6 +31,7 @@ export class ServerConfiguration extends React.Component {
     onConfigurationChanged: PropTypes.func.isRequired,
     data: PropTypes.shape({
       realmName: PropTypes.string,
+      realmLogo: PropTypes.string,
       baseUrl: PropTypes.string,
       enableCertbot: PropTypes.bool,
       certBotState: PropTypes.string,

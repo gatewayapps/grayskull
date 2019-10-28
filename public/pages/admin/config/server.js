@@ -1,2 +1,5 @@
 import React from 'react'
-export default (props) => <div />
+
+const serverComponent = (props) => <div />
+
+export default serverComponent

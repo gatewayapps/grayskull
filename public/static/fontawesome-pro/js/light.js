@@ -5,27 +5,25 @@
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -33,7 +31,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -41,12 +41,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -62,20 +62,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -86,9 +86,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -115,7 +115,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "abacus": [576, 512, [], "f640", "M560 0c-8.84 0-16 7.16-16 16v64h-64V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-96V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32V64c0-17.67-14.33-32-32-32H96c-17.67 0-32 14.33-32 32v16H32V16c0-8.84-7.16-16-16-16S0 7.16 0 16v488c0 4.42 3.58 8 8 8h16c4.42 0 8-3.58 8-8v-72h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h96v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h64v72c0 4.42 3.58 8 8 8h16c4.42 0 8-3.58 8-8V16c0-8.84-7.16-16-16-16zM416 64h32v64h-32V64zm-192 0h32v64h-32V64zM96 64h32v64H96V64zm32 384H96v-64h32v64zm128 0h-32v-64h32v64zm192 0h-32v-64h32v64zm96-48h-64v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-96v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32v-16c0-17.67-14.33-32-32-32H96c-17.67 0-32 14.33-32 32v16H32V272h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h128v128zM96 288v-64h32v64H96zm128 0v-64h32v64h-32zm128 0v-64h32v64h-32zm192-48H416v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32v-16c0-17.67-14.33-32-32-32H96c-17.67 0-32 14.33-32 32v16H32V112h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h96v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h64v128z"],
   "acorn": [448, 512, [], "f6ae", "M352 64H241.12c3.32-14.4 9.75-27.88 19.46-39.28 2.77-3.25 2.81-7.98-.21-11L249.04 2.39c-3.22-3.22-8.62-3.23-11.62.2-15.38 17.51-25.27 38.67-29.1 61.41H96c-53.02 0-96 42.98-96 96v32c0 17.67 14.33 32 32 32v32c0 98.06 55.4 187.7 143.11 231.55L224 512l48.89-24.45C360.6 443.7 416 354.06 416 256v-32c17.67 0 32-14.33 32-32v-32c0-53.02-42.98-96-96-96zm32 192c0 86.49-48.06 164.25-125.42 202.93L224 476.22l-34.58-17.29C112.06 420.25 64 342.49 64 256v-32h320v32zm32-64H32v-32c0-35.29 28.71-64 64-64h256c35.29 0 64 28.71 64 64v32z"],
   "ad": [512, 512, [], "f641", "M464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zm16 336c0 8.82-7.18 16-16 16H48c-8.82 0-16-7.18-16-16V112c0-8.82 7.18-16 16-16h416c8.82 0 16 7.18 16 16v288zm-72-240h-16c-4.42 0-8 3.58-8 8v64.88c-9.45-5.5-20.28-8.88-32-8.88-35.35 0-64 28.65-64 64s28.65 64 64 64c11.72 0 22.55-3.38 32-8.88v.88c0 4.42 3.58 8 8 8h16c4.42 0 8-3.58 8-8V168c0-4.42-3.58-8-8-8zm-56 160c-17.64 0-32-14.36-32-32s14.36-32 32-32 32 14.36 32 32-14.36 32-32 32zM196.97 165.13a8.007 8.007 0 0 0-7.47-5.13h-27.01c-3.31 0-6.28 2.04-7.47 5.13l-67.69 176C85.31 346.37 89.18 352 94.8 352h17.15c3.31 0 6.28-2.04 7.47-5.13L142.07 288h67.86l22.64 58.87a8.007 8.007 0 0 0 7.47 5.13h17.15c5.62 0 9.48-5.63 7.47-10.87l-67.69-176zM154.37 256L176 199.77 197.63 256h-43.26z"],

@@ -70,6 +70,7 @@ class MultiFactorSetup extends PureComponent {
     if (data && data.generateMfaKey) {
       qrcode.toDataURL(data.generateMfaKey, (err, qrcodeImage) => {
         if (err) {
+          // eslint-disable-next-line no-console
           console.error(err)
           return
         }
@@ -102,7 +103,7 @@ class MultiFactorSetup extends PureComponent {
     return (
       <div>
         <ol>
-          <li>Install an "authenticator" app from the app store on your phone.</li>
+          <li>Install an &quot;authenticator&quot; app from the app store on your phone.</li>
           <li>Open the app.</li>
           <li>
             Scan this barcode with your authenticator app.
@@ -111,7 +112,7 @@ class MultiFactorSetup extends PureComponent {
             </div>
             {!this.state.showSecret && (
               <button className="btn btn-link" onClick={this.displaySecret}>
-                I can't scan the bar code
+                I can&apos;t scan the bar code
               </button>
             )}
             {this.state.showSecret && (

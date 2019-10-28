@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'

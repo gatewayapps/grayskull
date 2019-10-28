@@ -5,27 +5,25 @@
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -33,7 +31,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -41,12 +41,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -62,20 +62,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -86,9 +86,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -115,7 +115,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "500px": [448, 512, [], "f26e", "M103.3 344.3c-6.5-14.2-6.9-18.3 7.4-23.1 25.6-8 8 9.2 43.2 49.2h.3v-93.9c1.2-50.2 44-92.2 97.7-92.2 53.9 0 97.7 43.5 97.7 96.8 0 63.4-60.8 113.2-128.5 93.3-10.5-4.2-2.1-31.7 8.5-28.6 53 0 89.4-10.1 89.4-64.4 0-61-77.1-89.6-116.9-44.6-23.5 26.4-17.6 42.1-17.6 157.6 50.7 31 118.3 22 160.4-20.1 24.8-24.8 38.5-58 38.5-93 0-35.2-13.8-68.2-38.8-93.3-24.8-24.8-57.8-38.5-93.3-38.5s-68.8 13.8-93.5 38.5c-.3.3-16 16.5-21.2 23.9l-.5.6c-3.3 4.7-6.3 9.1-20.1 6.1-6.9-1.7-14.3-5.8-14.3-11.8V20c0-5 3.9-10.5 10.5-10.5h241.3c8.3 0 8.3 11.6 8.3 15.1 0 3.9 0 15.1-8.3 15.1H130.3v132.9h.3c104.2-109.8 282.8-36 282.8 108.9 0 178.1-244.8 220.3-310.1 62.8zm63.3-260.8c-.5 4.2 4.6 24.5 14.6 20.6C306 56.6 384 144.5 390.6 144.5c4.8 0 22.8-15.3 14.3-22.8-93.2-89-234.5-57-238.3-38.2zM393 414.7C283 524.6 94 475.5 61 310.5c0-12.2-30.4-7.4-28.9 3.3 24 173.4 246 256.9 381.6 121.3 6.9-7.8-12.6-28.4-20.7-20.4zM213.6 306.6c0 4 4.3 7.3 5.5 8.5 3 3 6.1 4.4 8.5 4.4 3.8 0 2.6.2 22.3-19.5 19.6 19.3 19.1 19.5 22.3 19.5 5.4 0 18.5-10.4 10.7-18.2L265.6 284l18.2-18.2c6.3-6.8-10.1-21.8-16.2-15.7L249.7 268c-18.6-18.8-18.4-19.5-21.5-19.5-5 0-18 11.7-12.4 17.3L234 284c-18.1 17.9-20.4 19.2-20.4 22.6z"],
   "accessible-icon": [448, 512, [], "f368", "M423.9 255.8L411 413.1c-3.3 40.7-63.9 35.1-60.6-4.9l10-122.5-41.1 2.3c10.1 20.7 15.8 43.9 15.8 68.5 0 41.2-16.1 78.7-42.3 106.5l-39.3-39.3c57.9-63.7 13.1-167.2-74-167.2-25.9 0-49.5 9.9-67.2 26L73 243.2c22-20.7 50.1-35.1 81.4-40.2l75.3-85.7-42.6-24.8-51.6 46c-30 26.8-70.6-18.5-40.5-45.4l68-60.7c9.8-8.8 24.1-10.2 35.5-3.6 0 0 139.3 80.9 139.5 81.1 16.2 10.1 20.7 36 6.1 52.6L285.7 229l106.1-5.9c18.5-1.1 33.6 14.4 32.1 32.7zm-64.9-154c28.1 0 50.9-22.8 50.9-50.9C409.9 22.8 387.1 0 359 0c-28.1 0-50.9 22.8-50.9 50.9 0 28.1 22.8 50.9 50.9 50.9zM179.6 456.5c-80.6 0-127.4-90.6-82.7-156.1l-39.7-39.7C36.4 287 24 320.3 24 356.4c0 130.7 150.7 201.4 251.4 122.5l-39.7-39.7c-16 10.9-35.3 17.3-56.1 17.3z"],
   "accusoft": [640, 512, [], "f369", "M482.2 372.1C476.5 365.2 250 75 242.3 65.5c-13.7-17.2 0-16.8 19.2-16.9 9.7-.1 106.3-.6 116.5-.6 24.1-.1 28.7.6 38.4 12.8 2.1 2.7 205.1 245.8 207.2 248.3 5.5 6.7 15.2 19.1 7.2 23.4-2.4 1.3-114.6 47.7-117.8 48.9-10.1 4-17.5 6.8-30.8-9.3m114.7-5.6s-115 50.4-117.5 51.6c-16 7.3-26.9-3.2-36.7-14.6l-57.1-74c-5.4-.9-60.4-9.6-65.3-9.3-3.1.2-9.6.8-14.4 2.9-4.9 2.1-145.2 52.8-150.2 54.7-5.1 2-11.4 3.6-11.1 7.6.2 2.5 2 2.6 4.6 3.5 2.7.8 300.9 67.6 308 69.1 15.6 3.3 38.5 10.5 53.6 1.7 2.1-1.2 123.8-76.4 125.8-77.8 5.4-4 4.3-6.8-1.7-8.2-2.3-.3-24.6-4.7-38-7.2m-326-181.3s-12 1.6-25 15.1c-9 9.3-242.1 239.1-243.4 240.9-7 10 1.6 6.8 15.7 1.7.8 0 114.5-36.6 114.5-36.6.5-.6-.1-.1.6-.6-.4-5.1-.8-26.2-1-27.7-.6-5.2 2.2-6.9 7-8.9l92.6-33.8c.6-.8 88.5-81.7 90.2-83.3v-1l-51.2-65.8"],
@@ -515,27 +515,25 @@ bunker(function () {
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -543,7 +541,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -551,12 +551,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -572,20 +572,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -596,9 +596,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -625,7 +625,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "abacus": [576, 512, [], "f640", "M560 0c-8.84 0-16 7.16-16 16v64h-64V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-96V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32V64c0-17.67-14.33-32-32-32H96c-17.67 0-32 14.33-32 32v16H32V16c0-8.84-7.16-16-16-16S0 7.16 0 16v488c0 4.42 3.58 8 8 8h16c4.42 0 8-3.58 8-8v-72h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h96v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h64v72c0 4.42 3.58 8 8 8h16c4.42 0 8-3.58 8-8V16c0-8.84-7.16-16-16-16zM416 64h32v64h-32V64zm-192 0h32v64h-32V64zM96 64h32v64H96V64zm32 384H96v-64h32v64zm128 0h-32v-64h32v64zm192 0h-32v-64h32v64zm96-48h-64v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-96v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32v-16c0-17.67-14.33-32-32-32H96c-17.67 0-32 14.33-32 32v16H32V272h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h128v128zM96 288v-64h32v64H96zm128 0v-64h32v64h-32zm128 0v-64h32v64h-32zm192-48H416v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32v-16c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v16h-32v-16c0-17.67-14.33-32-32-32H96c-17.67 0-32 14.33-32 32v16H32V112h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h32v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h96v16c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32v-16h64v128z"],
   "acorn": [448, 512, [], "f6ae", "M352 64H241.12c3.32-14.4 9.75-27.88 19.46-39.28 2.77-3.25 2.81-7.98-.21-11L249.04 2.39c-3.22-3.22-8.62-3.23-11.62.2-15.38 17.51-25.27 38.67-29.1 61.41H96c-53.02 0-96 42.98-96 96v32c0 17.67 14.33 32 32 32v32c0 98.06 55.4 187.7 143.11 231.55L224 512l48.89-24.45C360.6 443.7 416 354.06 416 256v-32c17.67 0 32-14.33 32-32v-32c0-53.02-42.98-96-96-96zm32 192c0 86.49-48.06 164.25-125.42 202.93L224 476.22l-34.58-17.29C112.06 420.25 64 342.49 64 256v-32h320v32zm32-64H32v-32c0-35.29 28.71-64 64-64h256c35.29 0 64 28.71 64 64v32z"],
   "ad": [512, 512, [], "f641", "M464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zm16 336c0 8.82-7.18 16-16 16H48c-8.82 0-16-7.18-16-16V112c0-8.82 7.18-16 16-16h416c8.82 0 16 7.18 16 16v288zm-72-240h-16c-4.42 0-8 3.58-8 8v64.88c-9.45-5.5-20.28-8.88-32-8.88-35.35 0-64 28.65-64 64s28.65 64 64 64c11.72 0 22.55-3.38 32-8.88v.88c0 4.42 3.58 8 8 8h16c4.42 0 8-3.58 8-8V168c0-4.42-3.58-8-8-8zm-56 160c-17.64 0-32-14.36-32-32s14.36-32 32-32 32 14.36 32 32-14.36 32-32 32zM196.97 165.13a8.007 8.007 0 0 0-7.47-5.13h-27.01c-3.31 0-6.28 2.04-7.47 5.13l-67.69 176C85.31 346.37 89.18 352 94.8 352h17.15c3.31 0 6.28-2.04 7.47-5.13L142.07 288h67.86l22.64 58.87a8.007 8.007 0 0 0 7.47 5.13h17.15c5.62 0 9.48-5.63 7.47-10.87l-67.69-176zM154.37 256L176 199.77 197.63 256h-43.26z"],
@@ -1960,27 +1960,25 @@ bunker(function () {
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -1988,7 +1986,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -1996,12 +1996,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -2017,20 +2017,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -2041,9 +2041,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -2070,7 +2070,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "abacus": [576, 512, [], "f640", "M552 0c-13.25 0-24 10.74-24 24v48h-48V48c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H240V48c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48V48c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H48V24C48 10.74 37.25 0 24 0S0 10.74 0 24v476c0 6.63 5.37 12 12 12h24c6.63 0 12-5.37 12-12v-60h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h192v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v60c0 6.63 5.37 12 12 12h24c6.63 0 12-5.37 12-12V24c0-13.26-10.75-24-24-24zM96 120v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h192v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v112H336v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H48V120h48zm384 272v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H240v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24h-48v-24c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v24H48V280h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h48v24c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-24h192v112h-48z"],
   "acorn": [448, 512, [], "f6ae", "M352 64H251.5c3.4-9.4 8.47-18.18 15.16-26.04 5.56-6.52 5.31-15.91-.62-21.86L254.69 4.78c-3.12-3.16-7.72-5.14-11.97-4.72-4.38.14-8.5 2.08-11.31 5.3-14.75 16.8-24.55 37.06-29.39 58.65H96c-53.02 0-96 42.98-96 96v32c0 17.67 14.33 32 32 32v32c0 98.06 55.4 187.7 143.11 231.55L224 512l48.89-24.45C360.6 443.7 416 354.06 416 256v-32c17.67 0 32-14.33 32-32v-32c0-53.02-42.98-96-96-96zM48 160c0-26.47 21.53-48 48-48h256c26.47 0 48 21.53 48 48v16H48v-16zm320 96c0 80.39-44.67 152.67-116.57 188.62L224 458.33l-27.43-13.71C124.67 408.67 80 336.39 80 256v-32h288v32z"],
   "ad": [512, 512, [], "f641", "M101.42 352h16.94c6.81 0 12.88-4.32 15.12-10.75l7.38-21.25h70.29l7.38 21.25A16 16 0 0 0 233.65 352h16.94c11.01 0 18.73-10.85 15.12-21.25L212 176.13A24.004 24.004 0 0 0 189.33 160h-26.66c-10.22 0-19.32 6.47-22.67 16.12L86.31 330.75C82.7 341.15 90.42 352 101.42 352zM176 218.78L194.48 272h-36.96L176 218.78zM352 352c9.93 0 19.4-2.02 28.02-5.68 2.94 3.41 7.13 5.68 11.98 5.68h16c8.84 0 16-7.16 16-16V176c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v36.42c-7.54-2.69-15.54-4.42-24-4.42-39.7 0-72 32.3-72 72s32.3 72 72 72zm0-96c13.23 0 24 10.77 24 24s-10.77 24-24 24-24-10.77-24-24 10.77-24 24-24zM464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zm0 336H48V112h416v288z"],
@@ -3405,27 +3405,25 @@ bunker(function () {
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -3433,7 +3431,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -3441,12 +3441,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -3462,20 +3462,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -3486,9 +3486,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -3515,7 +3515,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "abacus": [576, 512, [], "f640", "M32 0C14.33 0 0 14.33 0 32v464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V32C64 14.33 49.67 0 32 0zm512 0c-17.67 0-32 14.33-32 32v464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V32c0-17.67-14.33-32-32-32zm-80 32h-32c-8.84 0-16 7.16-16 16v24H256V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h160v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V48c0-8.84-7.16-16-16-16zM352 208c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h128v-48H352v-24zm112 144h-32c-8.84 0-16 7.16-16 16v24H256v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h160v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-96c0-8.84-7.16-16-16-16z"],
   "acorn": [448, 512, [], "f6ae", "M175.11 487.55L224 512l48.89-24.45C360.6 443.7 416 354.06 416 256H32c0 98.06 55.4 187.7 143.11 231.55zM352 64H251.5c3.4-9.4 8.47-18.18 15.16-26.04 5.56-6.52 5.31-15.91-.62-21.86L254.69 4.78c-3.12-3.16-7.72-5.14-11.97-4.72-4.38.14-8.5 2.08-11.31 5.3-14.75 16.8-24.55 37.06-29.39 58.65H96c-53.02 0-96 42.98-96 96v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32C448 106.98 405.02 64 352 64z"],
   "ad": [512, 512, [], "f641", "M157.52 272h36.96L176 218.78 157.52 272zM352 256c-13.23 0-24 10.77-24 24s10.77 24 24 24 24-10.77 24-24-10.77-24-24-24zM464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM250.58 352h-16.94c-6.81 0-12.88-4.32-15.12-10.75L211.15 320h-70.29l-7.38 21.25A16 16 0 0 1 118.36 352h-16.94c-11.01 0-18.73-10.85-15.12-21.25L140 176.12A23.995 23.995 0 0 1 162.67 160h26.66A23.99 23.99 0 0 1 212 176.13l53.69 154.62c3.61 10.4-4.11 21.25-15.11 21.25zM424 336c0 8.84-7.16 16-16 16h-16c-4.85 0-9.04-2.27-11.98-5.68-8.62 3.66-18.09 5.68-28.02 5.68-39.7 0-72-32.3-72-72s32.3-72 72-72c8.46 0 16.46 1.73 24 4.42V176c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v160z"],
@@ -4850,12 +4850,12 @@ bunker(function () {
 (function () {
 'use strict';
 
-var noop = function noop() {};
+const noop = function noop() {};
 
-var _WINDOW = {};
-var _DOCUMENT = {};
-var _MUTATION_OBSERVER$1 = null;
-var _PERFORMANCE = { mark: noop, measure: noop };
+let _WINDOW = {};
+let _DOCUMENT = {};
+let _MUTATION_OBSERVER$1 = null;
+let _PERFORMANCE = { mark: noop, measure: noop };
 
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
@@ -4864,29 +4864,29 @@ try {
   if (typeof performance !== 'undefined') _PERFORMANCE = performance;
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-var DOCUMENT = _DOCUMENT;
-var MUTATION_OBSERVER = _MUTATION_OBSERVER$1;
-var PERFORMANCE = _PERFORMANCE;
-var IS_BROWSER = !!WINDOW.document;
-var IS_DOM = !!DOCUMENT.documentElement && !!DOCUMENT.head && typeof DOCUMENT.addEventListener === 'function' && typeof DOCUMENT.createElement === 'function';
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+const WINDOW = _WINDOW;
+const DOCUMENT = _DOCUMENT;
+const MUTATION_OBSERVER = _MUTATION_OBSERVER$1;
+const PERFORMANCE = _PERFORMANCE;
+const IS_BROWSER = !!WINDOW.document;
+const IS_DOM = !!DOCUMENT.documentElement && !!DOCUMENT.head && typeof DOCUMENT.addEventListener === 'function' && typeof DOCUMENT.createElement === 'function';
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
 
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
-var UNITS_IN_GRID = 16;
-var DEFAULT_FAMILY_PREFIX = 'fa';
-var DEFAULT_REPLACEMENT_CLASS = 'svg-inline--fa';
-var DATA_FA_I2SVG = 'data-fa-i2svg';
-var DATA_FA_PSEUDO_ELEMENT = 'data-fa-pseudo-element';
-var DATA_PREFIX = 'data-prefix';
-var DATA_ICON = 'data-icon';
-var HTML_CLASS_I2SVG_BASE_CLASS = 'fontawesome-i2svg';
-var TAGNAMES_TO_SKIP_FOR_PSEUDOELEMENTS = ['HTML', 'HEAD', 'STYLE', 'SCRIPT'];
-var PRODUCTION = function () {
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
+const UNITS_IN_GRID = 16;
+const DEFAULT_FAMILY_PREFIX = 'fa';
+const DEFAULT_REPLACEMENT_CLASS = 'svg-inline--fa';
+const DATA_FA_I2SVG = 'data-fa-i2svg';
+const DATA_FA_PSEUDO_ELEMENT = 'data-fa-pseudo-element';
+const DATA_PREFIX = 'data-prefix';
+const DATA_ICON = 'data-icon';
+const HTML_CLASS_I2SVG_BASE_CLASS = 'fontawesome-i2svg';
+const TAGNAMES_TO_SKIP_FOR_PSEUDOELEMENTS = ['HTML', 'HEAD', 'STYLE', 'SCRIPT'];
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -4894,27 +4894,27 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
-var ATTRIBUTES_WATCHED_FOR_MUTATION = ['class', 'data-prefix', 'data-icon', 'data-fa-transform', 'data-fa-mask'];
+const ATTRIBUTES_WATCHED_FOR_MUTATION = ['class', 'data-prefix', 'data-icon', 'data-fa-transform', 'data-fa-mask'];
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
 }));
 
-var classCallCheck = function (instance, Constructor) {
+const classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
 };
 
-var createClass = function () {
+const createClass = function () {
   function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
+    for (let i = 0; i < props.length; i++) {
+      const descriptor = props[i];
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
       if ("value" in descriptor) descriptor.writable = true;
@@ -4931,11 +4931,11 @@ var createClass = function () {
 
 
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -4947,12 +4947,12 @@ var _extends = Object.assign || function (target) {
 
 
 
-var slicedToArray = function () {
+const slicedToArray = function () {
   function sliceIterator(arr, i) {
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
+    const _arr = [];
+    let _n = true;
+    let _d = false;
+    let _e = undefined;
 
     try {
       for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
@@ -4985,7 +4985,7 @@ var slicedToArray = function () {
   };
 }();
 
-var toConsumableArray = function (arr) {
+const toConsumableArray = function (arr) {
   if (Array.isArray(arr)) {
     for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
 
@@ -4995,10 +4995,10 @@ var toConsumableArray = function (arr) {
   }
 };
 
-var initial = WINDOW.FontAwesomeConfig || {};
+const initial = WINDOW.FontAwesomeConfig || {};
 
 function getAttrConfig(attr) {
-  var element = DOCUMENT.querySelector('script[' + attr + ']');
+  const element = DOCUMENT.querySelector('script[' + attr + ']');
 
   if (element) {
     return element.getAttribute(attr);
@@ -5016,14 +5016,14 @@ function coerce(val) {
 }
 
 if (DOCUMENT && typeof DOCUMENT.querySelector === 'function') {
-  var attrs = [['data-family-prefix', 'familyPrefix'], ['data-replacement-class', 'replacementClass'], ['data-auto-replace-svg', 'autoReplaceSvg'], ['data-auto-add-css', 'autoAddCss'], ['data-auto-a11y', 'autoA11y'], ['data-search-pseudo-elements', 'searchPseudoElements'], ['data-observe-mutations', 'observeMutations'], ['data-keep-original-source', 'keepOriginalSource'], ['data-measure-performance', 'measurePerformance'], ['data-show-missing-icons', 'showMissingIcons']];
+  const attrs = [['data-family-prefix', 'familyPrefix'], ['data-replacement-class', 'replacementClass'], ['data-auto-replace-svg', 'autoReplaceSvg'], ['data-auto-add-css', 'autoAddCss'], ['data-auto-a11y', 'autoA11y'], ['data-search-pseudo-elements', 'searchPseudoElements'], ['data-observe-mutations', 'observeMutations'], ['data-keep-original-source', 'keepOriginalSource'], ['data-measure-performance', 'measurePerformance'], ['data-show-missing-icons', 'showMissingIcons']];
 
   attrs.forEach(function (_ref) {
-    var _ref2 = slicedToArray(_ref, 2),
+    const _ref2 = slicedToArray(_ref, 2),
         attr = _ref2[0],
         key = _ref2[1];
 
-    var val = coerce(getAttrConfig(attr));
+    const val = coerce(getAttrConfig(attr));
 
     if (val !== undefined && val !== null) {
       initial[key] = val;
@@ -5031,7 +5031,7 @@ if (DOCUMENT && typeof DOCUMENT.querySelector === 'function') {
   });
 }
 
-var _default = _extends({
+const _default = _extends({
   familyPrefix: DEFAULT_FAMILY_PREFIX,
   replacementClass: DEFAULT_REPLACEMENT_CLASS,
   autoReplaceSvg: true,
@@ -5046,21 +5046,21 @@ var _default = _extends({
 
 if (!_default.autoReplaceSvg) _default.observeMutations = false;
 
-var config = _extends({}, _default);
+const config = _extends({}, _default);
 
 WINDOW.FontAwesomeConfig = config;
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var functions = [];
-var listener = function listener() {
+const functions = [];
+const listener = function listener() {
   DOCUMENT.removeEventListener('DOMContentLoaded', listener);
   loaded = 1;
   functions.map(function (fn) {
@@ -5076,14 +5076,14 @@ if (IS_DOM) {
   if (!loaded) DOCUMENT.addEventListener('DOMContentLoaded', listener);
 }
 
-var domready = function (fn) {
+const domready = function (fn) {
   if (!IS_DOM) return;
   loaded ? setTimeout(fn, 0) : functions.push(fn);
 };
 
-var d = UNITS_IN_GRID;
+const d = UNITS_IN_GRID;
 
-var meaninglessTransform = {
+const meaninglessTransform = {
   size: 16,
   x: 0,
   y: 0,
@@ -5111,16 +5111,16 @@ function insertCss(css) {
     return;
   }
 
-  var style = DOCUMENT.createElement('style');
+  const style = DOCUMENT.createElement('style');
   style.setAttribute('type', 'text/css');
   style.innerHTML = css;
 
-  var headChildren = DOCUMENT.head.childNodes;
-  var beforeChild = null;
+  const headChildren = DOCUMENT.head.childNodes;
+  let beforeChild = null;
 
-  for (var i = headChildren.length - 1; i > -1; i--) {
-    var child = headChildren[i];
-    var tagName = (child.tagName || '').toUpperCase();
+  for (let i = headChildren.length - 1; i > -1; i--) {
+    const child = headChildren[i];
+    const tagName = (child.tagName || '').toUpperCase();
     if (['STYLE', 'LINK'].indexOf(tagName) > -1) {
       beforeChild = child;
     }
@@ -5131,11 +5131,11 @@ function insertCss(css) {
   return css;
 }
 
-var idPool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const idPool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function nextUniqueId() {
-  var size = 12;
-  var id = '';
+  let size = 12;
+  let id = '';
   while (size-- > 0) {
     id += idPool[Math.random() * 62 | 0];
   }
@@ -5143,9 +5143,9 @@ function nextUniqueId() {
 }
 
 function toArray(obj) {
-  var array = [];
+  const array = [];
 
-  for (var i = (obj || []).length >>> 0; i--;) {
+  for (let i = (obj || []).length >>> 0; i--;) {
     array[i] = obj[i];
   }
 
@@ -5163,9 +5163,9 @@ function classArray(node) {
 }
 
 function getIconName(familyPrefix, cls) {
-  var parts = cls.split('-');
-  var prefix = parts[0];
-  var iconName = parts.slice(1).join('-');
+  const parts = cls.split('-');
+  const prefix = parts[0];
+  const iconName = parts.slice(1).join('-');
 
   if (prefix === familyPrefix && iconName !== '' && !isReserved(iconName)) {
     return iconName;
@@ -5195,20 +5195,20 @@ function transformIsMeaningful(transform) {
 }
 
 function transformForSvg(_ref) {
-  var transform = _ref.transform,
+  const transform = _ref.transform,
       containerWidth = _ref.containerWidth,
       iconWidth = _ref.iconWidth;
 
-  var outer = {
+  const outer = {
     transform: 'translate(' + containerWidth / 2 + ' 256)'
   };
-  var innerTranslate = 'translate(' + transform.x * 32 + ', ' + transform.y * 32 + ') ';
-  var innerScale = 'scale(' + transform.size / 16 * (transform.flipX ? -1 : 1) + ', ' + transform.size / 16 * (transform.flipY ? -1 : 1) + ') ';
-  var innerRotate = 'rotate(' + transform.rotate + ' 0 0)';
-  var inner = {
+  const innerTranslate = 'translate(' + transform.x * 32 + ', ' + transform.y * 32 + ') ';
+  const innerScale = 'scale(' + transform.size / 16 * (transform.flipX ? -1 : 1) + ', ' + transform.size / 16 * (transform.flipY ? -1 : 1) + ') ';
+  const innerRotate = 'rotate(' + transform.rotate + ' 0 0)';
+  const inner = {
     transform: innerTranslate + ' ' + innerScale + ' ' + innerRotate
   };
-  var path = {
+  const path = {
     transform: 'translate(' + iconWidth / 2 * -1 + ' -256)'
   };
   return {
@@ -5219,7 +5219,7 @@ function transformForSvg(_ref) {
 }
 
 function transformForCss(_ref2) {
-  var transform = _ref2.transform,
+  const transform = _ref2.transform,
       _ref2$width = _ref2.width,
       width = _ref2$width === undefined ? UNITS_IN_GRID : _ref2$width,
       _ref2$height = _ref2.height,
@@ -5227,7 +5227,7 @@ function transformForCss(_ref2) {
       _ref2$startCentered = _ref2.startCentered,
       startCentered = _ref2$startCentered === undefined ? false : _ref2$startCentered;
 
-  var val = '';
+  let val = '';
 
   if (startCentered && IS_IE) {
     val += 'translate(' + (transform.x / d - width / 2) + 'em, ' + (transform.y / d - height / 2) + 'em) ';
@@ -5243,46 +5243,46 @@ function transformForCss(_ref2) {
   return val;
 }
 
-var ALL_SPACE = {
+const ALL_SPACE = {
   x: 0,
   y: 0,
   width: '100%',
   height: '100%'
 };
 
-var makeIconMasking = function (_ref) {
-  var children = _ref.children,
+const makeIconMasking = function (_ref) {
+  const children = _ref.children,
       attributes = _ref.attributes,
       main = _ref.main,
       mask = _ref.mask,
       transform = _ref.transform;
-  var mainWidth = main.width,
+  const mainWidth = main.width,
       mainPath = main.icon;
-  var maskWidth = mask.width,
+  const maskWidth = mask.width,
       maskPath = mask.icon;
 
 
-  var trans = transformForSvg({ transform: transform, containerWidth: maskWidth, iconWidth: mainWidth });
+  const trans = transformForSvg({ transform: transform, containerWidth: maskWidth, iconWidth: mainWidth });
 
-  var maskRect = {
+  const maskRect = {
     tag: 'rect',
     attributes: _extends({}, ALL_SPACE, {
       fill: 'white'
     })
   };
-  var maskInnerGroup = {
+  const maskInnerGroup = {
     tag: 'g',
     attributes: _extends({}, trans.inner),
     children: [{ tag: 'path', attributes: _extends({}, mainPath.attributes, trans.path, { fill: 'black' }) }]
   };
-  var maskOuterGroup = {
+  const maskOuterGroup = {
     tag: 'g',
     attributes: _extends({}, trans.outer),
     children: [maskInnerGroup]
   };
-  var maskId = 'mask-' + nextUniqueId();
-  var clipId = 'clip-' + nextUniqueId();
-  var maskTag = {
+  const maskId = 'mask-' + nextUniqueId();
+  const clipId = 'clip-' + nextUniqueId();
+  const maskTag = {
     tag: 'mask',
     attributes: _extends({}, ALL_SPACE, {
       id: maskId,
@@ -5291,7 +5291,7 @@ var makeIconMasking = function (_ref) {
     }),
     children: [maskRect, maskOuterGroup]
   };
-  var defs = {
+  const defs = {
     tag: 'defs',
     children: [{ tag: 'clipPath', attributes: { id: clipId }, children: [maskPath] }, maskTag]
   };
@@ -5304,21 +5304,21 @@ var makeIconMasking = function (_ref) {
   };
 };
 
-var makeIconStandard = function (_ref) {
-  var children = _ref.children,
+const makeIconStandard = function (_ref) {
+  const children = _ref.children,
       attributes = _ref.attributes,
       main = _ref.main,
       transform = _ref.transform,
       styles = _ref.styles;
 
-  var styleString = joinStyles(styles);
+  const styleString = joinStyles(styles);
 
   if (styleString.length > 0) {
     attributes['style'] = styleString;
   }
 
   if (transformIsMeaningful(transform)) {
-    var trans = transformForSvg({ transform: transform, containerWidth: main.width, iconWidth: main.width });
+    const trans = transformForSvg({ transform: transform, containerWidth: main.width, iconWidth: main.width });
     children.push({
       tag: 'g',
       attributes: _extends({}, trans.outer),
@@ -5342,8 +5342,8 @@ var makeIconStandard = function (_ref) {
   };
 };
 
-var asIcon = function (_ref) {
-  var children = _ref.children,
+const asIcon = function (_ref) {
+  const children = _ref.children,
       main = _ref.main,
       mask = _ref.mask,
       attributes = _ref.attributes,
@@ -5351,10 +5351,10 @@ var asIcon = function (_ref) {
       transform = _ref.transform;
 
   if (transformIsMeaningful(transform) && main.found && !mask.found) {
-    var width = main.width,
+    const width = main.width,
         height = main.height;
 
-    var offset = {
+    const offset = {
       x: width / height / 2,
       y: 0.5
     };
@@ -5370,14 +5370,14 @@ var asIcon = function (_ref) {
   }];
 };
 
-var asSymbol = function (_ref) {
-  var prefix = _ref.prefix,
+const asSymbol = function (_ref) {
+  const prefix = _ref.prefix,
       iconName = _ref.iconName,
       children = _ref.children,
       attributes = _ref.attributes,
       symbol = _ref.symbol;
 
-  var id = symbol === true ? prefix + '-' + config.familyPrefix + '-' + iconName : symbol;
+  const id = symbol === true ? prefix + '-' + config.familyPrefix + '-' + iconName : symbol;
 
   return [{
     tag: 'svg',
@@ -5393,7 +5393,7 @@ var asSymbol = function (_ref) {
 };
 
 function makeInlineSvgAbstract(params) {
-  var _params$icons = params.icons,
+  const _params$icons = params.icons,
       main = _params$icons.main,
       mask = _params$icons.mask,
       prefix = params.prefix,
@@ -5405,16 +5405,16 @@ function makeInlineSvgAbstract(params) {
       _params$watchable = params.watchable,
       watchable = _params$watchable === undefined ? false : _params$watchable;
 
-  var _ref = mask.found ? mask : main,
+  const _ref = mask.found ? mask : main,
       width = _ref.width,
       height = _ref.height;
 
-  var widthClass = 'fa-w-' + Math.ceil(width / height * 16);
-  var attrClass = [config.replacementClass, iconName ? config.familyPrefix + '-' + iconName : '', widthClass].filter(function (c) {
+  const widthClass = 'fa-w-' + Math.ceil(width / height * 16);
+  const attrClass = [config.replacementClass, iconName ? config.familyPrefix + '-' + iconName : '', widthClass].filter(function (c) {
     return extra.classes.indexOf(c) === -1;
   }).concat(extra.classes).join(' ');
 
-  var content = {
+  const content = {
     children: [],
     attributes: _extends({}, extra.attributes, {
       'data-prefix': prefix,
@@ -5432,7 +5432,7 @@ function makeInlineSvgAbstract(params) {
 
   if (title) content.children.push({ tag: 'title', attributes: { id: content.attributes['aria-labelledby'] || 'title-' + nextUniqueId() }, children: [title] });
 
-  var args = _extends({}, content, {
+  const args = _extends({}, content, {
     prefix: prefix,
     iconName: iconName,
     main: main,
@@ -5442,7 +5442,7 @@ function makeInlineSvgAbstract(params) {
     styles: extra.styles
   });
 
-  var _ref2 = mask.found && main.found ? makeIconMasking(args) : makeIconStandard(args),
+  const _ref2 = mask.found && main.found ? makeIconMasking(args) : makeIconStandard(args),
       children = _ref2.children,
       attributes = _ref2.attributes;
 
@@ -5457,7 +5457,7 @@ function makeInlineSvgAbstract(params) {
 }
 
 function makeLayersTextAbstract(params) {
-  var content = params.content,
+  const content = params.content,
       width = params.width,
       height = params.height,
       transform = params.transform,
@@ -5467,7 +5467,7 @@ function makeLayersTextAbstract(params) {
       watchable = _params$watchable2 === undefined ? false : _params$watchable2;
 
 
-  var attributes = _extends({}, extra.attributes, title ? { 'title': title } : {}, {
+  const attributes = _extends({}, extra.attributes, title ? { 'title': title } : {}, {
     'class': extra.classes.join(' ')
   });
 
@@ -5475,20 +5475,20 @@ function makeLayersTextAbstract(params) {
     attributes[DATA_FA_I2SVG] = '';
   }
 
-  var styles = _extends({}, extra.styles);
+  const styles = _extends({}, extra.styles);
 
   if (transformIsMeaningful(transform)) {
     styles['transform'] = transformForCss({ transform: transform, startCentered: true, width: width, height: height });
     styles['-webkit-transform'] = styles['transform'];
   }
 
-  var styleString = joinStyles(styles);
+  const styleString = joinStyles(styles);
 
   if (styleString.length > 0) {
     attributes['style'] = styleString;
   }
 
-  var val = [];
+  const val = [];
 
   val.push({
     tag: 'span',
@@ -5504,22 +5504,22 @@ function makeLayersTextAbstract(params) {
 }
 
 function makeLayersCounterAbstract(params) {
-  var content = params.content,
+  const content = params.content,
       title = params.title,
       extra = params.extra;
 
 
-  var attributes = _extends({}, extra.attributes, title ? { 'title': title } : {}, {
+  const attributes = _extends({}, extra.attributes, title ? { 'title': title } : {}, {
     'class': extra.classes.join(' ')
   });
 
-  var styleString = joinStyles(extra.styles);
+  const styleString = joinStyles(extra.styles);
 
   if (styleString.length > 0) {
     attributes['style'] = styleString;
   }
 
-  var val = [];
+  const val = [];
 
   val.push({
     tag: 'span',
@@ -5534,11 +5534,11 @@ function makeLayersCounterAbstract(params) {
   return val;
 }
 
-var noop$2 = function noop() {};
-var p = config.measurePerformance && PERFORMANCE && PERFORMANCE.mark && PERFORMANCE.measure ? PERFORMANCE : { mark: noop$2, measure: noop$2 };
-var preamble = 'FA "5.4.0"';
+const noop$2 = function noop() {};
+const p = config.measurePerformance && PERFORMANCE && PERFORMANCE.mark && PERFORMANCE.measure ? PERFORMANCE : { mark: noop$2, measure: noop$2 };
+const preamble = 'FA "5.4.0"';
 
-var begin = function begin(name) {
+const begin = function begin(name) {
   p.mark(preamble + ' ' + name + ' begins');
   return function () {
     return end(name);
@@ -5550,7 +5550,7 @@ var end = function end(name) {
   p.measure(preamble + ' ' + name, preamble + ' ' + name + ' begins', preamble + ' ' + name + ' ends');
 };
 
-var perf = { begin: begin, end: end };
+const perf = { begin: begin, end: end };
 
 'use strict';
 
@@ -5558,7 +5558,7 @@ var perf = { begin: begin, end: end };
  * Internal helper to bind a function known to have 4 arguments
  * to a given context.
  */
-var bindInternal4 = function bindInternal4 (func, thisContext) {
+const bindInternal4 = function bindInternal4 (func, thisContext) {
   return function (a, b, c, d) {
     return func.call(thisContext, a, b, c, d);
   };
@@ -5579,8 +5579,8 @@ var bindInternal4 = function bindInternal4 (func, thisContext) {
  * @param  {Object}   thisContext  The context for the reducer.
  * @return {mixed}                 The final result.
  */
-var reduce = function fastReduceObject (subject, fn, initialValue, thisContext) {
-  var keys = Object.keys(subject),
+const reduce = function fastReduceObject (subject, fn, initialValue, thisContext) {
+  let keys = Object.keys(subject),
       length = keys.length,
       iterator = thisContext !== undefined ? bindInternal4(fn, thisContext) : fn,
       i, key, result;
@@ -5602,16 +5602,16 @@ var reduce = function fastReduceObject (subject, fn, initialValue, thisContext) 
   return result;
 };
 
-var styles$2 = namespace.styles;
-var shims = namespace.shims;
+const styles$2 = namespace.styles;
+const shims = namespace.shims;
 
 
-var _byUnicode = {};
-var _byLigature = {};
-var _byOldName = {};
+let _byUnicode = {};
+let _byLigature = {};
+let _byOldName = {};
 
-var build = function build() {
-  var lookup = function lookup(reducer) {
+const build = function build() {
+  const lookup = function lookup(reducer) {
     return reduce(styles$2, function (o, style, prefix) {
       o[prefix] = reduce(style, reducer, {});
       return o;
@@ -5625,7 +5625,7 @@ var build = function build() {
   });
 
   _byLigature = lookup(function (acc, icon, iconName) {
-    var ligatures = icon[2];
+    const ligatures = icon[2];
 
     acc[iconName] = iconName;
 
@@ -5636,12 +5636,12 @@ var build = function build() {
     return acc;
   });
 
-  var hasRegular = 'far' in styles$2;
+  const hasRegular = 'far' in styles$2;
 
   _byOldName = reduce(shims, function (acc, shim) {
-    var oldName = shim[0];
-    var prefix = shim[1];
-    var iconName = shim[2];
+    const oldName = shim[0];
+    let prefix = shim[1];
+    const iconName = shim[2];
 
     if (prefix === 'far' && !hasRegular) {
       prefix = 'fas';
@@ -5667,21 +5667,21 @@ function byOldName(name) {
   return _byOldName[name] || { prefix: null, iconName: null };
 }
 
-var styles$1 = namespace.styles;
+const styles$1 = namespace.styles;
 
 
-var emptyCanonicalIcon = function emptyCanonicalIcon() {
+const emptyCanonicalIcon = function emptyCanonicalIcon() {
   return { prefix: null, iconName: null, rest: [] };
 };
 
 function getCanonicalIcon(values) {
   return values.reduce(function (acc, cls) {
-    var iconName = getIconName(config.familyPrefix, cls);
+    const iconName = getIconName(config.familyPrefix, cls);
 
     if (styles$1[cls]) {
       acc.prefix = cls;
     } else if (iconName) {
-      var shim = acc.prefix === 'fa' ? byOldName(iconName) : {};
+      const shim = acc.prefix === 'fa' ? byOldName(iconName) : {};
 
       acc.iconName = shim.iconName || iconName;
       acc.prefix = shim.prefix || acc.prefix;
@@ -5704,7 +5704,7 @@ function iconFromMapping(mapping, prefix, iconName) {
 }
 
 function toHtml(abstractNodes) {
-  var tag = abstractNodes.tag,
+  const tag = abstractNodes.tag,
       _abstractNodes$attrib = abstractNodes.attributes,
       attributes = _abstractNodes$attrib === undefined ? {} : _abstractNodes$attrib,
       _abstractNodes$childr = abstractNodes.children,
@@ -5718,10 +5718,10 @@ function toHtml(abstractNodes) {
   }
 }
 
-var noop$1 = function noop() {};
+const noop$1 = function noop() {};
 
 function isWatched(node) {
-  var i2svg = node.getAttribute ? node.getAttribute(DATA_FA_I2SVG) : null;
+  const i2svg = node.getAttribute ? node.getAttribute(DATA_FA_I2SVG) : null;
 
   return typeof i2svg === 'string';
 }
@@ -5731,30 +5731,30 @@ function getMutator() {
     return mutators.replace;
   }
 
-  var mutator = mutators[config.autoReplaceSvg];
+  const mutator = mutators[config.autoReplaceSvg];
 
   return mutator || mutators.replace;
 }
 
 var mutators = {
   replace: function replace(mutation) {
-    var node = mutation[0];
-    var abstract = mutation[1];
-    var newOuterHTML = abstract.map(function (a) {
+    const node = mutation[0];
+    const abstract = mutation[1];
+    const newOuterHTML = abstract.map(function (a) {
       return toHtml(a);
     }).join('\n');
 
     if (node.parentNode && node.outerHTML) {
       node.outerHTML = newOuterHTML + (config.keepOriginalSource && node.tagName.toLowerCase() !== 'svg' ? '<!-- ' + node.outerHTML + ' -->' : '');
     } else if (node.parentNode) {
-      var newNode = document.createElement('span');
+      const newNode = document.createElement('span');
       node.parentNode.replaceChild(newNode, node);
       newNode.outerHTML = newOuterHTML;
     }
   },
   nest: function nest(mutation) {
-    var node = mutation[0];
-    var abstract = mutation[1];
+    const node = mutation[0];
+    const abstract = mutation[1];
 
     // If we already have a replaced node we do not want to continue nesting within it.
     // Short-circuit to the standard replacement
@@ -5762,11 +5762,11 @@ var mutators = {
       return mutators.replace(mutation);
     }
 
-    var forSvg = new RegExp(config.familyPrefix + '-.*');
+    const forSvg = new RegExp(config.familyPrefix + '-.*');
 
     delete abstract[0].attributes.style;
 
-    var splitClasses = abstract[0].attributes.class.split(' ').reduce(function (acc, cls) {
+    const splitClasses = abstract[0].attributes.class.split(' ').reduce(function (acc, cls) {
       if (cls === config.replacementClass || cls.match(forSvg)) {
         acc.toSvg.push(cls);
       } else {
@@ -5778,7 +5778,7 @@ var mutators = {
 
     abstract[0].attributes.class = splitClasses.toSvg.join(' ');
 
-    var newInnerHTML = abstract.map(function (a) {
+    const newInnerHTML = abstract.map(function (a) {
       return toHtml(a);
     }).join('\n');
     node.setAttribute('class', splitClasses.toNode.join(' '));
@@ -5788,18 +5788,18 @@ var mutators = {
 };
 
 function perform(mutations, callback) {
-  var callbackFunction = typeof callback === 'function' ? callback : noop$1;
+  const callbackFunction = typeof callback === 'function' ? callback : noop$1;
 
   if (mutations.length === 0) {
     callbackFunction();
   } else {
-    var frame = WINDOW.requestAnimationFrame || function (op) {
+    const frame = WINDOW.requestAnimationFrame || function (op) {
       return op();
     };
 
     frame(function () {
-      var mutator = getMutator();
-      var mark = perf.begin('mutate');
+      const mutator = getMutator();
+      const mark = perf.begin('mutate');
 
       mutations.map(mutator);
 
@@ -5810,7 +5810,7 @@ function perform(mutations, callback) {
   }
 }
 
-var disabled = false;
+let disabled = false;
 
 function disableObservation(operation) {
   disabled = true;
@@ -5818,7 +5818,7 @@ function disableObservation(operation) {
   disabled = false;
 }
 
-var mo = null;
+let mo = null;
 
 function observe(options) {
   if (!MUTATION_OBSERVER) {
@@ -5829,7 +5829,7 @@ function observe(options) {
     return;
   }
 
-  var treeCallback = options.treeCallback,
+  const treeCallback = options.treeCallback,
       nodeCallback = options.nodeCallback,
       pseudoElementsCallback = options.pseudoElementsCallback,
       _options$observeMutat = options.observeMutationsRoot,
@@ -5854,7 +5854,7 @@ function observe(options) {
 
       if (mutationRecord.type === 'attributes' && isWatched(mutationRecord.target) && ~ATTRIBUTES_WATCHED_FOR_MUTATION.indexOf(mutationRecord.attributeName)) {
         if (mutationRecord.attributeName === 'class') {
-          var _getCanonicalIcon = getCanonicalIcon(classArray(mutationRecord.target)),
+          const _getCanonicalIcon = getCanonicalIcon(classArray(mutationRecord.target)),
               prefix = _getCanonicalIcon.prefix,
               iconName = _getCanonicalIcon.iconName;
 
@@ -5880,16 +5880,16 @@ function disconnect() {
   mo.disconnect();
 }
 
-var styleParser = function (node) {
-  var style = node.getAttribute('style');
+const styleParser = function (node) {
+  const style = node.getAttribute('style');
 
-  var val = [];
+  let val = [];
 
   if (style) {
     val = style.split(';').reduce(function (acc, style) {
-      var styles = style.split(':');
-      var prop = styles[0];
-      var value = styles.slice(1);
+      const styles = style.split(':');
+      const prop = styles[0];
+      const value = styles.slice(1);
 
       if (prop && value.length > 0) {
         acc[prop] = value.join(':').trim();
@@ -5903,22 +5903,22 @@ var styleParser = function (node) {
 };
 
 function toHex(unicode) {
-  var result = '';
+  let result = '';
 
-  for (var i = 0; i < unicode.length; i++) {
-    var hex = unicode.charCodeAt(i).toString(16);
+  for (let i = 0; i < unicode.length; i++) {
+    const hex = unicode.charCodeAt(i).toString(16);
     result += ('000' + hex).slice(-4);
   }
 
   return result;
 }
 
-var classParser = function (node) {
-  var existingPrefix = node.getAttribute('data-prefix');
-  var existingIconName = node.getAttribute('data-icon');
-  var innerText = node.innerText !== undefined ? node.innerText.trim() : '';
+const classParser = function (node) {
+  const existingPrefix = node.getAttribute('data-prefix');
+  const existingIconName = node.getAttribute('data-icon');
+  const innerText = node.innerText !== undefined ? node.innerText.trim() : '';
 
-  var val = getCanonicalIcon(classArray(node));
+  const val = getCanonicalIcon(classArray(node));
 
   if (existingPrefix && existingIconName) {
     val.prefix = existingPrefix;
@@ -5934,8 +5934,8 @@ var classParser = function (node) {
   return val;
 };
 
-var parseTransformString = function parseTransformString(transformString) {
-  var transform = {
+const parseTransformString = function parseTransformString(transformString) {
+  const transform = {
     size: 16,
     x: 0,
     y: 0,
@@ -5948,9 +5948,9 @@ var parseTransformString = function parseTransformString(transformString) {
     return transform;
   } else {
     return transformString.toLowerCase().split(' ').reduce(function (acc, n) {
-      var parts = n.toLowerCase().split('-');
-      var first = parts[0];
-      var rest = parts.slice(1).join('-');
+      const parts = n.toLowerCase().split('-');
+      const first = parts[0];
+      let rest = parts.slice(1).join('-');
 
       if (first && rest === 'h') {
         acc.flipX = true;
@@ -5997,25 +5997,25 @@ var parseTransformString = function parseTransformString(transformString) {
   }
 };
 
-var transformParser = function (node) {
+const transformParser = function (node) {
   return parseTransformString(node.getAttribute('data-fa-transform'));
 };
 
-var symbolParser = function (node) {
-  var symbol = node.getAttribute('data-fa-symbol');
+const symbolParser = function (node) {
+  const symbol = node.getAttribute('data-fa-symbol');
 
   return symbol === null ? false : symbol === '' ? true : symbol;
 };
 
-var attributesParser = function (node) {
-  var extraAttributes = toArray(node.attributes).reduce(function (acc, attr) {
+const attributesParser = function (node) {
+  const extraAttributes = toArray(node.attributes).reduce(function (acc, attr) {
     if (acc.name !== 'class' && acc.name !== 'style') {
       acc[attr.name] = attr.value;
     }
     return acc;
   }, {});
 
-  var title = node.getAttribute('title');
+  const title = node.getAttribute('title');
 
   if (config.autoA11y) {
     if (title) {
@@ -6028,8 +6028,8 @@ var attributesParser = function (node) {
   return extraAttributes;
 };
 
-var maskParser = function (node) {
-  var mask = node.getAttribute('data-fa-mask');
+const maskParser = function (node) {
+  const mask = node.getAttribute('data-fa-mask');
 
   if (!mask) {
     return emptyCanonicalIcon();
@@ -6040,7 +6040,7 @@ var maskParser = function (node) {
   }
 };
 
-var blankMeta = {
+const blankMeta = {
   iconName: null,
   title: null,
   prefix: null,
@@ -6051,16 +6051,16 @@ var blankMeta = {
 };
 
 function parseMeta(node) {
-  var _classParser = classParser(node),
+  const _classParser = classParser(node),
       iconName = _classParser.iconName,
       prefix = _classParser.prefix,
       extraClasses = _classParser.rest;
 
-  var extraStyles = styleParser(node);
-  var transform = transformParser(node);
-  var symbol = symbolParser(node);
-  var extraAttributes = attributesParser(node);
-  var mask = maskParser(node);
+  const extraStyles = styleParser(node);
+  const transform = transformParser(node);
+  const symbol = symbolParser(node);
+  const extraAttributes = attributesParser(node);
+  const mask = maskParser(node);
 
   return {
     iconName: iconName,
@@ -6086,22 +6086,22 @@ function MissingIcon(error) {
 MissingIcon.prototype = Object.create(Error.prototype);
 MissingIcon.prototype.constructor = MissingIcon;
 
-var FILL = { fill: 'currentColor' };
-var ANIMATION_BASE = {
+const FILL = { fill: 'currentColor' };
+const ANIMATION_BASE = {
   attributeType: 'XML',
   repeatCount: 'indefinite',
   dur: '2s'
 };
-var RING = {
+const RING = {
   tag: 'path',
   attributes: _extends({}, FILL, {
     d: 'M156.5,447.7l-12.6,29.5c-18.7-9.5-35.9-21.2-51.5-34.9l22.7-22.7C127.6,430.5,141.5,440,156.5,447.7z M40.6,272H8.5 c1.4,21.2,5.4,41.7,11.7,61.1L50,321.2C45.1,305.5,41.8,289,40.6,272z M40.6,240c1.4-18.8,5.2-37,11.1-54.1l-29.5-12.6 C14.7,194.3,10,216.7,8.5,240H40.6z M64.3,156.5c7.8-14.9,17.2-28.8,28.1-41.5L69.7,92.3c-13.7,15.6-25.5,32.8-34.9,51.5 L64.3,156.5z M397,419.6c-13.9,12-29.4,22.3-46.1,30.4l11.9,29.8c20.7-9.9,39.8-22.6,56.9-37.6L397,419.6z M115,92.4 c13.9-12,29.4-22.3,46.1-30.4l-11.9-29.8c-20.7,9.9-39.8,22.6-56.8,37.6L115,92.4z M447.7,355.5c-7.8,14.9-17.2,28.8-28.1,41.5 l22.7,22.7c13.7-15.6,25.5-32.9,34.9-51.5L447.7,355.5z M471.4,272c-1.4,18.8-5.2,37-11.1,54.1l29.5,12.6 c7.5-21.1,12.2-43.5,13.6-66.8H471.4z M321.2,462c-15.7,5-32.2,8.2-49.2,9.4v32.1c21.2-1.4,41.7-5.4,61.1-11.7L321.2,462z M240,471.4c-18.8-1.4-37-5.2-54.1-11.1l-12.6,29.5c21.1,7.5,43.5,12.2,66.8,13.6V471.4z M462,190.8c5,15.7,8.2,32.2,9.4,49.2h32.1 c-1.4-21.2-5.4-41.7-11.7-61.1L462,190.8z M92.4,397c-12-13.9-22.3-29.4-30.4-46.1l-29.8,11.9c9.9,20.7,22.6,39.8,37.6,56.9 L92.4,397z M272,40.6c18.8,1.4,36.9,5.2,54.1,11.1l12.6-29.5C317.7,14.7,295.3,10,272,8.5V40.6z M190.8,50 c15.7-5,32.2-8.2,49.2-9.4V8.5c-21.2,1.4-41.7,5.4-61.1,11.7L190.8,50z M442.3,92.3L419.6,115c12,13.9,22.3,29.4,30.5,46.1 l29.8-11.9C470,128.5,457.3,109.4,442.3,92.3z M397,92.4l22.7-22.7c-15.6-13.7-32.8-25.5-51.5-34.9l-12.6,29.5 C370.4,72.1,384.4,81.5,397,92.4z'
   })
 };
-var OPACITY_ANIMATE = _extends({}, ANIMATION_BASE, {
+const OPACITY_ANIMATE = _extends({}, ANIMATION_BASE, {
   attributeName: 'opacity'
 });
-var DOT = {
+const DOT = {
   tag: 'circle',
   attributes: _extends({}, FILL, {
     cx: '256',
@@ -6110,7 +6110,7 @@ var DOT = {
   }),
   children: [{ tag: 'animate', attributes: _extends({}, ANIMATION_BASE, { attributeName: 'r', values: '28;14;28;28;14;28;' }) }, { tag: 'animate', attributes: _extends({}, OPACITY_ANIMATE, { values: '1;0;1;1;0;1;' }) }]
 };
-var QUESTION = {
+const QUESTION = {
   tag: 'path',
   attributes: _extends({}, FILL, {
     opacity: '1',
@@ -6118,7 +6118,7 @@ var QUESTION = {
   }),
   children: [{ tag: 'animate', attributes: _extends({}, OPACITY_ANIMATE, { values: '1;0;0;0;0;1;' }) }]
 };
-var EXCLAMATION = {
+const EXCLAMATION = {
   tag: 'path',
   attributes: _extends({}, FILL, {
     opacity: '0',
@@ -6127,26 +6127,26 @@ var EXCLAMATION = {
   children: [{ tag: 'animate', attributes: _extends({}, OPACITY_ANIMATE, { values: '0;0;1;1;0;0;' }) }]
 };
 
-var missing = { tag: 'g', children: [RING, DOT, QUESTION, EXCLAMATION] };
+const missing = { tag: 'g', children: [RING, DOT, QUESTION, EXCLAMATION] };
 
-var styles = namespace.styles;
+const styles = namespace.styles;
 
-var LAYERS_TEXT_CLASSNAME = 'fa-layers-text';
-var FONT_FAMILY_PATTERN = /Font Awesome 5 (Solid|Regular|Light|Brands|Free|Pro)/;
-var STYLE_TO_PREFIX = {
+const LAYERS_TEXT_CLASSNAME = 'fa-layers-text';
+const FONT_FAMILY_PATTERN = /Font Awesome 5 (Solid|Regular|Light|Brands|Free|Pro)/;
+const STYLE_TO_PREFIX = {
   'Solid': 'fas',
   'Regular': 'far',
   'Light': 'fal',
   'Brands': 'fab'
 };
-var FONT_WEIGHT_TO_PREFIX = {
+const FONT_WEIGHT_TO_PREFIX = {
   '900': 'fas',
   '400': 'far',
   '300': 'fal'
 };
 
 function findIcon(iconName, prefix) {
-  var val = {
+  let val = {
     found: false,
     width: 512,
     height: 512,
@@ -6154,10 +6154,10 @@ function findIcon(iconName, prefix) {
   };
 
   if (iconName && prefix && styles[prefix] && styles[prefix][iconName]) {
-    var icon = styles[prefix][iconName];
-    var width = icon[0];
-    var height = icon[1];
-    var vectorData = icon.slice(4);
+    const icon = styles[prefix][iconName];
+    const width = icon[0];
+    const height = icon[1];
+    const vectorData = icon.slice(4);
 
     val = {
       found: true,
@@ -6173,7 +6173,7 @@ function findIcon(iconName, prefix) {
 }
 
 function generateSvgReplacementMutation(node, nodeMeta) {
-  var iconName = nodeMeta.iconName,
+  const iconName = nodeMeta.iconName,
       title = nodeMeta.title,
       prefix = nodeMeta.prefix,
       transform = nodeMeta.transform,
@@ -6199,17 +6199,17 @@ function generateSvgReplacementMutation(node, nodeMeta) {
 }
 
 function generateLayersText(node, nodeMeta) {
-  var title = nodeMeta.title,
+  const title = nodeMeta.title,
       transform = nodeMeta.transform,
       extra = nodeMeta.extra;
 
 
-  var width = null;
-  var height = null;
+  let width = null;
+  let height = null;
 
   if (IS_IE) {
-    var computedFontSize = parseInt(getComputedStyle(node).fontSize, 10);
-    var boundingClientRect = node.getBoundingClientRect();
+    const computedFontSize = parseInt(getComputedStyle(node).fontSize, 10);
+    const boundingClientRect = node.getBoundingClientRect();
     width = boundingClientRect.width / computedFontSize;
     height = boundingClientRect.height / computedFontSize;
   }
@@ -6230,7 +6230,7 @@ function generateLayersText(node, nodeMeta) {
 }
 
 function generateMutation(node) {
-  var nodeMeta = parseMeta(node);
+  const nodeMeta = parseMeta(node);
 
   if (~nodeMeta.extra.classes.indexOf(LAYERS_TEXT_CLASSNAME)) {
     return generateLayersText(node, nodeMeta);
@@ -6242,21 +6242,21 @@ function generateMutation(node) {
 function searchPseudoElements(root) {
   if (!IS_DOM) return;
 
-  var end = perf.begin('searchPseudoElements');
+  const end = perf.begin('searchPseudoElements');
 
   disableObservation(function () {
     toArray(root.querySelectorAll('*')).filter(function (n) {
       return n.parentNode !== document.head && !~TAGNAMES_TO_SKIP_FOR_PSEUDOELEMENTS.indexOf(n.tagName.toUpperCase()) && !n.getAttribute(DATA_FA_PSEUDO_ELEMENT) && (!n.parentNode || n.parentNode.tagName !== 'svg');
     }).forEach(function (node) {
       [':before', ':after'].forEach(function (pos) {
-        var children = toArray(node.children);
-        var alreadyProcessedPseudoElement = children.filter(function (c) {
+        const children = toArray(node.children);
+        const alreadyProcessedPseudoElement = children.filter(function (c) {
           return c.getAttribute(DATA_FA_PSEUDO_ELEMENT) === pos;
         })[0];
 
-        var styles = WINDOW.getComputedStyle(node, pos);
-        var fontFamily = styles.getPropertyValue('font-family').match(FONT_FAMILY_PATTERN);
-        var fontWeight = styles.getPropertyValue('font-weight');
+        const styles = WINDOW.getComputedStyle(node, pos);
+        const fontFamily = styles.getPropertyValue('font-family').match(FONT_FAMILY_PATTERN);
+        const fontWeight = styles.getPropertyValue('font-weight');
 
         if (alreadyProcessedPseudoElement && !fontFamily) {
           // If we've already processed it but the current computed style does not result in a font-family,
@@ -6264,9 +6264,9 @@ function searchPseudoElements(root) {
           // removed. So we now should delete the icon.
           node.removeChild(alreadyProcessedPseudoElement);
         } else if (fontFamily) {
-          var content = styles.getPropertyValue('content');
-          var prefix = ~['Light', 'Regular', 'Solid', 'Brands'].indexOf(fontFamily[1]) ? STYLE_TO_PREFIX[fontFamily[1]] : FONT_WEIGHT_TO_PREFIX[fontWeight];
-          var iconName = byUnicode(prefix, toHex(content.length === 3 ? content.substr(1, 1) : content));
+          const content = styles.getPropertyValue('content');
+          const prefix = ~['Light', 'Regular', 'Solid', 'Brands'].indexOf(fontFamily[1]) ? STYLE_TO_PREFIX[fontFamily[1]] : FONT_WEIGHT_TO_PREFIX[fontWeight];
+          const iconName = byUnicode(prefix, toHex(content.length === 3 ? content.substr(1, 1) : content));
           // Only convert the pseudo element in this :before/:after position into an icon if we haven't
           // already done so with the same prefix and iconName
           if (!alreadyProcessedPseudoElement || alreadyProcessedPseudoElement.getAttribute(DATA_PREFIX) !== prefix || alreadyProcessedPseudoElement.getAttribute(DATA_ICON) !== iconName) {
@@ -6275,10 +6275,10 @@ function searchPseudoElements(root) {
               node.removeChild(alreadyProcessedPseudoElement);
             }
 
-            var extra = blankMeta.extra;
+            const extra = blankMeta.extra;
 
             extra.attributes[DATA_FA_PSEUDO_ELEMENT] = pos;
-            var abstract = makeInlineSvgAbstract(_extends({}, blankMeta, {
+            const abstract = makeInlineSvgAbstract(_extends({}, blankMeta, {
               icons: {
                 main: findIcon(iconName, prefix),
                 mask: emptyCanonicalIcon()
@@ -6289,7 +6289,7 @@ function searchPseudoElements(root) {
               watchable: true
             }));
 
-            var element = DOCUMENT.createElement('svg');
+            const element = DOCUMENT.createElement('svg');
 
             if (pos === ':before') {
               node.insertBefore(element, node.firstChild);
@@ -6310,19 +6310,19 @@ function searchPseudoElements(root) {
 }
 
 function onTree(root) {
-  var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  const callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
   if (!IS_DOM) return;
 
-  var htmlClassList = DOCUMENT.documentElement.classList;
-  var hclAdd = function hclAdd(suffix) {
+  const htmlClassList = DOCUMENT.documentElement.classList;
+  const hclAdd = function hclAdd(suffix) {
     return htmlClassList.add(HTML_CLASS_I2SVG_BASE_CLASS + '-' + suffix);
   };
-  var hclRemove = function hclRemove(suffix) {
+  const hclRemove = function hclRemove(suffix) {
     return htmlClassList.remove(HTML_CLASS_I2SVG_BASE_CLASS + '-' + suffix);
   };
-  var prefixes = Object.keys(styles);
-  var prefixesDomQuery = ['.' + LAYERS_TEXT_CLASSNAME + ':not([' + DATA_FA_I2SVG + '])'].concat(prefixes.map(function (p) {
+  const prefixes = Object.keys(styles);
+  const prefixesDomQuery = ['.' + LAYERS_TEXT_CLASSNAME + ':not([' + DATA_FA_I2SVG + '])'].concat(prefixes.map(function (p) {
     return '.' + p + ':not([' + DATA_FA_I2SVG + '])';
   })).join(', ');
 
@@ -6330,7 +6330,7 @@ function onTree(root) {
     return;
   }
 
-  var candidates = toArray(root.querySelectorAll(prefixesDomQuery));
+  const candidates = toArray(root.querySelectorAll(prefixesDomQuery));
 
   if (candidates.length > 0) {
     hclAdd('pending');
@@ -6339,11 +6339,11 @@ function onTree(root) {
     return;
   }
 
-  var mark = perf.begin('onTree');
+  const mark = perf.begin('onTree');
 
-  var mutations = candidates.reduce(function (acc, node) {
+  const mutations = candidates.reduce(function (acc, node) {
     try {
-      var mutation = generateMutation(node);
+      const mutation = generateMutation(node);
 
       if (mutation) {
         acc.push(mutation);
@@ -6371,27 +6371,27 @@ function onTree(root) {
 }
 
 function onNode(node) {
-  var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  const callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-  var mutation = generateMutation(node);
+  const mutation = generateMutation(node);
 
   if (mutation) {
     perform([mutation], callback);
   }
 }
 
-var baseStyles = "svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.33333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1em}.svg-inline--fa.fa-stack-2x{height:2em;width:2em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}";
+const baseStyles = "svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.33333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1em}.svg-inline--fa.fa-stack-2x{height:2em;width:2em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}";
 
-var css = function () {
-  var dfp = DEFAULT_FAMILY_PREFIX;
-  var drc = DEFAULT_REPLACEMENT_CLASS;
-  var fp = config.familyPrefix;
-  var rc = config.replacementClass;
-  var s = baseStyles;
+const css = function () {
+  const dfp = DEFAULT_FAMILY_PREFIX;
+  const drc = DEFAULT_REPLACEMENT_CLASS;
+  const fp = config.familyPrefix;
+  const rc = config.replacementClass;
+  let s = baseStyles;
 
   if (fp !== dfp || rc !== drc) {
-    var dPatt = new RegExp('\\.' + dfp + '\\-', 'g');
-    var rPatt = new RegExp('\\.' + drc, 'g');
+    const dPatt = new RegExp('\\.' + dfp + '\\-', 'g');
+    const rPatt = new RegExp('\\.' + drc, 'g');
 
     s = s.replace(dPatt, '.' + fp + '-').replace(rPatt, '.' + rc);
   }
@@ -6400,9 +6400,9 @@ var css = function () {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -6429,7 +6429,7 @@ function define(prefix, icons) {
   }
 }
 
-var Library = function () {
+const Library = function () {
   function Library() {
     classCallCheck(this, Library);
 
@@ -6439,13 +6439,13 @@ var Library = function () {
   createClass(Library, [{
     key: 'add',
     value: function add() {
-      var _this = this;
+      const _this = this;
 
       for (var _len = arguments.length, definitions = Array(_len), _key = 0; _key < _len; _key++) {
         definitions[_key] = arguments[_key];
       }
 
-      var additions = definitions.reduce(this._pullDefinitions, {});
+      const additions = definitions.reduce(this._pullDefinitions, {});
 
       Object.keys(additions).forEach(function (key) {
         _this.definitions[key] = _extends({}, _this.definitions[key] || {}, additions[key]);
@@ -6461,10 +6461,10 @@ var Library = function () {
   }, {
     key: '_pullDefinitions',
     value: function _pullDefinitions(additions, definition) {
-      var normalized = definition.prefix && definition.iconName && definition.icon ? { 0: definition } : definition;
+      const normalized = definition.prefix && definition.iconName && definition.icon ? { 0: definition } : definition;
 
       Object.keys(normalized).map(function (key) {
-        var _normalized$key = normalized[key],
+        const _normalized$key = normalized[key],
             prefix = _normalized$key.prefix,
             iconName = _normalized$key.iconName,
             icon = _normalized$key.icon;
@@ -6482,9 +6482,9 @@ var Library = function () {
 }();
 
 function prepIcon(icon) {
-  var width = icon[0];
-  var height = icon[1];
-  var vectorData = icon.slice(4);
+  const width = icon[0];
+  const height = icon[1];
+  const vectorData = icon.slice(4);
 
   return {
     found: true,
@@ -6518,7 +6518,7 @@ function apiObject(val, abstractCreator) {
     get: function get() {
       if (!IS_DOM) return;
 
-      var container = DOCUMENT.createElement('div');
+      const container = DOCUMENT.createElement('div');
       container.innerHTML = val.html;
       return container.children;
     }
@@ -6528,7 +6528,7 @@ function apiObject(val, abstractCreator) {
 }
 
 function findIconDefinition(params) {
-  var _params$prefix = params.prefix,
+  const _params$prefix = params.prefix,
       prefix = _params$prefix === undefined ? 'fa' : _params$prefix,
       iconName = params.iconName;
 
@@ -6540,11 +6540,11 @@ function findIconDefinition(params) {
 
 function resolveIcons(next) {
   return function (maybeIconDefinition) {
-    var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    const params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var iconDefinition = (maybeIconDefinition || {}).icon ? maybeIconDefinition : findIconDefinition(maybeIconDefinition || {});
+    const iconDefinition = (maybeIconDefinition || {}).icon ? maybeIconDefinition : findIconDefinition(maybeIconDefinition || {});
 
-    var mask = params.mask;
+    let mask = params.mask;
 
 
     if (mask) {
@@ -6557,7 +6557,7 @@ function resolveIcons(next) {
 
 var library = new Library();
 
-var noAuto = function noAuto() {
+const noAuto = function noAuto() {
   config.autoReplaceSvg = false;
   config.observeMutations = false;
 
@@ -6566,14 +6566,14 @@ var noAuto = function noAuto() {
 
 var _cssInserted = false;
 
-var dom = {
+const dom = {
   i2svg: function i2svg() {
-    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    const params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     if (IS_DOM) {
       ensureCss();
 
-      var _params$node = params.node,
+      const _params$node = params.node,
           node = _params$node === undefined ? DOCUMENT : _params$node,
           _params$callback = params.callback,
           callback = _params$callback === undefined ? function () {} : _params$callback;
@@ -6597,8 +6597,8 @@ var dom = {
   },
 
   watch: function watch() {
-    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    var autoReplaceSvgRoot = params.autoReplaceSvgRoot,
+    const params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    const autoReplaceSvgRoot = params.autoReplaceSvgRoot,
         observeMutationsRoot = params.observeMutationsRoot;
 
 
@@ -6623,15 +6623,15 @@ var dom = {
   }
 };
 
-var parse = {
+const parse = {
   transform: function transform(transformString) {
     return parseTransformString(transformString);
   }
 };
 
-var icon = resolveIcons(function (iconDefinition) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _params$transform = params.transform,
+const icon = resolveIcons(function (iconDefinition) {
+  const params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  const _params$transform = params.transform,
       transform = _params$transform === undefined ? meaninglessTransform : _params$transform,
       _params$symbol = params.symbol,
       symbol = _params$symbol === undefined ? false : _params$symbol,
@@ -6649,7 +6649,7 @@ var icon = resolveIcons(function (iconDefinition) {
 
   if (!iconDefinition) return;
 
-  var prefix = iconDefinition.prefix,
+  const prefix = iconDefinition.prefix,
       iconName = iconDefinition.iconName,
       icon = iconDefinition.icon;
 
@@ -6684,9 +6684,9 @@ var icon = resolveIcons(function (iconDefinition) {
   });
 });
 
-var text = function text(content) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _params$transform2 = params.transform,
+const text = function text(content) {
+  const params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  const _params$transform2 = params.transform,
       transform = _params$transform2 === undefined ? meaninglessTransform : _params$transform2,
       _params$title2 = params.title,
       title = _params$title2 === undefined ? null : _params$title2,
@@ -6714,9 +6714,9 @@ var text = function text(content) {
   });
 };
 
-var counter = function counter(content) {
-  var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var _params$title3 = params.title,
+const counter = function counter(content) {
+  const params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  const _params$title3 = params.title,
       title = _params$title3 === undefined ? null : _params$title3,
       _params$classes3 = params.classes,
       classes = _params$classes3 === undefined ? [] : _params$classes3,
@@ -6741,11 +6741,11 @@ var counter = function counter(content) {
   });
 };
 
-var layer = function layer(assembler) {
+const layer = function layer(assembler) {
   return apiObject({ type: 'layer' }, function () {
     ensureCss();
 
-    var children = [];
+    let children = [];
 
     assembler(function (args) {
       Array.isArray(args) ? args.map(function (a) {
@@ -6761,7 +6761,7 @@ var layer = function layer(assembler) {
   });
 };
 
-var api = {
+const api = {
   noAuto: noAuto,
   config: config,
   dom: dom,
@@ -6776,8 +6776,8 @@ var api = {
 };
 
 var autoReplace = function autoReplace() {
-  var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var _params$autoReplaceSv = params.autoReplaceSvgRoot,
+  const params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  const _params$autoReplaceSv = params.autoReplaceSvgRoot,
       autoReplaceSvgRoot = _params$autoReplaceSv === undefined ? DOCUMENT : _params$autoReplaceSv;
 
 
@@ -6811,7 +6811,7 @@ function bootstrap() {
     },
 
     addShims: function addShims(shims) {
-      var _namespace$shims;
+      let _namespace$shims;
 
       (_namespace$shims = namespace.shims).push.apply(_namespace$shims, toConsumableArray(shims));
 
