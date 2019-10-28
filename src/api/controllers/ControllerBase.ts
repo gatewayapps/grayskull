@@ -1,13 +1,13 @@
 import { getRoute, HttpMethod } from '@decorators/routeDecorator'
 import { Application as ExpressApplication } from 'express'
 import _ from 'lodash'
-import { Server } from 'next'
+
 import { IController } from './IController'
 
 export default abstract class ControllerBase implements IController {
   protected static knownRoutes: string[] = []
-  protected next: Server
-  constructor(_next: Server) {
+  protected next: any
+  constructor(_next: any) {
     this.next = _next
   }
 
