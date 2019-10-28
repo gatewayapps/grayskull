@@ -96,6 +96,8 @@ class LoginForm extends PureComponent {
   }
 
   render() {
+    const forgotPasswordLink = `/resetPassword${this.state.emailAddress ? '?emailAddress=' + this.state.emailAddress : ''}`
+
     return (
       <RequireConfiguration>
         {(configuration) => {
@@ -150,7 +152,7 @@ class LoginForm extends PureComponent {
                                 </div>
                               )}
                               <div className="mt-3">
-                                <Link href="/resetPassword">
+                                <Link href={forgotPasswordLink}>
                                   <a>Forgot Password</a>
                                 </Link>
 
