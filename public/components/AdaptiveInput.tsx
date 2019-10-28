@@ -8,11 +8,7 @@ import ImageDropArea from './ImageDropArea'
 export interface AdaptiveInputProps {
   type: string
   className: string | undefined
-  onChange: (
-    {
-      target: { name: string, value: any }
-    }
-  ) => void
+  onChange: ({ target: { name: string, value: any } }) => void
 }
 
 export default class AdaptiveInput extends React.Component<AdaptiveInputProps, any> {
@@ -61,7 +57,7 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
     }
   }
 
-  private renderTextInput = (props: object, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
+  private renderTextInput = (props: any, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
 
   private renderTextAreaInput = (props: object, className: string | undefined) => (
     <textarea

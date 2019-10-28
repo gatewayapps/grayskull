@@ -8,7 +8,7 @@ export interface IAppProps {
   onSuccess: any
   onFail: any
   busyContent: any
-  disabled: boolean
+  disabled?: boolean
   content: any
 }
 
