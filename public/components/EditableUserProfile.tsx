@@ -193,7 +193,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                   }}
                   label="Display Name"
                   validationErrors={validationErrors}
-                  placeholder="Not Set"
+                  placeholder="Enter Display Name"
                   type="text"
                   name="displayName"
                   value={finalUser.displayName}
