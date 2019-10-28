@@ -16,24 +16,25 @@ export class RequirePermission extends React.Component {
     mode: RequirePermissionModes.SHOW_ERROR
   }
   render = () => {
-    
-    return <UserContext.Consumer>
-      {({user})=> {
-        
-        //For now we will just check >=.  In the future we need to bitwise and
+    return (
+      <UserContext.Consumer>
+        {({ user }) => {
+          //For now we will just check >=.  In the future we need to bitwise and
 
-        if(user && user.permissions >= this.props.permission) {
-          return this.props.children
-        } else {
-          switch(this.props.mode){
-            case RequirePermissionModes.SHOW_ERROR: return <h5>Not Authorized</h5>
-            case RequirePermissionModes.HIDE: return null
-            default: return null
+          if (user && user.permissions >= this.props.permission) {
+            return this.props.children
+          } else {
+            switch (this.props.mode) {
+              case RequirePermissionModes.SHOW_ERROR:
+                return <h5>Not Authorized</h5>
+              case RequirePermissionModes.HIDE:
+                return null
+              default:
+                return null
+            }
           }
-          
-           
-        }
-      }}
-    </UserContext.Consumer>
+        }}
+      </UserContext.Consumer>
+    )
   }
 }

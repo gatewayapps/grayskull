@@ -13,7 +13,7 @@ const SignOut = ({ includeState, router, children, ...otherProps }) => {
 }
 
 SignOut.propTypes = {
-  includeState: PropTypes.bool,
+  includeState: PropTypes.bool
 }
 
 export default withRouter(SignOut)

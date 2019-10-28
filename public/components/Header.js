@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from './ActiveLink'
 
 import ConfigurationContext from '../contexts/ConfigurationContext'

@@ -2,6 +2,7 @@ import UAParser from 'ua-parser-js'
 
 export default async function generateFingerprint() {
   if (!Fingerprint2) {
+    // eslint-disable-next-line no-console
     console.error('Fingerprint2 is not loaded')
     return ''
   }

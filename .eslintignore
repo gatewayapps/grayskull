@@ -1,0 +1,8 @@
+.vscode
+cradle
+examples
+public/.next
+public/static
+**/*.d.ts
+node_modules
+dist

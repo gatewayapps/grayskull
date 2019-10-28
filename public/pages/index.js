@@ -9,7 +9,7 @@ const HomePage = () => {
         {({ user }) => (
           <div className="jumbotron">
             I am {user.firstName}
-            's home page!
+            &apos;s home page!
           </div>
         )}
       </UserContext.Consumer>

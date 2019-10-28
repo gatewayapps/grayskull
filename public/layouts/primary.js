@@ -1,3 +1,4 @@
+import React from 'react'
 import 'bootswatch/dist/materia/bootstrap.css'
 import 'titatoggle/dist/titatoggle-dist-min.css'
 import '../styles/global.css'

@@ -5,27 +5,25 @@
 (function () {
 'use strict';
 
-var _WINDOW = {};
+let _WINDOW = {};
 try {
   if (typeof window !== 'undefined') _WINDOW = window;
   
 } catch (e) {}
 
-var _ref = _WINDOW.navigator || {};
-var _ref$userAgent = _ref.userAgent;
-var userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
+const _ref = _WINDOW.navigator || {};
+const _ref$userAgent = _ref.userAgent;
+const userAgent = _ref$userAgent === undefined ? '' : _ref$userAgent;
 
-var WINDOW = _WINDOW;
-
-
+const WINDOW = _WINDOW;
 
 
 
-var IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
-
-var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
+const IS_IE = ~userAgent.indexOf('MSIE') || ~userAgent.indexOf('Trident/');
+
+const NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
@@ -33,7 +31,9 @@ var NAMESPACE_IDENTIFIER = '___FONT_AWESOME___';
 
 
 
-var PRODUCTION = function () {
+
+
+const PRODUCTION = function () {
   try {
     return "production" === 'production';
   } catch (e) {
@@ -41,12 +41,12 @@ var PRODUCTION = function () {
   }
 }();
 
-var oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-var oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+const oneToTen = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const oneToTwenty = oneToTen.concat([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
 
 
 
-var RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
+const RESERVED_CLASSES = ['xs', 'sm', 'lg', 'fw', 'ul', 'li', 'border', 'pull-left', 'pull-right', 'spin', 'pulse', 'rotate-90', 'rotate-180', 'rotate-270', 'flip-horizontal', 'flip-vertical', 'stack', 'stack-1x', 'stack-2x', 'inverse', 'layers', 'layers-text', 'layers-counter'].concat(oneToTen.map(function (n) {
   return n + 'x';
 })).concat(oneToTwenty.map(function (n) {
   return 'w-' + n;
@@ -62,20 +62,20 @@ function bunker(fn) {
   }
 }
 
-var w = WINDOW || {};
+const w = WINDOW || {};
 
 if (!w[NAMESPACE_IDENTIFIER]) w[NAMESPACE_IDENTIFIER] = {};
 if (!w[NAMESPACE_IDENTIFIER].styles) w[NAMESPACE_IDENTIFIER].styles = {};
 if (!w[NAMESPACE_IDENTIFIER].hooks) w[NAMESPACE_IDENTIFIER].hooks = {};
 if (!w[NAMESPACE_IDENTIFIER].shims) w[NAMESPACE_IDENTIFIER].shims = [];
 
-var namespace = w[NAMESPACE_IDENTIFIER];
+const namespace = w[NAMESPACE_IDENTIFIER];
 
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
+const _extends = Object.assign || function (target) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i];
 
-    for (var key in source) {
+    for (const key in source) {
       if (Object.prototype.hasOwnProperty.call(source, key)) {
         target[key] = source[key];
       }
@@ -86,9 +86,9 @@ var _extends = Object.assign || function (target) {
 };
 
 function define(prefix, icons) {
-  var normalized = Object.keys(icons).reduce(function (acc, iconName) {
-    var icon = icons[iconName];
-    var expanded = !!icon.icon;
+  const normalized = Object.keys(icons).reduce(function (acc, iconName) {
+    const icon = icons[iconName];
+    const expanded = !!icon.icon;
 
     if (expanded) {
       acc[icon.iconName] = icon.icon;
@@ -115,7 +115,7 @@ function define(prefix, icons) {
   }
 }
 
-var icons = {
+const icons = {
   "abacus": [576, 512, [], "f640", "M32 0C14.33 0 0 14.33 0 32v464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V32C64 14.33 49.67 0 32 0zm512 0c-17.67 0-32 14.33-32 32v464c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V32c0-17.67-14.33-32-32-32zm-80 32h-32c-8.84 0-16 7.16-16 16v24H256V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32V48c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h160v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V48c0-8.84-7.16-16-16-16zM352 208c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h128v-48H352v-24zm112 144h-32c-8.84 0-16 7.16-16 16v24H256v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v24h-32v-24c0-8.84-7.16-16-16-16h-32c-8.84 0-16 7.16-16 16v96c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h32v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-24h160v24c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16v-96c0-8.84-7.16-16-16-16z"],
   "acorn": [448, 512, [], "f6ae", "M175.11 487.55L224 512l48.89-24.45C360.6 443.7 416 354.06 416 256H32c0 98.06 55.4 187.7 143.11 231.55zM352 64H251.5c3.4-9.4 8.47-18.18 15.16-26.04 5.56-6.52 5.31-15.91-.62-21.86L254.69 4.78c-3.12-3.16-7.72-5.14-11.97-4.72-4.38.14-8.5 2.08-11.31 5.3-14.75 16.8-24.55 37.06-29.39 58.65H96c-53.02 0-96 42.98-96 96v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32C448 106.98 405.02 64 352 64z"],
   "ad": [512, 512, [], "f641", "M157.52 272h36.96L176 218.78 157.52 272zM352 256c-13.23 0-24 10.77-24 24s10.77 24 24 24 24-10.77 24-24-10.77-24-24-24zM464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM250.58 352h-16.94c-6.81 0-12.88-4.32-15.12-10.75L211.15 320h-70.29l-7.38 21.25A16 16 0 0 1 118.36 352h-16.94c-11.01 0-18.73-10.85-15.12-21.25L140 176.12A23.995 23.995 0 0 1 162.67 160h26.66A23.99 23.99 0 0 1 212 176.13l53.69 154.62c3.61 10.4-4.11 21.25-15.11 21.25zM424 336c0 8.84-7.16 16-16 16h-16c-4.85 0-9.04-2.27-11.98-5.68-8.62 3.66-18.09 5.68-28.02 5.68-39.7 0-72-32.3-72-72s32.3-72 72-72c8.46 0 16.46 1.73 24 4.42V176c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v160z"],
