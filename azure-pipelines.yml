@@ -11,7 +11,5 @@ jobs:
   - script: |
       yarn install
       yarn build
-      npx tslint --project ./
-      npx tsc
 
       
