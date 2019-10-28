@@ -9,9 +9,7 @@ export class GettingStarted extends React.PureComponent {
   render() {
     return (
       <div>
-        <p className="card-text">
-          This is a first time setup process to help you configure Grayskull for your needs. Before we get started, make sure you have completed the following steps:
-        </p>
+        <p className="card-text">This is a first time setup process to help you configure Grayskull for your needs. Before we get started, make sure you have completed the following steps:</p>
 
         <ul className="list-group card-text">
           <li className="list-group-item">Have a valid certificate and private key for the URL you plan to use OR this server must be publicly available on the internet</li>
@@ -27,3 +25,5 @@ GettingStarted.propTypes = {
   stepIndex: PropTypes.number.isRequired,
   onValidationChanged: PropTypes.func.isRequired
 }
+
+export default GettingStarted

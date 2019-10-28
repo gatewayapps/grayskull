@@ -257,3 +257,4 @@ export class ServerConfiguration extends React.Component {
     )
   }
 }
+export default ServerConfiguration

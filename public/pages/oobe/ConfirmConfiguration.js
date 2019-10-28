@@ -62,3 +62,5 @@ ConfirmConfiguration.propTypes = {
   stepIndex: PropTypes.number.isRequired,
   configuration: PropTypes.object
 }
+
+export default ConfirmConfiguration
