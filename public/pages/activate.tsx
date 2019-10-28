@@ -1,4 +1,4 @@
-import { withRouter, WithRouterProps } from 'next/router'
+import { withRouter } from 'next/router'
 import React from 'react'
 import Primary from '../layouts/primary'
 import BackgroundCover from '../components/BackgroundCover'
@@ -9,7 +9,7 @@ interface ActivatePageProps {
   token: string
 }
 
-const ActivatePage: React.FunctionComponent<WithRouterProps<ActivatePageProps>> = (props) => {
+const ActivatePage: React.FunctionComponent<any> = (props) => {
   return (
     <Primary>
       <BackgroundCover>

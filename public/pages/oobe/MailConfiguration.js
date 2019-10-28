@@ -119,3 +119,5 @@ export class MailConfiguration extends React.Component {
     )
   }
 }
+
+export default MailConfiguration

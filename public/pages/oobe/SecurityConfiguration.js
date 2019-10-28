@@ -159,3 +159,5 @@ export class SecurityConfiguration extends React.Component {
     )
   }
 }
+
+export default SecurityConfiguration

@@ -4,7 +4,8 @@ import { default as express, Application as ExpressApplication } from 'express'
 import { default as http, Server as HttpServer } from 'http'
 import { default as https, Server as HttpsServer } from 'https'
 import { SecureContext, createSecureContext } from 'tls'
-import { default as next, Server as NextServer } from 'next'
+import { default as next } from 'next'
+
 import { UrlObject, Url } from 'url'
 import bodyParser = require('body-parser')
 import cookieParser = require('cookie-parser')
@@ -22,7 +23,7 @@ import OAuthController from './api/controllers/oauthController'
 import { CONFIG_DIR } from './constants'
 
 const decache = require('decache')
-const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', '@zeit/next-typescript', 'mini-css-extract-plugin']
+const NEXT_MODULES = ['next', 'webpack', 'tapable', '@zeit/next-css', '@zeit/next-sass', 'mini-css-extract-plugin']
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 
 let REALM_INSTANCE: RealmInstance
@@ -32,7 +33,7 @@ export const getInstance = () => REALM_INSTANCE
 export class RealmInstance {
   private config: IConfiguration | undefined
   private expressApp: ExpressApplication
-  private nextServer: NextServer
+  private nextServer: any
   private httpServer: HttpServer
   private httpsServer: HttpsServer
   private apolloServer: ApolloServer
@@ -157,11 +158,11 @@ export class RealmInstance {
   }
 
   /** Load next middleware and create next server */
-  private createNextServer(): NextServer {
+  private createNextServer(): any {
     const withCss = require('@zeit/next-css')
     const withSass = require('@zeit/next-sass')
-    const withTypescript = require('@zeit/next-typescript')
-    const NEXT_CONFIG = withTypescript(withSass(withCss()))
+
+    const NEXT_CONFIG = withSass(withCss())
     return next({ dev: IS_DEVELOPMENT, dir: './public', conf: NEXT_CONFIG })
   }
 
