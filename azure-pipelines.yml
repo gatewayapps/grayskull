@@ -9,7 +9,8 @@ jobs:
     inputs:
       versionSpec: '10.x'
   - script: |
-      npm install
+      yarn install
+      yarn build
       npx tslint --project ./
       npx tsc
 
