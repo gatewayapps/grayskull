@@ -108,6 +108,10 @@ input ChangePasswordArgs {
 	token: String
 }
 
+input DeleteAccountArgs {
+	userAccountId: String!
+}
+
 input ActivateAccountArgs {
 	emailAddress: String!
 	token: String!
@@ -238,6 +242,7 @@ type Mutation {
 	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
 	setOtpSecret(data: SetOtpSecretArgs!): OperationResponse 
 	changePassword(data: ChangePasswordArgs!): OperationResponse 
+	deleteAccount(data: DeleteAccountArgs!): OperationResponse 
 	activateAccount(data: ActivateAccountArgs!): OperationResponse 
 	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
 }
