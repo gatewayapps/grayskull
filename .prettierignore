@@ -1,2 +1,5 @@
 cradle/**/*
 public/static
+public/.next
+node_modules
+examples

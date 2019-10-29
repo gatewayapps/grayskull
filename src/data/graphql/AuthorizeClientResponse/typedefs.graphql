@@ -1,4 +1,4 @@
 type AuthorizeClientResponse {
-	pendingScopes: [String]
-	redirectUri: String
+  pendingScopes: [String]
+  redirectUri: String
 }

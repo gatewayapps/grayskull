@@ -1,5 +1,5 @@
 type RegisterUserResponse {
-	success: Boolean!
-	error: String
-	message: String
+  success: Boolean!
+  error: String
+  message: String
 }
