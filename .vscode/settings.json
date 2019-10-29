@@ -17,9 +17,7 @@
   "[jsonc]": {
     "editor.formatOnSave": false
   },
-  "tslint.enable": true,
-  "tslint.autoFixOnSave": false,
-  "prettier.tslintIntegration": true,
+  "eslint.autoFixOnSave": true,
   "files.insertFinalNewline": true,
   "files.exclude": {
     "**/.git": true,
@@ -27,7 +25,8 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "node_modules": false,
-    "dist": false
+    "node_modules": true,
+    "dist": true,
+    ".next": true
   }
 }
