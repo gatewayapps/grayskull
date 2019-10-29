@@ -16,9 +16,7 @@ import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import { ApolloServer } from 'apollo-server-express'
 import { schema } from '@data/graphql/graphql'
-import ClientRepository from '@data/repositories/ClientRepository'
-import ConfigurationManager from './config/ConfigurationManager'
-import ScopeService from '@services/ScopeService'
+
 import OAuthController from './api/controllers/oauthController'
 import { CONFIG_DIR } from './constants'
 
