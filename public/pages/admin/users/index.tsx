@@ -1,32 +1,32 @@
-import gql from 'graphql-tag'
+import gql from "graphql-tag";
 
-import React from 'react'
-import { Query, Mutation } from 'react-apollo'
-import { Modal, ModalBody } from 'reactstrap'
-import moment from 'moment'
-import ErrorMessage from '../../../components/ErrorMessage'
-import LoadingIndicator from '../../../components/LoadingIndicator'
-import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
-import Permissions from '../../../utils/permissions'
-import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission'
-import EditableUserProfile from '../../../components/EditableUserProfile'
-import CSVDataImport from '../../../components/CSVDataImport'
+import React from "react";
+import { Query, Mutation } from "react-apollo";
+import { Modal, ModalBody } from "reactstrap";
+import moment from "moment";
+import ErrorMessage from "../../../components/ErrorMessage";
+import LoadingIndicator from "../../../components/LoadingIndicator";
+import AuthenticatedRoute from "../../../layouts/authenticatedRoute";
+import Permissions from "../../../utils/permissions";
+import { RequirePermission, RequirePermissionModes } from "../../../components/RequirePermission";
+import EditableUserProfile from "../../../components/EditableUserProfile";
+import CSVDataImport from "../../../components/CSVDataImport";
 
 const RESEND_ALL_VERIFICATIONS_MUTATION = gql`
   mutation RESEND_ALL_VERIFICATIONS_MUTATION {
     resendAllVerificationEmails(data: {})
   }
-`
+`;
 
 const RESEND_VERIFICATION_MUTATION = gql`
   mutation RESEND_VERIFICATION_MUTATION($emailAddress: String!) {
     resendVerification(data: { emailAddress: $emailAddress })
   }
-`
+`;
 
 const ALL_USERS_QUERY = gql`
   query ALL_USERS_QUERY {
-    userAccounts {
+    userAccounts(filter: { isActive_equals: true }) {
       userAccountId
       firstName
       lastName
@@ -46,23 +46,23 @@ const ALL_USERS_QUERY = gql`
       }
     }
   }
-`
+`;
 
 export interface UsersIndexPageProps {}
 
 export interface UsersIndexPageState {
-  editingUser: any
-  importingUser: any
+  editingUser: any;
+  importingUser: any;
 }
 
 class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPageState> {
   constructor(props: UsersIndexPageProps) {
-    super(props)
+    super(props);
 
     this.state = {
       editingUser: undefined,
       importingUser: undefined
-    }
+    };
   }
 
   public render() {
@@ -78,11 +78,11 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                 <Mutation mutation={RESEND_ALL_VERIFICATIONS_MUTATION}>
                   {(executeMutation) => (
                     <button
-                      style={{ marginRight: '20px' }}
+                      style={{ marginRight: "20px" }}
                       type="button"
                       className="btn btn-outline-info"
                       onClick={() => {
-                        executeMutation()
+                        executeMutation();
                       }}>
                       <i className="fal fa-plus" /> Resend All Activation Emails
                     </button>
@@ -91,7 +91,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
               </RequirePermission>
               <RequirePermission mode={RequirePermissionModes.SHOW_ERROR} permission={Permissions.ADMIN}>
                 <button
-                  style={{ marginRight: '20px' }}
+                  style={{ marginRight: "20px" }}
                   type="button"
                   className="btn btn-outline-success"
                   onClick={() => {
@@ -99,7 +99,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                       importingUser: {
                         permissions: Permissions.USER
                       }
-                    })
+                    });
                   }}>
                   <i className="fal fa-plus" /> Import Users
                 </button>
@@ -111,12 +111,12 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                   onClick={() => {
                     this.setState({
                       editingUser: {
-                        firstName: '',
-                        lastName: '',
-                        emailAddress: '',
+                        firstName: "",
+                        lastName: "",
+                        emailAddress: "",
                         permissions: Permissions.USER
                       }
-                    })
+                    });
                   }}>
                   <i className="fal fa-plus" /> Add User
                 </button>
@@ -126,13 +126,13 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
           <Query query={ALL_USERS_QUERY}>
             {({ data, error, loading, refetch }) => {
               if (loading) {
-                return <LoadingIndicator />
+                return <LoadingIndicator />;
               }
               if (error) {
-                return <ErrorMessage error={error} />
+                return <ErrorMessage error={error} />;
               }
               if (!data || !Array.isArray(data.userAccounts)) {
-                return <p>No Users found</p>
+                return <p>No Users found</p>;
               }
               return (
                 <div>
@@ -150,12 +150,12 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                     </thead>
                     <tbody>
                       {data.userAccounts.map((user) => {
-                        const emailAddress = user.emailAddresses.find((e) => e.primary)
+                        const emailAddress = user.emailAddresses.find((e) => e.primary);
                         return (
                           <tr key={user.userAccountId}>
                             <td>{user.lastName}</td>
                             <td>{user.firstName}</td>
-                            <td>{user.displayName || ''}</td>
+                            <td>{user.displayName || ""}</td>
                             <td>{emailAddress.emailAddress}</td>
                             <td>{moment(user.lastActive).fromNow()}</td>
                             <td>
@@ -176,7 +176,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                                     title="Edit User"
                                     className="btn btn-sm btn-outline-primary"
                                     onClick={() => {
-                                      this.setState({ editingUser: user })
+                                      this.setState({ editingUser: user });
                                     }}>
                                     <i className="fa fa-fw fa-edit" /> Edit
                                   </button>
@@ -184,7 +184,7 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                               </div>
                             </td>
                           </tr>
-                        )
+                        );
                       })}
                     </tbody>
                   </table>
@@ -193,16 +193,16 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                       isOpen
                       size="lg"
                       toggle={() => {
-                        this.setState({ editingUser: undefined })
+                        this.setState({ editingUser: undefined });
                       }}>
                       <ModalBody>
                         <EditableUserProfile
                           onCancel={() => {
-                            this.setState({ editingUser: undefined })
+                            this.setState({ editingUser: undefined });
                           }}
                           onSave={() => {
-                            this.setState({ editingUser: false })
-                            refetch()
+                            this.setState({ editingUser: false });
+                            refetch();
                           }}
                           isEditing
                           showPermissionSelector
@@ -216,16 +216,16 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                       isOpen
                       size="lg"
                       toggle={() => {
-                        this.setState({ importingUser: undefined })
+                        this.setState({ importingUser: undefined });
                       }}>
                       <ModalBody>
                         <CSVDataImport
                           onCancel={() => {
-                            this.setState({ importingUser: undefined })
+                            this.setState({ importingUser: undefined });
                           }}
                           onSave={() => {
-                            this.setState({ importingUser: false })
-                            refetch()
+                            this.setState({ importingUser: false });
+                            refetch();
                           }}
                           refetch={refetch}
                           isImporting
@@ -236,14 +236,14 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                     </Modal>
                   )}
                 </div>
-              )
+              );
             }}
           </Query>
         </div>
       </AuthenticatedRoute>
-    )
+    );
   }
 }
 
-export default UsersIndexPage
-export { ALL_USERS_QUERY }
+export default UsersIndexPage;
+export { ALL_USERS_QUERY };

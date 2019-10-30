@@ -1,5 +1,5 @@
 export enum GrayskullErrorCode {
-  EmailAlreadyRegistered = 'email_already_registered',
+  EmailAlreadyRegistered = 'email_already_registered'
 }
 
 export class GrayskullError extends Error {

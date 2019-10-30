@@ -145,6 +145,10 @@ UserAccount:
         newPassword: string
         confirmPassword: string
         token: string?
+    deleteAccount:
+      returns: OperationResponse
+      arguments:
+        userAccountId: string
     activateAccount:
       returns: OperationResponse
       arguments:

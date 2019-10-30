@@ -37,7 +37,7 @@ function isValidDate(d: any) {
 export default {
   Query: {
     userAccounts: async (obj, args, context, info) => {
-      // Insert your userAccounts implementation here
+      // insert your userAccounts implementation here
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       } else {
@@ -49,7 +49,7 @@ export default {
       }
     },
     userAccountsMeta: async (obj, args, context, info) => {
-      // Insert your userAccountsMeta implementation here
+      // insert your userAccountsMeta implementation here
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       } else {
@@ -61,7 +61,7 @@ export default {
       }
     },
     userAccount: (obj, args, context, info) => {
-      // Insert your userAccount implementation here
+      // insert your userAccount implementation here
       throw new Error('userAccount is not implemented')
     },
     me: (obj, args, context, info) => {
@@ -135,15 +135,15 @@ export default {
       const queryParts: any = {}
 
       if (responseTypes.includes('code')) {
-        queryParts['code'] = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
+        queryParts.code = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
       }
       if (responseTypes.includes('token')) {
-        queryParts['token'] = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
-        queryParts['token_type'] = 'Bearer'
-        queryParts['expires_in'] = ConfigurationManager.Security!.accessTokenExpirationSeconds
+        queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
+        queryParts.token_type = 'Bearer'
+        queryParts.expires_in = ConfigurationManager.Security!.accessTokenExpirationSeconds
       }
       if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
-        queryParts['id_token'] = await TokenService.createIDToken(client, context.user, nonce, queryParts['token'], serviceOptions)
+        queryParts.id_token = await TokenService.createIDToken(client, context.user, nonce, queryParts.token, serviceOptions)
       }
 
       const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
@@ -168,16 +168,16 @@ export default {
       return true
     },
     validatePassword: (obj, args, context, info) => {
-      // Insert your validatePassword implementation here
+      // insert your validatePassword implementation here
       throw new Error('validatePassword is not implemented')
     },
     changePassword: async (obj, args, context, info) => {
-      // Insert your changePassword implementation here
+      // insert your changePassword implementation here
       let result: IOperationResponse
       const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data
       const userContext: IUserAccount = context.user || null
 
-      //  Only check token if user is not signed in
+      //  only check token if user is not signed in
       const isTokenValid = userContext === null ? await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext }) : true
       if (!isTokenValid) {
         result = {
@@ -216,7 +216,7 @@ export default {
       return result
     },
     resetPassword: async (obj, args, context, info) => {
-      // Insert your resetPassword implementation here
+      // insert your resetPassword implementation here
       const options: IQueryOptions = { userContext: context.user || null }
       try {
         await UserAccountService.resetPassword(args.data.emailAddress, options)
@@ -337,7 +337,7 @@ export default {
             { userContext: context.user }
           )
 
-          // IN THE FUTURE WE SHOULD EXPIRE ALL SESSIONS HERE
+          // iN THE FUTURE WE SHOULD EXPIRE ALL SESSIONS HERE
 
           return {
             success: true
@@ -370,6 +370,44 @@ export default {
       )
 
       return true
+    },
+    deleteAccount: async (obj, args, context, info) => {
+      const userAccount = context.user
+      let result: IOperationResponse
+      if (!userAccount) {
+        return {
+          success: false,
+          message: 'You must be signed in to do that'
+        }
+      }
+
+      if (userAccount.permissions < Permissions.Admin) {
+        return {
+          success: false,
+          message: 'You must be an administrator to do that'
+        }
+      }
+
+      if (userAccount.userAccountId === args.data.userAccountId) {
+        return {
+          success: false,
+          message: 'You cannot delete yourself'
+        }
+      }
+
+      try {
+        await UserAccountRepository.updateUserAccount(
+          { userAccountId: args.data.userAccountId },
+          { isActive: false, deletedBy: userAccount.userAccountId, deletedAt: new Date() },
+          { userContext: context.user }
+        )
+        return { success: true }
+      } catch (err) {
+        return {
+          success: false,
+          message: err.message
+        }
+      }
     },
     sendBackupCode: async (obj, args, context, info) => {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })

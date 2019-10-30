@@ -1,79 +1,78 @@
 type PhoneNumber {
-	phoneNumberId: ID!
-	userAccountId: ID!
-	phoneNumber: String!
-	verificationSecret: String!
-	verified: Boolean!
-	primary: Boolean!
-	createdBy: ID
-	createdAt: Date!
-	updatedBy: ID
-	updatedAt: Date!
-	deletedBy: ID
-	deletedAt: Date
+  phoneNumberId: ID!
+  userAccountId: ID!
+  phoneNumber: String!
+  verificationSecret: String!
+  verified: Boolean!
+  primary: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
 }
 
-
 type PhoneNumberMeta {
-	count: Int!
+  count: Int!
 }
 
 input PhoneNumberFilter {
   or: [PhoneNumberFilter!]
   and: [PhoneNumberFilter!]
-	phoneNumberId_in: [ID]
-	phoneNumberId_equals: ID
-	phoneNumberId_notEquals: ID
-	userAccountId_in: [ID]
-	userAccountId_equals: ID
-	userAccountId_notEquals: ID
-	phoneNumber_contains: String
-	phoneNumber_notContains: String
-	phoneNumber_startsWith: String
-	phoneNumber_endsWith: String
-	phoneNumber_equals: String
-	phoneNumber_notEquals: String
-	verificationSecret_contains: String
-	verificationSecret_notContains: String
-	verificationSecret_startsWith: String
-	verificationSecret_endsWith: String
-	verificationSecret_equals: String
-	verificationSecret_notEquals: String
-	verified_equals: Boolean
-	verified_notEquals: Boolean
-	primary_equals: Boolean
-	primary_notEquals: Boolean
-	createdBy_in: [ID]
-	createdBy_equals: ID
-	createdBy_notEquals: ID
-	createdAt_lessThan: Date
-	createdAt_greaterThan: Date
-	createdAt_equals: Date
-	createdAt_notEquals: Date
-	updatedBy_in: [ID]
-	updatedBy_equals: ID
-	updatedBy_notEquals: ID
-	updatedAt_lessThan: Date
-	updatedAt_greaterThan: Date
-	updatedAt_equals: Date
-	updatedAt_notEquals: Date
-	deletedBy_in: [ID]
-	deletedBy_equals: ID
-	deletedBy_notEquals: ID
-	deletedAt_lessThan: Date
-	deletedAt_greaterThan: Date
-	deletedAt_equals: Date
-	deletedAt_notEquals: Date
+  phoneNumberId_in: [ID]
+  phoneNumberId_equals: ID
+  phoneNumberId_notEquals: ID
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  phoneNumber_contains: String
+  phoneNumber_notContains: String
+  phoneNumber_startsWith: String
+  phoneNumber_endsWith: String
+  phoneNumber_equals: String
+  phoneNumber_notEquals: String
+  verificationSecret_contains: String
+  verificationSecret_notContains: String
+  verificationSecret_startsWith: String
+  verificationSecret_endsWith: String
+  verificationSecret_equals: String
+  verificationSecret_notEquals: String
+  verified_equals: Boolean
+  verified_notEquals: Boolean
+  primary_equals: Boolean
+  primary_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
 }
 
 input PhoneNumberUniqueFilter {
-	phoneNumberId: ID
-	userAccountId: ID
-	phoneNumber: String
+  phoneNumberId: ID
+  userAccountId: ID
+  phoneNumber: String
 }
 
 type Query {
-	phoneNumbers(offset: Int, limit: Int, filter: PhoneNumberFilter): [PhoneNumber!]! 
-	phoneNumbersMeta(filter: PhoneNumberFilter): PhoneNumberMeta 
-	phoneNumber(where: PhoneNumberUniqueFilter): PhoneNumber 
+  phoneNumbers(offset: Int, limit: Int, filter: PhoneNumberFilter): [PhoneNumber!]!
+  phoneNumbersMeta(filter: PhoneNumberFilter): PhoneNumberMeta
+  phoneNumber(where: PhoneNumberUniqueFilter): PhoneNumber
 }

@@ -1,79 +1,78 @@
 type EmailAddress {
-	emailAddressId: ID!
-	userAccountId: ID!
-	emailAddress: String!
-	verificationSecret: String!
-	verified: Boolean!
-	primary: Boolean!
-	createdBy: ID
-	createdAt: Date!
-	updatedBy: ID
-	updatedAt: Date!
-	deletedBy: ID
-	deletedAt: Date
+  emailAddressId: ID!
+  userAccountId: ID!
+  emailAddress: String!
+  verificationSecret: String!
+  verified: Boolean!
+  primary: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
 }
 
-
 type EmailAddressMeta {
-	count: Int!
+  count: Int!
 }
 
 input EmailAddressFilter {
   or: [EmailAddressFilter!]
   and: [EmailAddressFilter!]
-	emailAddressId_in: [ID]
-	emailAddressId_equals: ID
-	emailAddressId_notEquals: ID
-	userAccountId_in: [ID]
-	userAccountId_equals: ID
-	userAccountId_notEquals: ID
-	emailAddress_contains: String
-	emailAddress_notContains: String
-	emailAddress_startsWith: String
-	emailAddress_endsWith: String
-	emailAddress_equals: String
-	emailAddress_notEquals: String
-	verificationSecret_contains: String
-	verificationSecret_notContains: String
-	verificationSecret_startsWith: String
-	verificationSecret_endsWith: String
-	verificationSecret_equals: String
-	verificationSecret_notEquals: String
-	verified_equals: Boolean
-	verified_notEquals: Boolean
-	primary_equals: Boolean
-	primary_notEquals: Boolean
-	createdBy_in: [ID]
-	createdBy_equals: ID
-	createdBy_notEquals: ID
-	createdAt_lessThan: Date
-	createdAt_greaterThan: Date
-	createdAt_equals: Date
-	createdAt_notEquals: Date
-	updatedBy_in: [ID]
-	updatedBy_equals: ID
-	updatedBy_notEquals: ID
-	updatedAt_lessThan: Date
-	updatedAt_greaterThan: Date
-	updatedAt_equals: Date
-	updatedAt_notEquals: Date
-	deletedBy_in: [ID]
-	deletedBy_equals: ID
-	deletedBy_notEquals: ID
-	deletedAt_lessThan: Date
-	deletedAt_greaterThan: Date
-	deletedAt_equals: Date
-	deletedAt_notEquals: Date
+  emailAddressId_in: [ID]
+  emailAddressId_equals: ID
+  emailAddressId_notEquals: ID
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  emailAddress_contains: String
+  emailAddress_notContains: String
+  emailAddress_startsWith: String
+  emailAddress_endsWith: String
+  emailAddress_equals: String
+  emailAddress_notEquals: String
+  verificationSecret_contains: String
+  verificationSecret_notContains: String
+  verificationSecret_startsWith: String
+  verificationSecret_endsWith: String
+  verificationSecret_equals: String
+  verificationSecret_notEquals: String
+  verified_equals: Boolean
+  verified_notEquals: Boolean
+  primary_equals: Boolean
+  primary_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
 }
 
 input EmailAddressUniqueFilter {
-	emailAddressId: ID
-	userAccountId: ID
-	emailAddress: String
+  emailAddressId: ID
+  userAccountId: ID
+  emailAddress: String
 }
 
 type Query {
-	emailAddresses(offset: Int, limit: Int, filter: EmailAddressFilter): [EmailAddress!]! 
-	emailAddressesMeta(filter: EmailAddressFilter): EmailAddressMeta 
-	emailAddress(where: EmailAddressUniqueFilter): EmailAddress 
+  emailAddresses(offset: Int, limit: Int, filter: EmailAddressFilter): [EmailAddress!]!
+  emailAddressesMeta(filter: EmailAddressFilter): EmailAddressMeta
+  emailAddress(where: EmailAddressUniqueFilter): EmailAddress
 }
