@@ -1,9 +1,9 @@
 type Query {
-  emailAddressAvailable(emailAddress: String!): Boolean
-  myEmailAddresses: [EmailAddress!]!
+  emailAddressAvailable (emailAddress: String!): Boolean
+  myEmailAddresses: [EmailAddress!]! 
 }
 type Mutation {
-  addEmailAddress(emailAddress: String!): OperationResponse
-  setEmailAddressPrimary(emailAddressId: String!): OperationResponse
-  sendVerification(emailAddressId: String!): OperationResponse
+  addEmailAddress (emailAddress: String!): OperationResponse
+  setEmailAddressPrimary (emailAddressId: String!): OperationResponse
+  sendVerification (emailAddressId: String!): OperationResponse
 }

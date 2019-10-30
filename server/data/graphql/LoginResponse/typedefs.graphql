@@ -1,6 +1,6 @@
 type LoginResponse {
-  success: Boolean!
-  message: String
-  otpRequired: Boolean
-  emailVerificationRequired: Boolean
+	success: Boolean!
+	message: String
+	otpRequired: Boolean
+	emailVerificationRequired: Boolean
 }

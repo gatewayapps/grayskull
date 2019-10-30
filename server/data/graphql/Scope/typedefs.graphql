@@ -1,7 +1,7 @@
 type Scope {
-  id: String!
-  clientDescription: String!
-  userDescription: String!
-  required: Boolean!
-  permissionLevel: Int!
+	id: String!
+	clientDescription: String!
+	userDescription: String!
+	required: Boolean!
+	permissionLevel: Int!
 }

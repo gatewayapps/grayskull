@@ -1,154 +1,155 @@
 type Client {
-  client_id: String!
-  name: String!
-  logoImageUrl: String
-  description: String
-  baseUrl: String!
-  homePageUrl: String
-  redirectUris: String!
-  scopes: String!
-  public: Boolean
-  isActive: Boolean!
-  createdBy: ID
-  createdAt: Date!
-  updatedBy: ID
-  updatedAt: Date!
-  deletedBy: ID
-  deletedAt: Date
-  createdByUser: UserAccount
-  updatedByUser: UserAccount
-  deletedByUser: UserAccount
+	client_id: String!
+	name: String!
+	logoImageUrl: String
+	description: String
+	baseUrl: String!
+	homePageUrl: String
+	redirectUris: String!
+	scopes: String!
+	public: Boolean
+	isActive: Boolean!
+	createdBy: ID
+	createdAt: Date!
+	updatedBy: ID
+	updatedAt: Date!
+	deletedBy: ID
+	deletedAt: Date
+	createdByUser: UserAccount
+	updatedByUser: UserAccount
+	deletedByUser: UserAccount
 }
 
 input CreateClientArgs {
-  client_id: String!
-  name: String!
-  logoImageUrl: String
-  description: String
-  public: Boolean
-  secret: String!
-  baseUrl: String!
-  homePageUrl: String
-  redirectUris: String!
-  scopes: String!
-  isActive: Boolean!
+	client_id: String!
+	name: String!
+	logoImageUrl: String
+	description: String
+	public: Boolean
+	secret: String!
+	baseUrl: String!
+	homePageUrl: String
+	redirectUris: String!
+	scopes: String!
+	isActive: Boolean!
 }
 
 input UpdateClientArgs {
-  client_id: String!
-  name: String
-  logoImageUrl: String
-  description: String
-  public: Boolean
-  baseUrl: String
-  homePageUrl: String
-  redirectUris: String
-  scopes: String
-  isActive: Boolean
+	client_id: String!
+	name: String
+	logoImageUrl: String
+	description: String
+	public: Boolean
+	baseUrl: String
+	homePageUrl: String
+	redirectUris: String
+	scopes: String
+	isActive: Boolean
 }
 
+
 type ClientMeta {
-  count: Int!
+	count: Int!
 }
 
 input ClientFilter {
   or: [ClientFilter!]
   and: [ClientFilter!]
-  client_id_contains: String
-  client_id_notContains: String
-  client_id_startsWith: String
-  client_id_endsWith: String
-  client_id_equals: String
-  client_id_notEquals: String
-  name_contains: String
-  name_notContains: String
-  name_startsWith: String
-  name_endsWith: String
-  name_equals: String
-  name_notEquals: String
-  logoImageUrl_contains: String
-  logoImageUrl_notContains: String
-  logoImageUrl_startsWith: String
-  logoImageUrl_endsWith: String
-  logoImageUrl_equals: String
-  logoImageUrl_notEquals: String
-  description_contains: String
-  description_notContains: String
-  description_startsWith: String
-  description_endsWith: String
-  description_equals: String
-  description_notEquals: String
-  baseUrl_contains: String
-  baseUrl_notContains: String
-  baseUrl_startsWith: String
-  baseUrl_endsWith: String
-  baseUrl_equals: String
-  baseUrl_notEquals: String
-  homePageUrl_contains: String
-  homePageUrl_notContains: String
-  homePageUrl_startsWith: String
-  homePageUrl_endsWith: String
-  homePageUrl_equals: String
-  homePageUrl_notEquals: String
-  redirectUris_contains: String
-  redirectUris_notContains: String
-  redirectUris_startsWith: String
-  redirectUris_endsWith: String
-  redirectUris_equals: String
-  redirectUris_notEquals: String
-  scopes_contains: String
-  scopes_notContains: String
-  scopes_startsWith: String
-  scopes_endsWith: String
-  scopes_equals: String
-  scopes_notEquals: String
-  public_equals: Boolean
-  public_notEquals: Boolean
-  isActive_equals: Boolean
-  isActive_notEquals: Boolean
-  createdBy_in: [ID]
-  createdBy_equals: ID
-  createdBy_notEquals: ID
-  createdAt_lessThan: Date
-  createdAt_greaterThan: Date
-  createdAt_equals: Date
-  createdAt_notEquals: Date
-  updatedBy_in: [ID]
-  updatedBy_equals: ID
-  updatedBy_notEquals: ID
-  updatedAt_lessThan: Date
-  updatedAt_greaterThan: Date
-  updatedAt_equals: Date
-  updatedAt_notEquals: Date
-  deletedBy_in: [ID]
-  deletedBy_equals: ID
-  deletedBy_notEquals: ID
-  deletedAt_lessThan: Date
-  deletedAt_greaterThan: Date
-  deletedAt_equals: Date
-  deletedAt_notEquals: Date
-  createdByUser_equals: ID
-  createdByUser_notEquals: ID
-  createdByUser_in: [ID]
-  updatedByUser_equals: ID
-  updatedByUser_notEquals: ID
-  updatedByUser_in: [ID]
-  deletedByUser_equals: ID
-  deletedByUser_notEquals: ID
-  deletedByUser_in: [ID]
+	client_id_contains: String
+	client_id_notContains: String
+	client_id_startsWith: String
+	client_id_endsWith: String
+	client_id_equals: String
+	client_id_notEquals: String
+	name_contains: String
+	name_notContains: String
+	name_startsWith: String
+	name_endsWith: String
+	name_equals: String
+	name_notEquals: String
+	logoImageUrl_contains: String
+	logoImageUrl_notContains: String
+	logoImageUrl_startsWith: String
+	logoImageUrl_endsWith: String
+	logoImageUrl_equals: String
+	logoImageUrl_notEquals: String
+	description_contains: String
+	description_notContains: String
+	description_startsWith: String
+	description_endsWith: String
+	description_equals: String
+	description_notEquals: String
+	baseUrl_contains: String
+	baseUrl_notContains: String
+	baseUrl_startsWith: String
+	baseUrl_endsWith: String
+	baseUrl_equals: String
+	baseUrl_notEquals: String
+	homePageUrl_contains: String
+	homePageUrl_notContains: String
+	homePageUrl_startsWith: String
+	homePageUrl_endsWith: String
+	homePageUrl_equals: String
+	homePageUrl_notEquals: String
+	redirectUris_contains: String
+	redirectUris_notContains: String
+	redirectUris_startsWith: String
+	redirectUris_endsWith: String
+	redirectUris_equals: String
+	redirectUris_notEquals: String
+	scopes_contains: String
+	scopes_notContains: String
+	scopes_startsWith: String
+	scopes_endsWith: String
+	scopes_equals: String
+	scopes_notEquals: String
+	public_equals: Boolean
+	public_notEquals: Boolean
+	isActive_equals: Boolean
+	isActive_notEquals: Boolean
+	createdBy_in: [ID]
+	createdBy_equals: ID
+	createdBy_notEquals: ID
+	createdAt_lessThan: Date
+	createdAt_greaterThan: Date
+	createdAt_equals: Date
+	createdAt_notEquals: Date
+	updatedBy_in: [ID]
+	updatedBy_equals: ID
+	updatedBy_notEquals: ID
+	updatedAt_lessThan: Date
+	updatedAt_greaterThan: Date
+	updatedAt_equals: Date
+	updatedAt_notEquals: Date
+	deletedBy_in: [ID]
+	deletedBy_equals: ID
+	deletedBy_notEquals: ID
+	deletedAt_lessThan: Date
+	deletedAt_greaterThan: Date
+	deletedAt_equals: Date
+	deletedAt_notEquals: Date
+	createdByUser_equals: ID
+	createdByUser_notEquals: ID
+	createdByUser_in: [ID]
+	updatedByUser_equals: ID
+	updatedByUser_notEquals: ID
+	updatedByUser_in: [ID]
+	deletedByUser_equals: ID
+	deletedByUser_notEquals: ID
+	deletedByUser_in: [ID]
 }
 
 input ClientUniqueFilter {
-  client_id: String
+	client_id: String
 }
 
 type Query {
-  clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
-  clientsMeta(filter: ClientFilter): ClientMeta
-  client(where: ClientUniqueFilter): Client
+	clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]! 
+	clientsMeta(filter: ClientFilter): ClientMeta 
+	client(where: ClientUniqueFilter): Client 
 }
 
 type Mutation {
-  createClient(data: CreateClientArgs!): Client
-  updateClient(data: UpdateClientArgs!): Client
+	createClient(data: CreateClientArgs!): Client 
+	updateClient(data: UpdateClientArgs!): Client 
 }
