@@ -1,4 +1,4 @@
-import ScopeService from '@services/ScopeService'
+import ScopeService from '../../../api/services/ScopeService'
 
 export default {
   Query: {

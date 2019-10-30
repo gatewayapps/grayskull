@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import ConfigurationManager from '@/config/ConfigurationManager'
-import { ISession } from '@data/models/ISession'
+import ConfigurationManager from '../config/ConfigurationManager'
+import { ISession } from '../data/models/ISession'
 
 export const ACCESS_TOKEN_COOKIE_NAME = 'at'
 export const SESSION_ID_COOKIE_NAME = 'sid'

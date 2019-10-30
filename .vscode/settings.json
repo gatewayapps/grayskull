@@ -28,6 +28,10 @@
     "node_modules": true,
     "dist": true,
     ".next": true,
-    "public/.next": true
+    "public/.next": true,
+    ".browserlistrc": true,
+    ".dockerignore": true,
+    ".eslintignore": true,
+    ".prettierignore": true
   }
 }

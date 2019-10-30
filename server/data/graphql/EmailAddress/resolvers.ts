@@ -1,8 +1,8 @@
-import EmailAddressService from '@services/EmailAddressService'
-import { hasPermission } from '@decorators/permissionDecorator'
+import EmailAddressService from '../../../api/services/EmailAddressService'
+import { hasPermission } from '../../../decorators/permissionDecorator'
 import { userInfo } from 'os'
-import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
-import { Permissions } from '@/utils/permissions'
+import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
+import { Permissions } from '../../../utils/permissions'
 
 class EmailAddressResolver {
   public getEmailAddresses(obj, args, context, info) {

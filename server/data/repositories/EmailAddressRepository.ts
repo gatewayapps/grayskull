@@ -1,10 +1,10 @@
-import { IEmailAddressMeta, IEmailAddressFilter, IEmailAddressUniqueFilter } from '@/interfaces/graphql/IEmailAddress'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { IEmailAddress } from '@data/models/IEmailAddress'
+import { IEmailAddressMeta, IEmailAddressFilter, IEmailAddressUniqueFilter } from '../../interfaces/graphql/IEmailAddress'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { IEmailAddress } from '../../data/models/IEmailAddress'
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class EmailAddressRepository {
   public async emailAddressesMeta(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<IEmailAddressMeta> {

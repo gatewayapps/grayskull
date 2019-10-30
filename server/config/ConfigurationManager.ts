@@ -1,11 +1,11 @@
-import { getInstance } from '@/RealmInstance'
-import { ISecurityConfiguration } from '@data/models/ISecurityConfiguration'
-import { IServerConfiguration } from '@data/models/IServerConfiguration'
-import { IMailConfiguration } from '@data/models/IMailConfiguration'
+import { getInstance } from '../RealmInstance'
+import { ISecurityConfiguration } from '../data/models/ISecurityConfiguration'
+import { IServerConfiguration } from '../data/models/IServerConfiguration'
+import { IMailConfiguration } from '../data/models/IMailConfiguration'
 import { join } from 'path'
 import { existsSync } from 'fs'
-import { IConfiguration } from '@data/models/IConfiguration'
-import { CONFIG_DIR } from '@/constants'
+import { IConfiguration } from '../data/models/IConfiguration'
+import { CONFIG_DIR } from '../constants'
 
 const CONFIG_FILENAME = 'grayskull.config.js'
 const CONFIG_FILE_PATH = join(CONFIG_DIR, CONFIG_FILENAME)

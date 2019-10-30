@@ -1,6 +1,6 @@
-import ConfigurationManager from '@/config/ConfigurationManager'
+import ConfigurationManager from '../config/ConfigurationManager'
 import Sequelize from 'sequelize'
-import { CONFIG_DIR } from '@/constants'
+import { CONFIG_DIR } from '../constants'
 
 import ClientFactory from './models/Client'
 import EmailAddressFactory from './models/EmailAddress'

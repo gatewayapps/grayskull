@@ -1,5 +1,5 @@
-import { HttpMethod, route } from '@decorators/routeDecorator'
-import AuthenticationService from '@services/AuthenticationService'
+import { HttpMethod, route } from '../../decorators/routeDecorator'
+import AuthenticationService from '../../api/services/AuthenticationService'
 
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'

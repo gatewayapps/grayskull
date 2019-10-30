@@ -1,5 +1,5 @@
 import { IScope } from '../../data/models/IScope'
-import { Permissions } from '@/utils/permissions'
+import { Permissions } from '../../utils/permissions'
 
 export const ScopeMap = {
   openid: {

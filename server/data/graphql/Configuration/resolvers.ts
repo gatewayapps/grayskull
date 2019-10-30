@@ -1,5 +1,5 @@
 import ConfigurationService from '../../../api/services/ConfigurationService'
-import CertificateService from '@services/CertificateService'
+import CertificateService from '../../../api/services/CertificateService'
 
 export default {
   Query: {

@@ -1,10 +1,10 @@
-import { IUserAccountMeta, IUserAccountFilter, IUserAccountUniqueFilter } from '@/interfaces/graphql/IUserAccount'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { IUserAccount } from '@data/models/IUserAccount'
+import { IUserAccountMeta, IUserAccountFilter, IUserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { IUserAccount } from '../../data/models/IUserAccount'
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class UserAccountRepository {
   public async userAccountsMeta(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccountMeta> {

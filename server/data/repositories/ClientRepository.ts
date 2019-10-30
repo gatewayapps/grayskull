@@ -1,10 +1,10 @@
-import { IClientMeta, IClientFilter, IClientUniqueFilter } from '@/interfaces/graphql/IClient'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { IClient } from '@data/models/IClient'
+import { IClientMeta, IClientFilter, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { IClient } from '../../data/models/IClient'
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class ClientRepository {
   public async clientsMeta(filter: IClientFilter | null, options: IQueryOptions): Promise<IClientMeta> {

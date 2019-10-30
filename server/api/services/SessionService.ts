@@ -1,11 +1,11 @@
-import { ISession } from '@data/models/ISession'
+import { ISession } from '../../data/models/ISession'
 
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { ISessionUniqueFilter } from '@/interfaces/graphql/ISession'
-import SessionRepository from '@data/repositories/SessionRepository'
+import { ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
+import SessionRepository from '../../data/repositories/SessionRepository'
 
 const SESSION_EXPIRATION_SECONDS = 60 * 60
 const EXTENDED_SESSION_EXPIRATION_SECONDS = 60 * 60 * 24 * 365

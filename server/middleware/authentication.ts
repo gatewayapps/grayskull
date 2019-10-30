@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import { setAuthCookies, getAuthCookies, clearAuthCookies } from '../utils/authentication'
-import { ISession } from '@data/models/ISession'
-import { IUserAccount } from '@data/models/IUserAccount'
-import SessionService from '@services/SessionService'
-import UserAccountService from '@services/UserAccountService'
-import UserAccountRepository from '@data/repositories/UserAccountRepository'
-import SessionRepository from '@data/repositories/SessionRepository'
-import ConfigurationManager from '@/config/ConfigurationManager'
-import EmailAddressRepository from '@data/repositories/EmailAddressRepository'
+import { ISession } from '../data/models/ISession'
+import { IUserAccount } from '../data/models/IUserAccount'
+import SessionService from '../api/services/SessionService'
+import UserAccountService from '../api/services/UserAccountService'
+import UserAccountRepository from '../data/repositories/UserAccountRepository'
+import SessionRepository from '../data/repositories/SessionRepository'
+import ConfigurationManager from '../config/ConfigurationManager'
+import EmailAddressRepository from '../data/repositories/EmailAddressRepository'
 
 let FIRST_USER_CREATED = false
 const MIN_TIME_TO_UPDATE_LAST_ACTIVE = 60 * 1000 // 1 minute

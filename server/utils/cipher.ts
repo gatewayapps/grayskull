@@ -1,4 +1,4 @@
-import ConfigurationManager from '@/config/ConfigurationManager'
+import ConfigurationManager from '../config/ConfigurationManager'
 import crypto from 'crypto'
 
 const ALGORITHM: string = 'aes-256-cbc'

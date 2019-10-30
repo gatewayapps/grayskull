@@ -1,10 +1,10 @@
-import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '@/interfaces/graphql/ISession'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { ISession } from '@data/models/ISession'
+import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { ISession } from '../../data/models/ISession'
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class SessionRepository {
   public async sessionsMeta(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISessionMeta> {

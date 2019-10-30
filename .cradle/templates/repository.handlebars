@@ -1,13 +1,13 @@
-import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '@/interfaces/graphql/I{{Name}}'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { I{{Name}} } from '@data/models/I{{Name}}'
+import { I{{Name}}Meta, I{{Name}}Filter, I{{Name}}UniqueFilter } from '../../interfaces/graphql/I{{Name}}'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { I{{Name}} } from '../../data/models/I{{Name}}'
 {{!-- {{#ifNotEquals Name 'UserAccount'}}
-import { IUserAccount } from '@data/models/IUserAccount'
+import { IUserAccount } from '../../data/models/IUserAccount'
 {{/ifNotEquals}} --}}
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class {{Name}}Repository {
   public async {{toCamelCase (pluralize Name)}}Meta(filter: I{{Name}}Filter | null, options: IQueryOptions): Promise<I{{Name}}Meta> {

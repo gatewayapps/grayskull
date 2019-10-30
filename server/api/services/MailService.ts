@@ -1,5 +1,5 @@
 import nodemailer, { SendMailOptions } from 'nodemailer'
-import ConfigurationManager from '@/config/ConfigurationManager'
+import ConfigurationManager from '../../config/ConfigurationManager'
 import { join, normalize } from 'path'
 import handlebars from 'handlebars'
 import { existsSync, readFileSync } from 'fs'

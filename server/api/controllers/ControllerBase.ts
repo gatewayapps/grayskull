@@ -1,4 +1,4 @@
-import { getRoute, HttpMethod } from '@decorators/routeDecorator'
+import { getRoute, HttpMethod } from '../../decorators/routeDecorator'
 import { Application as ExpressApplication } from 'express'
 import _ from 'lodash'
 

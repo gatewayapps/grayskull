@@ -1,4 +1,4 @@
-import ClientService from '@services/ClientService'
+import ClientService from '../../../api/services/ClientService'
 
 export default {
   Query: {

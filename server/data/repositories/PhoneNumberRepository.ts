@@ -1,10 +1,10 @@
-import { IPhoneNumberMeta, IPhoneNumberFilter, IPhoneNumberUniqueFilter } from '@/interfaces/graphql/IPhoneNumber'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { IPhoneNumber } from '@data/models/IPhoneNumber'
+import { IPhoneNumberMeta, IPhoneNumberFilter, IPhoneNumberUniqueFilter } from '../../interfaces/graphql/IPhoneNumber'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { IPhoneNumber } from '../../data/models/IPhoneNumber'
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class PhoneNumberRepository {
   public async phoneNumbersMeta(filter: IPhoneNumberFilter | null, options: IQueryOptions): Promise<IPhoneNumberMeta> {

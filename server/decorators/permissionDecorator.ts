@@ -1,4 +1,4 @@
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../data/IQueryOptions'
 
 export function hasPermission(permission: number) {
   /*tslint:disable only-arrow-functions*/

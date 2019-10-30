@@ -1,10 +1,10 @@
-import { IRefreshTokenMeta, IRefreshTokenFilter, IRefreshTokenUniqueFilter } from '@/interfaces/graphql/IRefreshToken'
-import { convertFilterToSequelizeWhere } from '@/utils/graphQLSequelizeConverter'
-import db from '@data/context'
-import { IRefreshToken } from '@data/models/IRefreshToken'
+import { IRefreshTokenMeta, IRefreshTokenFilter, IRefreshTokenUniqueFilter } from '../../interfaces/graphql/IRefreshToken'
+import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
+import db from '../../data/context'
+import { IRefreshToken } from '../../data/models/IRefreshToken'
 
 import { AnyWhereOptions } from 'sequelize'
-import { IQueryOptions } from '@data/IQueryOptions'
+import { IQueryOptions } from '../../data/IQueryOptions'
 
 class RefreshTokenRepository {
   public async refreshTokensMeta(filter: IRefreshTokenFilter | null, options: IQueryOptions): Promise<IRefreshTokenMeta> {

@@ -1,10 +1,10 @@
-import ConfigurationManager from '@/config/ConfigurationManager'
-import { CONFIG_DIR } from '@/constants'
+import ConfigurationManager from '../../config/ConfigurationManager'
+import { CONFIG_DIR } from '../../constants'
 import fs, { ReadStream } from 'fs-extra'
 import { FileUpload } from '../../types/FileUpload'
 import path from 'path'
 import uuid from 'uuid/v4'
-import { IUploadFileResponse } from '@data/models/IUploadFileResponse'
+import { IUploadFileResponse } from '../../data/models/IUploadFileResponse'
 
 const UPLOAD_PATH = 'uploads'
 const UPLOAD_DIR = `${CONFIG_DIR}/${UPLOAD_PATH}`

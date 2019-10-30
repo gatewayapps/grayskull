@@ -1,6 +1,6 @@
-import { getInstance } from '@/RealmInstance'
-import ConfigurationManager from '@/config/ConfigurationManager'
-import { CONFIG_DIR } from '@/constants'
+import { getInstance } from '../../RealmInstance'
+import ConfigurationManager from '../../config/ConfigurationManager'
+import { CONFIG_DIR } from '../../constants'
 import { pki, md, asn1 } from 'node-forge'
 const pem2jwk = require('pem-jwk').pem2jwk
 import moment = require('moment')

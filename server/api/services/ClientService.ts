@@ -1,16 +1,16 @@
-import { ClientInstance } from '@data/models/Client'
-import { IClient } from '@data/models/IClient'
-import { IUserAccount } from '@data/models/IUserAccount'
+import { ClientInstance } from '../../data/models/Client'
+import { IClient } from '../../data/models/IClient'
+import { IUserAccount } from '../../data/models/IUserAccount'
 
 import crypto from 'crypto'
 import uuid from 'uuid/v4'
-import { IClientFilter, IClientUniqueFilter, IClientMeta } from '@/interfaces/graphql/IClient'
+import { IClientFilter, IClientUniqueFilter, IClientMeta } from '../../interfaces/graphql/IClient'
 
 import { IQueryOptions } from '../../data/IQueryOptions'
 
-import { hasPermission } from '@decorators/permissionDecorator'
-import { Permissions } from '@/utils/permissions'
-import ClientRepository from '@data/repositories/ClientRepository'
+import { hasPermission } from '../../decorators/permissionDecorator'
+import { Permissions } from '../../utils/permissions'
+import ClientRepository from '../../data/repositories/ClientRepository'
 
 class ClientService {
   @hasPermission(Permissions.Admin)

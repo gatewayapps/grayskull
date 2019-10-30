@@ -1,4 +1,4 @@
-import { IUserAccount } from '@data/models/IUserAccount'
+import { IUserAccount } from '../data/models/IUserAccount'
 import { Permissions } from './permissions'
 
 class AuthorizationHelper {

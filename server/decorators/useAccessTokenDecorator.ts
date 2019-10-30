@@ -1,5 +1,5 @@
-import { IClientRequestOptions } from '@data/IClientRequestOptions'
-import TokenService from '@services/TokenService'
+import { IClientRequestOptions } from '../data/IClientRequestOptions'
+import TokenService from '../api/services/TokenService'
 import { Request, Response } from 'express'
 import { access } from 'fs-extra'
 

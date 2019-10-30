@@ -1,4 +1,4 @@
-import { IConfiguration } from '@data/models/IConfiguration'
+import { IConfiguration } from './data/models/IConfiguration'
 import db from './data/context'
 import { default as express, Application as ExpressApplication } from 'express'
 import { default as http, Server as HttpServer } from 'http'
@@ -15,7 +15,7 @@ import { getUserContext, firstUserMiddleware } from './middleware/authentication
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import { ApolloServer } from 'apollo-server-express'
-import { schema } from '@data/graphql/graphql'
+import { schema } from './data/graphql/graphql'
 
 import OAuthController from './api/controllers/oauthController'
 import { CONFIG_DIR } from './constants'
