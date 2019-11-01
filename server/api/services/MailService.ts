@@ -48,8 +48,8 @@ class MailService {
       throw new Error(`No template found in ${TEMPLATE_PATH} with name ${templateName} - looked for ${textTemplateFileName}, ${htmlTemplateFileName}`)
     }
 
-    let textBody: string = ''
-    let htmlBody: string = ''
+    let textBody = ''
+    let htmlBody = ''
 
     if (existsSync(textTemplatePath)) {
       textBody = this.processTemplateWithContext(textTemplatePath, context)

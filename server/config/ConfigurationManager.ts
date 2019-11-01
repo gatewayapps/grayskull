@@ -1,22 +1,13 @@
-import { getInstance } from '../RealmInstance'
+import { config } from 'dotenv'
+
 import { ISecurityConfiguration } from '../data/models/ISecurityConfiguration'
 import { IServerConfiguration } from '../data/models/IServerConfiguration'
 import { IMailConfiguration } from '../data/models/IMailConfiguration'
-import { join } from 'path'
-import { existsSync } from 'fs'
 import { IConfiguration } from '../data/models/IConfiguration'
-import { CONFIG_DIR } from '../constants'
 
-const CONFIG_FILENAME = 'grayskull.config.js'
-const CONFIG_FILE_PATH = join(CONFIG_DIR, CONFIG_FILENAME)
-
+config()
 let currentConfig: IConfiguration
-
-export function loadConfigurationFromDisk() {
-  if (existsSync(CONFIG_FILE_PATH)) {
-    currentConfig = require(CONFIG_FILE_PATH)
-  }
-}
+currentConfig = {}
 
 export function getCurrentConfiguration(): IConfiguration {
   return currentConfig
@@ -47,6 +38,5 @@ class ConfigurationManager {
     }
   }
 }
-loadConfigurationFromDisk()
 
 export default new ConfigurationManager()

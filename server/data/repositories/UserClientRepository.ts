@@ -1,4 +1,4 @@
-import { IUserClientMeta, IUserClientFilter, IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
+import { IUserClientFilter, IUserClientMeta, IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IUserClient } from '../../data/models/IUserClient'

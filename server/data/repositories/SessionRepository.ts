@@ -1,4 +1,4 @@
-import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
+import { ISessionFilter, ISessionMeta, ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { ISession } from '../../data/models/ISession'

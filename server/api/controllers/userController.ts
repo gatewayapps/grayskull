@@ -1,5 +1,5 @@
 import ControllerBase from './ControllerBase'
-import { route, HttpMethod } from '../../decorators/routeDecorator'
+import { HttpMethod, route } from '../../decorators/routeDecorator'
 import { Request, Response } from 'express'
 import { useScope } from '../../decorators/useAccessTokenDecorator'
 import { IClientRequestOptions } from '../../data/IClientRequestOptions'

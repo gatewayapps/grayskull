@@ -22,7 +22,6 @@ import ConfigurationManager from '../../../config/ConfigurationManager'
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
 import { encrypt } from '../../../utils/cipher'
 import { Permissions } from '../../../utils/permissions'
-import EmailAddressFactory from '../../../data/models/EmailAddress'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 

@@ -1,9 +1,9 @@
 import ConfigurationManager from '../config/ConfigurationManager'
 import crypto from 'crypto'
 
-const ALGORITHM: string = 'aes-256-cbc'
-const IV_LENGTH: number = 16
-const KEY_LENGTH: number = 32
+const ALGORITHM = 'aes-256-cbc'
+const IV_LENGTH = 16
+const KEY_LENGTH = 32
 
 function getKey(): string {
   return ConfigurationManager.Security!.globalSecret.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')

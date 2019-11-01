@@ -1,4 +1,4 @@
-import { IPhoneNumberMeta, IPhoneNumberFilter, IPhoneNumberUniqueFilter } from '../../interfaces/graphql/IPhoneNumber'
+import { IPhoneNumberFilter, IPhoneNumberMeta, IPhoneNumberUniqueFilter } from '../../interfaces/graphql/IPhoneNumber'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IPhoneNumber } from '../../data/models/IPhoneNumber'

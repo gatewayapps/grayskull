@@ -1,4 +1,4 @@
-import { IClientMeta, IClientFilter, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
+import { IClientFilter, IClientMeta, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IClient } from '../../data/models/IClient'

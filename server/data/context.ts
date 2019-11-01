@@ -1,4 +1,3 @@
-import ConfigurationManager from '../config/ConfigurationManager'
 import Sequelize from 'sequelize'
 import { CONFIG_DIR } from '../constants'
 

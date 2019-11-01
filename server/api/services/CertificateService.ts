@@ -1,7 +1,7 @@
 import { getInstance } from '../../RealmInstance'
 import ConfigurationManager from '../../config/ConfigurationManager'
 import { CONFIG_DIR } from '../../constants'
-import { pki, md, asn1 } from 'node-forge'
+import { asn1, md, pki } from 'node-forge'
 const pem2jwk = require('pem-jwk').pem2jwk
 import moment = require('moment')
 import ConfigurationService from './ConfigurationService'
@@ -53,7 +53,7 @@ class CertificateService {
   public getJWKS() {
     return this.jwks
   }
-  public async verifyCertbot(domain: string): Promise<Boolean> {
+  public async verifyCertbot(domain: string): Promise<boolean> {
     const finalDomain = domain.replace('https://', '')
     const results = await greenlock.check({ domains: [finalDomain] })
     if (results) {

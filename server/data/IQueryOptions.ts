@@ -1,5 +1,5 @@
 import { IUserAccount } from '../data/models/IUserAccount'
-import { Transaction, Model, IncludeOptions, col, literal, FindOptionsOrderArray, fn } from 'sequelize'
+import { FindOptionsOrderArray, IncludeOptions, Model, Transaction, col, fn, literal } from 'sequelize'
 
 export interface IQueryOptions {
   userContext: IUserAccount | null

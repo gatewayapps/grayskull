@@ -4,7 +4,7 @@ import { IUserAccount } from '../../data/models/IUserAccount'
 
 import crypto from 'crypto'
 import uuid from 'uuid/v4'
-import { IClientFilter, IClientUniqueFilter, IClientMeta } from '../../interfaces/graphql/IClient'
+import { IClientFilter, IClientMeta, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
 
 import { IQueryOptions } from '../../data/IQueryOptions'
 

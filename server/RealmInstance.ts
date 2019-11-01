@@ -1,17 +1,17 @@
 import { IConfiguration } from './data/models/IConfiguration'
 import db from './data/context'
-import { default as express, Application as ExpressApplication } from 'express'
-import { default as http, Server as HttpServer } from 'http'
-import { default as https, Server as HttpsServer } from 'https'
+import { Application as ExpressApplication, default as express } from 'express'
+import { Server as HttpServer, default as http } from 'http'
+import { Server as HttpsServer, default as https } from 'https'
 import { SecureContext, createSecureContext } from 'tls'
 import { default as next } from 'next'
 
-import { UrlObject, Url } from 'url'
+import { Url, UrlObject } from 'url'
 import bodyParser = require('body-parser')
 import cookieParser = require('cookie-parser')
 import httpsRedirect from 'express-https-redirect'
 import CertificateService, { GreenlockMiddleware } from './api/services/CertificateService'
-import { getUserContext, firstUserMiddleware } from './middleware/authentication'
+import { firstUserMiddleware, getUserContext } from './middleware/authentication'
 import LoginController from './api/controllers/loginController'
 import UserController from './api/controllers/userController'
 import { ApolloServer } from 'apollo-server-express'

@@ -1,5 +1,6 @@
 cradle/**/*
 public/static
-public/.next
+public
+dist
 node_modules
 examples

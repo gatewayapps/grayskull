@@ -15,3 +15,4 @@ Configuration: ./specs/Configuration.yml#Configuration
 RefreshToken: ./specs/RefreshToken.yml#RefreshToken
 PhoneNumber: ./specs/PhoneNumber.yml#PhoneNumber
 UploadFileResponse: ./specs/UploadFileResponse.yml#UploadFileResponse
+Setting: ./specs/Setting.yml#Setting

@@ -1,18 +1,17 @@
-import { IEmailAddressUniqueFilter, IEmailAddressFilter, IEmailAddressMeta } from '../../interfaces/graphql/IEmailAddress'
+import { IEmailAddressFilter, IEmailAddressMeta, IEmailAddressUniqueFilter } from '../../interfaces/graphql/IEmailAddress'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import { IEmailAddress } from '../../data/models/IEmailAddress'
 import _ from 'lodash'
-import { EmailAddressInstance } from '../../data/models/EmailAddress'
+
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { Permissions } from '../../utils/permissions'
-import authorization from '../../utils/AuthorizationHelper'
+
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import ConfigurationManager from '../../config/ConfigurationManager'
-import { encrypt } from '../../utils/cipher'
-import { authenticator } from 'otplib'
+
 import { randomBytes } from 'crypto'
-import { ForbiddenError } from 'apollo-server'
+
 import MailService from './MailService'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 
@@ -25,7 +24,7 @@ class EmailAddressService {
     return await EmailAddressRepository.getEmailAddress(filter, options)
   }
 
-  public async isEmailAddressAvailable(emailAddress: string, options: IQueryOptions): Promise<Boolean> {
+  public async isEmailAddressAvailable(emailAddress: string, options: IQueryOptions): Promise<boolean> {
     const existingEmail = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     return existingEmail === null

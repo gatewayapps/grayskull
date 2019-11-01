@@ -4,7 +4,6 @@ import { readFileSync } from 'fs'
 const pem2jwk = require('pem-jwk').pem2jwk
 
 export function startServerInstance() {
-  loadConfigurationFromDisk()
   const realm = new RealmInstance(ConfigurationManager.CurrentConfiguration)
 }
 

@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
-import { setAuthCookies, getAuthCookies, clearAuthCookies } from '../utils/authentication'
+import { NextFunction, Request, Response } from 'express'
+import { clearAuthCookies, getAuthCookies, setAuthCookies } from '../utils/authentication'
 import { ISession } from '../data/models/ISession'
 import { IUserAccount } from '../data/models/IUserAccount'
 import SessionService from '../api/services/SessionService'

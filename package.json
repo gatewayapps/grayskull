@@ -98,6 +98,7 @@
     "cookie-parser": "^1.4.3",
     "core-js": "^3.3.5",
     "decache": "^4.5.0",
+    "dotenv": "^8.2.0",
     "express": "^4.16.3",
     "express-https-redirect": "^1.0.0",
     "fs-extra": "^7.0.1",

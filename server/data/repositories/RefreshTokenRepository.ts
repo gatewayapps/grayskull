@@ -1,4 +1,4 @@
-import { IRefreshTokenMeta, IRefreshTokenFilter, IRefreshTokenUniqueFilter } from '../../interfaces/graphql/IRefreshToken'
+import { IRefreshTokenFilter, IRefreshTokenMeta, IRefreshTokenUniqueFilter } from '../../interfaces/graphql/IRefreshToken'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IRefreshToken } from '../../data/models/IRefreshToken'

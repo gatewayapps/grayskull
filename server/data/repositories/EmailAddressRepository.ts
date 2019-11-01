@@ -1,4 +1,4 @@
-import { IEmailAddressMeta, IEmailAddressFilter, IEmailAddressUniqueFilter } from '../../interfaces/graphql/IEmailAddress'
+import { IEmailAddressFilter, IEmailAddressMeta, IEmailAddressUniqueFilter } from '../../interfaces/graphql/IEmailAddress'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IEmailAddress } from '../../data/models/IEmailAddress'

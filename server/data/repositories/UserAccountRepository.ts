@@ -1,4 +1,4 @@
-import { IUserAccountMeta, IUserAccountFilter, IUserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
+import { IUserAccountFilter, IUserAccountMeta, IUserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IUserAccount } from '../../data/models/IUserAccount'
