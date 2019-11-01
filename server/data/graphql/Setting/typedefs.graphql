@@ -2,6 +2,7 @@ type Setting {
 	key: String!
 	value: String!
 	type: String!
+	category: String!
 }
 
 
@@ -30,6 +31,12 @@ input SettingFilter {
 	type_endsWith: String
 	type_equals: String
 	type_notEquals: String
+	category_contains: String
+	category_notContains: String
+	category_startsWith: String
+	category_endsWith: String
+	category_equals: String
+	category_notEquals: String
 }
 
 input SettingUniqueFilter {

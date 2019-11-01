@@ -20,6 +20,11 @@ export interface ISettingFilter {
   type_endsWith?: string
   type_equals?: string
   type_notEquals?: string
+  category_contains?: string
+  category_startsWith?: string
+  category_endsWith?: string
+  category_equals?: string
+  category_notEquals?: string
 }
 
 export interface ISettingUniqueFilter {

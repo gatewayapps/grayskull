@@ -19,6 +19,10 @@ function SettingFactory(sequelize: Sequelize.Sequelize) {
       allowNull: false,
       type: Sequelize.STRING
     },
+    category: {
+      allowNull: false,
+      type: Sequelize.STRING
+    },
   }
   return sequelize.define<SettingInstance, ISetting>('Setting', attributes, {
     timestamps: true,

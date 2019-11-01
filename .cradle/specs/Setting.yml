@@ -7,3 +7,4 @@ Setting:
     key: string primary
     value: string
     type: string
+    category: string
