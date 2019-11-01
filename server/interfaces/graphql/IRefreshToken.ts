@@ -5,10 +5,10 @@ export interface IRefreshTokenMeta {
 export interface IRefreshTokenFilter {
   or?: [IRefreshTokenFilter]
   and?: [IRefreshTokenFilter]
-  id_in?: [string]
+  id_in?: [ string ]
   id_equals?: string
   id_notEquals?: string
-  userClientId_in?: [string]
+  userClientId_in?: [ string ]
   userClientId_equals?: string
   userClientId_notEquals?: string
   token_contains?: string
@@ -32,16 +32,16 @@ export interface IRefreshTokenFilter {
   revokedAt_greaterThan?: Date
   revokedAt_equals?: Date
   revokedAt_notEquals?: Date
-  createdBy_in?: [string]
+  createdBy_in?: [ string ]
   createdBy_equals?: string
   createdBy_notEquals?: string
-  updatedBy_in?: [string]
+  updatedBy_in?: [ string ]
   updatedBy_equals?: string
   updatedBy_notEquals?: string
-  revokedBy_in?: [string]
+  revokedBy_in?: [ string ]
   revokedBy_equals?: string
   revokedBy_notEquals?: string
-  deletedBy_in?: [string]
+  deletedBy_in?: [ string ]
   deletedBy_equals?: string
   deletedBy_notEquals?: string
   deletedAt_lessThan?: Date
@@ -52,5 +52,5 @@ export interface IRefreshTokenFilter {
 
 export interface IRefreshTokenUniqueFilter {
   id?: string
-  token?: string
+    token?: string
 }

@@ -7,7 +7,7 @@ module.exports = new cradle.EmitterOptions(
   new TemplateEmitter(
     {
       sourcePath: './.cradle/templates/repository.handlebars',
-      outputPath: './src/data/repositories/{{Name}}Repository.ts',
+      outputPath: './server/data/repositories/{{Name}}Repository.ts',
       overwriteExisting: true,
       languageType: 'ts',
       onFilesEmitted: utils.lintAndPretty,

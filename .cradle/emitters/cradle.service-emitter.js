@@ -7,7 +7,7 @@ module.exports = new cradle.EmitterOptions(
   new TemplateEmitter(
     {
       sourcePath: './.cradle/templates/service.handlebars',
-      outputPath: './src/api/services/{{Name}}Service.ts',
+      outputPath: './server/api/services/{{Name}}Service.ts',
       overwriteExisting: false,
       languageType: 'ts',
       onFilesEmitted: utils.lintAndPretty,

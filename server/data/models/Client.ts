@@ -77,11 +77,11 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
     deletedAt: {
       allowNull: true,
       type: Sequelize.DATE
-    }
+    },
   }
   return sequelize.define<ClientInstance, IClient>('Client', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
   })
 }
 

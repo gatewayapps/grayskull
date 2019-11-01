@@ -18,11 +18,11 @@ function SettingFactory(sequelize: Sequelize.Sequelize) {
     type: {
       allowNull: false,
       type: Sequelize.STRING
-    }
+    },
   }
   return sequelize.define<SettingInstance, ISetting>('Setting', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
   })
 }
 

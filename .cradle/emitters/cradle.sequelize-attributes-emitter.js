@@ -7,7 +7,7 @@ module.exports = new cradle.EmitterOptions(
   new TemplateEmitter(
     {
       sourcePath: './.cradle/templates/sequelizeAttributes.handlebars',
-      outputPath: './src/data/models/I{{Name}}.ts',
+      outputPath: './server/data/models/I{{Name}}.ts',
       overwriteExisting: true,
       languageType: 'ts',
       onFilesEmitted: utils.lintAndPretty,

@@ -49,21 +49,21 @@ export interface IClientFilter {
   public_notEquals?: boolean
   isActive_equals?: boolean
   isActive_notEquals?: boolean
-  createdBy_in?: [string]
+  createdBy_in?: [ string ]
   createdBy_equals?: string
   createdBy_notEquals?: string
   createdAt_lessThan?: Date
   createdAt_greaterThan?: Date
   createdAt_equals?: Date
   createdAt_notEquals?: Date
-  updatedBy_in?: [string]
+  updatedBy_in?: [ string ]
   updatedBy_equals?: string
   updatedBy_notEquals?: string
   updatedAt_lessThan?: Date
   updatedAt_greaterThan?: Date
   updatedAt_equals?: Date
   updatedAt_notEquals?: Date
-  deletedBy_in?: [string]
+  deletedBy_in?: [ string ]
   deletedBy_equals?: string
   deletedBy_notEquals?: string
   deletedAt_lessThan?: Date
@@ -74,4 +74,4 @@ export interface IClientFilter {
 
 export interface IClientUniqueFilter {
   client_id?: string
-}
+  }

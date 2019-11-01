@@ -1,4 +1,4 @@
-import { IRefreshTokenFilter, IRefreshTokenMeta, IRefreshTokenUniqueFilter } from '../../interfaces/graphql/IRefreshToken'
+import { IRefreshTokenMeta, IRefreshTokenFilter, IRefreshTokenUniqueFilter } from '../../interfaces/graphql/IRefreshToken'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { IRefreshToken } from '../../data/models/IRefreshToken'
@@ -15,7 +15,7 @@ class RefreshTokenRepository {
     }
   }
 
-  public async getRefreshTokens(filter: IRefreshTokenFilter | null, options: IQueryOptions): Promise<IRefreshToken[]> {
+  public async getRefreshTokens(filter: IRefreshTokenFilter | null,  options: IQueryOptions): Promise<IRefreshToken[]> {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.RefreshToken.findAll({
       where,
@@ -23,31 +23,33 @@ class RefreshTokenRepository {
       order: options.order,
       limit: options.limit,
       offset: options.offset,
-
-      transaction: options.transaction
+      
+      transaction: options.transaction,
     })
-    return results.map((r) => r.toJSON())
+    return results.map((r)=>r.toJSON())
   }
+
 
   public async getRefreshToken(filter: IRefreshTokenUniqueFilter, options: IQueryOptions): Promise<IRefreshToken | null> {
     const result = await db.RefreshToken.findOne({
       where: filter,
-
-      transaction: options.transaction
+      
+      transaction: options.transaction,
     })
-    if (result) {
+    if(result){
       return result.toJSON()
     } else {
       return null
     }
   }
 
+
   public async createRefreshToken(data: IRefreshToken, options: IQueryOptions): Promise<IRefreshToken> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await db.RefreshToken.create(data, { returning: true, transaction: options.transaction })
+    return await db.RefreshToken.create(data, {returning: true,  transaction: options.transaction})
   }
 
   public async deleteRefreshToken(filter: IRefreshTokenUniqueFilter, options: IQueryOptions): Promise<boolean> {
@@ -57,9 +59,9 @@ class RefreshTokenRepository {
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [affectedCount] = await db.RefreshToken.update(data, {
+    const [ affectedCount ] = await db.RefreshToken.update(data, {
       where: filter as AnyWhereOptions,
-      transaction: options.transaction
+      transaction: options.transaction,
     })
     return affectedCount > 0
   }
@@ -71,7 +73,7 @@ class RefreshTokenRepository {
     await db.RefreshToken.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
-      transaction: options.transaction
+      transaction: options.transaction,
     })
     return await this.getRefreshToken(filter, options)
   }

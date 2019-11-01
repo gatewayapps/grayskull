@@ -1,4 +1,4 @@
-import { ISessionFilter, ISessionMeta, ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
+import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import db from '../../data/context'
 import { ISession } from '../../data/models/ISession'
@@ -15,7 +15,7 @@ class SessionRepository {
     }
   }
 
-  public async getSessions(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISession[]> {
+  public async getSessions(filter: ISessionFilter | null,  options: IQueryOptions): Promise<ISession[]> {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.Session.findAll({
       where,
@@ -23,37 +23,39 @@ class SessionRepository {
       order: options.order,
       limit: options.limit,
       offset: options.offset,
-
-      transaction: options.transaction
+      
+      transaction: options.transaction,
     })
-    return results.map((r) => r.toJSON())
+    return results.map((r)=>r.toJSON())
   }
+
 
   public async getSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<ISession | null> {
     const result = await db.Session.findOne({
       where: filter,
-
-      transaction: options.transaction
+      
+      transaction: options.transaction,
     })
-    if (result) {
+    if(result){
       return result.toJSON()
     } else {
       return null
     }
   }
 
+
   public async createSession(data: ISession, options: IQueryOptions): Promise<ISession> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await db.Session.create(data, { returning: true, transaction: options.transaction })
+    return await db.Session.create(data, {returning: true,  transaction: options.transaction})
   }
 
   public async deleteSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
     const affectedCount = await db.Session.destroy({
       where: filter as AnyWhereOptions,
-      transaction: options.transaction
+      transaction: options.transaction,
     })
     return affectedCount > 0
   }
@@ -65,7 +67,7 @@ class SessionRepository {
     await db.Session.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
-      transaction: options.transaction
+      transaction: options.transaction,
     })
     return await this.getSession(filter, options)
   }

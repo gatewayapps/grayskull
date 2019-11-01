@@ -60,11 +60,11 @@ function PhoneNumberFactory(sequelize: Sequelize.Sequelize) {
     deletedAt: {
       allowNull: true,
       type: Sequelize.DATE
-    }
+    },
   }
   return sequelize.define<PhoneNumberInstance, IPhoneNumber>('PhoneNumber', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
   })
 }
 

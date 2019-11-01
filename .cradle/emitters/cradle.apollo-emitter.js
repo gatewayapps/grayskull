@@ -6,7 +6,7 @@ module.exports = new cradle.EmitterOptions(
   'apollo',
   new ApolloEmitter(
     {
-      outputDirectory: './src/data/graphql/',
+      outputDirectory: './server/data/graphql/',
       outputType: 'typescript',
       shouldOutputResolverFiles: false,
       shouldEmitModel: (model) => {

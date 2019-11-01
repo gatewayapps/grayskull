@@ -60,11 +60,11 @@ function EmailAddressFactory(sequelize: Sequelize.Sequelize) {
     deletedAt: {
       allowNull: true,
       type: Sequelize.DATE
-    }
+    },
   }
   return sequelize.define<EmailAddressInstance, IEmailAddress>('EmailAddress', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
   })
 }
 

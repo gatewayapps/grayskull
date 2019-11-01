@@ -1,4 +1,0 @@
-type AuthorizeClientResponse {
-	pendingScopes: [String]
-	redirectUri: String
-}

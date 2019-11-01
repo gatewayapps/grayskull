@@ -54,11 +54,11 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
       defaultValue: Sequelize.NOW,
       allowNull: false,
       type: Sequelize.DATE
-    }
+    },
   }
   return sequelize.define<SessionInstance, ISession>('Session', attributes, {
     timestamps: true,
-    paranoid: false
+    paranoid: false,
   })
 }
 

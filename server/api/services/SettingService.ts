@@ -1,3 +1,5 @@
-class SettingService {}
+class SettingService {
+
+}
 
 export default new SettingService()

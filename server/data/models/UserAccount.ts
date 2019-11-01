@@ -101,11 +101,11 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
     deletedAt: {
       allowNull: true,
       type: Sequelize.DATE
-    }
+    },
   }
   return sequelize.define<UserAccountInstance, IUserAccount>('UserAccount', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
   })
 }
 

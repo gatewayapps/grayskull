@@ -7,6 +7,7 @@ import { IConfiguration } from '../data/models/IConfiguration'
 
 config()
 let currentConfig: IConfiguration
+
 currentConfig = {}
 
 export function getCurrentConfiguration(): IConfiguration {

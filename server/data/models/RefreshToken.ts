@@ -58,11 +58,11 @@ function RefreshTokenFactory(sequelize: Sequelize.Sequelize) {
     deletedAt: {
       allowNull: true,
       type: Sequelize.DATE
-    }
+    },
   }
   return sequelize.define<RefreshTokenInstance, IRefreshToken>('RefreshToken', attributes, {
     timestamps: true,
-    paranoid: true
+    paranoid: true,
   })
 }
 

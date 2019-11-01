@@ -7,7 +7,7 @@ module.exports = new cradle.EmitterOptions(
   new TemplateEmitter(
     {
       sourcePath: './.cradle/templates/graphqlInterfaces.handlebars',
-      outputPath: './src/interfaces/graphql/I{{Name}}.ts',
+      outputPath: './server/interfaces/graphql/I{{Name}}.ts',
       overwriteExisting: true,
       languageType: 'ts',
       onFilesEmitted: utils.lintAndPretty,
