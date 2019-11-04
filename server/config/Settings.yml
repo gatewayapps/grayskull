@@ -1,133 +1,116 @@
 Settings:
-  - Key: SERVER_BASE_URL
-    Label: Server URL
-    Description: Web address for the Grayskull Authentication Server.  The OpenID specification requires a secure authentication server, so use HTTPS if available!
-    Example: https://authenticate.yourserver.com
-    Category: Server
-    Type: String
-    Default: http://localhost
+  Server:
+    - Key: SERVER_BASE_URL
+      Label: Server URL
+      Description: Web address for the Grayskull Authentication Server.  The OpenID specification requires a secure authentication server, so use HTTPS if available!
+      Example: https://authenticate.yourserver.com
+      Type: String
+      Default: http://localhost
 
-  - Key: SERVER_REALM_NAME
-    Label: Realm Name
-    Category: Server
-    Description: Name of your Realm.  This should be your organization's name
-    Example: Login to your {Realm Name} Account
-    Type: String
-    Default: Grayskull
+    - Key: SERVER_REALM_NAME
+      Label: Realm Name
+      Description: Name of your Realm.  This should be your organization's name
+      Example: Login to your {Realm Name} Account
+      Type: String
+      Default: Grayskull
+  Mail:
+    - Key: MAIL_HOST
+      Label: Mail Server Host
+      Description: Server or IP address for your outgoing mail host
+      Example: smtp.gmail.com
+      Type: String
 
-  - Key: MAIL_HOST
-    Label: Mail Server Host
-    Description: Server or IP address for your outgoing mail host
-    Example: smtp.gmail.com
-    Category: Mail
-    Type: String
+    - Key: MAIL_USER
+      Label: Username
+      Description: Username for mail server.  This is the account e-mail messages will send from
+      Example: grayskull@gmail.com
+      Type: String
 
-  - Key: MAIL_USER
-    Label: Username
-    Description: Username for mail server.  This is the account e-mail messages will send from
-    Example: grayskull@gmail.com
-    Category: Mail
-    Type: String
+    - Key: MAIL_PASSWORD
+      Label: Password
+      Description: Password for mail server
+      Example: password
+      Type: String
 
-  - Key: MAIL_PASSWORD
-    Label: Password
-    Description: Password for mail server
-    Example: password
-    Category: Mail
-    Type: String
+    - Key: MAIL_SSL
+      Label: Enable SSL
+      Description: Use SSL for your outgoing E-Mails
+      Type: Boolean
+      Default: true
 
-  - Key: MAIL_SSL
-    Label: Enable SSL
-    Description: Use SSL for your outgoing E-Mails
-    Category: Mail
-    Type: Boolean
-    Default: true
+    - Key: MAIL_PORT
+      Label: Port
+      Description: Outgoing mail server port
+      Example: 465
+      Type: Number
+      Default: 465
+  Security:
+    - Key: SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE
+      Label: Maxixmum Login Attempts per Minute
+      Description: Rate limit the number of login attempts per minute before a user is locked out.  This helps prevent brute force login attempts. (0 = disabled)
+      Example: 6
+      Type: Number
+      Default: 6
 
-  - Key: MAIL_PORT
-    Label: Port
-    Description: Outgoing mail server port
-    Example: 465
-    Category: Mail
-    Type: Number
-    Default: 465
+    - Key: SECURITY_PASSWORD_EXPIRES_DAYS
+      Label: Maximum Password Age (days)
+      Description: Require users to change their passwords after so many days (0 = disabled)
+      Example: 90
+      Type: Number
+      Default: 0
 
-  - Key: SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE
-    Label: Maxixmum Login Attempts per Minute
-    Description: Rate limit the number of login attempts per minute before a user is locked out.  This helps prevent brute force login attempts. (0 = disabled)
-    Example: 6
-    Category: Security
-    Type: Number
-    Default: 6
+    - Key: SECURITY_PASSWORD_REQUIRES_LOWERCASE
+      Label: Require Lowercase Character
+      Description: Passwords require at least 1 lowercase character
+      Type: Boolean
+      Default: false
 
-  - Key: SECURITY_PASSWORD_EXPIRES_DAYS
-    Label: Maximum Password Age (days)
-    Description: Require users to change their passwords after so many days (0 = disabled)
-    Example: 90
-    Category: Security
-    Type: Number
-    Default: 0
+    - Key: SECURITY_PASSWORD_REQUIRES_UPPERCASE
+      Label: Require Uppercase Character
+      Description: Passwords require at least 1 uppercase character
+      Type: Boolean
+      Default: false
 
-  - Key: SECURITY_PASSWORD_REQUIRES_LOWERCASE
-    Label: Require Lowercase Character
-    Description: Passwords require at least 1 lowercase character
-    Category: Security
-    Type: Boolean
-    Default: false
+    - Key: SECURITY_PASSWORD_REQUIRES_NUMBER
+      Label: Require Numeric Character
+      Description: Passwords require at least 1 numeric character (0 - 9)
+      Type: Boolean
+      Default: false
 
-  - Key: SECURITY_PASSWORD_REQUIRES_UPPERCASE
-    Label: Require Uppercase Character
-    Description: Passwords require at least 1 uppercase character
-    Category: Security
-    Type: Boolean
-    Default: false
+    - Key: SECURITY_PASSWORD_REQUIRES_SYMBOL
+      Label: Require Symbol Character
+      Description: Passwords require at least 1 symbol character (!, @, $, etc...)
+      Type: Boolean
+      Default: false
 
-  - Key: SECURITY_PASSWORD_REQUIRES_NUMBER
-    Label: Require Numeric Character
-    Description: Passwords require at least 1 numeric character (0 - 9)
-    Category: Security
-    Type: Boolean
-    Default: false
+    - Key: SECURITY_PASSWORD_MINIMUM_LENGTH
+      Label: Require Password Length
+      Description: Passwords have to be at least this long
+      Type: Number
+      Example: 8
+      Default: 8
 
-  - Key: SECURITY_PASSWORD_REQUIRES_SYMBOL
-    Label: Require Symbol Character
-    Description: Passwords require at least 1 symbol character (!, @, $, etc...)
-    Category: Security
-    Type: Boolean
-    Default: false
+    - Key: SECURITY_MULTIFACTOR_REQUIRED
+      Label: Require Multifactor Authentication
+      Description: Require users to configure at least one form of multifactor authentication
+      Type: Boolean
+      Default: false
 
-  - Key: SECURITY_PASSWORD_MINIMUM_LENGTH
-    Label: Require Password Length
-    Description: Passwords have to be at least this long
-    Category: Security
-    Type: Number
-    Example: 8
-    Default: 8
+    - Key: SECURITY_ACTIVATION_EXPIRES_IN_MINUTES
+      Label: Activation Expiration Time (Minutes)
+      Description: Activation emails will expire after so many minutes (0 = disabled)
+      Type: Number
+      Example: 300
+      Default: 300
 
-  - Key: SECURITY_MULTIFACTOR_REQUIRED
-    Label: Require Multifactor Authentication
-    Description: Require users to configure at least one form of multifactor authentication
-    Category: Security
-    Type: Boolean
-    Default: false
+    - Key: SECURITY_ALLOW_USER_SIGNUP
+      Label: Allow Users to Register
+      Description: If disabled, an administrator must add new users
+      Type: Boolean
+      Default: true
 
-  - Key: SECURITY_ACTIVATION_EXPIRES_IN_MINUTES
-    Label: Activation Expiration Time (Minutes)
-    Description: Activation emails will expire after so many minutes (0 = disabled)
-    Category: Security
-    Type: Number
-    Example: 300
-    Default: 300
-
-  - Key: SECURITY_ALLOW_USER_SIGNUP
-    Label: Allow Users to Register
-    Description: If disabled, an administrator must add new users
-    Category: Security
-    Type: Boolean
-    Default: true
-
-  - Key: SECURITY_DOMAIN_WHITELIST
-    Label: Allowed Email Domains
-    Description: Only allow users with these e-mail addresses to register. Multiple domains should be separated by semicolon
-    Category: Security
-    Type: String
-    Example: gmail.com; me.com;
+    - Key: SECURITY_DOMAIN_WHITELIST
+      Label: Allowed Email Domains
+      Description: Only allow users with these e-mail addresses to register. Multiple domains should be separated by semicolon
+      Type: String
+      Example: gmail.com; me.com;
