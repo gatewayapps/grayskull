@@ -13,6 +13,7 @@ Settings:
       Example: Login to your {Realm Name} Account
       Type: String
       Default: Grayskull
+
   Mail:
     - Key: MAIL_HOST
       Label: Mail Server Host
@@ -44,6 +45,7 @@ Settings:
       Example: 465
       Type: Number
       Default: 465
+
   Security:
     - Key: SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE
       Label: Maxixmum Login Attempts per Minute
