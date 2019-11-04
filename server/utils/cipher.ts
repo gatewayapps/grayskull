@@ -1,12 +1,13 @@
 import ConfigurationManager from '../config/ConfigurationManager'
 import crypto from 'crypto'
+import { GRAYSKULL_GLOBAL_SECRET } from './environment'
 
 const ALGORITHM = 'aes-256-cbc'
 const IV_LENGTH = 16
 const KEY_LENGTH = 32
 
 function getKey(): string {
-  return ConfigurationManager.Security!.globalSecret.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')
+  return GRAYSKULL_GLOBAL_SECRET.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')
 }
 
 export function encrypt(value: string): string {

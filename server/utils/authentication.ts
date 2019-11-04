@@ -1,32 +1,30 @@
 import { Request, Response } from 'express'
-import ConfigurationManager from '../config/ConfigurationManager'
+import ConfigurationManager, { getCurrentConfiguration } from '../config/ConfigurationManager'
 import { ISession } from '../data/models/ISession'
 
 export const ACCESS_TOKEN_COOKIE_NAME = 'at'
 export const SESSION_ID_COOKIE_NAME = 'sid'
 
-export interface IGenerateLoginUrlOptions {
-  returnUrl?: string
-  state?: string
-}
-
 export interface IAuthState {
   returnPath: string
 }
 
-export function generateLoginUrl(protocol: string, hostname: string | undefined, options: IGenerateLoginUrlOptions = {}) {
-  let { state } = options
+// export async function generateLoginUrl(protocol: string, hostname: string | undefined, options: IGenerateLoginUrlOptions = {}) {
 
-  if (!state) {
-    state = generateState(options.returnUrl || '/')
-  }
+//   const config = await getCurrentConfiguration()
 
-  const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
-  const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
+//   let { state } = options
 
-  const query = [`client_id=grayskull`, `response_type=code`, `redirect_uri=${encodeURIComponent(`${ConfigurationManager.Server!.baseUrl}/signin`)}`, `state=${state}`]
-  return `/authorize?${query.join('&')}`
-}
+//   if (!state) {
+//     state = generateState(options.returnUrl || '/')
+//   }
+
+//   const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
+//   const HTTP_PORT = IS_DEVELOPMENT ? 3000 : 80
+
+//   const query = [`client_id=grayskull`, `response_type=code`, `redirect_uri=${encodeURIComponent(`${ConfigurationManager.Server!.baseUrl}/signin`)}`, `state=${state}`]
+//   return `/authorize?${query.join('&')}`
+// }
 
 export function generateState(returnPath: string): string {
   const stateObj: IAuthState = {

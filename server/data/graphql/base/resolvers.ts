@@ -1,4 +1,4 @@
-import ConfigurationManager from '../../../config/ConfigurationManager'
+import { getCurrentConfiguration } from '../../../config/ConfigurationManager'
 import { GraphQLUpload } from 'apollo-server-express'
 import { GraphQLEnumType, GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../utils/permissions'
@@ -28,19 +28,22 @@ export default {
     }
   }),
   Query: {
-    securityConfiguration: (obj, args, context, info) => {
+    securityConfiguration: async (obj, args, context, info) => {
+      const config = await getCurrentConfiguration()
+
       return {
-        multifactorRequired: ConfigurationManager.Security!.multifactorRequired,
-        passwordRequiresLowercase: ConfigurationManager.Security!.passwordRequiresLowercase,
-        passwordRequiresUppercase: ConfigurationManager.Security!.passwordRequiresUppercase,
-        passwordRequiresNumber: ConfigurationManager.Security!.passwordRequiresNumber,
-        passwordRequiresSymbol: ConfigurationManager.Security!.passwordRequiresSymbol,
-        passwordMinimumLength: ConfigurationManager.Security!.passwordMinimumLength,
-        allowSignup: ConfigurationManager.Security!.allowSignup
+        multifactorRequired: config.Security!.multifactorRequired,
+        passwordRequiresLowercase: config.Security!.passwordRequiresLowercase,
+        passwordRequiresUppercase: config.Security!.passwordRequiresUppercase,
+        passwordRequiresNumber: config.Security!.passwordRequiresNumber,
+        passwordRequiresSymbol: config.Security!.passwordRequiresSymbol,
+        passwordMinimumLength: config.Security!.passwordMinimumLength,
+        allowSignup: config.Security!.allowSignup
       }
     },
-    serverConfiguration: (obj, args, context, info) => {
-      return ConfigurationManager.Server
+    serverConfiguration: async (obj, args, context, info) => {
+      const config = await getCurrentConfiguration()
+      return config.Server
     }
   },
   Mutation: {

@@ -1,4 +1,4 @@
-import ConfigurationManager from '../../config/ConfigurationManager'
+import ConfigurationManager, { getCurrentConfiguration } from '../../config/ConfigurationManager'
 import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
@@ -58,9 +58,9 @@ class UserAccountService {
 
       await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verified: true }, options)
 
-      await options.transaction.commit()
+      await options.transaction!.commit()
     } catch (err) {
-      await options.transaction.rollback()
+      await options.transaction!.rollback()
       throw err
     }
   }
@@ -71,6 +71,7 @@ class UserAccountService {
     if (!emailAddressAvailable) {
       throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
     }
+    const config = await getCurrentConfiguration()
 
     options.transaction = await db.sequelize.transaction()
 
@@ -94,19 +95,19 @@ class UserAccountService {
       }
       await EmailAddressRepository.createEmailAddress(emailAddressData, options)
 
-      const activateLink = `${ConfigurationManager.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
-      await MailService.sendEmailTemplate('activateAccountTemplate', emailAddress, `Activate Your ${ConfigurationManager.Server!.realmName} Account`, {
+      const activateLink = `${config.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
+      await MailService.sendEmailTemplate('activateAccountTemplate', emailAddress, `Activate Your ${config.Server!.realmName} Account`, {
         activateLink,
-        realmName: ConfigurationManager.Server!.realmName,
+        realmName: config.Server!.realmName,
         user: user,
         createdBy: options.userContext
       })
 
-      await options.transaction.commit()
+      await options.transaction!.commit()
 
       return user
     } catch (err) {
-      await options.transaction.rollback()
+      await options.transaction!.rollback()
       throw err
     }
   }
@@ -177,6 +178,7 @@ class UserAccountService {
   }
 
   public async resetPassword(emailAddress: string, options: IQueryOptions) {
+    const config = await getCurrentConfiguration()
     const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
     if (userAccount) {
       const resetToken = randomBytes(16).toString('hex')
@@ -188,10 +190,10 @@ class UserAccountService {
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
 
-      const resetPasswordLink = `${ConfigurationManager.Server!.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
-      await MailService.sendEmailTemplate('resetPasswordTemplate', emailAddress, `${ConfigurationManager.Server!.realmName} Password Reset`, {
+      const resetPasswordLink = `${config.Server!.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      await MailService.sendEmailTemplate('resetPasswordTemplate', emailAddress, `${config.Server!.realmName} Password Reset`, {
         resetLink: resetPasswordLink,
-        realmName: ConfigurationManager.Server!.realmName,
+        realmName: config.Server!.realmName,
         user: userAccount
       })
     }
@@ -236,11 +238,12 @@ class UserAccountService {
       await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
 
       // 5. Commit the transaction
-      await newOptions.transaction.commit()
+
+      await newOptions.transaction!.commit()
 
       return user
     } catch (err) {
-      await newOptions.transaction.rollback()
+      await newOptions.transaction!.rollback()
       throw err
     }
   }

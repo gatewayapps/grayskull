@@ -18,7 +18,7 @@ import UserAccountRepository from '../../../data/repositories/UserAccountReposit
 import TokenService from '../../../api/services/TokenService'
 import ClientRepository from '../../../data/repositories/ClientRepository'
 import { ScopeMap } from '../../../api/services/ScopeService'
-import ConfigurationManager from '../../../config/ConfigurationManager'
+import { getCurrentConfiguration } from '../../../config/ConfigurationManager'
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
 import { encrypt } from '../../../utils/cipher'
 import { Permissions } from '../../../utils/permissions'
@@ -137,9 +137,11 @@ export default {
         queryParts.code = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
       }
       if (responseTypes.includes('token')) {
+        const config = await getCurrentConfiguration()
+
         queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
         queryParts.token_type = 'Bearer'
-        queryParts.expires_in = ConfigurationManager.Security!.accessTokenExpirationSeconds
+        queryParts.expires_in = config.Security!.accessTokenExpirationSeconds
       }
       if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
         queryParts.id_token = await TokenService.createIDToken(client, context.user, nonce, queryParts.token, serviceOptions)
@@ -315,6 +317,8 @@ export default {
         throw new Error('You must be signed in to do that')
       } else {
         try {
+          const config = await getCurrentConfiguration()
+
           const passwordValid = await AuthenticationService.verifyPassword(context.user.userAccountId, args.data.password, { userContext: context.user })
           if (!passwordValid) {
             return {
@@ -323,10 +327,10 @@ export default {
             }
           }
 
-          if (!args.data.otpSecret && ConfigurationManager.Security!.multifactorRequired) {
+          if (!args.data.otpSecret && config.Security!.multifactorRequired) {
             return {
               success: false,
-              message: `${ConfigurationManager.Server!.realmName} security policy requires you to have an Authenticator App configured`
+              message: `${config.Server!.realmName} security policy requires you to have an Authenticator App configured`
             }
           }
 

@@ -1,4 +1,3 @@
-import ConfigurationService from '../../../api/services/ConfigurationService'
 import CertificateService from '../../../api/services/CertificateService'
 
 export default {
@@ -12,7 +11,6 @@ export default {
     saveConfiguration: async (obj, args, context, info) => {
       // Insert your saveConfiguration implementation here
       try {
-        const success = await ConfigurationService.writeConfiguration(args.data)
         return {
           success: true
         }
