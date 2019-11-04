@@ -1,8 +1,8 @@
 export interface IMailConfiguration {
-  serverAddress: string
-  username: string
-  password: string
-  tlsSslRequired: boolean
-  port: number
-  fromAddress: string
+  serverAddress?: string | null
+  username?: string | null
+  password?: string | null
+  tlsSslRequired?: boolean | null
+  port?: number | null
+  fromAddress?: string | null
 }

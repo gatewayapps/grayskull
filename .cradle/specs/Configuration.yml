@@ -5,14 +5,9 @@ ServerConfiguration:
       - enableCertbot
       - privateKey
   properties:
-    baseUrl: string(1024)
-    realmName: string(512)
-    realmLogo: string(512)
-    forceHttpsRedirect: boolean default(1)
-    enableCertbot: boolean default(0)
-    privateKey: string?(16384)
-    certificate: string?(16384)
-
+    baseUrl: string(1024)?
+    realmName: string(512)?
+    realmLogo: string(512)?
 MailConfiguration:
   meta:
     topLevel: false
@@ -24,36 +19,32 @@ MailConfiguration:
       - port
       - fromAddress
   properties:
-    serverAddress: string
-    username: string
-    password: string
-    tlsSslRequired: boolean
-    port: integer
-    fromAddress: string
+    serverAddress: string?
+    username: string?
+    password: string?
+    tlsSslRequired: boolean?
+    port: integer?
+    fromAddress: string?
 
 SecurityConfiguration:
   meta:
     topLevel: false
-    sensitive:
-      - globalSecret
   properties:
-    maxLoginAttemptsPerMinute: integer
-    maxPasswordAge: integer
-    passwordRequiresLowercase: boolean
-    passwordRequiresUppercase: boolean
-    passwordRequiresNumber: boolean
-    passwordRequiresSymbol: boolean
-    passwordMinimumLength: integer
-    multifactorRequired: boolean
-    requireEmailAddressVerification: boolean
-    passwordHistoryEnabled: boolean
-    passwordHistoryCount: integer
-    invitationExpirationSeconds: integer
-    accessTokenExpirationSeconds: integer
-    globalSecret: string
-    domainWhitelist: string(1024)
-    allowSignup: boolean default(0)
-
+    maxLoginAttemptsPerMinute: integer?
+    maxPasswordAge: integer?
+    passwordRequiresLowercase: boolean?
+    passwordRequiresUppercase: boolean?
+    passwordRequiresNumber: boolean?
+    passwordRequiresSymbol: boolean?
+    passwordMinimumLength: integer?
+    multifactorRequired: boolean?
+    requireEmailAddressVerification: boolean?
+    passwordHistoryEnabled: boolean?
+    passwordHistoryCount: integer?
+    invitationExpirationSeconds: integer?
+    accessTokenExpirationSeconds: integer?
+    domainWhitelist: string(1024)?
+    allowSignup: boolean? default(0)
 
 Configuration:
   meta:
@@ -69,8 +60,6 @@ Configuration:
     saveConfiguration:
       returns: OperationResponse
       arguments:
-        Security: 
-        Mail: 
-        Server: 
-
-
+        Security:
+        Mail:
+        Server:

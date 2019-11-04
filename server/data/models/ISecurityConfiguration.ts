@@ -1,18 +1,17 @@
 export interface ISecurityConfiguration {
-  maxLoginAttemptsPerMinute: number
-  maxPasswordAge: number
-  passwordRequiresLowercase: boolean
-  passwordRequiresUppercase: boolean
-  passwordRequiresNumber: boolean
-  passwordRequiresSymbol: boolean
-  passwordMinimumLength: number
-  multifactorRequired: boolean
-  requireEmailAddressVerification: boolean
-  passwordHistoryEnabled: boolean
-  passwordHistoryCount: number
-  invitationExpirationSeconds: number
-  accessTokenExpirationSeconds: number
-  globalSecret: string
-  domainWhitelist: string
-  allowSignup?: boolean
+  maxLoginAttemptsPerMinute?: number | null
+  maxPasswordAge?: number | null
+  passwordRequiresLowercase?: boolean | null
+  passwordRequiresUppercase?: boolean | null
+  passwordRequiresNumber?: boolean | null
+  passwordRequiresSymbol?: boolean | null
+  passwordMinimumLength?: number | null
+  multifactorRequired?: boolean | null
+  requireEmailAddressVerification?: boolean | null
+  passwordHistoryEnabled?: boolean | null
+  passwordHistoryCount?: number | null
+  invitationExpirationSeconds?: number | null
+  accessTokenExpirationSeconds?: number | null
+  domainWhitelist?: string | null
+  allowSignup?: boolean | null
 }
