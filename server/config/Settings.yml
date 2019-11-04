@@ -1,10 +1,11 @@
 Settings:
   - Key: SERVER_BASE_URL
     Label: Server URL
-    Description: Web address for the Grayskull Authentication Server
+    Description: Web address for the Grayskull Authentication Server.  The OpenID specification requires a secure authentication server, so use HTTPS if available!
     Example: https://authenticate.yourserver.com
     Category: Server
     Type: String
+    Default: http://localhost
 
   - Key: SERVER_REALM_NAME
     Label: Realm Name
@@ -12,6 +13,7 @@ Settings:
     Description: Name of your Realm.  This should be your organization's name
     Example: Login to your {Realm Name} Account
     Type: String
+    Default: Grayskull
 
   - Key: MAIL_HOST
     Label: Mail Server Host
