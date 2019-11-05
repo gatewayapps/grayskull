@@ -22,7 +22,8 @@ export default {
       return EmailAddressService.getEmailAddress(args.where, { userContext: context.user || null })
     },
     emailAddressAvailable: async (obj, args, context, info) => {
-      return await EmailAddressService.isEmailAddressAvailable(args.emailAddress, { userContext: context.user || null })
+      const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, { userContext: context.user || null })
+      return result
     },
     myEmailAddresses: async (obj, args, context, info) => {
       if (!context.user) {

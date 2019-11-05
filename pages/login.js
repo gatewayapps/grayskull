@@ -5,6 +5,7 @@ import BackgroundCover from '../client/components/BackgroundCover'
 import LoginForm from '../client/components/LoginForm'
 import Primary from '../client/layouts/primary'
 import { parseRoutingState } from '../client/utils/routing'
+import { ensureSetup } from '../client/utils/ensureSetup'
 
 class LoginPage extends React.PureComponent {
   static async getInitialProps({ req, query, res }) {
@@ -42,4 +43,4 @@ class LoginPage extends React.PureComponent {
   }
 }
 
-export default withRouter(LoginPage)
+export default ensureSetup(withRouter(LoginPage))

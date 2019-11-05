@@ -2,12 +2,16 @@ import { IUserAccount } from '../data/models/IUserAccount'
 import { Permissions } from './permissions'
 import { getContext } from '../data/context'
 
-class AuthorizationHelper {
-  public async isOobe(userContext: IUserAccount | null): Promise<boolean> {
-    const userCount = await (await getContext()).UserAccount.count()
-    return userCount === 0
-  }
+export async function isOobe(): Promise<boolean> {
+  const settingCount = await (await getContext()).Setting.count()
+  return settingCount === 0
+}
+export async function needsFirstUser(): Promise<boolean> {
+  const userCount = await (await getContext()).UserAccount.count()
+  return userCount === 0
+}
 
+class AuthorizationHelper {
   public isUser(userContext: IUserAccount | null): boolean {
     return userContext !== null && userContext.permissions !== undefined && userContext.permissions > Permissions.None
   }

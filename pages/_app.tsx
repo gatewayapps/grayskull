@@ -7,7 +7,7 @@ import React from 'react'
 import UserContext from '../client/contexts/UserContext'
 import createApolloClient from '../client/utils/createApolloClient'
 import { getCurrentConfiguration } from '../server/config/ConfigurationManager'
-
+import { ensureSetup } from '../client/utils/ensureSetup'
 const apolloClient = createApolloClient()
 
 export default class MyApp extends App<any> {
@@ -20,42 +20,24 @@ export default class MyApp extends App<any> {
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {}
     let configuration
-    let user
-    if (ctx && ctx.res && ctx.res.locals) {
-      const config = await getCurrentConfiguration()
-      if (!config.Server.baseUrl && ctx.req.url !== '/oobe') {
-        ctx.res.writeHead(302, { Location: '/oobe' })
-        ctx.res.end()
-      }
-      if (ctx.res.locals.NEEDS_FIRST_USER && ctx.req.url !== '/register') {
-        ctx.res.writeHead(302, {
-          Location: '/register'
-        })
-        ctx.res.end()
-      }
-      if (ctx.req.url === '/' || ctx.req.url === '') {
-        ctx.res.writeHead(302, {
-          Location: '/personal-info'
-        })
-        ctx.res.end()
-      }
-      configuration = ctx.res.locals.configuration
-      user = ctx.res.locals.userContext
+    if (ctx.res) {
+      configuration = await getCurrentConfiguration()
     }
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    return { pageProps, configuration, user }
+    return { pageProps, configuration }
   }
 
   render() {
-    const { Component, pageProps, configuration, user } = this.props
+    const { Component, pageProps, configuration } = this.props
 
     let title = 'Grayskull'
-    if (this.state.configuration && this.state.configuration.serverConfiguration) {
-      title = this.state.configuration.serverConfiguration.realmName
+    if (this.state.configuration && this.state.configuration.Server) {
+      title = this.state.configuration.Server.realmName
     }
+
     return (
       <ApolloProvider client={apolloClient}>
         <ConfigurationContext.Provider value={this.state.configuration}>

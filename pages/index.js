@@ -1,7 +1,7 @@
 import React from 'react'
 import AuthenticatedRoute from '../client/layouts/authenticatedRoute'
 import UserContext from '../client/contexts/UserContext'
-
+import { ensureSetup } from '../client/utils/ensureSetup'
 const HomePage = () => {
   return (
     <AuthenticatedRoute>
@@ -17,4 +17,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default ensureSetup(HomePage)

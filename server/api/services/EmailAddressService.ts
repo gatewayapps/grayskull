@@ -26,7 +26,7 @@ class EmailAddressService {
 
   public async isEmailAddressAvailable(emailAddress: string, options: IQueryOptions): Promise<boolean> {
     const existingEmail = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
-
+    console.log('existing email is', existingEmail)
     return existingEmail === null
   }
 

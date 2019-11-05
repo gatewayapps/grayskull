@@ -128,7 +128,7 @@ class RegisterPage extends PureComponent {
       <Primary>
         <RequireConfiguration>
           {(configuration) => {
-            const { securityConfiguration, serverConfiguration } = configuration
+            const { Security: securityConfiguration, Server: serverConfiguration } = configuration
             return (
               <Mutation mutation={REGISTER_USER_MUTATION} variables={this.state.data}>
                 {(registerUser, { loading, error }) => (
