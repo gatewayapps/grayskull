@@ -1,9 +1,9 @@
-import { default as FormValidation, FormValidationRule } from '../../components/FormValidation'
+import { default as FormValidation, FormValidationRule } from '../../client/components/FormValidation'
 import { Button, ButtonGroup } from 'reactstrap'
-import ValidatingInput from '../../components/ValidatingInput'
+import ValidatingInput from '../../client/components/ValidatingInput'
 import React from 'react'
 import PropTypes from 'prop-types'
-import ResponsiveValidatingInput from '../../components/ResponsiveValidatingInput'
+import ResponsiveValidatingInput from '../../client/components/ResponsiveValidatingInput'
 
 export class SecurityConfiguration extends React.Component {
   static propTypes = {

@@ -1,5 +1,5 @@
 import { getCurrentConfiguration } from '../../../config/ConfigurationManager'
-import { GraphQLUpload } from 'apollo-server-express'
+import { GraphQLUpload } from 'apollo-server-micro'
 import { GraphQLEnumType, GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../utils/permissions'
 import UploadService from '../../../api/services/UploadService'

@@ -1,5 +1,5 @@
 import React from 'react'
-import Primary from '../../layouts/primary'
+import Primary from '../../client/layouts/primary'
 import { GettingStarted } from './GettingStarted'
 import { ServerConfiguration } from './ServerConfiguration'
 import { MailConfiguration } from './MailConfiguration'
@@ -46,7 +46,7 @@ export default class OobeIndex extends React.Component {
       configuration: {
         Server: {
           realmName: 'Grayskull',
-          realmLogo: '/static/grayskull.svg',
+          realmLogo: '/grayskull.svg',
           baseUrl: 'https://127.0.0.1',
           enableCertbot: true,
           certBotState: 'NOT_VALIDATED',
@@ -154,7 +154,7 @@ export default class OobeIndex extends React.Component {
   render() {
     return (
       <Primary>
-        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundSize: 'cover', backgroundPosition: 'center', backgroundImage: 'url(/static/bg.jpg)' }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundSize: 'cover', backgroundPosition: 'center', backgroundImage: 'url(/bg.jpg)' }}>
           <div className="container d-flex h-100" style={{ overflow: 'auto' }}>
             <div className="justify-content-center align-self-center w-100" style={{ maxHeight: '100%' }}>
               <h4 className="display-4 text-center w-100 mb-5" style={{ fontSize: '4vmin' }}>

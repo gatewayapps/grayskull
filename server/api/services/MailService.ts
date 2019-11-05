@@ -1,16 +1,20 @@
-import nodemailer, { SendMailOptions } from 'nodemailer'
-import ConfigurationManager from '../../config/ConfigurationManager'
+import nodemailer, { SendMailOptions, TransportOptions } from 'nodemailer'
+
 import { join, normalize } from 'path'
 import handlebars from 'handlebars'
 import { existsSync, readFileSync } from 'fs'
+import { getCurrentConfiguration } from '../../config/ConfigurationManager'
 
 const TEMPLATE_PATH = '../../templates'
 
 class MailService {
   public async sendMail(to: string, subject: string, textBody: string, htmlBody: string): Promise<any> {
-    const mailConfig = ConfigurationManager.Mail!
-    const transport = nodemailer.createTransport({
-      host: mailConfig.serverAddress,
+    const config = await getCurrentConfiguration()
+    const mailConfig = config.Mail!
+    const hostAddress = mailConfig.serverAddress!
+
+    const options: any = {
+      host: hostAddress,
       port: mailConfig.port,
       secure: mailConfig.tlsSslRequired,
       auth: mailConfig.username
@@ -19,10 +23,12 @@ class MailService {
             pass: mailConfig.password
           }
         : undefined
-    })
+    }
+
+    const transport = nodemailer.createTransport(options)
 
     const messageOptions: SendMailOptions = {
-      from: mailConfig.fromAddress,
+      from: mailConfig.fromAddress!,
       to: to,
       subject: subject,
       text: textBody,

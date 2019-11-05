@@ -1,10 +1,6 @@
 import { IUserAccount } from '../../data/models/IUserAccount'
-import { RefreshTokenInstance } from '../../data/models/RefreshToken'
-import bcrypt from 'bcrypt'
 import moment from 'moment'
-import { Transaction } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { IRefreshTokenUniqueFilter } from '../../interfaces/graphql/IRefreshToken'
 import RefreshTokenRepository from '../../data/repositories/RefreshTokenRepository'
 import { IClient } from '../../data/models/IClient'
 import { IRefreshToken } from '../../data/models/IRefreshToken'
@@ -13,14 +9,13 @@ import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { ScopeMap } from '../../api/services/ScopeService'
 import UserClientService from './UserClientService'
 import { ForbiddenError } from 'apollo-server'
-import ConfigurationManager from '../../config/ConfigurationManager'
+import { getCurrentConfiguration } from '../../config/ConfigurationManager'
 import jwt from 'jsonwebtoken'
 import ClientRepository from '../../data/repositories/ClientRepository'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
-import { v5String } from 'uuid/interfaces'
-import EmailAddressService from './EmailAddressService'
+
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
-import UserAccountService from './UserAccountService'
+
 import { IClientRequestOptions } from '../../data/IClientRequestOptions'
 
 export interface IAccessToken {
@@ -67,7 +62,6 @@ class TokenService {
   }
 
   public async createRefreshToken(client: IClient, userAccount: IUserAccount, maxAge: number | null, options: IQueryOptions): Promise<IRefreshToken> {
-    const tokenData = randomBytes(256).toString('hex')
     const userClient = await UserClientRepository.getUserClient({ client_id: client.client_id, userAccountId: userAccount.userAccountId }, options)
     if (userClient && UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.offline_access.id)) {
       const tokenData = randomBytes(64).toString('hex')
@@ -97,8 +91,9 @@ class TokenService {
   }
 
   public async createIDToken(client: IClient, userAccount: IUserAccount, nonce: string | undefined, accessToken: string | undefined, options: IQueryOptions): Promise<string> {
-    const security = ConfigurationManager.Security!
-    const serverConfig = ConfigurationManager.Server!
+    const config = await getCurrentConfiguration()
+    const security = config.Security!
+    const serverConfig = config.Server!
 
     const profile = await this.getUserProfileForClient(client, userAccount, options)
     let at_hash: string | undefined = undefined
@@ -113,12 +108,12 @@ class TokenService {
     const tokenBase: IIDToken = {
       iat: moment().unix(),
       exp: moment()
-        .add(security.accessTokenExpirationSeconds, 'seconds')
+        .add(security.accessTokenExpirationSeconds || 300, 'seconds')
         .unix(),
       aud: client.client_id,
       sub: profile.sub,
       at_hash: at_hash,
-      iss: serverConfig.baseUrl,
+      iss: serverConfig.baseUrl!,
       nonce: nonce
     }
 
@@ -216,6 +211,8 @@ class TokenService {
   }
 
   public async createAccessToken(client: IClient, userAccount: IUserAccount, refreshToken: IRefreshToken | null, options: IQueryOptions): Promise<string> {
+    const config = await getCurrentConfiguration()
+
     const userClient = await UserClientRepository.getUserClient({ client_id: client.client_id, userAccountId: userAccount.userAccountId }, options)
     if (userClient && userClient.allowedScopes && userClient.allowedScopes.length > 0) {
       const allowedScopes = JSON.parse(userClient.allowedScopes)
@@ -223,7 +220,7 @@ class TokenService {
         sub: userClient.userClientId!,
         scopes: allowedScopes,
         exp: moment()
-          .add(ConfigurationManager.Security!.accessTokenExpirationSeconds, 'seconds')
+          .add(config.Security!.accessTokenExpirationSeconds || 300, 'seconds')
           .unix()
       }
       if (refreshToken) {

@@ -1,5 +1,5 @@
-import { default as FormValidation, FormValidationRule } from '../../components/FormValidation'
-import ResponsiveValidatingInput from '../../components/ResponsiveValidatingInput'
+import { default as FormValidation, FormValidationRule } from '../../client/components/FormValidation'
+import ResponsiveValidatingInput from '../../client/components/ResponsiveValidatingInput'
 
 import React from 'react'
 import PropTypes from 'prop-types'

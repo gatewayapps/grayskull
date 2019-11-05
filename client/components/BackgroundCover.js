@@ -7,7 +7,7 @@ const BackgroundCover = styled.div`
   height: 100vh;
   background-size: cover;
   background-position: center;
-  background-image: url('/static/bg.jpg');
+  background-image: url('/bg.jpg');
   overflow-y: auto;
   padding: 1rem;
 

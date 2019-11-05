@@ -1,5 +1,4 @@
-import ConfigurationManager from '../../config/ConfigurationManager'
-import { query, queryMustEqual } from '../../decorators/paramDecorator'
+import { query } from '../../decorators/paramDecorator'
 import { HttpMethod, route } from '../../decorators/routeDecorator'
 import AuthenticationService from '../../api/services/AuthenticationService'
 import UserAccountService from '../../api/services/UserAccountService'
@@ -8,15 +7,15 @@ import ControllerBase from './ControllerBase'
 import { clearAuthCookies, decodeState, getAuthCookies } from '../../utils/authentication'
 import SessionService from '../../api/services/SessionService'
 import '../../middleware/authentication'
-import CertificateService from '../../api/services/CertificateService'
+
 import ClientRepository from '../../data/repositories/ClientRepository'
 
 export default class LoginController extends ControllerBase {
-  @route(HttpMethod.GET, '/jwks')
-  public async getJWKS(req: Request, res: Response) {
-    const jwks = CertificateService.getJWKS()
-    res.json({ keys: [jwks] })
-  }
+  // @route(HttpMethod.GET, '/jwks')
+  // public async getJWKS(req: Request, res: Response) {
+  //   const jwks = CertificateService.getJWKS()
+  //   res.json({ keys: [jwks] })
+  // }
 
   @route(HttpMethod.GET, '/logout')
   public async logout(req: Request, res: Response) {

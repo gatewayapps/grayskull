@@ -23,7 +23,7 @@ COPY --from=build /www/node_modules ./node_modules
 COPY --from=build /www/dist ./dist
 COPY --from=build /www/src/templates ./dist/templates
 COPY --from=build /www/public/.next ./public/.next
-COPY --from=build /www/public/static ./public/static
+COPY --from=build /www/public/ ./public
 
 EXPOSE 80 443
 CMD [ "npm", "start" ]

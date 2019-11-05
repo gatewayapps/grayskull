@@ -202,7 +202,7 @@ class UserAccountService {
   }
 
   public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<IUserAccount> {
-    if (!EmailAddressService.isDomainAllowed(emailAddress)) {
+    if ((await EmailAddressService.isDomainAllowed(emailAddress)) === false) {
       throw new ForbiddenError(`Self registration is not permitted for your email domain`)
     }
 

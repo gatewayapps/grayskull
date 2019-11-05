@@ -8,7 +8,7 @@ import { Permissions } from '../../utils/permissions'
 
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
-import ConfigurationManager from '../../config/ConfigurationManager'
+import ConfigurationManager, { getCurrentConfiguration } from '../../config/ConfigurationManager'
 
 import { randomBytes } from 'crypto'
 
@@ -30,13 +30,18 @@ class EmailAddressService {
     return existingEmail === null
   }
 
-  public isDomainAllowed(emailAddress: string): boolean {
+  public async isDomainAllowed(emailAddress: string): Promise<boolean> {
     const domain = emailAddress.split('@')[1].toLowerCase()
-    if (ConfigurationManager.Security!.domainWhitelist) {
-      const allowedDomains: string[] = _.compact(JSON.parse(ConfigurationManager.Security!.domainWhitelist.toLowerCase()))
-      if (allowedDomains.length > 0 && !allowedDomains.includes(domain) && !allowedDomains.includes(`@${domain}`)) {
-        return false
-      }
+    const config = await getCurrentConfiguration()
+    if (config.Security!.domainWhitelist) {
+      const allowedDomains = _.compact(
+        config
+          .Security!.domainWhitelist!.toLowerCase()
+          .split(';')
+          .map((d) => d.trim())
+      )
+
+      return allowedDomains.includes(domain)
     }
     return true
   }
@@ -49,15 +54,16 @@ class EmailAddressService {
   }
 
   public async sendVerificationEmail(emailAddress: string, options: IQueryOptions) {
+    const config = await getCurrentConfiguration()
     const verificationSecret = randomBytes(16).toString('hex')
 
     const data = await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verificationSecret }, options)
     if (data && !data.verified) {
       const userAccount = await UserAccountRepository.getUserAccount({ userAccountId: data.userAccountId }, options)
       return await MailService.sendEmailTemplate(`verifyEmailTemplate`, data.emailAddress, 'E-mail Address Verification', {
-        realmName: ConfigurationManager.Server!.realmName,
+        realmName: config.Server!.realmName,
         user: userAccount,
-        verificationLink: `${ConfigurationManager.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${data.verificationSecret}`
+        verificationLink: `${config.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${data.verificationSecret}`
       })
     } else {
       if (data && data.verified) {

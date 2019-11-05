@@ -1,15 +1,16 @@
 import 'core-js'
-import React from 'react'
-import App from 'next/app'
-import Head from 'next/head'
 import { ApolloProvider } from 'react-apollo'
-import createApolloClient from '../utils/createApolloClient'
-import UserContext from '../contexts/UserContext'
-import ConfigurationContext from '../contexts/ConfigurationContext'
+import App from 'next/app'
+import ConfigurationContext from '../client/contexts/ConfigurationContext'
+import Head from 'next/head'
+import React from 'react'
+import UserContext from '../client/contexts/UserContext'
+import createApolloClient from '../client/utils/createApolloClient'
+import { getCurrentConfiguration } from '../server/config/ConfigurationManager'
 
 const apolloClient = createApolloClient()
 
-export default class MyApp extends App {
+export default class MyApp extends App<any> {
   state = {
     configuration: this.props.configuration,
     user: this.props.user,
@@ -21,6 +22,11 @@ export default class MyApp extends App {
     let configuration
     let user
     if (ctx && ctx.res && ctx.res.locals) {
+      const config = await getCurrentConfiguration()
+      if (!config.Server.baseUrl && ctx.req.url !== '/oobe') {
+        ctx.res.writeHead(302, { Location: '/oobe' })
+        ctx.res.end()
+      }
       if (ctx.res.locals.NEEDS_FIRST_USER && ctx.req.url !== '/register') {
         ctx.res.writeHead(302, {
           Location: '/register'

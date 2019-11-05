@@ -1,6 +1,6 @@
-import ConfigurationManager from '../../config/ConfigurationManager'
+import { getCurrentConfiguration } from '../../config/ConfigurationManager'
 import { decrypt } from '../../utils/cipher'
-import { ClientInstance } from '../../data/models/Client'
+
 import { ISession } from '../../data/models/ISession'
 import { IUserAccount } from '../../data/models/IUserAccount'
 import ClientService from '../../api/services/ClientService'
@@ -22,8 +22,9 @@ import { IClient } from '../../data/models/IClient'
 import TokenService from './TokenService'
 import { IRefreshToken } from '../../data/models/IRefreshToken'
 import { ScopeMap } from './ScopeService'
-import RefreshTokenRepository from '../../data/repositories/RefreshTokenRepository'
+
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
+import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -157,9 +158,11 @@ class AuthenticationService {
     }
   }
 
-  public generateOtpSecret(emailAddress: string): string {
+  public async generateOtpSecret(emailAddress: string): Promise<string> {
+    const config = await getCurrentConfiguration()
+
     const secret = otplib.authenticator.generateSecret()
-    const result = otplib.authenticator.keyuri(encodeURIComponent(emailAddress), encodeURIComponent(ConfigurationManager.Server!.realmName), secret)
+    const result = otplib.authenticator.keyuri(encodeURIComponent(emailAddress), encodeURIComponent(config.Server!.realmName!), secret)
     return result
   }
 
@@ -171,6 +174,7 @@ class AuthenticationService {
     refresh_token: string | null,
     options: IQueryOptions
   ): Promise<IAccessTokenResponse> {
+    const config = await getCurrentConfiguration()
     const client = await ClientService.validateClient(client_id, client_secret, options)
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
@@ -249,13 +253,15 @@ class AuthenticationService {
     return {
       access_token,
       id_token,
-      expires_in: ConfigurationManager.Security!.accessTokenExpirationSeconds,
+      expires_in: config.Security!.accessTokenExpirationSeconds || 300,
       refresh_token: finalRefreshToken ? finalRefreshToken.token : undefined,
       token_type: 'Bearer'
     }
   }
 
   public async sendBackupCode(emailAddress: string, options: IQueryOptions): Promise<boolean> {
+    const config = await getCurrentConfiguration()
+
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
     if (!user || !user.otpEnabled || !user.otpSecret) {
       return false
@@ -269,8 +275,8 @@ class AuthenticationService {
     const backupCode = otplib.authenticator.generate(otpSecret)
     this.localCache.set(emailAddress, backupCode, 16 * 60)
 
-    await MailService.sendEmailTemplate('backupCodeTemplate', emailAddress, `${ConfigurationManager.Server!.realmName} Backup Code`, {
-      realmName: ConfigurationManager.Server!.realmName,
+    await MailService.sendEmailTemplate('backupCodeTemplate', emailAddress, `${config.Server!.realmName} Backup Code`, {
+      realmName: config.Server!.realmName,
       user,
       backupCode
     })
@@ -279,12 +285,13 @@ class AuthenticationService {
   }
 
   public async shouldUserChangePassword(emailAddress: string, options: IQueryOptions): Promise<boolean> {
-    if (ConfigurationManager.Security!.maxPasswordAge > 0) {
+    const config = await getCurrentConfiguration()
+    if (config.Security!.maxPasswordAge && config.Security!.maxPasswordAge > 0) {
       const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, options)
       if (userAccount) {
         const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
-        if (daysSincePasswordChange >= ConfigurationManager.Security!.maxPasswordAge) {
+        if (daysSincePasswordChange >= config.Security!.maxPasswordAge) {
           return true
         }
       }
@@ -307,17 +314,19 @@ class AuthenticationService {
   }
 
   public async validatePassword(password: string, confirm: string, options: IQueryOptions): Promise<boolean> {
+    const config = await getCurrentConfiguration()
+
     const requiredParts: string[] = []
-    if (ConfigurationManager.Security!.passwordRequiresLowercase) {
+    if (config.Security!.passwordRequiresLowercase) {
       requiredParts.push('lowercase letter (a-z)')
     }
-    if (ConfigurationManager.Security!.passwordRequiresUppercase) {
+    if (config.Security!.passwordRequiresUppercase) {
       requiredParts.push('uppercase letter (A-Z)')
     }
-    if (ConfigurationManager.Security!.passwordRequiresNumber) {
+    if (config.Security!.passwordRequiresNumber) {
       requiredParts.push('number (0-9)')
     }
-    if (ConfigurationManager.Security!.passwordRequiresSymbol) {
+    if (config.Security!.passwordRequiresSymbol) {
       requiredParts.push('symbol (!, #, @, etc...)')
     }
 
@@ -327,20 +336,20 @@ class AuthenticationService {
       throw new Error('Passwords do not match.  Please re-enter your passwords')
     }
 
-    if (ConfigurationManager.Security!.passwordRequiresLowercase && LOWERCASE_REGEX.test(password) === false) {
+    if (config.Security!.passwordRequiresLowercase && LOWERCASE_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (ConfigurationManager.Security!.passwordRequiresUppercase && UPPERCASE_REGEX.test(password) === false) {
+    if (config.Security!.passwordRequiresUppercase && UPPERCASE_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (ConfigurationManager.Security!.passwordRequiresNumber && NUMBER_REGEX.test(password) === false) {
+    if (config.Security!.passwordRequiresNumber && NUMBER_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (ConfigurationManager.Security!.passwordRequiresSymbol && SYMBOL_REGEX.test(password) === false) {
+    if (config.Security!.passwordRequiresSymbol && SYMBOL_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (password.length < ConfigurationManager.Security!.passwordMinimumLength) {
-      throw new Error(`Password must be at least ${ConfigurationManager.Security!.passwordMinimumLength} characters long`)
+    if (password.length < (config.Security!.passwordMinimumLength || 8)) {
+      throw new Error(`Password must be at least ${config.Security!.passwordMinimumLength} characters long`)
     }
     return true
   }
@@ -360,7 +369,7 @@ class AuthenticationService {
 
   private verifyRefreshToken(client: IClient, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, ConfigurationManager.Security!.globalSecret, (err, payload) => {
+      jwt.verify(token, GRAYSKULL_GLOBAL_SECRET, (err, payload) => {
         if (err) {
           reject(err)
         } else {

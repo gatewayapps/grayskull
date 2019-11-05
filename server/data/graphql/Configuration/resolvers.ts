@@ -1,5 +1,3 @@
-import CertificateService from '../../../api/services/CertificateService'
-
 export default {
   Query: {
     configuration: (obj, args, context, info) => {
@@ -23,7 +21,6 @@ export default {
     },
     verifyCertbot: async (obj, args, context, info) => {
       try {
-        const success = await CertificateService.verifyCertbot(args.domain)
         return {
           success: true
         }

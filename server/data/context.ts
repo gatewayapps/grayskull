@@ -34,29 +34,30 @@ function getSequelizeConnection() {
 }
 
 export const getContext = async () => {
-  const sequelize = getSequelizeConnection()
-  const db = {
-    sequelize,
-    Sequelize,
-    Client: ClientFactory(sequelize),
-    EmailAddress: EmailAddressFactory(sequelize),
-    UserAccount: UserAccountFactory(sequelize),
-    UserClient: UserClientFactory(sequelize),
-    Session: SessionFactory(sequelize),
-    RefreshToken: RefreshTokenFactory(sequelize),
-    PhoneNumber: PhoneNumberFactory(sequelize),
-    Setting: SettingFactory(sequelize)
-  }
-
-  Object.values(db).forEach((model: any) => {
-    if (model.associate) {
-      model.associate(db)
+  if (!dbInstance) {
+    const sequelize = getSequelizeConnection()
+    const db = {
+      sequelize,
+      Sequelize,
+      Client: ClientFactory(sequelize),
+      EmailAddress: EmailAddressFactory(sequelize),
+      UserAccount: UserAccountFactory(sequelize),
+      UserClient: UserClientFactory(sequelize),
+      Session: SessionFactory(sequelize),
+      RefreshToken: RefreshTokenFactory(sequelize),
+      PhoneNumber: PhoneNumberFactory(sequelize),
+      Setting: SettingFactory(sequelize)
     }
-  })
 
-  await sequelize.sync()
-  dbInstance = db
-  return db
+    Object.values(db).forEach((model: any) => {
+      if (model.associate) {
+        model.associate(db)
+      }
+    })
+    dbInstance = db
+    await sequelize.sync()
+  }
+  return dbInstance
 }
 
 export default dbInstance

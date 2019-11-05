@@ -7,16 +7,13 @@ import { IConfiguration } from '../data/models/IConfiguration'
 import { getContext } from '../data/context'
 import { SettingsKeys } from './KnownSettings'
 
-config()
 let currentConfig: IConfiguration
 
 currentConfig = {}
 
-export function getCurrentConfiguration(): IConfiguration {
-  return currentConfig
-}
 class ConfigurationManager {
   private async loadConfigurationAsync() {
+    config()
     const context = await getContext()
     const settings = await context.Setting.findAll()
 
@@ -116,11 +113,20 @@ class ConfigurationManager {
   }
 
   public async GetCurrentConfiguration(): Promise<IConfiguration | undefined> {
-    if (!currentConfig) {
+    if (!currentConfig.Server) {
       await this.loadConfigurationAsync()
     }
     return currentConfig
   }
 }
 
-export default new ConfigurationManager()
+const singleton = new ConfigurationManager()
+
+export async function getCurrentConfiguration(): Promise<IConfiguration> {
+  if (!currentConfig.Server) {
+    await singleton.GetCurrentConfiguration()
+  }
+  return currentConfig
+}
+
+export default singleton

@@ -14,13 +14,13 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <script type="text/javascript" src="/static/scripts/jquery.min.js" />
-          <script type="text/javascript" src="/static/scripts/popper.min.js" />
-          <script type="text/javascript" src="/static/scripts/bootstrap.min.js" />
+          <script type="text/javascript" src="/scripts/jquery.min.js" />
+          <script type="text/javascript" src="/scripts/popper.min.js" />
+          <script type="text/javascript" src="/scripts/bootstrap.min.js" />
           <style>{`body { margin: 0 } /* custom! */`}</style>
-          <script type="text/javascript" src="/static/__fp2.js" />
+          <script type="text/javascript" src="/__fp2.js" />
 
-          <link rel="stylesheet" href="/static/fontawesome-pro/css/all.min.css" />
+          <link rel="stylesheet" href="/fontawesome-pro/css/all.min.css" />
           <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
         </Head>
         <body className="custom_class">
