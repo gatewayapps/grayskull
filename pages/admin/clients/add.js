@@ -4,15 +4,15 @@ import Link from 'next/link'
 import React, { PureComponent } from 'react'
 import { ApolloConsumer, Mutation, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
-import ErrorMessage from '../../../components/ErrorMessage'
+import ErrorMessage from '../../../client/components/ErrorMessage'
 
-import generateSecret from '../../../utils/generateSecret'
+import generateSecret from '../../../client/utils/generateSecret'
 import { ALL_CLIENTS_QUERY } from './index'
-import LoadingIndicator from '../../../components/LoadingIndicator'
-import ClientForm from '../../../components/ClientForm'
+import LoadingIndicator from '../../../client/components/LoadingIndicator'
+import ClientForm from '../../../client/components/ClientForm'
 
-import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
-import Permissions from '../../../utils/permissions'
+import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
+import Permissions from '../../../client/utils/permissions'
 
 const CREATE_CLIENT_MUTATION = gql`
   mutation CREATE_CLIENT_MUTATION($data: CreateClientArgs!) {

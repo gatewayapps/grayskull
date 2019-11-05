@@ -26,7 +26,7 @@ class EmailAddressService {
 
   public async isEmailAddressAvailable(emailAddress: string, options: IQueryOptions): Promise<boolean> {
     const existingEmail = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
-    console.log('existing email is', existingEmail)
+
     return existingEmail === null
   }
 
@@ -34,14 +34,9 @@ class EmailAddressService {
     const domain = emailAddress.split('@')[1].toLowerCase()
     const config = await getCurrentConfiguration()
     if (config.Security!.domainWhitelist) {
-      const allowedDomains = _.compact(
-        config
-          .Security!.domainWhitelist!.toLowerCase()
-          .split(';')
-          .map((d) => d.trim())
-      )
+      const allowedDomains = _.compact(JSON.parse(config.Security!.domainWhitelist.toLowerCase()))
 
-      return allowedDomains.includes(domain)
+      return allowedDomains.length === 0 || allowedDomains.includes(domain)
     }
     return true
   }
@@ -49,8 +44,9 @@ class EmailAddressService {
   public async createEmailAddress(data: IEmailAddress, options: IQueryOptions) {
     data.verificationSecret = '' // sendVerificationEmail will set this correctly
     const result = await EmailAddressRepository.createEmailAddress(data, options)
-
-    await this.sendVerificationEmail(data.emailAddress, options)
+    if (!data.verified) {
+      await this.sendVerificationEmail(data.emailAddress, options)
+    }
   }
 
   public async sendVerificationEmail(emailAddress: string, options: IQueryOptions) {

@@ -5,7 +5,7 @@ import ClientService from './ClientService'
 import { UserClientInstance } from '../../data/models/UserClient'
 import { IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { IQueryOptions } from '../../data/IQueryOptions'
-import db from '../../data/context'
+import { getContext } from '../../data/context'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { Permissions } from '../../utils/permissions'
@@ -20,8 +20,15 @@ export interface IVerifyScopeResult {
   pendingScopes?: string[]
   userClientId?: string
 }
-
+let db
 class UserClientService {
+  constructor() {
+    this.initializeContext()
+  }
+
+  private async initializeContext() {
+    db = await getContext()
+  }
   public async verifyScope(userAccountId: string, client_id: string, scope: string | null, options: IQueryOptions): Promise<IVerifyScopeResult> {
     const client = await ClientRepository.getClient({ client_id }, options)
     if (!client) {

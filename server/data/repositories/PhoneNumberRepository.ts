@@ -1,12 +1,22 @@
 import { IPhoneNumberMeta, IPhoneNumberFilter, IPhoneNumberUniqueFilter } from '../../interfaces/graphql/IPhoneNumber'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import db from '../../data/context'
+import { getContext } from '../../data/context'
 import { IPhoneNumber } from '../../data/models/IPhoneNumber'
 
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
+let db
+
 class PhoneNumberRepository {
+  constructor() {
+    this.initializeContext()
+  }
+
+  private async initializeContext() {
+    db = await getContext()
+  }
+
   public async phoneNumbersMeta(filter: IPhoneNumberFilter | null, options: IQueryOptions): Promise<IPhoneNumberMeta> {
     const where = convertFilterToSequelizeWhere(filter)
     const count = await db.PhoneNumber.count({ where, transaction: options.transaction })
@@ -15,7 +25,7 @@ class PhoneNumberRepository {
     }
   }
 
-  public async getPhoneNumbers(filter: IPhoneNumberFilter | null,  options: IQueryOptions): Promise<IPhoneNumber[]> {
+  public async getPhoneNumbers(filter: IPhoneNumberFilter | null, options: IQueryOptions): Promise<IPhoneNumber[]> {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.PhoneNumber.findAll({
       where,
@@ -23,33 +33,31 @@ class PhoneNumberRepository {
       order: options.order,
       limit: options.limit,
       offset: options.offset,
-      
-      transaction: options.transaction,
-    })
-    return results.map((r)=>r.toJSON())
-  }
 
+      transaction: options.transaction
+    })
+    return results.map((r) => r.toJSON())
+  }
 
   public async getPhoneNumber(filter: IPhoneNumberUniqueFilter, options: IQueryOptions): Promise<IPhoneNumber | null> {
     const result = await db.PhoneNumber.findOne({
       where: filter,
-      
-      transaction: options.transaction,
+
+      transaction: options.transaction
     })
-    if(result){
+    if (result) {
       return result.toJSON()
     } else {
       return null
     }
   }
 
-
   public async createPhoneNumber(data: IPhoneNumber, options: IQueryOptions): Promise<IPhoneNumber> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await db.PhoneNumber.create(data, {returning: true,  transaction: options.transaction})
+    return await db.PhoneNumber.create(data, { returning: true, transaction: options.transaction })
   }
 
   public async deletePhoneNumber(filter: IPhoneNumberUniqueFilter, options: IQueryOptions): Promise<boolean> {
@@ -59,9 +67,9 @@ class PhoneNumberRepository {
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [ affectedCount ] = await db.PhoneNumber.update(data, {
+    const [affectedCount] = await db.PhoneNumber.update(data, {
       where: filter as AnyWhereOptions,
-      transaction: options.transaction,
+      transaction: options.transaction
     })
     return affectedCount > 0
   }
@@ -73,7 +81,7 @@ class PhoneNumberRepository {
     await db.PhoneNumber.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
-      transaction: options.transaction,
+      transaction: options.transaction
     })
     return await this.getPhoneNumber(filter, options)
   }

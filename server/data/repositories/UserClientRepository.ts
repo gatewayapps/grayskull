@@ -1,12 +1,21 @@
 import { IUserClientMeta, IUserClientFilter, IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import db from '../../data/context'
+import { getContext } from '../../data/context'
 import { IUserClient } from '../../data/models/IUserClient'
 
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
+let db
+
 class UserClientRepository {
+  constructor() {
+    this.initializeContext()
+  }
+
+  private async initializeContext() {
+    db = await getContext()
+  }
   public async userClientsMeta(filter: IUserClientFilter | null, options: IQueryOptions): Promise<IUserClientMeta> {
     const where = convertFilterToSequelizeWhere(filter)
     const count = await db.UserClient.count({ where, transaction: options.transaction })
@@ -15,7 +24,7 @@ class UserClientRepository {
     }
   }
 
-  public async getUserClients(filter: IUserClientFilter | null,  options: IQueryOptions): Promise<IUserClient[]> {
+  public async getUserClients(filter: IUserClientFilter | null, options: IQueryOptions): Promise<IUserClient[]> {
     const where = convertFilterToSequelizeWhere(filter)
     const results = await db.UserClient.findAll({
       where,
@@ -23,33 +32,31 @@ class UserClientRepository {
       order: options.order,
       limit: options.limit,
       offset: options.offset,
-      
-      transaction: options.transaction,
-    })
-    return results.map((r)=>r.toJSON())
-  }
 
+      transaction: options.transaction
+    })
+    return results.map((r) => r.toJSON())
+  }
 
   public async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<IUserClient | null> {
     const result = await db.UserClient.findOne({
       where: filter,
-      
-      transaction: options.transaction,
+
+      transaction: options.transaction
     })
-    if(result){
+    if (result) {
       return result.toJSON()
     } else {
       return null
     }
   }
 
-
   public async createUserClient(data: IUserClient, options: IQueryOptions): Promise<IUserClient> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await db.UserClient.create(data, {returning: true,  transaction: options.transaction})
+    return await db.UserClient.create(data, { returning: true, transaction: options.transaction })
   }
 
   public async deleteUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<boolean> {
@@ -59,9 +66,9 @@ class UserClientRepository {
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [ affectedCount ] = await db.UserClient.update(data, {
+    const [affectedCount] = await db.UserClient.update(data, {
       where: filter as AnyWhereOptions,
-      transaction: options.transaction,
+      transaction: options.transaction
     })
     return affectedCount > 0
   }
@@ -73,7 +80,7 @@ class UserClientRepository {
     await db.UserClient.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
-      transaction: options.transaction,
+      transaction: options.transaction
     })
     return await this.getUserClient(filter, options)
   }

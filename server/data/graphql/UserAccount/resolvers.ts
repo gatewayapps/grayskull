@@ -77,7 +77,9 @@ export default {
         if (!fingerprint) {
           throw new Error('Invalid login request')
         } else {
-          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.ip, otpToken, extendedSession, { userContext: context.user || null })
+          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.client.remoteAddress, otpToken, extendedSession, {
+            userContext: context.user || null
+          })
           if (authResult.session) {
             setAuthCookies(context.res, authResult.session)
 

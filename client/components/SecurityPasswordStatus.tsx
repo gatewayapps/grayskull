@@ -73,7 +73,7 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
     return (
       <RequireConfiguration>
         {(configuration) => {
-          const { securityConfiguration } = configuration
+          const { Security: securityConfiguration } = configuration
           const validations = [
             new FormValidationRule('oldPassword', 'isEmpty', false, 'Current password is required'),
             new FormValidationRule('newPassword', 'isEmpty', false, 'New password is required'),

@@ -2,7 +2,7 @@ import ConfigurationManager, { getCurrentConfiguration } from '../../config/Conf
 import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
-import db from '../../data/context'
+import { getContext } from '../../data/context'
 import { ClientInstance } from '../../data/models/Client'
 import { IEmailAddress } from '../../data/models/IEmailAddress'
 import { IUserAccount } from '../../data/models/IUserAccount'
@@ -24,6 +24,8 @@ const INVITATION_EXPIRES_IN = 3600
 
 const TokenCache = new Cache({ stdTTL: INVITATION_EXPIRES_IN })
 
+let db
+
 interface ICPTToken {
   client: ClientInstance | { name: string; client_id: string } | null
   emailAddress: string
@@ -31,6 +33,14 @@ interface ICPTToken {
 }
 
 class UserAccountService {
+  constructor() {
+    this.initializeContext()
+  }
+
+  private async initializeContext() {
+    db = await getContext()
+  }
+
   public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
     const options: IQueryOptions = {
       userContext: null
@@ -224,8 +234,9 @@ class UserAccountService {
     try {
       // First user is always an administrator
       const userMeta = await UserAccountRepository.userAccountsMeta(null, newOptions)
-      // 3. Create the user account
       data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
+
+      // 3. Create the user account
       const user = await this.createUserAccountWithPassword(data, password, newOptions)
 
       // 4. Create the user account email
@@ -233,7 +244,8 @@ class UserAccountService {
         userAccountId: user.userAccountId!,
         emailAddress: emailAddress,
         primary: true,
-        verificationSecret: ''
+        verificationSecret: '',
+        verified: userMeta.count === 0 // First user account gets verified
       }
       await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
 

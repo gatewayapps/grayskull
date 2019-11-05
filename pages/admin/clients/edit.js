@@ -4,14 +4,14 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Mutation, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
-import ClientForm from '../../../components/ClientForm'
-import ErrorMessage from '../../../components/ErrorMessage'
-import LoadingIndicator from '../../../components/LoadingIndicator'
+import ClientForm from '../../../client/components/ClientForm'
+import ErrorMessage from '../../../client/components/ErrorMessage'
+import LoadingIndicator from '../../../client/components/LoadingIndicator'
 
 import { ALL_CLIENTS_QUERY } from './index'
 
-import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
-import Permissions from '../../../utils/permissions'
+import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
+import Permissions from '../../../client/utils/permissions'
 
 const UPDATE_CLIENT_QUERY = gql`
   query UPDATE_CLIENT_QUERY($client_id: String!) {

@@ -2,7 +2,6 @@ import { makeExecutableSchema } from 'apollo-server'
 import { fileLoader, mergeResolvers, mergeTypes } from 'merge-graphql-schemas'
 import { AuthorizationDirective } from './AuthorizationDirective'
 import getConfig from 'next/config'
-import { join } from 'path'
 const { serverRuntimeConfig } = getConfig()
 
 const typeDefs = mergeTypes(fileLoader(`${serverRuntimeConfig.PROJECT_ROOT}/server/data/graphql/**/*.graphql`, { recursive: true }))
@@ -13,7 +12,7 @@ import emailResolver from './EmailAddress/resolvers'
 import scopeResolver from './Scope/resolvers'
 import userAccountResolver from './UserAccount/resolvers'
 
-const resolvers = mergeResolvers([baseResolver, clientResolver, configurationResolver, emailResolver, scopeResolver, userAccountResolver])
+const resolvers = mergeResolvers([baseResolver as any, clientResolver as any, configurationResolver as any, emailResolver as any, scopeResolver as any, userAccountResolver as any])
 
 export const schema = makeExecutableSchema({
   typeDefs,

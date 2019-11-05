@@ -8,6 +8,7 @@ import UserAccountRepository from '../data/repositories/UserAccountRepository'
 import SessionRepository from '../data/repositories/SessionRepository'
 
 import EmailAddressRepository from '../data/repositories/EmailAddressRepository'
+import { IncomingMessage, ServerResponse } from 'http'
 
 let FIRST_USER_CREATED = false
 const MIN_TIME_TO_UPDATE_LAST_ACTIVE = 60 * 1000 // 1 minute
@@ -27,33 +28,33 @@ declare global {
 }
 
 /** Sets req.user and req.session to authenticated user and session */
-export async function getUserContext(req: Request, res: Response, next: NextFunction) {
-  if (/^\/(static|_next)/i.test(req.path)) {
-    return next()
+export async function getUserContext(req: IncomingMessage, res: ServerResponse) {
+  if (/^\/(static|_next)/i.test(req.url!)) {
+    return
   }
 
   const { sessionId } = getAuthCookies(req)
   if (!sessionId) {
-    return next()
+    return
   }
 
-  const fingerprint = req.header('x-fingerprint')
+  const fingerprint = req.headers['x-fingerprint']
   if (!fingerprint) {
-    return next()
+    return
   }
 
-  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.ip, { userContext: null })
+  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.socket.remoteAddress, { userContext: null })
   if (!session) {
     SessionRepository.deleteSession({ sessionId }, { userContext: null })
     clearAuthCookies(res)
-    return next()
+    return
   }
 
   const user = await UserAccountRepository.getUserAccount({ userAccountId: session.userAccountId }, { userContext: null })
 
   if (!user) {
     clearAuthCookies(res)
-    return next()
+    return
   }
 
   if (!user.lastActive || Date.now() - user.lastActive.getTime() > MIN_TIME_TO_UPDATE_LAST_ACTIVE) {
@@ -69,6 +70,4 @@ export async function getUserContext(req: Request, res: Response, next: NextFunc
   req.user = finalUser
   req.session = session
   res.locals.userContext = finalUser
-
-  return next()
 }

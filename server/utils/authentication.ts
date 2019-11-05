@@ -1,6 +1,8 @@
-import { Request, Response } from 'express'
 import ConfigurationManager, { getCurrentConfiguration } from '../config/ConfigurationManager'
 import { ISession } from '../data/models/ISession'
+import { Response } from 'apollo-server-env'
+import { ServerResponse } from 'http'
+import Cookies from 'cookies'
 
 export const ACCESS_TOKEN_COOKIE_NAME = 'at'
 export const SESSION_ID_COOKIE_NAME = 'sid'
@@ -46,17 +48,17 @@ export function decodeState(state: string | undefined): IAuthState | null {
   }
 }
 
-export function setAuthCookies(res: Response, session: ISession) {
-  res.cookie(SESSION_ID_COOKIE_NAME, session.sessionId!, { httpOnly: true, signed: true, expires: session.expiresAt })
+export function setAuthCookies(res: any, session: ISession) {
+  res.cookies.set(SESSION_ID_COOKIE_NAME, session.sessionId!, { httpOnly: true, expires: session.expiresAt })
 }
 
-export function getAuthCookies(req: Request) {
-  const sessionId = req.signedCookies[SESSION_ID_COOKIE_NAME]
+export function getAuthCookies(req: any) {
+  const sessionId = req.cookies.get(SESSION_ID_COOKIE_NAME)
   return {
     sessionId
   }
 }
 
-export function clearAuthCookies(res: Response) {
-  res.clearCookie(SESSION_ID_COOKIE_NAME)
+export function clearAuthCookies(res: any) {
+  res.cookies.set(SESSION_ID_COOKIE_NAME, undefined)
 }

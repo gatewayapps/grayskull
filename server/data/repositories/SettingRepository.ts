@@ -1,12 +1,21 @@
 import { ISettingMeta, ISettingFilter, ISettingUniqueFilter } from '../../interfaces/graphql/ISetting'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import db from '../../data/context'
+import { getContext } from '../../data/context'
 import { ISetting } from '../../data/models/ISetting'
 
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
+let db
+
 class SettingRepository {
+  constructor() {
+    this.initializeContext()
+  }
+
+  private async initializeContext() {
+    db = await getContext()
+  }
   public async settingsMeta(filter: ISettingFilter | null, options: IQueryOptions): Promise<ISettingMeta> {
     const where = convertFilterToSequelizeWhere(filter)
     const count = await db.Setting.count({ where, transaction: options.transaction })

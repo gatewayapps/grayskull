@@ -1,12 +1,19 @@
 import { IEmailAddressMeta, IEmailAddressFilter, IEmailAddressUniqueFilter } from '../../interfaces/graphql/IEmailAddress'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import db from '../../data/context'
+import { getContext } from '../../data/context'
 import { IEmailAddress } from '../../data/models/IEmailAddress'
 
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
-
+let db
 class EmailAddressRepository {
+  constructor() {
+    this.initializeContext()
+  }
+
+  private async initializeContext() {
+    db = await getContext()
+  }
   public async emailAddressesMeta(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<IEmailAddressMeta> {
     const where = convertFilterToSequelizeWhere(filter)
     const count = await db.EmailAddress.count({ where, transaction: options.transaction })
@@ -30,7 +37,6 @@ class EmailAddressRepository {
   }
 
   public async getEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions): Promise<IEmailAddress | null> {
-    console.log('db is', db)
     const result = await db.EmailAddress.findOne({
       where: filter,
 

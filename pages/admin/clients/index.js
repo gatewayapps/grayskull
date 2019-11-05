@@ -2,12 +2,12 @@ import gql from 'graphql-tag'
 import Link from 'next/link'
 import React from 'react'
 import { Query } from 'react-apollo'
-import Primary from '../../../layouts/primary'
-import ErrorMessage from '../../../components/ErrorMessage'
-import LoadingIndicator from '../../../components/LoadingIndicator'
-import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
-import Permissions from '../../../utils/permissions'
-import { RequirePermission, RequirePermissionModes } from '../../../components/RequirePermission'
+import Primary from '../../../client/layouts/primary'
+import ErrorMessage from '../../../client/components/ErrorMessage'
+import LoadingIndicator from '../../../client/components/LoadingIndicator'
+import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
+import Permissions from '../../../client/utils/permissions'
+import { RequirePermission, RequirePermissionModes } from '../../../client/components/RequirePermission'
 
 const ALL_CLIENTS_QUERY = gql`
   query ALL_CLIENTS_QUERY {

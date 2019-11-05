@@ -2,10 +2,10 @@ import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
-import AuthenticatedRoute from '../../../layouts/authenticatedRoute'
-import Permissions from '../../../utils/permissions'
-import LoadingIndicator from '../../../components/LoadingIndicator'
-import ErrorMessage from '../../../components/ErrorMessage'
+import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
+import Permissions from '../../../client/utils/permissions'
+import LoadingIndicator from '../../../client/components/LoadingIndicator'
+import ErrorMessage from '../../../client/components/ErrorMessage'
 
 const SINGLE_CLIENT_QUERY = gql`
   query SINGLE_CLIENT_QUERY($client_id: String!) {

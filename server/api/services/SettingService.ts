@@ -43,7 +43,7 @@ export async function getBooleanSetting(key: string) {
   const db = await getContext()
   const setting = await db.Setting.findOne({ where: { key, type: 'Boolean' } })
   if (setting) {
-    return (!!setting.value).toString() === 'true'
+    return setting.value.toString() === 'true'
   } else {
     return undefined
   }
