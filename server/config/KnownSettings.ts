@@ -6,6 +6,7 @@ export const SettingsKeys = {
   MAIL_USER: 'MAIL_USER',
   MAIL_FROM_ADDRESS: 'MAIL_FROM_ADDRESS',
   SECURITY_PASSWORD_EXPIRES_DAYS: 'SECURITY_PASSWORD_EXPIRES_DAYS',
+  SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS: 'SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS',
   SECURITY_ACTIVATION_EXPIRES_IN_MINUTES: 'SECURITY_ACTIVATION_EXPIRES_IN_MINUTES',
   SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE: 'SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE',
   SECURITY_PASSWORD_MINIMUM_LENGTH: 'SECURITY_PASSWORD_MINIMUM_LENGTH',
@@ -74,6 +75,14 @@ export default {
       Example: 90,
       Key: SettingsKeys.SECURITY_PASSWORD_EXPIRES_DAYS,
       Label: 'Maximum Password Age (days)',
+      Type: 'Number'
+    },
+    {
+      Default: 300,
+      Description: 'Access tokens will expire after so many seconds',
+      Example: 300,
+      Key: SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS,
+      Label: 'Access Token Expiration (seconds)',
       Type: 'Number'
     },
     {

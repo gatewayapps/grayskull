@@ -3,14 +3,14 @@ import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
 
 import { Mutation } from 'react-apollo'
-import Primary from '../layouts/primary'
+import Primary from '../client/layouts/primary'
 
-import MultiFactorSetup from '../components/MultiFactorSetup'
-import RequireConfiguration from '../components/RequireConfiguration'
-import RegistrationForm from '../components/RegistrationForm'
+import MultiFactorSetup from '../client/components/MultiFactorSetup'
+import RequireConfiguration from '../client/components/RequireConfiguration'
+import RegistrationForm from '../client/components/RegistrationForm'
 
-import BackgroundCover from '../components/BackgroundCover'
-import ResponsiveForm from '../components/ResponsiveForm'
+import BackgroundCover from '../client/components/BackgroundCover'
+import ResponsiveForm from '../client/components/ResponsiveForm'
 
 const RegistrationSteps = {
   UserData: 1,

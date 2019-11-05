@@ -1,7 +1,7 @@
 import React from 'react'
-import AuthenticatedRoute from '../layouts/authenticatedRoute'
-import SecurityPasswordStatus from '../components/SecurityPasswordStatus'
-import SecurityMultifactorStatus from '../components/SecurityMultiFactorStatus'
+import AuthenticatedRoute from '../client/layouts/authenticatedRoute'
+import SecurityPasswordStatus from '../client/components/SecurityPasswordStatus'
+import SecurityMultifactorStatus from '../client/components/SecurityMultiFactorStatus'
 import UserContext from '../contexts/UserContext'
 const SecurityPage = () => {
   return (

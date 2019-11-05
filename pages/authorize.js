@@ -2,10 +2,10 @@ import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
 import React, { PureComponent } from 'react'
 import { Query } from 'react-apollo'
-import Primary from '../layouts/primary'
-import ClientAuthorization from '../components/ClientAuthorization'
-import LoadingIndicator from '../components/LoadingIndicator'
-import RequireAuthentication from '../components/RequireAuthentication'
+import Primary from '../client/layouts/primary'
+import ClientAuthorization from '../client/components/ClientAuthorization'
+import LoadingIndicator from '../client/components/LoadingIndicator'
+import RequireAuthentication from '../client/components/RequireAuthentication'
 
 const LOAD_AUTHORIZE_QUERY = gql`
   query LOAD_AUTHORIZE_QUERY($client_id: String!) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import AuthenticatedRoute from '../layouts/authenticatedRoute'
+import AuthenticatedRoute from '../client/layouts/authenticatedRoute'
 
 const ApplicationsPage = () => {
   return (

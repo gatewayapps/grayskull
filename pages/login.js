@@ -1,13 +1,10 @@
 import React from 'react'
-import { Query } from 'react-apollo'
-import gql from 'graphql-tag'
 import { withRouter } from 'next/router'
-import BackgroundCover from '../components/BackgroundCover'
-import ErrorMessage from '../components/ErrorMessage'
-import LoadingIndicator from '../components/LoadingIndicator'
-import LoginForm from '../components/LoginForm'
-import Primary from '../layouts/primary'
-import { parseRoutingState } from '../utils/routing'
+import BackgroundCover from '../client/components/BackgroundCover'
+
+import LoginForm from '../client/components/LoginForm'
+import Primary from '../client/layouts/primary'
+import { parseRoutingState } from '../client/utils/routing'
 
 class LoginPage extends React.PureComponent {
   static async getInitialProps({ req, query, res }) {
