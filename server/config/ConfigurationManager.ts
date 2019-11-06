@@ -13,7 +13,7 @@ let currentConfig: IConfiguration
 currentConfig = {}
 
 class ConfigurationManager {
-  private async loadConfigurationAsync() {
+  public async loadConfigurationAsync() {
     config()
     const context = await getContext()
     const settings = await context.Setting.findAll()
