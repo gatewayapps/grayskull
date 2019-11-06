@@ -1,69 +1,60 @@
 type Configuration {
-	Security: SecurityConfiguration
-	Mail: MailConfiguration
-	Server: ServerConfiguration
+  Security: SecurityConfiguration
+  Mail: MailConfiguration
+  Server: ServerConfiguration
 }
 
 input VerifyDatabaseConnectionArgs {
-	provider: String!
-	serverAddress: String!
-	serverPort: String!
-	databaseName: String!
-	adminUsername: String!
-	adminPassword: String!
+  provider: String!
+  serverAddress: String!
+  serverPort: String!
+  databaseName: String!
+  adminUsername: String!
+  adminPassword: String!
 }
 
 input SecurityConfigurationInput {
-	passwordRequiresLowercase: Boolean!
-	passwordRequiresUppercase: Boolean!
-	passwordRequiresNumber: Boolean!
-	passwordRequiresSymbol: Boolean!
-	passwordMinimumLength: Int!
-	multifactorRequired: Boolean!
-	accessTokenExpirationSeconds: Int!
-	allowSignup: Boolean!
-	domainWhitelist: String!
+  passwordRequiresLowercase: Boolean!
+  passwordRequiresUppercase: Boolean!
+  passwordRequiresNumber: Boolean!
+  passwordRequiresSymbol: Boolean!
+  passwordMinimumLength: Int!
+  multifactorRequired: Boolean!
+  accessTokenExpirationSeconds: Int!
+  allowSignup: Boolean!
+  domainWhitelist: String!
 }
 
 input MailConfigurationInput {
-	serverAddress: String!
-	username: String!
-	password: String!
-	port: Int!
-	fromAddress: String!
-	tlsSslRequired: Boolean!
+  serverAddress: String!
+  username: String!
+  password: String!
+  port: Int!
+  fromAddress: String!
+  tlsSslRequired: Boolean!
 }
 
 input ServerConfigurationInput {
-	baseUrl: String!
-	realmName: String!
-	realmLogo: String!
-	privateKey: String!
-	enableCertbot: Boolean!
-	certificate: String!
-	forceHttpsRedirect: Boolean!
+  baseUrl: String!
+  realmName: String!
+  realmLogo: String!
 }
 
 input SaveConfigurationArgs {
-	Security: SecurityConfigurationInput
-	Mail: MailConfigurationInput
-	Server: ServerConfigurationInput
+  Security: SecurityConfigurationInput
+  Mail: MailConfigurationInput
+  Server: ServerConfigurationInput
 }
-
 
 type ConfigurationMeta {
-	count: Int!
+  count: Int!
 }
 
-
-
-
-
 type Query {
-	configuration: Configuration 
+  configuration: Configuration
 }
 
 type Mutation {
-	verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse 
-	saveConfiguration(data: SaveConfigurationArgs!): OperationResponse 
+  verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse
 }
