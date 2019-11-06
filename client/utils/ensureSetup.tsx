@@ -14,14 +14,17 @@ export const ensureSetup = (WrappedComponent) =>
         if (_isOobe && ctx.req.url !== '/oobe') {
           ctx.res.writeHead(302, { Location: '/oobe' })
           ctx.res.end()
-        }
-        if (_needsFirstUser && !_isOobe && ctx.req.url !== '/register') {
+        } else if (_needsFirstUser && !_isOobe && ctx.req.url !== '/register') {
           ctx.res.writeHead(302, {
             Location: '/register'
           })
           ctx.res.end()
-        }
-        if (ctx.req.url === '/' || ctx.req.url === '') {
+        } else if (ctx.req.url === '/oobe' && !_isOobe) {
+          ctx.res.writeHead(302, {
+            Location: '/'
+          })
+          ctx.res.end()
+        } else if (ctx.req.url === '/' || ctx.req.url === '') {
           ctx.res.writeHead(302, {
             Location: '/personal-info'
           })
