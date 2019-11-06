@@ -5,16 +5,21 @@ import { ensureSetup } from '../client/utils/ensureSetup'
 const HomePage = () => {
   return (
     <AuthenticatedRoute>
-      <UserContext.Consumer>
-        {({ user }) => (
-          <div className="jumbotron">
-            I am {user.firstName}
-            &apos;s home page!
-          </div>
-        )}
-      </UserContext.Consumer>
+      <UserContext.Consumer>{({ user }) => <div className="jumbotron">Redirecting...</div>}</UserContext.Consumer>
     </AuthenticatedRoute>
   )
+}
+
+HomePage.getInitialProps = (context) => {
+  if (context.res) {
+    ctx.res.writeHead(302, {
+      Location: '/personal-info'
+    })
+    ctx.res.end()
+  } else {
+    window.location.href = '/personal-info'
+  }
+  return {}
 }
 
 export default ensureSetup(HomePage)
