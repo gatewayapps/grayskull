@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { IConfiguration } from '../../server/data/models/IConfiguration'
 
-export class ConfirmConfiguration extends React.PureComponent {
+export class ConfirmConfiguration extends React.PureComponent<IConfirmConfigurationProps> {
   componentDidMount() {
     this.props.onValidationChanged(this.props.stepIndex, true)
   }
@@ -58,9 +59,10 @@ export class ConfirmConfiguration extends React.PureComponent {
   }
 }
 
-ConfirmConfiguration.propTypes = {
-  stepIndex: PropTypes.number.isRequired,
-  configuration: PropTypes.object
+export interface IConfirmConfigurationProps {
+  stepIndex: number
+  configuration: IConfiguration
+  onValidationChanged: (stepIndex: number, isValid: boolean, errors?: any[]) => void
 }
 
 export default ConfirmConfiguration
