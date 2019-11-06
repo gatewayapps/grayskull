@@ -1,6 +1,7 @@
 import { SettingsKeys } from '../../../config/KnownSettings'
 import { IConfiguration } from '../../models/IConfiguration'
 import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../api/services/SettingService'
+import ConfigurationManager from '../../../config/ConfigurationManager'
 
 export default {
   Query: {
@@ -87,6 +88,8 @@ export default {
             await saveBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER, !!data.Security.passwordRequiresNumber, 'Security')
           }
         }
+
+        await ConfigurationManager.loadConfigurationAsync()
 
         return {
           success: true
