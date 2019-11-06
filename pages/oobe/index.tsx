@@ -9,6 +9,7 @@ import { Modal, ModalBody } from 'reactstrap'
 
 import gql from 'graphql-tag'
 import { ApolloConsumer } from 'react-apollo'
+import { ensureSetup } from '../../client/utils/ensureSetup'
 
 const SAVE_CONFIGURATION = gql`
   mutation SAVE_CONFIGURATION($configuration: SaveConfigurationArgs!) {
@@ -20,7 +21,7 @@ const SAVE_CONFIGURATION = gql`
   }
 `
 
-export default class OobeIndex extends React.Component {
+class OobeIndex extends React.Component<any, any> {
   constructor(props) {
     super(props)
     this.state = {
@@ -47,12 +48,7 @@ export default class OobeIndex extends React.Component {
         Server: {
           realmName: 'Grayskull',
           realmLogo: '/grayskull.svg',
-          baseUrl: 'https://127.0.0.1',
-          enableCertbot: true,
-          certBotState: 'NOT_VALIDATED',
-          privateKey: '',
-          certificate: '',
-          forceHttpsRedirect: true
+          baseUrl: 'http://127.0.0.1'
         },
         Mail: {
           serverAddress: '127.0.0.1',
@@ -143,10 +139,10 @@ export default class OobeIndex extends React.Component {
     let secondsTicked = 0
     const redirectInterval = window.setInterval(() => {
       secondsTicked++
-      this.setState({ secondsRemaining: 35 - secondsTicked })
-      if (secondsTicked >= 35) {
+      this.setState({ secondsRemaining: 5 - secondsTicked })
+      if (secondsTicked >= 5) {
         window.clearInterval(redirectInterval)
-        window.location = `${this.state.configuration.Server.baseUrl}`
+        window.location.href = `${this.state.configuration.Server.baseUrl}`
       }
     }, 1000)
   }
@@ -200,7 +196,7 @@ export default class OobeIndex extends React.Component {
                                   type="submit"
                                   disabled={this.state.saving}
                                   onClick={async () => {
-                                    this.setState({ saving: true, secondsRemaining: 35 })
+                                    this.setState({ saving: true, secondsRemaining: 5 })
                                     this.waitForRedirect()
 
                                     const config = this.state.configuration
@@ -240,3 +236,5 @@ export default class OobeIndex extends React.Component {
     )
   }
 }
+
+export default ensureSetup(OobeIndex)
