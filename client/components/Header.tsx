@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 
-import ConfigurationContext from '../contexts/ConfigurationContext'
 import { RequirePermission, RequirePermissionModes } from './RequirePermission'
 import Permissions from '../utils/permissions'
 import Dropdown from 'reactstrap/lib/Dropdown'
 import DropdownToggle from 'reactstrap/lib/DropdownToggle'
 import DropdownMenu from 'reactstrap/lib/DropdownMenu'
 import DropdownItem from 'reactstrap/lib/DropdownItem'
+import { IConfiguration } from '../../server/data/models/IConfiguration'
+import RequireConfiguration from './RequireConfiguration'
 
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -15,7 +16,7 @@ const Header = () => {
   const toggle = () => setDropdownOpen((prevState) => !prevState)
 
   return (
-    <ConfigurationContext.Consumer>
+    <RequireConfiguration>
       {(configuration: IConfiguration) => {
         return (
           <div className="my-2 w-100" style={{ borderBottom: '1px solid #ddd', backgroundColor: 'white', position: 'sticky', top: 0, zIndex: 50 }}>
@@ -57,16 +58,16 @@ const Header = () => {
                   </Dropdown>
                 </RequirePermission>
                 <li className="nav-item ml-auto">
-                  <a href="/logout" className="nav-link">
-                    Logout
-                  </a>
+                  <Link href="/logout" as="/logout">
+                    <a className="nav-link">Logout</a>
+                  </Link>
                 </li>
               </ul>
             </div>
           </div>
         )
       }}
-    </ConfigurationContext.Consumer>
+    </RequireConfiguration>
   )
 }
 
