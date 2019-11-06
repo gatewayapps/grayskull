@@ -17,31 +17,6 @@ export default class LoginController extends ControllerBase {
   //   res.json({ keys: [jwks] })
   // }
 
-  @route(HttpMethod.GET, '/logout')
-  public async logout(req: Request, res: Response) {
-    const { sessionId } = getAuthCookies(req)
-    if (sessionId) {
-      await SessionService.deleteSession({ sessionId }, { userContext: req.user || null })
-    }
-    clearAuthCookies(res)
-
-    let redirectUrl = `/login${req.query.state ? `?state=${encodeURIComponent(req.query.state)}` : ''}`
-
-    if (req.query.client_id) {
-      const client = await ClientRepository.getClient({ client_id: req.query.client_id }, { userContext: null })
-      if (client && client.homePageUrl) {
-        redirectUrl = client.homePageUrl
-      }
-    }
-
-    res.redirect(redirectUrl)
-  }
-
-  @route(HttpMethod.GET, '/resetPassword')
-  public async renderResetPassword(req: Request, res: Response) {
-    return this.next.render(req, res, '/resetPassword', req.query)
-  }
-
   @route(HttpMethod.GET, '/changePassword')
   public async renderChangePassword(req: Request, res: Response) {
     const { emailAddress, token } = req.query

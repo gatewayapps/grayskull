@@ -1,248 +1,248 @@
 type UserAccount {
-	userAccountId: ID!
-	firstName: String!
-	lastName: String!
-	displayName: String
-	lastActive: Date!
-	lastPasswordChange: Date!
-	gender: String
-	birthday: Date
-	profileImageUrl: String
-	permissions: Int!
-	otpEnabled: Boolean!
-	isActive: Boolean!
-	createdBy: ID
-	createdAt: Date!
-	updatedBy: ID
-	updatedAt: Date!
-	deletedBy: ID
-	deletedAt: Date
-	emailAddresses: [EmailAddress]
+  userAccountId: ID!
+  firstName: String!
+  lastName: String!
+  displayName: String
+  lastActive: Date!
+  lastPasswordChange: Date!
+  gender: String
+  birthday: Date
+  profileImageUrl: String
+  permissions: Int!
+  otpEnabled: Boolean!
+  isActive: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
+  emailAddresses: [EmailAddress]
 }
 
 input UpdateClientScopesArgs {
-	client_id: String!
-	allowedScopes: [String]
-	deniedScopes: [String]
+  client_id: String!
+  allowedScopes: [String]
+  deniedScopes: [String]
 }
 
 input GenerateMfaKeyArgs {
-	emailAddress: String!
+  emailAddress: String!
 }
 
 input VerifyMfaKeyArgs {
-	secret: String!
-	token: String!
+  secret: String!
+  token: String!
 }
 
 input ResendVerificationArgs {
-	emailAddress: String!
+  emailAddress: String!
 }
 
 input ResendAllVerificationEmailsArgs {
-	dryRun: Boolean
+  dryRun: Boolean
 }
 
 input SendBackupCodeArgs {
-	emailAddress: String!
+  emailAddress: String!
 }
 
 input ResetPasswordArgs {
-	emailAddress: String!
+  emailAddress: String!
 }
 
 input ValidatePasswordArgs {
-	password: String!
-	confirm: String!
+  password: String!
+  confirm: String!
 }
 
 input CreateUserArgs {
-	emailAddress: String!
-	firstName: String!
-	lastName: String!
-	permissions: Int!
-	displayName: String
-	gender: String
-	birthday: Date
-	profileImageUrl: String
+  emailAddress: String!
+  firstName: String!
+  lastName: String!
+  permissions: Int!
+  displayName: String
+  gender: String
+  birthday: Date
+  profileImageUrl: String
 }
 
 input UpdateArgs {
-	userAccountId: String
-	firstName: String
-	lastName: String
-	permissions: Int
-	displayName: String
-	gender: String
-	birthday: Date
-	profileImageUrl: String
+  userAccountId: String
+  firstName: String
+  lastName: String
+  permissions: Int
+  displayName: String
+  gender: String
+  birthday: Date
+  profileImageUrl: String
 }
 
 input LoginArgs {
-	emailAddress: String!
-	password: String!
-	otpToken: String
-	fingerprint: String!
-	extendedSession: Boolean!
+  emailAddress: String!
+  password: String!
+  otpToken: String
+  fingerprint: String!
+  extendedSession: Boolean!
 }
 
 input AuthorizeClientArgs {
-	client_id: String!
-	responseType: String!
-	redirectUri: String!
-	scope: String
-	state: String
-	nonce: String
+  client_id: String!
+  responseType: String!
+  redirectUri: String!
+  scope: String
+  state: String
+  nonce: String
 }
 
 input SetOtpSecretArgs {
-	password: String!
-	otpSecret: String!
+  password: String!
+  otpSecret: String!
 }
 
 input ChangePasswordArgs {
-	emailAddress: String
-	oldPassword: String
-	newPassword: String!
-	confirmPassword: String!
-	token: String
+  emailAddress: String
+  oldPassword: String
+  newPassword: String!
+  confirmPassword: String!
+  token: String
 }
 
 input DeleteAccountArgs {
-	userAccountId: String!
+  userAccountId: String!
 }
 
 input ActivateAccountArgs {
-	emailAddress: String!
-	token: String!
-	password: String!
-	confirmPassword: String!
-	otpSecret: String
+  emailAddress: String!
+  token: String!
+  password: String!
+  confirmPassword: String!
+  otpSecret: String
 }
 
 input RegisterUserArgs {
-	emailAddress: String!
-	password: String!
-	confirm: String!
-	client_id: String
-	firstName: String!
-	lastName: String!
-	otpSecret: String
+  emailAddress: String!
+  password: String!
+  confirm: String!
+  client_id: String
+  firstName: String!
+  lastName: String!
+  otpSecret: String
 }
 
-
 type UserAccountMeta {
-	count: Int!
+  count: Int!
 }
 
 input UserAccountFilter {
   or: [UserAccountFilter!]
   and: [UserAccountFilter!]
-	userAccountId_in: [ID]
-	userAccountId_equals: ID
-	userAccountId_notEquals: ID
-	firstName_contains: String
-	firstName_notContains: String
-	firstName_startsWith: String
-	firstName_endsWith: String
-	firstName_equals: String
-	firstName_notEquals: String
-	lastName_contains: String
-	lastName_notContains: String
-	lastName_startsWith: String
-	lastName_endsWith: String
-	lastName_equals: String
-	lastName_notEquals: String
-	displayName_contains: String
-	displayName_notContains: String
-	displayName_startsWith: String
-	displayName_endsWith: String
-	displayName_equals: String
-	displayName_notEquals: String
-	lastActive_lessThan: Date
-	lastActive_greaterThan: Date
-	lastActive_equals: Date
-	lastActive_notEquals: Date
-	lastPasswordChange_lessThan: Date
-	lastPasswordChange_greaterThan: Date
-	lastPasswordChange_equals: Date
-	lastPasswordChange_notEquals: Date
-	gender_contains: String
-	gender_notContains: String
-	gender_startsWith: String
-	gender_endsWith: String
-	gender_equals: String
-	gender_notEquals: String
-	birthday_lessThan: Date
-	birthday_greaterThan: Date
-	birthday_equals: Date
-	birthday_notEquals: Date
-	profileImageUrl_contains: String
-	profileImageUrl_notContains: String
-	profileImageUrl_startsWith: String
-	profileImageUrl_endsWith: String
-	profileImageUrl_equals: String
-	profileImageUrl_notEquals: String
-	permissions_lessThan: Int
-	permissions_greaterThan: Int
-	permissions_equals: Int
-	permissions_notEquals: Int
-	otpEnabled_equals: Boolean
-	otpEnabled_notEquals: Boolean
-	isActive_equals: Boolean
-	isActive_notEquals: Boolean
-	createdBy_in: [ID]
-	createdBy_equals: ID
-	createdBy_notEquals: ID
-	createdAt_lessThan: Date
-	createdAt_greaterThan: Date
-	createdAt_equals: Date
-	createdAt_notEquals: Date
-	updatedBy_in: [ID]
-	updatedBy_equals: ID
-	updatedBy_notEquals: ID
-	updatedAt_lessThan: Date
-	updatedAt_greaterThan: Date
-	updatedAt_equals: Date
-	updatedAt_notEquals: Date
-	deletedBy_in: [ID]
-	deletedBy_equals: ID
-	deletedBy_notEquals: ID
-	deletedAt_lessThan: Date
-	deletedAt_greaterThan: Date
-	deletedAt_equals: Date
-	deletedAt_notEquals: Date
-	emailAddresses_equals: [ID]
-	emailAddresses_notEquals: [ID]
-	emailAddresses_contains: [ID]
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  firstName_contains: String
+  firstName_notContains: String
+  firstName_startsWith: String
+  firstName_endsWith: String
+  firstName_equals: String
+  firstName_notEquals: String
+  lastName_contains: String
+  lastName_notContains: String
+  lastName_startsWith: String
+  lastName_endsWith: String
+  lastName_equals: String
+  lastName_notEquals: String
+  displayName_contains: String
+  displayName_notContains: String
+  displayName_startsWith: String
+  displayName_endsWith: String
+  displayName_equals: String
+  displayName_notEquals: String
+  lastActive_lessThan: Date
+  lastActive_greaterThan: Date
+  lastActive_equals: Date
+  lastActive_notEquals: Date
+  lastPasswordChange_lessThan: Date
+  lastPasswordChange_greaterThan: Date
+  lastPasswordChange_equals: Date
+  lastPasswordChange_notEquals: Date
+  gender_contains: String
+  gender_notContains: String
+  gender_startsWith: String
+  gender_endsWith: String
+  gender_equals: String
+  gender_notEquals: String
+  birthday_lessThan: Date
+  birthday_greaterThan: Date
+  birthday_equals: Date
+  birthday_notEquals: Date
+  profileImageUrl_contains: String
+  profileImageUrl_notContains: String
+  profileImageUrl_startsWith: String
+  profileImageUrl_endsWith: String
+  profileImageUrl_equals: String
+  profileImageUrl_notEquals: String
+  permissions_lessThan: Int
+  permissions_greaterThan: Int
+  permissions_equals: Int
+  permissions_notEquals: Int
+  otpEnabled_equals: Boolean
+  otpEnabled_notEquals: Boolean
+  isActive_equals: Boolean
+  isActive_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+  emailAddresses_equals: [ID]
+  emailAddresses_notEquals: [ID]
+  emailAddresses_contains: [ID]
 }
 
 input UserAccountUniqueFilter {
-	userAccountId: ID
+  userAccountId: ID
 }
 
 type Query {
-	userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]! 
-	userAccountsMeta(filter: UserAccountFilter): UserAccountMeta 
-	userAccount(where: UserAccountUniqueFilter): UserAccount 
+  userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]!
+  userAccountsMeta(filter: UserAccountFilter): UserAccountMeta
+  userAccount(where: UserAccountUniqueFilter): UserAccount
 }
 
 type Mutation {
-	updateClientScopes(data: UpdateClientScopesArgs!): Boolean 
-	generateMfaKey(data: GenerateMfaKeyArgs!): String 
-	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean 
-	resendVerification(data: ResendVerificationArgs!): Boolean 
-	resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean 
-	sendBackupCode(data: SendBackupCodeArgs!): Boolean 
-	resetPassword(data: ResetPasswordArgs!): Boolean 
-	validatePassword(data: ValidatePasswordArgs!): Boolean 
-	createUser(data: CreateUserArgs!): OperationResponse 
-	update(data: UpdateArgs!): OperationResponse 
-	login(data: LoginArgs!): LoginResponse 
-	authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse 
-	setOtpSecret(data: SetOtpSecretArgs!): OperationResponse 
-	changePassword(data: ChangePasswordArgs!): OperationResponse 
-	deleteAccount(data: DeleteAccountArgs!): OperationResponse 
-	activateAccount(data: ActivateAccountArgs!): OperationResponse 
-	registerUser(data: RegisterUserArgs!): RegisterUserResponse 
+  updateClientScopes(data: UpdateClientScopesArgs!): Boolean
+  generateMfaKey(data: GenerateMfaKeyArgs!): String
+  verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
+  resendVerification(data: ResendVerificationArgs!): Boolean
+  resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
+  sendBackupCode(data: SendBackupCodeArgs!): Boolean
+  resetPassword(data: ResetPasswordArgs!): Boolean
+  validatePassword(data: ValidatePasswordArgs!): Boolean
+  createUser(data: CreateUserArgs!): OperationResponse
+  update(data: UpdateArgs!): OperationResponse
+  login(data: LoginArgs!): LoginResponse
+  authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
+  setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
+  changePassword(data: ChangePasswordArgs!): OperationResponse
+  deleteAccount(data: DeleteAccountArgs!): OperationResponse
+  activateAccount(data: ActivateAccountArgs!): OperationResponse
+  registerUser(data: RegisterUserArgs!): RegisterUserResponse
+  logout: OperationResponse
 }

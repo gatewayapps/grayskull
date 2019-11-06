@@ -5,7 +5,7 @@ import { IRegisterUserResponse } from '../../../data/models/IRegisterUserRespons
 import AuthenticationService from '../../../api/services/AuthenticationService'
 import EmailAddressService from '../../../api/services/EmailAddressService'
 import UserAccountService from '../../../api/services/UserAccountService'
-import { setAuthCookies } from '../../../utils/authentication'
+import { setAuthCookies, doLogout } from '../../../utils/authentication'
 import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
 
@@ -35,7 +35,7 @@ function isValidDate(d: any) {
 
 export default {
   Query: {
-    userAccounts: async (obj, args, context, info) => {
+    userAccounts: async (obj, args, context, info) => { 
       // insert your userAccounts implementation here
       if (!context.user) {
         throw new Error('You must be signed in to do that')
@@ -44,20 +44,18 @@ export default {
           throw new Error('You must be an administrator to do that')
         } else {
           return await UserAccountRepository.getUserAccounts(null, { userContext: context.user, order: [['lastName', 'asc'], ['firstName', 'asc']] })
-        }
+        } 
       }
     },
     userAccountsMeta: async (obj, args, context, info) => {
       // insert your userAccountsMeta implementation here
-      if (!context.user) {
-        throw new Error('You must be signed in to do that')
+
+      if(context.user?.permissions === Permissions.Admin){
+        return await UserAccountRepository.userAccountsMeta(null, { userContext: context.user })
       } else {
-        if (context.user.permissions < Permissions.Admin) {
-          throw new Error('You must be an administrator to do that')
-        } else {
-          return await UserAccountRepository.userAccountsMeta(null, { userContext: context.user })
-        }
-      }
+        throw new Error('You must be an administrator to do that')
+      } 
+  
     },
     userAccount: (obj, args, context, info) => {
       // insert your userAccount implementation here
@@ -437,6 +435,19 @@ export default {
 
       return {
         success: true
+      }
+    },
+    logout: async (obj, args, context, info): Promise<IOperationResponse> => {
+      try {
+        await doLogout(context.req, context.res)
+        return {
+          success: true
+        }
+      } catch(err){
+        return {
+          success: false,
+          message: err.message
+        }
       }
     }
   },
