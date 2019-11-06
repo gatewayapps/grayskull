@@ -1,7 +1,6 @@
 import { getContext } from '../../data/context'
 
 type CategoryKeys = 'Server' | 'Security' | 'Mail'
-type TypeKeys = 'String' | 'Number' | 'Boolean'
 
 export async function saveStringSetting(key: string, value: string, category: CategoryKeys) {
   const db = await getContext()
