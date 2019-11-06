@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express'
-import { clearAuthCookies, getAuthCookies, setAuthCookies } from '../utils/authentication'
+
+import { clearAuthCookies, getAuthCookies, setAuthCookies, RequestContext, ResponseContext } from '../utils/authentication'
 import { ISession } from '../data/models/ISession'
 import { IUserAccount } from '../data/models/IUserAccount'
 import SessionService from '../api/services/SessionService'
@@ -8,7 +8,7 @@ import UserAccountRepository from '../data/repositories/UserAccountRepository'
 import SessionRepository from '../data/repositories/SessionRepository'
 
 import EmailAddressRepository from '../data/repositories/EmailAddressRepository'
-import { IncomingMessage, ServerResponse } from 'http'
+
 
 let FIRST_USER_CREATED = false
 const MIN_TIME_TO_UPDATE_LAST_ACTIVE = 60 * 1000 // 1 minute
@@ -28,7 +28,7 @@ declare global {
 }
 
 /** Sets req.user and req.session to authenticated user and session */
-export async function getUserContext(req: IncomingMessage, res: ServerResponse) {
+export async function getUserContext(req: RequestContext, res: ResponseContext) {
   if (/^\/(static|_next)/i.test(req.url!)) {
     return
   }
@@ -38,12 +38,12 @@ export async function getUserContext(req: IncomingMessage, res: ServerResponse) 
     return
   }
 
-  const fingerprint = req.headers['x-fingerprint']
+  const fingerprint = req.headers['x-fingerprint']?.toString()
   if (!fingerprint) {
     return
   }
 
-  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.socket.remoteAddress, { userContext: null })
+  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.socket.remoteAddress!, { userContext: null })
   if (!session) {
     SessionRepository.deleteSession({ sessionId }, { userContext: null })
     clearAuthCookies(res)
@@ -67,7 +67,8 @@ export async function getUserContext(req: IncomingMessage, res: ServerResponse) 
 
   const finalUser = Object.assign(user, { emailAddress: primaryEmail[0].emailAddress })
 
-  req.user = finalUser
-  req.session = session
-  res.locals.userContext = finalUser
+  return {
+    user: finalUser,
+    session
+  }
 }

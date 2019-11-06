@@ -6,6 +6,7 @@ import { schema } from '../../server/data/graphql/graphql'
 import Cookies from 'cookies'
 import { GRAYSKULL_GLOBAL_SECRET } from '../../server/utils/environment'
 import { getUserContext } from '../../server/middleware/authentication'
+import { buildContext } from '../../server/utils/authentication'
 
 const apolloServer = new ApolloServer({
   schema,
@@ -13,12 +14,8 @@ const apolloServer = new ApolloServer({
   context: async (args) => {
     const { req, res } = args
 
-    req.cookies = new Cookies(args.req, args.res)
-    res.cookies = req.cookies
-
-    await getUserContext(req, res)
-
-    return { req, res, user: req.user }
+    const { requestContext, responseContext } = await buildContext(req, res)
+    return { req: requestContext, res: responseContext, user: requestContext.user }
   }
 })
 
