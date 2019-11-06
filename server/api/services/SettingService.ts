@@ -1,5 +1,4 @@
 import { getContext } from '../../data/context'
-import { bool } from 'prop-types'
 
 type CategoryKeys = 'Server' | 'Security' | 'Mail'
 type TypeKeys = 'String' | 'Number' | 'Boolean'
