@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import Primary from '../../layouts/primary'
-import ChangePasswordForm from '../../components/ChangePasswordForm'
-import BackgroundCover from '../../components/BackgroundCover'
+import Primary from '../../client/layouts/primary'
+import ChangePasswordForm from '../../client/components/ChangePasswordForm'
+import BackgroundCover from '../../client/components/BackgroundCover'
 
 class ChangePassword extends React.PureComponent {
   state = {
