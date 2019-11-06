@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v4'
-import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
+import { isUrl, isUrlOrEmpty, isValidUrl } from '../utils/validationHelpers'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import FormValidationMessage from './FormValidationMessage'
 import ImageDropArea from './ImageDropArea'
@@ -85,7 +85,7 @@ class ClientForm extends PureComponent {
   render() {
     const validators = [
       new FormValidationRule('name', 'isEmpty', false, 'Name is required'),
-      new FormValidationRule('logoImageUrl', isUrl, true, 'Logo Image Url should be a valid URL'),
+      new FormValidationRule('logoImageUrl', 'isEmpty', false, 'Logo Image must be provided'),
       new FormValidationRule('baseUrl', isUrl, true, 'Base Url should be a valid URL'),
       new FormValidationRule('homePageUrl', isUrlOrEmpty, true, 'Home Page Url should be a valid URL'),
       ...this.props.client.redirectUris.map((r, idx) => {
