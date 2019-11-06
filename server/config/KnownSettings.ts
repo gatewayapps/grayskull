@@ -19,7 +19,8 @@ export const SettingsKeys = {
   SECURITY_DOMAIN_WHITELIST: 'SECURITY_DOMAIN_WHITELIST',
   SERVER_REALM_LOGO: 'SERVER_REALM_LOGO',
   SERVER_REALM_NAME: 'SERVER_REALM_NAME',
-  SERVER_BASE_URL: 'SERVER_BASE_URL'
+  SERVER_BASE_URL: 'SERVER_BASE_URL',
+  SERVER_BACKGROUND_IMAGE: 'SERVER_BACKGROUND_IMAGE'
 }
 
 export default {
@@ -174,6 +175,14 @@ export default {
       Example: '/grayskull.svg',
       Key: SettingsKeys.SERVER_REALM_LOGO,
       Label: 'Realm Logo',
+      Type: 'File'
+    },
+    {
+      Default: '/bg.jpg',
+      Description: 'Background image for your realm.',
+      Example: '/bg.jpg',
+      Key: SettingsKeys.SERVER_BACKGROUND_IMAGE,
+      Label: 'Realm Background Image',
       Type: 'File'
     },
     {
