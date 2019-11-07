@@ -97,6 +97,21 @@ export default {
         return { success: false, message: err.message }
       }
     },
+    validateResetPasswordToken: async (obj, args, context, info): Promise<IOperationResponse> => {
+      const token = args.data.token
+      const emailAddress = args.data.emailAddress
+      const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
+      if(isValid){
+        return {
+          success: true
+        }
+      } else {
+        return {
+          success: false,
+          message: 'Invalid email address or token'
+        }
+      }
+    },
     authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
       if (!context.user) {
         throw new Error('You must be logged in')

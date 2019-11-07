@@ -35,6 +35,11 @@ input VerifyMfaKeyArgs {
   token: String!
 }
 
+input ValidateResetPasswordTokenArgs {
+  token: String!
+  emailAddress: String!
+}
+
 input ResendVerificationArgs {
   emailAddress: String!
 }
@@ -240,6 +245,7 @@ type Mutation {
   login(data: LoginArgs!): LoginResponse
   authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
   setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
+  validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse
   changePassword(data: ChangePasswordArgs!): OperationResponse
   deleteAccount(data: DeleteAccountArgs!): OperationResponse
   activateAccount(data: ActivateAccountArgs!): OperationResponse
