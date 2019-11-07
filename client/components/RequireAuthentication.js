@@ -5,6 +5,8 @@ import { ApolloConsumer } from 'react-apollo'
 import UserContext from '../contexts/UserContext'
 import { generateRoutingState } from '../utils/routing'
 import LoadingIndicator from './LoadingIndicator'
+import Primary from '../layouts/primary'
+import BackgroundCoverComponent from './BackgroundCover'
 
 const GET_ME_QUERY = gql`
   query GET_ME_QUERY {
@@ -66,7 +68,17 @@ class RequireAuthentication extends Component {
                 this.setUser = setUser
                 this.setRefresh = setRefresh
                 if (!user) {
-                  return <LoadingIndicator />
+                  return (
+                    <Primary>
+                      <BackgroundCoverComponent>
+                        <div className="alert alert-default">
+                          <h4>
+                            <LoadingIndicator message="Loading..." />
+                          </h4>
+                        </div>
+                      </BackgroundCoverComponent>
+                    </Primary>
+                  )
                 }
 
                 return this.props.children
