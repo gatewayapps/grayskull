@@ -4,11 +4,7 @@ import AuthenticationService from '../../api/services/AuthenticationService'
 import UserAccountService from '../../api/services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
-import { clearAuthCookies, decodeState, getAuthCookies } from '../../utils/authentication'
-import SessionService from '../../api/services/SessionService'
-import '../../middleware/authentication'
-
-import ClientRepository from '../../data/repositories/ClientRepository'
+import { decodeState } from '../../utils/authentication'
 
 export default class LoginController extends ControllerBase {
   // @route(HttpMethod.GET, '/jwks')
@@ -17,22 +13,22 @@ export default class LoginController extends ControllerBase {
   //   res.json({ keys: [jwks] })
   // }
 
-  @route(HttpMethod.GET, '/changePassword')
-  public async renderChangePassword(req: Request, res: Response) {
-    const { emailAddress, token } = req.query
-    if (!emailAddress || !token) {
-      res.locals.error = { message: 'Missing email address or token' }
-      return this.next.render(req, res, '/error', req.query)
-    } else {
-      const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
-      if (isValid) {
-        return this.next.render(req, res, '/resetPassword/changePassword', req.query)
-      } else {
-        res.locals.error = { message: 'Invalid email address or token' }
-        return this.next.render(req, res, '/error', req.query)
-      }
-    }
-  }
+  // @route(HttpMethod.GET, '/changePassword')
+  // public async renderChangePassword(req: Request, res: Response) {
+  //   const { emailAddress, token } = req.query
+  //   if (!emailAddress || !token) {
+  //     res.locals.error = { message: 'Missing email address or token' }
+  //     return this.next.render(req, res, '/error', req.query)
+  //   } else {
+  //     const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
+  //     if (isValid) {
+  //       return this.next.render(req, res, '/resetPassword/changePassword', req.query)
+  //     } else {
+  //       res.locals.error = { message: 'Invalid email address or token' }
+  //       return this.next.render(req, res, '/error', req.query)
+  //     }
+  //   }
+  // }
 
   @route(HttpMethod.GET, '/signin')
   @query('code')
