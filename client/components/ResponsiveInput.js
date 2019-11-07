@@ -33,8 +33,6 @@ export default class ResponsiveInput extends React.PureComponent {
     const labelMediumColumnClass = `col-md-${labelColumnWidth}`
     const inputMediumColumnClass = `col-md-${12 - labelColumnWidth}`
 
-    const finalClassName = `${this.props.readOnly ? 'form-control-plaintext border-bottom-0' : ''} ${this.props.className || ''}`
-
     return (
       <div className="form-group row align-items-start my-1">
         <label
@@ -43,7 +41,7 @@ export default class ResponsiveInput extends React.PureComponent {
           htmlFor={props.name}>
           {label}
         </label>
-        <div className={`col-sm-12 ${inputMediumColumnClass}`}>
+        <div className={`col-sm-12 ${inputMediumColumnClass} align-self-center`}>
           <AdaptiveInput {...finalProps} />
         </div>
         {this.props.helpText && <small className="form-text text-muted col-12 py-0 my-0">{this.props.helpText}</small>}

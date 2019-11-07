@@ -34,7 +34,7 @@ export default class ResponsiveValidatingInput extends React.PureComponent {
           htmlFor={props.name}>
           {label}
         </label>
-        <div className={`col-sm-12 ${inputMediumColumnClass}`}>
+        <div className={`col-sm-12 ${inputMediumColumnClass} align-self-center`}>
           <ValidatingInput className={finalClassName} placeholder={this.props.placeholder || label} {...props} />
         </div>
         {this.props.helpText && <small className="form-text text-muted col-12 py-0 my-0">{this.props.helpText}</small>}
