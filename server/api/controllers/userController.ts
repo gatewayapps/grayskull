@@ -4,10 +4,10 @@ import { Request, Response } from 'express'
 import { useScope } from '../../decorators/useAccessTokenDecorator'
 import { IClientRequestOptions } from '../../data/IClientRequestOptions'
 import TokenService from '../../api/services/TokenService'
-import EmailAddressService from '../../api/services/EmailAddressService'
+
 import { ScopeMap } from '../../api/services/ScopeService'
 import { IUserAccount } from '../../data/models/IUserAccount'
-import UserAccountService from '../../api/services/UserAccountService'
+
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientService from '../../api/services/UserClientService'
 import { Permissions } from '../../utils/permissions'
