@@ -2,6 +2,8 @@ import { SettingsKeys } from '../../../config/KnownSettings'
 import { IConfiguration } from '../../models/IConfiguration'
 import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../api/services/SettingService'
 import ConfigurationManager from '../../../config/ConfigurationManager'
+import { encrypt } from '../../../utils/cipher'
+import { PASSWORD_PLACEHOLDER } from '../../../constants'
 
 export default {
   Query: {
@@ -36,8 +38,8 @@ export default {
           if (!!data.Mail.fromAddress) {
             await saveStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress!, 'Mail')
           }
-          if (!!data.Mail.password) {
-            await saveStringSetting(SettingsKeys.MAIL_PASSWORD, data.Mail.password!, 'Mail')
+          if (!!data.Mail.password && data.Mail.password !== PASSWORD_PLACEHOLDER) {
+            await saveStringSetting(SettingsKeys.MAIL_PASSWORD, encrypt(data.Mail.password!), 'Mail')
           }
           if (!!data.Mail.port) {
             await saveNumberSetting(SettingsKeys.MAIL_PORT, data.Mail.port!, 'Mail')

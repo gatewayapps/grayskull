@@ -11,7 +11,7 @@ const TEMPLATE_PATH = './server/templates'
 
 class MailService {
   public async sendMail(to: string, subject: string, textBody: string, htmlBody: string): Promise<any> {
-    const config = await getCurrentConfiguration()
+    const config = await getCurrentConfiguration(false)
     const mailConfig = config.Mail!
     const hostAddress = mailConfig.serverAddress!
 

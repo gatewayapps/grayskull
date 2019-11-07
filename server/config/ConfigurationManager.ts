@@ -7,6 +7,8 @@ import { IConfiguration } from '../data/models/IConfiguration'
 import { getContext } from '../data/context'
 import { SettingsKeys } from './KnownSettings'
 import { getStringSetting, getNumberSetting, getBooleanSetting } from '../api/services/SettingService'
+import { decrypt } from '../utils/cipher'
+import { PASSWORD_PLACEHOLDER } from '../constants'
 
 let currentConfig: IConfiguration
 
@@ -25,6 +27,9 @@ class ConfigurationManager {
     mailConfig.fromAddress = await getStringSetting(SettingsKeys.MAIL_FROM_ADDRESS)
     mailConfig.serverAddress = await getStringSetting(SettingsKeys.MAIL_HOST)
     mailConfig.password = await getStringSetting(SettingsKeys.MAIL_PASSWORD)
+    if (mailConfig.password) {
+      mailConfig.password = decrypt(mailConfig.password)
+    }
     mailConfig.port = await getNumberSetting(SettingsKeys.MAIL_PORT)
     mailConfig.tlsSslRequired = await getBooleanSetting(SettingsKeys.MAIL_SSL)
     mailConfig.username = await getStringSetting(SettingsKeys.MAIL_USER)
@@ -64,11 +69,18 @@ class ConfigurationManager {
 
 const singleton = new ConfigurationManager()
 
-export async function getCurrentConfiguration(): Promise<IConfiguration> {
+export async function getCurrentConfiguration(maskSensitive: boolean = true): Promise<IConfiguration> {
   if (!currentConfig.Server) {
     await singleton.GetCurrentConfiguration()
   }
-  return currentConfig
+
+  const config = Object.assign({}, currentConfig)
+
+  if (!maskSensitive) {
+    config.Mail!.password = PASSWORD_PLACEHOLDER
+  }
+
+  return config
 }
 
 export default singleton

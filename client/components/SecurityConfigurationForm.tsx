@@ -30,7 +30,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
       validate()
     }
   }
-  console.log(data)
+
   const validations = [new FormValidationRule('passwordMinimumLength', 'isInt', true, 'Min Password Length is required and must be between 6 and 64', [{ gt: 5, lt: 65 }])]
 
   return (

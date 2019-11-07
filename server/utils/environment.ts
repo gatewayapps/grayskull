@@ -1,5 +1,7 @@
 import { config } from 'dotenv'
-config()
+if (config && typeof config === 'function') {
+  config()
+}
 
 export const GRAYSKULL_GLOBAL_SECRET = process.env.GRAYSKULL_GLOBAL_SECRET!
 export const GRAYSKULL_DB_CONNECTION_STRING = process.env.GRAYSKULL_DB_CONNECTION_STRING!

@@ -27,6 +27,7 @@
     "aws-sdk": false,
     "fs": false,
     "dotenv": false,
+    "crypto": false,
     "cookies": false,
     "url": false,
     "original-url": false,
