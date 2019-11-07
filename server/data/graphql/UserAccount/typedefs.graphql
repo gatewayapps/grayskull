@@ -221,6 +221,11 @@ input UserAccountFilter {
   emailAddresses_contains: [ID]
 }
 
+input VerifyEmailAddressArgs {
+  emailAddress: String!
+  code: String!
+}
+
 input UserAccountUniqueFilter {
   userAccountId: ID
 }
@@ -237,6 +242,7 @@ type Mutation {
   verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
   resendVerification(data: ResendVerificationArgs!): Boolean
   resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
+  verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse
   sendBackupCode(data: SendBackupCodeArgs!): Boolean
   resetPassword(data: ResetPasswordArgs!): Boolean
   validatePassword(data: ValidatePasswordArgs!): Boolean

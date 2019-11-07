@@ -4,7 +4,6 @@ import AuthenticationService from '../../api/services/AuthenticationService'
 import UserAccountService from '../../api/services/UserAccountService'
 import { Request, Response } from 'express'
 import ControllerBase from './ControllerBase'
-import { decodeState } from '../../utils/authentication'
 
 export default class LoginController extends ControllerBase {
   // @route(HttpMethod.GET, '/jwks')
@@ -12,37 +11,6 @@ export default class LoginController extends ControllerBase {
   //   const jwks = CertificateService.getJWKS()
   //   res.json({ keys: [jwks] })
   // }
-
-  // @route(HttpMethod.GET, '/changePassword')
-  // public async renderChangePassword(req: Request, res: Response) {
-  //   const { emailAddress, token } = req.query
-  //   if (!emailAddress || !token) {
-  //     res.locals.error = { message: 'Missing email address or token' }
-  //     return this.next.render(req, res, '/error', req.query)
-  //   } else {
-  //     const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
-  //     if (isValid) {
-  //       return this.next.render(req, res, '/resetPassword/changePassword', req.query)
-  //     } else {
-  //       res.locals.error = { message: 'Invalid email address or token' }
-  //       return this.next.render(req, res, '/error', req.query)
-  //     }
-  //   }
-  // }
-
-  @route(HttpMethod.GET, '/signin')
-  @query('code')
-  public async getSignin(req: Request, res: Response) {
-    try {
-      const state = decodeState(req.query.state)
-      const returnPath = state && state.returnPath ? state.returnPath : '/'
-      res.redirect(returnPath)
-    } catch (err) {
-      console.error(err)
-      res.locals.error = { message: err.message }
-      return this.renderLoginPage(req, res)
-    }
-  }
 
   @route(HttpMethod.GET, '/authorize')
   @query('client_id', 'response_type', 'redirect_uri')

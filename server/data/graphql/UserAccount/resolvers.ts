@@ -296,6 +296,19 @@ export default {
       }
       return result
     },
+    verifyEmailAddress: async (obj, args, context, info): Promise<IOperationResponse> => {
+      try {
+        await EmailAddressService.verifyEmailAddress(args.data.emailAddress, args.data.code, { userContext: null })
+        return {
+          success: true
+        }
+      } catch (err) {
+        return {
+          success: false,
+          message: err.message
+        }
+      }
+    },
     registerUser: async (obj, args, context, info): Promise<IRegisterUserResponse> => {
       try {
         const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
@@ -303,13 +316,13 @@ export default {
         await AuthenticationService.validatePassword(password, confirm, serviceOptions)
         const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password, serviceOptions)
 
-        const fingerprint = context.req.header('x-fingerprint')
+        const fingerprint = context.req.headers['x-fingerprint'].toString()
         if (fingerprint) {
           const session = await SessionService.createSession(
             {
               fingerprint,
               userAccountId: userAccount.userAccountId!,
-              ipAddress: context.req.ip
+              ipAddress: context.req.socket.remoteAddress
             },
             false,
             serviceOptions
