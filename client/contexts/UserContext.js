@@ -1,10 +1,8 @@
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import generateFingerprint from '../utils/generateFingerprint'
+import React from 'react'
 
 const UserContext = React.createContext({
-  user: undefined,
-  refresh: undefined
+  refresh: undefined,
+  user: undefined
 })
 
 export default UserContext
