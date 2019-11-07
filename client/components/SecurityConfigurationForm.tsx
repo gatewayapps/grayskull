@@ -11,10 +11,18 @@ export interface ISecurityConfigurationFormProps {
 
 const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }: ISecurityConfigurationFormProps) => {
   const handleChange = (e, validate) => {
-    if (e.target.type === 'checkbox') {
-      data[e.target.name] = e.target.checked
-    } else {
-      data[e.target.name] = e.target.value
+    switch (e.target.type) {
+      case 'checkbox': {
+        data[e.target.name] = e.target.checked
+        break
+      }
+      case 'number': {
+        data[e.target.name] = parseInt(e.target.value)
+        break
+      }
+      default: {
+        data[e.target.name] = e.target.value
+      }
     }
 
     onConfigurationChanged(data)
@@ -22,8 +30,8 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
       validate()
     }
   }
-
-  const validations = [new FormValidationRule('passwordMinimumLength', 'isEmpty', false, 'Min Password Length is required')]
+  console.log(data)
+  const validations = [new FormValidationRule('passwordMinimumLength', 'isInt', true, 'Min Password Length is required and must be between 6 and 64', [{ gt: 5, lt: 65 }])]
 
   return (
     <div>
@@ -80,6 +88,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
               labelColumnWidth={4}
               autoComplete="off"
               min="6"
+              max="64"
               type="number"
               name="passwordMinimumLength"
               value={data.passwordMinimumLength}

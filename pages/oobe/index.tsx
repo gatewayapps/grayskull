@@ -11,7 +11,7 @@ import gql from 'graphql-tag'
 import { ApolloConsumer } from 'react-apollo'
 import { ensureSetup } from '../../client/utils/ensureSetup'
 
-const SAVE_CONFIGURATION = gql`
+export const SAVE_CONFIGURATION = gql`
   mutation SAVE_CONFIGURATION($configuration: SaveConfigurationArgs!) {
     saveConfiguration(data: $configuration) {
       success
@@ -65,7 +65,7 @@ class OobeIndex extends React.Component<any, any> {
           passwordRequiresSymbol: false,
           passwordMinimumLength: '8',
           multifactorRequired: false,
-          accessTokenExpirationSeconds: 1800,
+          accessTokenExpirationSeconds: '1800',
           domainWhitelist: '',
           allowSignup: true
         }
@@ -206,7 +206,6 @@ class OobeIndex extends React.Component<any, any> {
 
                                     config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
                                     config.Security.accessTokenExpirationSeconds = parseInt(config.Security.accessTokenExpirationSeconds)
-                                    config.Security.domainWhitelist = JSON.stringify(config.Security.domainWhitelist.split(';'))
 
                                     const { data } = await apolloClient.mutate({ mutation: SAVE_CONFIGURATION, variables: { configuration: config } })
                                   }}

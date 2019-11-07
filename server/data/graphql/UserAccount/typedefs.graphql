@@ -230,6 +230,11 @@ input UserAccountUniqueFilter {
   userAccountId: ID
 }
 
+input VerifyAuthorizationRequestArgs {
+  client_id: String!
+  redirect_uri: String!
+}
+
 type Query {
   userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]!
   userAccountsMeta(filter: UserAccountFilter): UserAccountMeta
@@ -249,6 +254,7 @@ type Mutation {
   createUser(data: CreateUserArgs!): OperationResponse
   update(data: UpdateArgs!): OperationResponse
   login(data: LoginArgs!): LoginResponse
+  verifyAuthorizationRequest(data: VerifyAuthorizationRequestArgs!): OperationResponse
   authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
   setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
   validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse

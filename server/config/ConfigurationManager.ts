@@ -32,6 +32,7 @@ class ConfigurationManager {
     securityConfig.invitationExpirationSeconds = await getNumberSetting(SettingsKeys.SECURITY_ACTIVATION_EXPIRES_IN_MINUTES)
     securityConfig.allowSignup = await getBooleanSetting(SettingsKeys.SECURITY_ALLOW_USER_SIGNUP)
     securityConfig.domainWhitelist = await getStringSetting(SettingsKeys.SECURITY_DOMAIN_WHITELIST)
+
     securityConfig.maxLoginAttemptsPerMinute = await getNumberSetting(SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE)
     securityConfig.multifactorRequired = await getBooleanSetting(SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED)
     securityConfig.maxPasswordAge = await getNumberSetting(SettingsKeys.SECURITY_PASSWORD_EXPIRES_DAYS)
@@ -40,6 +41,7 @@ class ConfigurationManager {
     securityConfig.passwordRequiresUppercase = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_UPPERCASE)
     securityConfig.passwordRequiresSymbol = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_SYMBOL)
     securityConfig.passwordRequiresNumber = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER)
+    securityConfig.accessTokenExpirationSeconds = await getNumberSetting(SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS)
 
     serverConfig.baseUrl = await getStringSetting(SettingsKeys.SERVER_BASE_URL)
     serverConfig.realmLogo = await getStringSetting(SettingsKeys.SERVER_REALM_LOGO)

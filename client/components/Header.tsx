@@ -10,6 +10,7 @@ import DropdownItem from 'reactstrap/lib/DropdownItem'
 import { IConfiguration } from '../../server/data/models/IConfiguration'
 import RequireConfiguration from './RequireConfiguration'
 import ActiveLink from './ActiveLink'
+import NavLink from 'reactstrap/lib/NavLink'
 
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -45,16 +46,25 @@ const Header = () => {
                       Admin
                     </DropdownToggle>
                     <DropdownMenu>
-                      <DropdownItem>
-                        <ActiveLink href="/admin/users" as="/admin/users">
-                          <span className="dropdown-item">Users</span>
-                        </ActiveLink>
-                      </DropdownItem>
-                      <DropdownItem>
-                        <ActiveLink href="/admin/clients" as="/admin/clients">
-                          <span className="dropdown-item">Clients</span>
-                        </ActiveLink>
-                      </DropdownItem>
+                      <ActiveLink href="/admin/users" as="/admin/users">
+                        <DropdownItem className="py-2">Users</DropdownItem>
+                      </ActiveLink>
+
+                      <ActiveLink href="/admin/clients" as="/admin/clients">
+                        <DropdownItem className="py-2">Clients</DropdownItem>
+                      </ActiveLink>
+
+                      <DropdownItem divider />
+
+                      <ActiveLink href="/admin/config/server" as="/admin/config/server">
+                        <DropdownItem className="py-2">Server Configuration</DropdownItem>
+                      </ActiveLink>
+                      <ActiveLink href="/admin/config/security" as="/admin/config/security">
+                        <DropdownItem className="py-2">Security Configuration</DropdownItem>
+                      </ActiveLink>
+                      <ActiveLink href="/admin/config/mail" as="/admin/config/mail">
+                        <DropdownItem className="py-2">Mail Configuration</DropdownItem>
+                      </ActiveLink>
                     </DropdownMenu>
                   </Dropdown>
                 </RequirePermission>

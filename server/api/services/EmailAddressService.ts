@@ -34,7 +34,7 @@ class EmailAddressService {
     const domain = emailAddress.split('@')[1].toLowerCase()
     const config = await getCurrentConfiguration()
     if (config.Security!.domainWhitelist) {
-      const allowedDomains = _.compact(JSON.parse(config.Security!.domainWhitelist.toLowerCase()))
+      const allowedDomains = _.compact(config.Security!.domainWhitelist.toLowerCase().split(';'))
 
       return allowedDomains.length === 0 || allowedDomains.includes(domain)
     }

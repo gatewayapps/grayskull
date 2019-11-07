@@ -27,6 +27,9 @@ export default {
           if (!!data.Server.realmName) {
             await saveStringSetting(SettingsKeys.SERVER_REALM_NAME, data.Server!.realmName!, 'Server')
           }
+          if (!!data.Server.realmBackground) {
+            await saveStringSetting(SettingsKeys.SERVER_BACKGROUND_IMAGE, data.Server!.realmBackground!, 'Server')
+          }
         }
 
         if (data.Mail) {
@@ -57,7 +60,7 @@ export default {
           if (data.Security.allowSignup !== undefined && data.Security.allowSignup !== null) {
             await saveBooleanSetting(SettingsKeys.SECURITY_ALLOW_USER_SIGNUP, !!data.Security.allowSignup, 'Security')
           }
-          if (!!data.Security.domainWhitelist) {
+          if (data.Security.domainWhitelist !== undefined && data.Security.domainWhitelist !== null) {
             await saveStringSetting(SettingsKeys.SECURITY_DOMAIN_WHITELIST, data.Security.domainWhitelist, 'Security')
           }
           if (data.Security.invitationExpirationSeconds !== undefined && data.Security.invitationExpirationSeconds !== null) {

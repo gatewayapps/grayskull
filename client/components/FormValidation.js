@@ -63,12 +63,13 @@ class FormValidation extends PureComponent {
       const testFn = typeof rule.test === 'string' ? Validator[rule.test] : rule.test
       if (typeof testFn === 'function') {
         const value = getValue(data, rule.field)
+        const finalValue = typeof rule.test === 'string' && typeof value !== 'string' ? value.toString() : value
         const args = rule.args || []
         const validWhen = rule.validWhen || false
 
         let testResult
         try {
-          testResult = await testFn(value, ...args)
+          testResult = await testFn(finalValue, ...args)
         } catch {
           testResult = undefined
         }

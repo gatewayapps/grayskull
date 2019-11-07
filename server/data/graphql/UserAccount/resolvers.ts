@@ -296,6 +296,19 @@ export default {
       }
       return result
     },
+    verifyAuthorizationRequest: async (obj, args, context, info): Promise<IOperationResponse> => {
+      const validRequest = await AuthenticationService.validateRedirectUri(args.data.client_id, args.data.redirect_uri, {userContext: context.user})
+      if(validRequest){
+        return {
+          success: true
+        }
+      } else {
+        return {
+          success: false,
+          message: 'Invalid redirectUri'
+        }
+      }
+    },
     verifyEmailAddress: async (obj, args, context, info): Promise<IOperationResponse> => {
       try {
         await EmailAddressService.verifyEmailAddress(args.data.emailAddress, args.data.code, { userContext: null })
