@@ -1,17 +1,18 @@
 import React, { useState } from 'react'
 import { SAVE_CONFIGURATION } from '../../oobe'
-import { useMutation } from '@apollo/react-hooks'
+
 import RequireConfiguration from '../../../client/components/RequireConfiguration'
 import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
 import { Permissions } from '../../../server/utils/permissions'
 import { IConfiguration } from '../../../server/data/models/IConfiguration'
 import ServerConfigurationForm from '../../../client/components/ServerConfigurationForm'
 import LoadingIndicator from '../../../client/components/LoadingIndicator'
+import MutationButton from '../../../client/components/MutationButton'
 
 const serverComponent = (props) => {
   const [localConfiguration, setLocalConfiguration] = useState<IConfiguration | undefined>()
   const [saveEnabled, setSaveEnabled] = useState(false)
-  const [saveConfiguration, { loading, data, error }] = useMutation(SAVE_CONFIGURATION)
+
   return (
     <AuthenticatedRoute permission={Permissions.Admin}>
       <div className="container">
@@ -36,15 +37,22 @@ const serverComponent = (props) => {
                     />
                   </div>
                   <div className="card-footer">
-                    <button
+                    <MutationButton
+                      busyContent={
+                        <>
+                          <i className="fa fa-spin fa-spinner fa-fw" /> Saving
+                        </>
+                      }
+                      content={
+                        <>
+                          <i className="fa fa-save fa-fw" /> Save
+                        </>
+                      }
                       className="float-right btn btn-primary"
                       disabled={!saveEnabled}
-                      onClick={() => {
-                        setSaveEnabled(false)
-                        saveConfiguration({ variables: { configuration: { Server: localConfiguration.Server } } })
-                      }}>
-                      Save
-                    </button>
+                      mutation={SAVE_CONFIGURATION}
+                      variables={{ configuration: { Mail: localConfiguration.Mail } }}
+                    />
                   </div>
                 </div>
               )
