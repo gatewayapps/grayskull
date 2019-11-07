@@ -9,6 +9,7 @@ import DropdownMenu from 'reactstrap/lib/DropdownMenu'
 import DropdownItem from 'reactstrap/lib/DropdownItem'
 import { IConfiguration } from '../../server/data/models/IConfiguration'
 import RequireConfiguration from './RequireConfiguration'
+import ActiveLink from './ActiveLink'
 
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -28,15 +29,15 @@ const Header = () => {
               </div>
               <ul className="nav nav-tabs flex-no-wrap" style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }} role="navigation">
                 <li className="nav-item">
-                  <Link href="/personal-info" as="/personal-info">
+                  <ActiveLink activeClassName="active" href="/personal-info" as="/personal-info">
                     <a className="nav-link">Personal Info</a>
-                  </Link>
+                  </ActiveLink>
                 </li>
 
                 <li className="nav-item">
-                  <Link href="/security" as="/security">
+                  <ActiveLink href="/security" as="/security">
                     <a className="nav-link">Security</a>
-                  </Link>
+                  </ActiveLink>
                 </li>
                 <RequirePermission permission={Permissions.ADMIN} mode={RequirePermissionModes.HIDE}>
                   <Dropdown nav inNavbar className="nav-item" isOpen={dropdownOpen} toggle={toggle}>
@@ -45,22 +46,22 @@ const Header = () => {
                     </DropdownToggle>
                     <DropdownMenu>
                       <DropdownItem>
-                        <Link href="/admin/users" as="/admin/users">
+                        <ActiveLink href="/admin/users" as="/admin/users">
                           <span className="dropdown-item">Users</span>
-                        </Link>
+                        </ActiveLink>
                       </DropdownItem>
                       <DropdownItem>
-                        <Link href="/admin/clients" as="/admin/clients">
+                        <ActiveLink href="/admin/clients" as="/admin/clients">
                           <span className="dropdown-item">Clients</span>
-                        </Link>
+                        </ActiveLink>
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
                 </RequirePermission>
                 <li className="nav-item ml-auto">
-                  <Link href="/logout" as="/logout">
+                  <ActiveLink href="/logout" as="/logout">
                     <a className="nav-link">Logout</a>
-                  </Link>
+                  </ActiveLink>
                 </li>
               </ul>
             </div>
