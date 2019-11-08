@@ -1,3 +1,8 @@
+import { config } from 'dotenv'
+if (config && typeof config === 'function') {
+  config()
+}
+
 import Sequelize from 'sequelize'
 
 import ClientFactory, { ClientInstance } from './models/Client'
@@ -20,38 +25,65 @@ import { ISetting } from './models/ISetting'
 let dbInstance:
   | {
       sequelize: Sequelize.Sequelize
-      Sequelize: Sequelize.SequelizeStatic
-      Client: Sequelize.Model<ClientInstance, IClient, IClient>
-      EmailAddress: Sequelize.Model<EmailAddressInstance, IEmailAddress, IEmailAddress>
-      UserAccount: Sequelize.Model<UserAccountInstance, IUserAccount, IUserAccount>
-      UserClient: Sequelize.Model<UserClientInstance, IUserClient, IUserClient>
-      Session: Sequelize.Model<SessionInstance, ISession, ISession>
-      RefreshToken: Sequelize.Model<RefreshTokenInstance, IRefreshToken, IRefreshToken>
-      PhoneNumber: Sequelize.Model<PhoneNumberInstance, IPhoneNumber, IPhoneNumber>
-      Setting: Sequelize.Model<SettingInstance, ISetting, ISetting>
+      Sequelize: typeof Sequelize
+      Client: Sequelize.Model<ClientInstance, IClient>
+      EmailAddress: Sequelize.Model<EmailAddressInstance,  IEmailAddress>
+      UserAccount: Sequelize.Model<UserAccountInstance, IUserAccount>
+      UserClient: Sequelize.Model<UserClientInstance, IUserClient>
+      Session: Sequelize.Model<SessionInstance, ISession>
+      RefreshToken: Sequelize.Model<RefreshTokenInstance, IRefreshToken>
+      PhoneNumber: Sequelize.Model<PhoneNumberInstance, IPhoneNumber>
+      Setting: Sequelize.Model<SettingInstance, ISetting>
     }
   | undefined
 
 function getSequelizeConnection() {
+  let user = process.env.GRAYSKULL_DB_LOGIN
+  let password = process.env.GRAYSKULL_DB_PASSWORD
+  let server = process.env.GRAYSKULL_DB_HOST
+  let dialect: 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined = process.env.GRAYSKULL_DB_PROVIDER as 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined
+  let databaseName = process.env.GRAYSKULL_DB_NAME
+
   if (process.env.GRAYSKULL_DB_CONNECTION_STRING) {
-    return new Sequelize.Sequelize(process.env.GRAYSKULL_DB_CONNECTION_STRING)
-  } else {
-    let options: Sequelize.Options = {
-      dialect: process.env.GRAYSKULL_DB_PROVIDER,
-      storage: process.env.GRAYSKULL_DB_STORAGE
+    const connectionUrl = new URL(process.env.GRAYSKULL_DB_CONNECTION_STRING)
+    dialect = connectionUrl.protocol.substr(0, connectionUrl.protocol.length - 1) as 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined
+    switch (dialect?.toString()) {
+      case 'jdbc:mysql':
+        dialect = 'mysql'
+        break
+      case 'sqlite':
+        dialect = 'sqlite'
+        break
+      case 'postgres':
+        dialect = 'postgres'
+        break
+      case 'jdbc:sqlserver':
+        dialect = 'mssql'
+        break
     }
 
-    if (options.dialect === 'mssql') {
-      options.dialectOptions = {
-        options: {
-          useUTC: false,
-          dateFirst: 1
-        }
+    user = connectionUrl.username
+    password = connectionUrl.password
+    server = connectionUrl.host
+    databaseName = connectionUrl.pathname.substr(1)
+  }
+  let options: Sequelize.Options = {
+    dialect: dialect!,
+    host: server,
+    database: databaseName,
+    storage: process.env.GRAYSKULL_DB_STORAGE
+  }
+
+  if (options.dialect === 'mssql') {
+    options.dialectOptions = {
+      options: {
+        useUTC: false,
+        dateFirst: 1
       }
     }
-
-    return new Sequelize.Sequelize(process.env.GRAYSKULL_DB_HOST!, process.env.GRAYSKULL_DB_LOGIN!, process.env.GRAYSKULL_DB_PASSWORD!, options)
   }
+
+  return new Sequelize.Sequelize(databaseName!, user!, password!, options)
 }
 
 export const getContext = async () => {
