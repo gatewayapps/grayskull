@@ -4,7 +4,7 @@ import { ISecurityConfiguration } from '../data/models/ISecurityConfiguration'
 import { IServerConfiguration } from '../data/models/IServerConfiguration'
 import { IMailConfiguration } from '../data/models/IMailConfiguration'
 import { IConfiguration } from '../data/models/IConfiguration'
-import { getContext } from '../data/context'
+
 import { SettingsKeys } from './KnownSettings'
 import { getStringSetting, getNumberSetting, getBooleanSetting } from '../api/services/SettingService'
 import { decrypt } from '../utils/cipher'
@@ -16,10 +16,6 @@ currentConfig = {}
 
 class ConfigurationManager {
   public async loadConfigurationAsync() {
-    config()
-    const context = await getContext()
-    const settings = await context.Setting.findAll()
-
     let mailConfig: IMailConfiguration = {}
     let serverConfig: IServerConfiguration = {}
     let securityConfig: ISecurityConfiguration = {}
@@ -59,11 +55,17 @@ class ConfigurationManager {
     }
   }
 
-  public async GetCurrentConfiguration(): Promise<IConfiguration | undefined> {
+  public async GetCurrentConfiguration(maskSensitive: boolean = true): Promise<IConfiguration | undefined> {
     if (!currentConfig.Server) {
       await this.loadConfigurationAsync()
     }
-    return currentConfig
+    const config = Object.assign({}, currentConfig)
+
+    if (!maskSensitive) {
+      config.Mail!.password = PASSWORD_PLACEHOLDER
+    }
+
+    return config
   }
 }
 
