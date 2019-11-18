@@ -1,7 +1,7 @@
 type Configuration {
-  Security: SecurityConfiguration
+  Security: SecurityConfiguration @anonymous
   Mail: MailConfiguration
-  Server: ServerConfiguration
+  Server: ServerConfiguration @anonymous
 }
 
 input VerifyDatabaseConnectionArgs {
@@ -51,7 +51,7 @@ type ConfigurationMeta {
 }
 
 type Query {
-  configuration: Configuration
+  configuration: Configuration @anonymous
 }
 
 type Mutation {

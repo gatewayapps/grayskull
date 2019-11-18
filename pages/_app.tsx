@@ -1,16 +1,18 @@
 import 'core-js'
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider, Query } from 'react-apollo'
 import App from 'next/app'
 import ConfigurationContext from '../client/contexts/ConfigurationContext'
 import Head from 'next/head'
 import React from 'react'
+
 import UserContext from '../client/contexts/UserContext'
 import createApolloClient from '../client/utils/createApolloClient'
-import { getCurrentConfiguration } from '../server/config/ConfigurationManager'
-import { ensureSetup } from '../client/utils/ensureSetup'
+
 const apolloClient = createApolloClient()
 
-export default class MyApp extends App<any> {
+
+
+class MyApp extends App<any> {
   state = {
     configuration: this.props.configuration,
     user: this.props.user,
@@ -19,19 +21,16 @@ export default class MyApp extends App<any> {
 
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {}
-    let configuration
-    if (ctx.res) {
-      configuration = await getCurrentConfiguration()
-    }
-    if (Component.getInitialProps) {
+
+    if (Component && Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    return { pageProps, configuration }
+    return { pageProps }
   }
 
   render() {
-    const { Component, pageProps, configuration } = this.props
+    const { Component, pageProps, user, configuration } = this.props
 
     let title = 'Grayskull'
     if (this.state.configuration && this.state.configuration.Server) {
@@ -40,10 +39,11 @@ export default class MyApp extends App<any> {
 
     return (
       <ApolloProvider client={apolloClient}>
-        <ConfigurationContext.Provider value={this.state.configuration}>
+        <Query client={client} query=
+        <ConfigurationContext.Provider value={configuration}>
           <UserContext.Provider
             value={{
-              user: this.state.user,
+              user: user,
               setUser: (user) => {
                 this.setState({ user })
               },
@@ -68,3 +68,4 @@ export default class MyApp extends App<any> {
     )
   }
 }
+export default MyApp

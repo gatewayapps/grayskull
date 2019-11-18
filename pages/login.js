@@ -5,7 +5,6 @@ import BackgroundCover from '../client/components/BackgroundCover'
 import LoginForm from '../client/components/LoginForm'
 import Primary from '../client/layouts/primary'
 import { parseRoutingState } from '../client/utils/routing'
-import { ensureSetup } from '../client/utils/ensureSetup'
 
 class LoginPage extends React.PureComponent {
   static async getInitialProps({ req, query, res }) {
@@ -26,7 +25,7 @@ class LoginPage extends React.PureComponent {
 
   render() {
     let headerMessage
-    if (this.props.query.emailVerified) {
+    if (this.props && this.props.query && this.props.query.emailVerified) {
       headerMessage = <div className="alert alert-success">E-mail address verified</div>
     }
 
@@ -43,4 +42,4 @@ class LoginPage extends React.PureComponent {
   }
 }
 
-export default ensureSetup(withRouter(LoginPage))
+export default withRouter(LoginPage)

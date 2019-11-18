@@ -1,7 +1,7 @@
 import React from 'react'
 import AuthenticatedRoute from '../client/layouts/authenticatedRoute'
 import UserContext from '../client/contexts/UserContext'
-import { ensureSetup } from '../client/utils/ensureSetup'
+
 const HomePage = () => {
   return (
     <AuthenticatedRoute>
@@ -10,16 +10,16 @@ const HomePage = () => {
   )
 }
 
-HomePage.getInitialProps = (context) => {
-  if (context.res) {
-    ctx.res.writeHead(302, {
-      Location: '/personal-info'
-    })
-    ctx.res.end()
-  } else {
-    window.location.href = '/personal-info'
-  }
+HomePage.getInitialProps = (ctx) => {
+  // if (ctx.res) {
+  //   ctx.res.writeHead(302, {
+  //     Location: '/personal-info'
+  //   })
+  //   ctx.res.end()
+  // } else {
+  //   window.location.href = '/personal-info'
+  // }
   return {}
 }
 
-export default ensureSetup(HomePage)
+export default HomePage

@@ -9,7 +9,6 @@ import { Modal, ModalBody } from 'reactstrap'
 
 import gql from 'graphql-tag'
 import { ApolloConsumer } from 'react-apollo'
-import { ensureSetup } from '../../client/utils/ensureSetup'
 
 export const SAVE_CONFIGURATION = gql`
   mutation SAVE_CONFIGURATION($configuration: SaveConfigurationArgs!) {
@@ -121,7 +120,13 @@ class OobeIndex extends React.Component<any, any> {
         )
       }
       case 4: {
-        return <ConfirmConfiguration stepIndex={4} configuration={this.state.configuration} onValidationChanged={this.onValidationChanged} />
+        return (
+          <ConfirmConfiguration
+            stepIndex={4}
+            configuration={this.state.configuration}
+            onValidationChanged={this.onValidationChanged}
+          />
+        )
       }
     }
   }
@@ -150,7 +155,17 @@ class OobeIndex extends React.Component<any, any> {
   render() {
     return (
       <Primary>
-        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, backgroundSize: 'cover', backgroundPosition: 'center', backgroundImage: 'url(/bg.jpg)' }}>
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundImage: 'url(/bg.jpg)'
+          }}>
           <div className="container d-flex h-100" style={{ overflow: 'auto' }}>
             <div className="justify-content-center align-self-center w-100" style={{ maxHeight: '100%' }}>
               <h4 className="display-4 text-center w-100 mb-5" style={{ fontSize: '4vmin' }}>
@@ -204,10 +219,17 @@ class OobeIndex extends React.Component<any, any> {
                                     config.Mail.port = parseInt(config.Mail.port)
                                     config.Mail.tlsSslRequired = config.Mail.tlsSslRequired
 
-                                    config.Security.passwordMinimumLength = parseInt(config.Security.passwordMinimumLength)
-                                    config.Security.accessTokenExpirationSeconds = parseInt(config.Security.accessTokenExpirationSeconds)
+                                    config.Security.passwordMinimumLength = parseInt(
+                                      config.Security.passwordMinimumLength
+                                    )
+                                    config.Security.accessTokenExpirationSeconds = parseInt(
+                                      config.Security.accessTokenExpirationSeconds
+                                    )
 
-                                    const { data } = await apolloClient.mutate({ mutation: SAVE_CONFIGURATION, variables: { configuration: config } })
+                                    const { data } = await apolloClient.mutate({
+                                      mutation: SAVE_CONFIGURATION,
+                                      variables: { configuration: config }
+                                    })
                                   }}
                                   className="btn btn-success">
                                   Save
@@ -226,7 +248,8 @@ class OobeIndex extends React.Component<any, any> {
           {this.state.saving && (
             <Modal isOpen>
               <ModalBody>
-                Server is restarting. You will be redirected to the admin registration in <b>{this.state.secondsRemaining}</b> seconds.
+                Server is restarting. You will be redirected to the admin registration in{' '}
+                <b>{this.state.secondsRemaining}</b> seconds.
               </ModalBody>
             </Modal>
           )}
@@ -236,4 +259,4 @@ class OobeIndex extends React.Component<any, any> {
   }
 }
 
-export default ensureSetup(OobeIndex)
+export default OobeIndex

@@ -10,7 +10,6 @@ import ResponsiveInput from './ResponsiveInput'
 
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import AdaptiveInput from './AdaptiveInput'
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!, $extendedSession: Boolean!) {
     login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint, extendedSession: $extendedSession }) {

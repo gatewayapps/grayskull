@@ -5,37 +5,17 @@ if (config && typeof config === 'function') {
 
 import Sequelize from 'sequelize'
 
-import ClientFactory, { ClientInstance } from './models/Client'
-import EmailAddressFactory, { EmailAddressInstance } from './models/EmailAddress'
-import UserAccountFactory, { UserAccountInstance } from './models/UserAccount'
-import UserClientFactory, { UserClientInstance } from './models/UserClient'
-import SessionFactory, { SessionInstance } from './models/Session'
-import RefreshTokenFactory, { RefreshTokenInstance } from './models/RefreshToken'
-import PhoneNumberFactory, { PhoneNumberInstance } from './models/PhoneNumber'
-import SettingFactory, { SettingInstance } from './models/Setting'
-import { IClient } from './models/IClient'
-import { IEmailAddress } from './models/IEmailAddress'
-import { IUserAccount } from './models/IUserAccount'
-import { IUserClient } from './models/IUserClient'
-import { ISession } from './models/ISession'
-import { IRefreshToken } from './models/IRefreshToken'
-import { IPhoneNumber } from './models/IPhoneNumber'
-import { ISetting } from './models/ISetting'
+import ClientFactory from './models/Client'
+import EmailAddressFactory from './models/EmailAddress'
+import UserAccountFactory from './models/UserAccount'
+import UserClientFactory from './models/UserClient'
+import SessionFactory from './models/Session'
+import RefreshTokenFactory from './models/RefreshToken'
+import PhoneNumberFactory from './models/PhoneNumber'
+import SettingFactory from './models/Setting'
 
-let dbInstance:
-  | {
-      sequelize: Sequelize.Sequelize
-      Sequelize: typeof Sequelize
-      Client: Sequelize.Model<ClientInstance, IClient>
-      EmailAddress: Sequelize.Model<EmailAddressInstance,  IEmailAddress>
-      UserAccount: Sequelize.Model<UserAccountInstance, IUserAccount>
-      UserClient: Sequelize.Model<UserClientInstance, IUserClient>
-      Session: Sequelize.Model<SessionInstance, ISession>
-      RefreshToken: Sequelize.Model<RefreshTokenInstance, IRefreshToken>
-      PhoneNumber: Sequelize.Model<PhoneNumberInstance, IPhoneNumber>
-      Setting: Sequelize.Model<SettingInstance, ISetting>
-    }
-  | undefined
+
+let initialized = false
 
 function getSequelizeConnection() {
   let user = process.env.GRAYSKULL_DB_LOGIN
@@ -86,9 +66,7 @@ function getSequelizeConnection() {
   return new Sequelize.Sequelize(databaseName!, user!, password!, options)
 }
 
-export const getContext = async () => {
-  if (!dbInstance) {
-    const sequelize = getSequelizeConnection()
+const sequelize = getSequelizeConnection()
     const db = {
       sequelize,
       Sequelize,
@@ -107,10 +85,15 @@ export const getContext = async () => {
         model.associate(db)
       }
     })
-    dbInstance = db
+
+export const getContext = async () => {
+  if (!initialized) {
+    
     await sequelize.sync()
+    initialized = true
   }
-  return dbInstance
+  
+  return db
 }
 
-export default dbInstance
+export default db

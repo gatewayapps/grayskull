@@ -9,13 +9,24 @@ import generateFingerprint from '../utils/generateFingerprint'
 export default function createApolloClient() {
   const onErrorHandler = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
+      graphQLErrors.forEach((err) => {
+        if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && [window.location.pathname) {
+          window.location.replace('/login')
+          return
+        }
+        if (err.extensions && err.extensions.code === 'FORBIDDEN' && window.location.pathname !== '/oobe') {
+          window.location.replace('/oobe')
+          return
+        }
+      })
+
       graphQLErrors.map(({ message, locations, path }) => {
         console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
       })
     }
     if (networkError) {
       console.error(`[Network error]: ${networkError}`)
-    }
+    } 
   })
 
   const requestLink = new ApolloLink(

@@ -1,4 +1,5 @@
 type ServerConfiguration {
-	baseUrl: String!
-	realmName: String!
+  baseUrl: String!
+  realmName: String!
+  realmLogo: String!
 }

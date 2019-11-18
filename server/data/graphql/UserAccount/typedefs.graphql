@@ -236,31 +236,31 @@ input VerifyAuthorizationRequestArgs {
 }
 
 type Query {
-  userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]!
+  userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]! @anonymous
   userAccountsMeta(filter: UserAccountFilter): UserAccountMeta
   userAccount(where: UserAccountUniqueFilter): UserAccount
 }
 
 type Mutation {
   updateClientScopes(data: UpdateClientScopesArgs!): Boolean
-  generateMfaKey(data: GenerateMfaKeyArgs!): String
-  verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
-  resendVerification(data: ResendVerificationArgs!): Boolean
+  generateMfaKey(data: GenerateMfaKeyArgs!): String @anonymous
+  verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean @anonymous
+  resendVerification(data: ResendVerificationArgs!): Boolean @anonymous
   resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
-  verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse
-  sendBackupCode(data: SendBackupCodeArgs!): Boolean
-  resetPassword(data: ResetPasswordArgs!): Boolean
-  validatePassword(data: ValidatePasswordArgs!): Boolean
+  verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse @anonymous
+  sendBackupCode(data: SendBackupCodeArgs!): Boolean @anonymous
+  resetPassword(data: ResetPasswordArgs!): Boolean @anonymous
+  validatePassword(data: ValidatePasswordArgs!): Boolean @anonymous
   createUser(data: CreateUserArgs!): OperationResponse
   update(data: UpdateArgs!): OperationResponse
-  login(data: LoginArgs!): LoginResponse
+  login(data: LoginArgs!): LoginResponse @anonymous
   verifyAuthorizationRequest(data: VerifyAuthorizationRequestArgs!): OperationResponse
   authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
   setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
-  validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse
-  changePassword(data: ChangePasswordArgs!): OperationResponse
+  validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse @anonymous
+  changePassword(data: ChangePasswordArgs!): OperationResponse @anonymous
   deleteAccount(data: DeleteAccountArgs!): OperationResponse
-  activateAccount(data: ActivateAccountArgs!): OperationResponse
-  registerUser(data: RegisterUserArgs!): RegisterUserResponse
+  activateAccount(data: ActivateAccountArgs!): OperationResponse @anonymous
+  registerUser(data: RegisterUserArgs!): RegisterUserResponse @anonymous
   logout: OperationResponse
 }

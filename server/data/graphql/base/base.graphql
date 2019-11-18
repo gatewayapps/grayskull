@@ -7,6 +7,8 @@ enum Role {
   Admin
 }
 
+directive @anonymous on QUERY | MUTATION | FIELD_DEFINITION
+
 directive @auth(requires: Role) on OBJECT | FIELD_DEFINITION
 
 directive @authOrSelf(requires: Role) on OBJECT | FIELD_DEFINITION
@@ -14,6 +16,7 @@ directive @authOrSelf(requires: Role) on OBJECT | FIELD_DEFINITION
 type Query {
   securityConfiguration: SecurityConfiguration!
   serverConfiguration: ServerConfiguration!
+  isOobe: Boolean! @anonymous
 }
 
 type Mutation {

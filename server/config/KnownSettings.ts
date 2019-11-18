@@ -20,7 +20,8 @@ export const SettingsKeys = {
   SERVER_REALM_LOGO: 'SERVER_REALM_LOGO',
   SERVER_REALM_NAME: 'SERVER_REALM_NAME',
   SERVER_BASE_URL: 'SERVER_BASE_URL',
-  SERVER_BACKGROUND_IMAGE: 'SERVER_BACKGROUND_IMAGE'
+  SERVER_BACKGROUND_IMAGE: 'SERVER_BACKGROUND_IMAGE',
+  SERVER_CONFIGURED: 'SERVER_CONFIGURED'
 }
 
 export default {
@@ -96,7 +97,8 @@ export default {
     },
     {
       Default: 6,
-      Description: 'Rate limit the number of login attempts per minute before a user is locked out.  This helps prevent brute force login attempts. (0 = disabled)',
+      Description:
+        'Rate limit the number of login attempts per minute before a user is locked out.  This helps prevent brute force login attempts. (0 = disabled)',
       Example: 6,
       Key: SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE,
       Label: 'Maxixmum Login Attempts per Minute',
@@ -153,7 +155,8 @@ export default {
       Type: 'Boolean'
     },
     {
-      Description: 'Only allow users with these e-mail addresses to register. Multiple domains should be separated by semicolon',
+      Description:
+        'Only allow users with these e-mail addresses to register. Multiple domains should be separated by semicolon',
       Example: 'gmail.com; me.com;',
       Key: SettingsKeys.SECURITY_DOMAIN_WHITELIST,
       Label: 'Allowed Email Domains',
@@ -187,11 +190,20 @@ export default {
     },
     {
       Default: 'http://localhost',
-      Description: 'Web address for the Grayskull Authentication Server.  The OpenID specification requires a secure authentication server, so use HTTPS if available!',
+      Description:
+        'Web address for the Grayskull Authentication Server.  The OpenID specification requires a secure authentication server, so use HTTPS if available!',
       Example: 'https://authenticate.yourserver.com',
       Key: SettingsKeys.SERVER_BASE_URL,
       Label: 'Server URL',
       Type: 'String'
+    },
+    {
+      Default: false,
+      Description: 'Flag for whether the server is in initial setup mode',
+      Key: SettingsKeys.SERVER_CONFIGURED,
+      Label: 'Server Configured',
+      Type: 'Boolean',
+      hidden: true
     }
   ]
 }

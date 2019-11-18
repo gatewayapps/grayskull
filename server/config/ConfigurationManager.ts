@@ -1,12 +1,10 @@
-import { config } from 'dotenv'
-
 import { ISecurityConfiguration } from '../data/models/ISecurityConfiguration'
 import { IServerConfiguration } from '../data/models/IServerConfiguration'
 import { IMailConfiguration } from '../data/models/IMailConfiguration'
 import { IConfiguration } from '../data/models/IConfiguration'
 
 import { SettingsKeys } from './KnownSettings'
-import { getStringSetting, getNumberSetting, getBooleanSetting } from '../api/services/SettingService'
+import { getStringSetting, getNumberSetting, getBooleanSetting, refreshSettings } from '../api/services/SettingService'
 import { decrypt } from '../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../constants'
 
@@ -20,6 +18,8 @@ class ConfigurationManager {
     let serverConfig: IServerConfiguration = {}
     let securityConfig: ISecurityConfiguration = {}
 
+    await refreshSettings()
+
     mailConfig.fromAddress = await getStringSetting(SettingsKeys.MAIL_FROM_ADDRESS)
     mailConfig.serverAddress = await getStringSetting(SettingsKeys.MAIL_HOST)
     mailConfig.password = await getStringSetting(SettingsKeys.MAIL_PASSWORD)
@@ -30,19 +30,29 @@ class ConfigurationManager {
     mailConfig.tlsSslRequired = await getBooleanSetting(SettingsKeys.MAIL_SSL)
     mailConfig.username = await getStringSetting(SettingsKeys.MAIL_USER)
 
-    securityConfig.invitationExpirationSeconds = await getNumberSetting(SettingsKeys.SECURITY_ACTIVATION_EXPIRES_IN_MINUTES)
+    securityConfig.invitationExpirationSeconds = await getNumberSetting(
+      SettingsKeys.SECURITY_ACTIVATION_EXPIRES_IN_MINUTES
+    )
     securityConfig.allowSignup = await getBooleanSetting(SettingsKeys.SECURITY_ALLOW_USER_SIGNUP)
     securityConfig.domainWhitelist = await getStringSetting(SettingsKeys.SECURITY_DOMAIN_WHITELIST)
 
-    securityConfig.maxLoginAttemptsPerMinute = await getNumberSetting(SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE)
+    securityConfig.maxLoginAttemptsPerMinute = await getNumberSetting(
+      SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE
+    )
     securityConfig.multifactorRequired = await getBooleanSetting(SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED)
     securityConfig.maxPasswordAge = await getNumberSetting(SettingsKeys.SECURITY_PASSWORD_EXPIRES_DAYS)
     securityConfig.passwordMinimumLength = await getNumberSetting(SettingsKeys.SECURITY_PASSWORD_MINIMUM_LENGTH)
-    securityConfig.passwordRequiresLowercase = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_LOWERCASE)
-    securityConfig.passwordRequiresUppercase = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_UPPERCASE)
+    securityConfig.passwordRequiresLowercase = await getBooleanSetting(
+      SettingsKeys.SECURITY_PASSWORD_REQUIRES_LOWERCASE
+    )
+    securityConfig.passwordRequiresUppercase = await getBooleanSetting(
+      SettingsKeys.SECURITY_PASSWORD_REQUIRES_UPPERCASE
+    )
     securityConfig.passwordRequiresSymbol = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_SYMBOL)
     securityConfig.passwordRequiresNumber = await getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER)
-    securityConfig.accessTokenExpirationSeconds = await getNumberSetting(SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+    securityConfig.accessTokenExpirationSeconds = await getNumberSetting(
+      SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS
+    )
 
     serverConfig.baseUrl = await getStringSetting(SettingsKeys.SERVER_BASE_URL)
     serverConfig.realmLogo = await getStringSetting(SettingsKeys.SERVER_REALM_LOGO)

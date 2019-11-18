@@ -3,6 +3,8 @@ import { GraphQLUpload } from 'apollo-server-micro'
 import { GraphQLEnumType, GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../utils/permissions'
 import UploadService from '../../../api/services/UploadService'
+import { getBooleanSetting } from '../../../api/services/SettingService'
+import { SettingsKeys } from '../../../config/KnownSettings'
 
 export default {
   Upload: GraphQLUpload,
@@ -44,6 +46,10 @@ export default {
     serverConfiguration: async (obj, args, context, info) => {
       const config = await getCurrentConfiguration()
       return config.Server
+    },
+    isOobe: async (obj, args, context, info) => {
+      const isServerConfigured = await getBooleanSetting(SettingsKeys.SERVER_CONFIGURED)
+      return !isServerConfigured
     }
   },
   Mutation: {

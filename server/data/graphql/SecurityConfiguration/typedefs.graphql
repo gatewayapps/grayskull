@@ -1,13 +1,13 @@
 type SecurityConfiguration {
-	maxLoginAttemptsPerMinute: Int!
-	maxPasswordAge: Int!
-	passwordRequiresLowercase: Boolean!
-	passwordRequiresUppercase: Boolean!
-	passwordRequiresNumber: Boolean!
-	passwordRequiresSymbol: Boolean!
-	passwordMinimumLength: Int!
-	multifactorRequired: Boolean!
-	invitationExpirationSeconds: Int!
-	accessTokenExpirationSeconds: Int!
-	allowSignup: Boolean!
+  maxPasswordAge: Int!
+  passwordRequiresLowercase: Boolean!
+  passwordRequiresUppercase: Boolean!
+  passwordRequiresNumber: Boolean!
+  passwordRequiresSymbol: Boolean!
+  passwordMinimumLength: Int!
+  multifactorRequired: Boolean!
+  invitationExpirationSeconds: Int!
+  accessTokenExpirationSeconds: Int!
+  allowSignup: Boolean!
+  domainWhitelist: String!
 }

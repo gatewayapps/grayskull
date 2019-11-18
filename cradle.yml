@@ -1,0 +1,20 @@
+loader:
+  module: '@cradlejs/spec-loader'
+  options:
+    source: './.cradle/app/**/*.yml'
+emitters:
+  graphql:
+    module: '@cradlejs/graphql-emitter'
+    output: './data/schema.graphql'
+    options:
+      overwrite: true
+      formatting: 'prettier'
+  typescript:
+    module: '@cradlejs/typescript-emitter'
+    output: './data/types.ts'
+    options:
+      overwrite: true
+      formatting: 'prettier'
+      prettierConfig:
+        semi: false
+        singleQuote: true
