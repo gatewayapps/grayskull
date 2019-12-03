@@ -14,25 +14,37 @@ import RefreshTokenFactory from './models/RefreshToken'
 import PhoneNumberFactory from './models/PhoneNumber'
 import SettingFactory from './models/Setting'
 
-
 let initialized = false
 
 function getSequelizeConnection() {
   let user = process.env.GRAYSKULL_DB_LOGIN
   let password = process.env.GRAYSKULL_DB_PASSWORD
   let server = process.env.GRAYSKULL_DB_HOST
-  let dialect: 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined = process.env.GRAYSKULL_DB_PROVIDER as 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined
+  let storage = process.env.GRAYSKULL_DB_STORAGE
+  let dialect: 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined = process.env.GRAYSKULL_DB_PROVIDER as
+    | 'mysql'
+    | 'sqlite'
+    | 'postgres'
+    | 'mssql'
+    | undefined
   let databaseName = process.env.GRAYSKULL_DB_NAME
 
   if (process.env.GRAYSKULL_DB_CONNECTION_STRING) {
     const connectionUrl = new URL(process.env.GRAYSKULL_DB_CONNECTION_STRING)
-    dialect = connectionUrl.protocol.substr(0, connectionUrl.protocol.length - 1) as 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined
+
+    dialect = connectionUrl.protocol.substr(0, connectionUrl.protocol.length - 1) as
+      | 'mysql'
+      | 'sqlite'
+      | 'postgres'
+      | 'mssql'
+      | undefined
     switch (dialect?.toString()) {
       case 'jdbc:mysql':
         dialect = 'mysql'
         break
       case 'sqlite':
         dialect = 'sqlite'
+        storage = connectionUrl.pathname
         break
       case 'postgres':
         dialect = 'postgres'
@@ -51,7 +63,7 @@ function getSequelizeConnection() {
     dialect: dialect!,
     host: server,
     database: databaseName,
-    storage: process.env.GRAYSKULL_DB_STORAGE
+    storage: storage
   }
 
   if (options.dialect === 'mssql') {
@@ -67,32 +79,35 @@ function getSequelizeConnection() {
 }
 
 const sequelize = getSequelizeConnection()
-    const db = {
-      sequelize,
-      Sequelize,
-      Client: ClientFactory(sequelize),
-      EmailAddress: EmailAddressFactory(sequelize),
-      UserAccount: UserAccountFactory(sequelize),
-      UserClient: UserClientFactory(sequelize),
-      Session: SessionFactory(sequelize),
-      RefreshToken: RefreshTokenFactory(sequelize),
-      PhoneNumber: PhoneNumberFactory(sequelize),
-      Setting: SettingFactory(sequelize)
-    }
+const db = {
+  sequelize,
+  Sequelize,
+  Client: ClientFactory(sequelize),
+  EmailAddress: EmailAddressFactory(sequelize),
+  UserAccount: UserAccountFactory(sequelize),
+  UserClient: UserClientFactory(sequelize),
+  Session: SessionFactory(sequelize),
+  RefreshToken: RefreshTokenFactory(sequelize),
+  PhoneNumber: PhoneNumberFactory(sequelize),
+  Setting: SettingFactory(sequelize)
+}
 
-    Object.values(db).forEach((model: any) => {
-      if (model.associate) {
-        model.associate(db)
-      }
-    })
+Object.values(db).forEach((model: any) => {
+  if (model.associate) {
+    model.associate(db)
+  }
+})
 
 export const getContext = async () => {
   if (!initialized) {
-    
-    await sequelize.sync()
-    initialized = true
+    try {
+      await sequelize.sync()
+      initialized = true
+    } catch (err) {
+      console.error(err)
+    }
   }
-  
+
   return db
 }
 
