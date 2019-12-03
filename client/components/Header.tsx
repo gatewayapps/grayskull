@@ -21,14 +21,26 @@ const Header = () => {
     <RequireConfiguration>
       {(configuration: IConfiguration) => {
         return (
-          <div className="my-2 w-100" style={{ borderBottom: '1px solid #ddd', backgroundColor: 'white', position: 'sticky', top: 0, zIndex: 50 }}>
+          <div
+            className="pt-2 mb-2 w-100"
+            style={{
+              borderBottom: '1px solid #ddd',
+              backgroundColor: 'white',
+              position: 'sticky',
+              top: 0,
+              zIndex: 50
+            }}>
             <div className="container">
               <div>
                 <h3>
-                  <img style={{ height: '64px' }} src={configuration.Server.realmLogo} /> {configuration.Server.realmName} Account Management
+                  <img style={{ height: '64px' }} src={configuration.Server.realmLogo} />{' '}
+                  {configuration.Server.realmName} Account Management
                 </h3>
               </div>
-              <ul className="nav nav-tabs flex-no-wrap" style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }} role="navigation">
+              <ul
+                className="nav nav-tabs flex-no-wrap"
+                style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }}
+                role="navigation">
                 <li className="nav-item">
                   <ActiveLink activeClassName="active" href="/personal-info" as="/personal-info">
                     <a className="nav-link">Personal Info</a>
