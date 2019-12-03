@@ -6,19 +6,10 @@ import { ISetting } from '../../data/models/ISetting'
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
-let db
-
 class SettingRepository {
-  constructor() {
-    this.initializeContext()
-  }
-
-  private async initializeContext() {
-    db = await getContext()
-  }
   public async settingsMeta(filter: ISettingFilter | null, options: IQueryOptions): Promise<ISettingMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.Setting.count({ where, transaction: options.transaction })
+    const count = await (await getContext()).Setting.count({ where, transaction: options.transaction })
     return {
       count
     }
@@ -26,7 +17,7 @@ class SettingRepository {
 
   public async getSettings(filter: ISettingFilter | null, options: IQueryOptions): Promise<ISetting[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await db.Setting.findAll({
+    const results = await (await getContext()).Setting.findAll({
       where,
       include: options.include,
       order: options.order,
@@ -39,7 +30,7 @@ class SettingRepository {
   }
 
   public async getSetting(filter: ISettingUniqueFilter, options: IQueryOptions): Promise<ISetting | null> {
-    const result = await db.Setting.findOne({
+    const result = await (await getContext()).Setting.findOne({
       where: filter,
 
       transaction: options.transaction
@@ -52,11 +43,15 @@ class SettingRepository {
   }
 
   public async createSetting(data: ISetting, options: IQueryOptions): Promise<ISetting> {
-    return await db.Setting.create(data, { returning: true, transaction: options.transaction })
+    return await (await getContext()).Setting.create(data, { returning: true, transaction: options.transaction })
   }
 
-  public async updateSetting(filter: ISettingUniqueFilter, data: Partial<ISetting>, options: IQueryOptions): Promise<ISetting | null> {
-    await db.Setting.update(data, {
+  public async updateSetting(
+    filter: ISettingUniqueFilter,
+    data: Partial<ISetting>,
+    options: IQueryOptions
+  ): Promise<ISetting | null> {
+    await (await getContext()).Setting.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
       transaction: options.transaction

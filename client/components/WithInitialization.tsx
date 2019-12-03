@@ -20,7 +20,7 @@ export const WithInitialization = (WrappedComponent) => {
       result = await initializeResponse.json()
     }
     const componentProps = WrappedComponent.getInitialProps && (await WrappedComponent.getInitialProps(ctx))
-    return { ...componentProps, ...result }
+    return { ...componentProps, user: result.user, configuration: result.configuration }
   }
 
   return initializationWrapper

@@ -1,4 +1,3 @@
-
 import { ISession } from '../data/models/ISession'
 import originalUrl from 'original-url'
 import { ServerResponse, IncomingMessage } from 'http'
@@ -92,17 +91,17 @@ export async function doLogout(req: RequestContext, res: ResponseContext) {
   }
   clearAuthCookies(res)
 
-    const state = req.parsedUrl.searchParams.get('state')
-    const clientId = req.parsedUrl.searchParams.get('client_id')
+  const state = req.parsedUrl.searchParams.get('state')
+  const clientId = req.parsedUrl.searchParams.get('client_id')
 
-    let redirectUrl = `/login${state ? `?state=${encodeURIComponent(state)}` : ''}`
-    
-    if (clientId) {
-      const client = await ClientRepository.getClient({ client_id: clientId }, { userContext: null })
-      if (client && client.homePageUrl) { 
-        redirectUrl = client.homePageUrl
-      }
+  let redirectUrl = `/login${state ? `?state=${encodeURIComponent(state)}` : ''}`
+
+  if (clientId) {
+    const client = await ClientRepository.getClient({ client_id: clientId }, { userContext: null })
+    if (client && client.homePageUrl) {
+      redirectUrl = client.homePageUrl
     }
+  }
 }
 
 export function clearAuthCookies(res: ResponseContext) {
@@ -114,18 +113,21 @@ export async function buildContext(req: IncomingMessage, res: ServerResponse) {
 
   const finalUrl = originalUrl(req)
 
-  const requestContext: RequestContext = Object.assign(req, { cookies, parsedUrl: new URL(finalUrl.full), originalUrl: finalUrl.full })
+  const requestContext: RequestContext = Object.assign(req, {
+    cookies,
+    parsedUrl: new URL(finalUrl.full),
+    originalUrl: finalUrl.full
+  })
   const responseContext: ResponseContext = Object.assign(res, { cookies })
 
   const context = await getUserContext(requestContext, responseContext)
-  
+
   responseContext.user = context?.user
   responseContext.session = context?.session
-  responseContext.locals = {user: context?.user}
+  responseContext.locals = { user: context?.user }
 
   requestContext.user = context?.user
   requestContext.session = context?.session
-  
-  return {requestContext, responseContext} 
 
+  return { requestContext, responseContext }
 }

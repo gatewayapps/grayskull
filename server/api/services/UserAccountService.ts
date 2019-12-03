@@ -24,8 +24,6 @@ const INVITATION_EXPIRES_IN = 3600
 
 const TokenCache = new Cache({ stdTTL: INVITATION_EXPIRES_IN })
 
-let db
-
 interface ICPTToken {
   client: ClientInstance | { name: string; client_id: string } | null
   emailAddress: string
@@ -33,14 +31,6 @@ interface ICPTToken {
 }
 
 class UserAccountService {
-  constructor() {
-    this.initializeContext()
-  }
-
-  private async initializeContext() {
-    db = await getContext()
-  }
-
   public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
     const options: IQueryOptions = {
       userContext: null
@@ -51,7 +41,7 @@ class UserAccountService {
       throw new Error('Unable to find a user with that email address')
     }
 
-    options.transaction = await db.sequelize.transaction()
+    options.transaction = await (await getContext()).sequelize.transaction()
 
     try {
       const passwordHash = await this.hashPassword(password)
@@ -76,14 +66,21 @@ class UserAccountService {
   }
 
   @hasPermission(Permissions.Admin)
-  public async createUserAccount(data: IUserAccount, emailAddress: string, options: IQueryOptions): Promise<IUserAccount> {
+  public async createUserAccount(
+    data: IUserAccount,
+    emailAddress: string,
+    options: IQueryOptions
+  ): Promise<IUserAccount> {
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
     if (!emailAddressAvailable) {
-      throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
+      throw new GrayskullError(
+        GrayskullErrorCode.EmailAlreadyRegistered,
+        'The email address has already been registered'
+      )
     }
     const config = await getCurrentConfiguration()
 
-    options.transaction = await db.sequelize.transaction()
+    options.transaction = await (await getContext()).sequelize.transaction()
 
     try {
       data.userAccountId = uuid()
@@ -106,12 +103,17 @@ class UserAccountService {
       await EmailAddressRepository.createEmailAddress(emailAddressData, options)
 
       const activateLink = `${config.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
-      await MailService.sendEmailTemplate('activateAccountTemplate', emailAddress, `Activate Your ${config.Server!.realmName} Account`, {
-        activateLink,
-        realmName: config.Server!.realmName,
-        user: user,
-        createdBy: options.userContext
-      })
+      await MailService.sendEmailTemplate(
+        'activateAccountTemplate',
+        emailAddress,
+        `Activate Your ${config.Server!.realmName} Account`,
+        {
+          activateLink,
+          realmName: config.Server!.realmName,
+          user: user,
+          createdBy: options.userContext
+        }
+      )
 
       await options.transaction!.commit()
 
@@ -127,7 +129,11 @@ class UserAccountService {
    * @param data
    * @param password
    */
-  public async createUserAccountWithPassword(data: IUserAccount, password: string, options: IQueryOptions): Promise<IUserAccount> {
+  public async createUserAccountWithPassword(
+    data: IUserAccount,
+    password: string,
+    options: IQueryOptions
+  ): Promise<IUserAccount> {
     data.userAccountId = uuid()
     data.passwordHash = await this.hashPassword(password)
     data.lastPasswordChange = new Date()
@@ -144,10 +150,17 @@ class UserAccountService {
 
   public async changeUserPassword(userAccountId: string, password: string, options: IQueryOptions) {
     const passwordHash = await this.hashPassword(password)
-    await UserAccountRepository.updateUserAccount({ userAccountId }, { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null }, options)
+    await UserAccountRepository.updateUserAccount(
+      { userAccountId },
+      { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null },
+      options
+    )
   }
 
-  public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<IUserAccount | null> {
+  public async getUserAccountByEmailAddress(
+    emailAddress: string,
+    options: IQueryOptions
+  ): Promise<IUserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
@@ -162,7 +175,10 @@ class UserAccountService {
 
   // This seems not right.  This call should be admin only, but we have to expose it for
   // authentication.  As long as it's never exposed via an API it should be ok I guess.
-  public async getUserAccountByEmailAddressWithSensitiveData(emailAddress: string, options: IQueryOptions): Promise<IUserAccount | null> {
+  public async getUserAccountByEmailAddressWithSensitiveData(
+    emailAddress: string,
+    options: IQueryOptions
+  ): Promise<IUserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
@@ -200,18 +216,30 @@ class UserAccountService {
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
 
-      const resetPasswordLink = `${config.Server!.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
-      await MailService.sendEmailTemplate('resetPasswordTemplate', emailAddress, `${config.Server!.realmName} Password Reset`, {
-        resetLink: resetPasswordLink,
-        realmName: config.Server!.realmName,
-        user: userAccount
-      })
+      const resetPasswordLink = `${
+        config.Server!.baseUrl
+      }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      await MailService.sendEmailTemplate(
+        'resetPasswordTemplate',
+        emailAddress,
+        `${config.Server!.realmName} Password Reset`,
+        {
+          resetLink: resetPasswordLink,
+          realmName: config.Server!.realmName,
+          user: userAccount
+        }
+      )
     }
 
     //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
   }
 
-  public async registerUser(data: IUserAccount, emailAddress: string, password: string, options: IQueryOptions): Promise<IUserAccount> {
+  public async registerUser(
+    data: IUserAccount,
+    emailAddress: string,
+    password: string,
+    options: IQueryOptions
+  ): Promise<IUserAccount> {
     if ((await EmailAddressService.isDomainAllowed(emailAddress)) === false) {
       throw new ForbiddenError(`Self registration is not permitted for your email domain`)
     }
@@ -219,7 +247,10 @@ class UserAccountService {
     // 1. Verify that a user has not already been registered with this email address
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
     if (!emailAddressAvailable) {
-      throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, 'The email address has already been registered')
+      throw new GrayskullError(
+        GrayskullErrorCode.EmailAlreadyRegistered,
+        'The email address has already been registered'
+      )
     }
     let newOptions: IQueryOptions
     if (options.userContext) {
@@ -229,7 +260,7 @@ class UserAccountService {
     }
 
     // 2. Start a transaction
-    newOptions.transaction = await db.sequelize.transaction()
+    newOptions.transaction = await (await getContext()).sequelize.transaction()
 
     try {
       // First user is always an administrator

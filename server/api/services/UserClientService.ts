@@ -20,16 +20,14 @@ export interface IVerifyScopeResult {
   pendingScopes?: string[]
   userClientId?: string
 }
-let db
-class UserClientService {
-  constructor() {
-    this.initializeContext()
-  }
 
-  private async initializeContext() {
-    db = await getContext()
-  }
-  public async verifyScope(userAccountId: string, client_id: string, scope: string | null, options: IQueryOptions): Promise<IVerifyScopeResult> {
+class UserClientService {
+  public async verifyScope(
+    userAccountId: string,
+    client_id: string,
+    scope: string | null,
+    options: IQueryOptions
+  ): Promise<IVerifyScopeResult> {
     const client = await ClientRepository.getClient({ client_id }, options)
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
@@ -51,7 +49,12 @@ class UserClientService {
 
     const allowedScopes: string[] = JSON.parse(userClient.allowedScopes)
     const deniedScopes: string[] = JSON.parse(userClient.deniedScopes)
-    const pendingScopes = requestedScopes.filter((rs) => !allowedScopes.includes(rs) && !deniedScopes.includes(rs) && ScopeMap[rs].permissionLevel <= userAccount!.permissions!)
+    const pendingScopes = requestedScopes.filter(
+      (rs) =>
+        !allowedScopes.includes(rs) &&
+        !deniedScopes.includes(rs) &&
+        ScopeMap[rs].permissionLevel <= userAccount!.permissions!
+    )
 
     if (pendingScopes.length > 0) {
       return {
@@ -91,12 +94,21 @@ class UserClientService {
   }
 
   @hasPermission(Permissions.User)
-  public async updateScopes(userAccount: IUserAccount, client_id: string, allowedScopes: string[], deniedScopes: string[], options: IQueryOptions): Promise<void> {
+  public async updateScopes(
+    userAccount: IUserAccount,
+    client_id: string,
+    allowedScopes: string[],
+    deniedScopes: string[],
+    options: IQueryOptions
+  ): Promise<void> {
     const client = await ClientRepository.getClient({ client_id }, options)
     if (!client) {
       throw new Error(`Unknown client: ${client_id}`)
     }
-    const userClient = await UserClientRepository.getUserClient({ userAccountId: userAccount.userAccountId, client_id }, options)
+    const userClient = await UserClientRepository.getUserClient(
+      { userAccountId: userAccount.userAccountId, client_id },
+      options
+    )
     if (!userClient) {
       // create a new userClient
       await UserClientRepository.createUserClient(
@@ -114,8 +126,12 @@ class UserClientService {
       const prevDeniedScopes: string[] = JSON.parse(userClient.deniedScopes)
 
       // add new denied to previous denied
-      const newDeniedScopes = _.uniq(prevDeniedScopes.concat(deniedScopes)).filter((denied) => !allowedScopes.includes(denied))
-      const newAllowedScopes = _.uniq(prevAllowedScopes.concat(allowedScopes)).filter((allowed) => !newDeniedScopes.includes(allowed))
+      const newDeniedScopes = _.uniq(prevDeniedScopes.concat(deniedScopes)).filter(
+        (denied) => !allowedScopes.includes(denied)
+      )
+      const newAllowedScopes = _.uniq(prevAllowedScopes.concat(allowedScopes)).filter(
+        (allowed) => !newDeniedScopes.includes(allowed)
+      )
       await UserClientRepository.updateUserClient(
         { userClientId: userClient.userClientId! },
         {

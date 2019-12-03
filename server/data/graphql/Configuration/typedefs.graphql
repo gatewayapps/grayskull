@@ -27,8 +27,8 @@ input SecurityConfigurationInput {
 
 input MailConfigurationInput {
   serverAddress: String!
-  username: String!
-  password: String!
+  username: String
+  password: String
   port: Int!
   fromAddress: String!
   tlsSslRequired: Boolean!
@@ -56,5 +56,5 @@ type Query {
 
 type Mutation {
   verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse
-  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
 }

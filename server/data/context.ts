@@ -110,5 +110,3 @@ export const getContext = async () => {
 
   return db
 }
-
-export default db

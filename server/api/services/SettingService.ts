@@ -5,7 +5,7 @@ let settings: ISetting[] = []
 
 export async function refreshSettings() {
   const db = await getContext()
-  settings = await db.Setting.findAll()
+  settings = await (await getContext()).Setting.findAll()
 }
 
 async function getSettingRecord(key: string, type: string) {
@@ -17,19 +17,19 @@ async function getSettingRecord(key: string, type: string) {
 
 export async function saveStringSetting(key: string, value: string, category: CategoryKeys) {
   const db = await getContext()
-  await db.Setting.upsert({ key, value, type: 'String', category })
+  await (await getContext()).Setting.upsert({ key, value, type: 'String', category })
   settings = []
 }
 
 export async function saveNumberSetting(key: string, value: number, category: CategoryKeys) {
   const db = await getContext()
-  await db.Setting.upsert({ key, value: value.toString(), type: 'Number', category })
+  await (await getContext()).Setting.upsert({ key, value: value.toString(), type: 'Number', category })
   settings = []
 }
 
 export async function saveBooleanSetting(key: string, value: boolean, category: CategoryKeys) {
   const db = await getContext()
-  await db.Setting.upsert({ key, value: value.toString(), type: 'Boolean', category })
+  await (await getContext()).Setting.upsert({ key, value: value.toString(), type: 'Boolean', category })
   settings = []
 }
 

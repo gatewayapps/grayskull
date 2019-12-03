@@ -7,10 +7,10 @@ import React from 'react'
 
 import UserContext from '../client/contexts/UserContext'
 import createApolloClient from '../client/utils/createApolloClient'
+import { WithInitialization } from '../client/components/WithInitialization'
+import ApplicationInitializer from '../client/components/ApplicationInitializer'
 
 const apolloClient = createApolloClient()
-
-
 
 class MyApp extends App<any> {
   state = {
@@ -39,31 +39,18 @@ class MyApp extends App<any> {
 
     return (
       <ApolloProvider client={apolloClient}>
-        <Query client={client} query=
-        <ConfigurationContext.Provider value={configuration}>
-          <UserContext.Provider
-            value={{
-              user: user,
-              setUser: (user) => {
-                this.setState({ user })
-              },
-              refresh: this.state.refresh,
-              setRefresh: (refresh) => {
-                this.setState({ refresh })
-              }
-            }}>
-            <div>
-              <Head>
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>
-                  {title} {pageProps.pageTitle && '| ' + pageProps.pageTitle}
-                </title>
-              </Head>
+        <ApplicationInitializer>
+          <div>
+            <Head>
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>
+                {title} {pageProps.pageTitle && '| ' + pageProps.pageTitle}
+              </title>
+            </Head>
 
-              <Component {...pageProps} />
-            </div>
-          </UserContext.Provider>
-        </ConfigurationContext.Provider>
+            <Component {...pageProps} />
+          </div>
+        </ApplicationInitializer>
       </ApolloProvider>
     )
   }

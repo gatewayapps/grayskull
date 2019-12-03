@@ -1,4 +1,4 @@
-const withSass = require('@zeit/next-sass')
+const withSass = require('next-dart-sass')
 const withCss = require('@zeit/next-css')
 
 module.exports = withSass(

@@ -29,7 +29,11 @@ const SecurityComponent = (props) => {
                     <SecurityConfigurationForm
                       data={SecurityConfiguration}
                       onConfigurationChanged={(data) => {
-                        setLocalConfiguration({ Mail: configuration.Mail, Server: configuration.Server, Security: data })
+                        setLocalConfiguration({
+                          Mail: configuration.Mail,
+                          Server: configuration.Server,
+                          Security: data
+                        })
                       }}
                       onValidated={(isValid, errors) => {
                         setSaveEnabled(isValid)
@@ -51,7 +55,7 @@ const SecurityComponent = (props) => {
                       className="float-right btn btn-primary"
                       disabled={!saveEnabled}
                       mutation={SAVE_CONFIGURATION}
-                      variables={{ configuration: { Mail: localConfiguration.Mail } }}
+                      variables={{ configuration: { Security: localConfiguration.Security } }}
                     />
                   </div>
                 </div>

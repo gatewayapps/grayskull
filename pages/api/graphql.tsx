@@ -4,8 +4,6 @@ import { addMiddleware } from 'graphql-add-middleware'
 import { buildContext } from '../../server/utils/authentication'
 import { schema } from '../../server/data/graphql/graphql'
 
-getContext()
-
 const checkAnonymous = async (root, args, context, info, next) => {
   if (info.parentType && info.parentType._fields && info.parentType._fields[info.fieldName]) {
     if (!context.user && !info.parentType._fields[info.fieldName].allowAnonymous) {
@@ -15,7 +13,10 @@ const checkAnonymous = async (root, args, context, info, next) => {
 
   return next()
 }
-
+addMiddleware(schema, async (root, args, context, info, next) => {
+  await getContext()
+  return next()
+})
 addMiddleware(schema, 'Mutation', checkAnonymous)
 addMiddleware(schema, 'Query', checkAnonymous)
 

@@ -6,19 +6,10 @@ import { IUserAccount } from '../../data/models/IUserAccount'
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
-let db
-
 class UserAccountRepository {
-  constructor() {
-    this.initializeContext()
-  }
-
-  private async initializeContext() {
-    db = await getContext()
-  }
   public async userAccountsMeta(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccountMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.UserAccount.count({ where, transaction: options.transaction })
+    const count = await (await getContext()).UserAccount.count({ where, transaction: options.transaction })
     return {
       count
     }
@@ -26,7 +17,7 @@ class UserAccountRepository {
 
   public async getUserAccounts(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccount[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await db.UserAccount.findAll({
+    const results = await (await getContext()).UserAccount.findAll({
       where,
       attributes: {
         exclude: ['passwordHash', 'otpSecret', 'resetPasswordToken', 'resetPasswordTokenExpiresAt']
@@ -41,9 +32,12 @@ class UserAccountRepository {
     return results.map((r) => r.toJSON())
   }
 
-  public async getUserAccountsWithSensitiveData(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccount[]> {
+  public async getUserAccountsWithSensitiveData(
+    filter: IUserAccountFilter | null,
+    options: IQueryOptions
+  ): Promise<IUserAccount[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await db.UserAccount.findAll({
+    const results = await (await getContext()).UserAccount.findAll({
       where,
 
       transaction: options.transaction
@@ -53,7 +47,7 @@ class UserAccountRepository {
   }
 
   public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
-    const result = await db.UserAccount.findOne({
+    const result = await (await getContext()).UserAccount.findOne({
       where: filter,
       attributes: {
         exclude: ['passwordHash', 'otpSecret', 'resetPasswordToken', 'resetPasswordTokenExpiresAt']
@@ -68,8 +62,11 @@ class UserAccountRepository {
     }
   }
 
-  public async getUserAccountWithSensitiveData(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
-    const result = await db.UserAccount.findOne({
+  public async getUserAccountWithSensitiveData(
+    filter: IUserAccountUniqueFilter,
+    options: IQueryOptions
+  ): Promise<IUserAccount | null> {
+    const result = await (await getContext()).UserAccount.findOne({
       where: filter,
 
       transaction: options.transaction
@@ -87,7 +84,7 @@ class UserAccountRepository {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await db.UserAccount.create(data, { returning: true, transaction: options.transaction })
+    return await (await getContext()).UserAccount.create(data, { returning: true, transaction: options.transaction })
   }
 
   public async deleteUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<boolean> {
@@ -97,18 +94,22 @@ class UserAccountRepository {
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [affectedCount] = await db.UserAccount.update(data, {
+    const [affectedCount] = await (await getContext()).UserAccount.update(data, {
       where: filter as AnyWhereOptions,
       transaction: options.transaction
     })
     return affectedCount > 0
   }
 
-  public async updateUserAccount(filter: IUserAccountUniqueFilter, data: Partial<IUserAccount>, options: IQueryOptions): Promise<IUserAccount | null> {
+  public async updateUserAccount(
+    filter: IUserAccountUniqueFilter,
+    data: Partial<IUserAccount>,
+    options: IQueryOptions
+  ): Promise<IUserAccount | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await db.UserAccount.update(data, {
+    await (await getContext()).UserAccount.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
       transaction: options.transaction

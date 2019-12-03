@@ -6,20 +6,10 @@ import { ISession } from '../../data/models/ISession'
 import { AnyWhereOptions } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
-let db
-
 class SessionRepository {
-  constructor() {
-    this.initializeContext()
-  }
-
-  private async initializeContext() {
-    db = await getContext()
-  }
-
   public async sessionsMeta(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISessionMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await db.Session.count({ where, transaction: options.transaction })
+    const count = await (await getContext()).Session.count({ where, transaction: options.transaction })
     return {
       count
     }
@@ -27,7 +17,7 @@ class SessionRepository {
 
   public async getSessions(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISession[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await db.Session.findAll({
+    const results = await (await getContext()).Session.findAll({
       where,
       include: options.include,
       order: options.order,
@@ -40,7 +30,7 @@ class SessionRepository {
   }
 
   public async getSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<ISession | null> {
-    const result = await db.Session.findOne({
+    const result = await (await getContext()).Session.findOne({
       where: filter,
 
       transaction: options.transaction
@@ -57,22 +47,26 @@ class SessionRepository {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await db.Session.create(data, { returning: true, transaction: options.transaction })
+    return await (await getContext()).Session.create(data, { returning: true, transaction: options.transaction })
   }
 
   public async deleteSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
-    const affectedCount = await db.Session.destroy({
+    const affectedCount = await (await getContext()).Session.destroy({
       where: filter as AnyWhereOptions,
       transaction: options.transaction
     })
     return affectedCount > 0
   }
 
-  public async updateSession(filter: ISessionUniqueFilter, data: Partial<ISession>, options: IQueryOptions): Promise<ISession | null> {
+  public async updateSession(
+    filter: ISessionUniqueFilter,
+    data: Partial<ISession>,
+    options: IQueryOptions
+  ): Promise<ISession | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await db.Session.update(data, {
+    await (await getContext()).Session.update(data, {
       where: filter as AnyWhereOptions,
       returning: true,
       transaction: options.transaction

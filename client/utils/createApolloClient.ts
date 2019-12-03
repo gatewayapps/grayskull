@@ -10,7 +10,8 @@ export default function createApolloClient() {
   const onErrorHandler = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach((err) => {
-        if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && [window.location.pathname) {
+        console.error(err)
+        if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && window.location.pathname !== '/login') {
           window.location.replace('/login')
           return
         }
@@ -26,7 +27,7 @@ export default function createApolloClient() {
     }
     if (networkError) {
       console.error(`[Network error]: ${networkError}`)
-    } 
+    }
   })
 
   const requestLink = new ApolloLink(

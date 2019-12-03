@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
 const ErrorMessage = (props) => {
   if (!props.error) {
@@ -11,12 +10,6 @@ const ErrorMessage = (props) => {
       {props.error.message}
     </div>
   )
-}
-
-ErrorMessage.propTypes = {
-  error: PropTypes.shape({
-    message: PropTypes.string.isRequired
-  })
 }
 
 export default ErrorMessage

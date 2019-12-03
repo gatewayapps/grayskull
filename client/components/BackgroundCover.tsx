@@ -1,8 +1,8 @@
 import React from 'react'
-import RequireConfiguration from './RequireConfiguration'
+
 import styled from 'styled-components'
 
-import { IConfiguration } from '../../server/data/models/IConfiguration'
+import ConfigurationContext from '../contexts/ConfigurationContext'
 
 const BackgroundCover = styled.div`
   display: flex;
@@ -22,14 +22,17 @@ const BackgroundCover = styled.div`
 `
 
 const BackgroundCoverComponent = (props) => (
-  <RequireConfiguration>
-    {(configuration: IConfiguration) => {
-      const backgroundImageUrl = configuration.Server && configuration.Server.realmBackground ? configuration.Server.realmBackground : '/bg.jpg'
+  <ConfigurationContext.Consumer>
+    {(configuration) => {
+      const backgroundImageUrl =
+        configuration && configuration.Server && configuration.Server.realmBackground
+          ? configuration.Server.realmBackground
+          : '/bg.jpg'
       const backgroundImageValue = backgroundImageUrl === 'none' ? undefined : `url(${backgroundImageUrl})`
 
       return <BackgroundCover style={{ backgroundImage: backgroundImageValue }}>{props.children}</BackgroundCover>
     }}
-  </RequireConfiguration>
+  </ConfigurationContext.Consumer>
 )
 
 export default BackgroundCoverComponent

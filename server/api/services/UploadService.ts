@@ -2,26 +2,29 @@ import { getCurrentConfiguration } from '../../config/ConfigurationManager'
 import { CONFIG_DIR } from '../../constants'
 import fs, { ReadStream } from 'fs-extra'
 import { FileUpload } from '../../types/FileUpload'
-import path from 'path'
+import path, { join } from 'path'
 import uuid from 'uuid/v4'
 import { IUploadFileResponse } from '../../data/models/IUploadFileResponse'
 import getConfig from 'next/config'
 const { serverRuntimeConfig } = getConfig()
 
-const UPLOAD_PATH = 'uploads'
-const UPLOAD_DIR = `${serverRuntimeConfig.PROJECT_ROOT}/public/${UPLOAD_PATH}`
+const UPLOAD_DIR = join(serverRuntimeConfig.PROJECT_ROOT, `public/uploads/`)
 
 class UploadService {
-  public async createUpload(upload: FileUpload): Promise<IUploadFileResponse> {
-    const config = await getCurrentConfiguration()
-    const { createReadStream, filename, mimetype } = await upload
-    const stream = createReadStream()
-    const { localFilename, size } = await this.writeToDisk(stream, filename)
-    const url = `/${UPLOAD_PATH}/${localFilename}`
-    return {
-      url,
-      mimetype,
-      size
+  public async createUpload(upload: FileUpload): Promise<IUploadFileResponse | undefined> {
+    try {
+      const { createReadStream, filename, mimetype } = await upload
+      const stream = createReadStream()
+      const { localFilename, size } = await this.writeToDisk(stream, filename)
+      const url = `/uploads/${localFilename}`
+      return {
+        url,
+        mimetype,
+        size
+      }
+    } catch (err) {
+      console.error(err)
+      throw err
     }
   }
 

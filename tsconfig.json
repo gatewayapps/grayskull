@@ -41,7 +41,7 @@
     "pages/**/*.ts",
     "client/**/*.ts",
     "public/**/*.ts",
-    "server/**/*.ts"
+    "server/**/*.ts", "client/utils/useFetch.tsx"
   ],
   "exclude": [
     "node_modules/**/*.*",
