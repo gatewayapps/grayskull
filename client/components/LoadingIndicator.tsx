@@ -5,8 +5,8 @@ export interface ILoadingIndicatorProps {
 }
 
 const LoadingIndicator = ({ message = 'Loading' }: ILoadingIndicatorProps) => (
-  <div>
-    <i className="fal fa-circle-notch fa-spin fa-fw" />
+  <div className="m-2">
+    <i className="fal fa-circle-notch fa-spin fa-fw mr-2" />
     {message}
   </div>
 )

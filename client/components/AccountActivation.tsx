@@ -118,7 +118,7 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
         if (result && result.data) {
           const { activateAccount } = result.data
           if (activateAccount.success) {
-            window.location.replace('/login')
+            Router.push('/login')
           } else {
             this.setState({
               accountActivated: activateAccount.success,
@@ -151,9 +151,17 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
           const { securityConfiguration, serverConfiguration } = configuration
           const validations = [
             new FormValidationRule('password', 'isEmpty', false, 'New password is required'),
-            new FormValidationRule('password', validatePassword, true, 'New password does not meet complexity requirements', [securityConfiguration]),
+            new FormValidationRule(
+              'password',
+              validatePassword,
+              true,
+              'New password does not meet complexity requirements',
+              [securityConfiguration]
+            ),
             new FormValidationRule('confirmPassword', 'isEmpty', false, 'Confirm password is required'),
-            new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [this.state.data.password])
+            new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [
+              this.state.data.password
+            ])
           ]
 
           return (
@@ -184,10 +192,15 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
                                   value={this.state.data.password}
                                   onChange={(e) => this.handleChange(e, validate)}
                                 />
-                                <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                                <div
+                                  className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3"
+                                  style={{ border: '1px solid' }}>
                                   <div className="alert-heading">Password requirements</div>
                                   <div>
-                                    <PasswordComplexity configuration={securityConfiguration} password={this.state.data.password} />
+                                    <PasswordComplexity
+                                      configuration={securityConfiguration}
+                                      password={this.state.data.password}
+                                    />
                                   </div>
                                 </div>
                                 <ResponsiveValidatingInput
@@ -203,16 +216,21 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
                             )}
                             {this.state.step === ActivationStep.MFA && (
                               <div>
-                                {securityConfiguration.multifactorRequired && <p>Multi-factor authentication is required to complete account registration.</p>}
-                                {!this.state.showMfaForm &&
-                                  !securityConfiguration.multifactorRequired && (
-                                    <div>
-                                      <p>Make your account more secure and require a one-time authentication code to login.</p>
-                                      <button className="btn btn-primary" onClick={() => this.setRequireMfaVerification(true)}>
-                                        Enable Mulit-Factor Authentication
-                                      </button>
-                                    </div>
-                                  )}
+                                {securityConfiguration.multifactorRequired && (
+                                  <p>Multi-factor authentication is required to complete account registration.</p>
+                                )}
+                                {!this.state.showMfaForm && !securityConfiguration.multifactorRequired && (
+                                  <div>
+                                    <p>
+                                      Make your account more secure and require a one-time authentication code to login.
+                                    </p>
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={() => this.setRequireMfaVerification(true)}>
+                                      Enable Mulit-Factor Authentication
+                                    </button>
+                                  </div>
+                                )}
                                 {(this.state.showMfaForm || securityConfiguration.multifactorRequired) && (
                                   <MultiFactorSetup
                                     emailAddress={this.props.emailAddress}
@@ -227,7 +245,10 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
                         }
                         formFooter={
                           <div className="btn-toolbar float-right">
-                            <button disabled={!this.isValid(configuration) || loading} className="btn btn-outline-success" type="submit">
+                            <button
+                              disabled={!this.isValid(configuration) || loading}
+                              className="btn btn-outline-success"
+                              type="submit">
                               {this.state.step === ActivationStep.MFA ? 'Activate' : 'Next'}
                             </button>
                           </div>

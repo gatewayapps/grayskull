@@ -1,4 +1,4 @@
-import { withRouter } from 'next/router'
+import { withRouter, default as Router } from 'next/router'
 import React, { Component } from 'react'
 
 import UserContext from '../contexts/UserContext'
@@ -15,8 +15,9 @@ class RequireAuthentication extends Component {
       <UserContext.Consumer>
         {({ user }) => {
           if (!user) {
+            console.log('REDIRECTING TO login')
             const state = generateRoutingState(this.props.router)
-            window.location.replace(`/login?state=${state}`)
+            Router.push(`/login?state=${state}`)
           } else {
             return this.props.children
           }

@@ -1,12 +1,14 @@
 import React, { useState, ComponentProps, ReactNode } from 'react'
 import { useFetch } from '../utils/useFetch'
-
+import Router from 'next/router'
 import ConfigurationContext from '../contexts/ConfigurationContext'
 import UserContext from '../contexts/UserContext'
 import LoadingIndicator from './LoadingIndicator'
 import BackgroundCoverComponent from './BackgroundCover'
+import { IConfiguration } from '../../server/data/models/IConfiguration'
+import ActivityMessageContainerComponent from './ActivityMessageContainer'
 
-const ApplicationInitializer: React.FC = (props) => {
+const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (props) => {
   const { response, isLoading, error, refetch } = useFetch(`/api/initialize`, { method: 'GET' })
 
   let redirectUri: string = ''
@@ -14,20 +16,23 @@ const ApplicationInitializer: React.FC = (props) => {
 
   if (error) {
     content = (
-      <BackgroundCoverComponent>
+      <ActivityMessageContainerComponent>
         <div className="alert alert-danger">error.message</div>
-      </BackgroundCoverComponent>
+      </ActivityMessageContainerComponent>
     )
   }
   if (isLoading) {
     content = (
-      <BackgroundCoverComponent>
+      <ActivityMessageContainerComponent>
         <LoadingIndicator message="Loading..." />
-      </BackgroundCoverComponent>
+      </ActivityMessageContainerComponent>
     )
   }
   if (response) {
-    if (response.user && window.location.pathname === '/login') {
+    if (
+      response.user &&
+      (window.location.pathname === '/login' || window.location.pathname === '/' || window.location.pathname === '')
+    ) {
       redirectUri = '/personal-info'
     }
     if (response.needsConfiguration && window.location.pathname !== '/oobe') {
@@ -43,16 +48,16 @@ const ApplicationInitializer: React.FC = (props) => {
 
   if (redirectUri) {
     content = (
-      <BackgroundCoverComponent>
+      <ActivityMessageContainerComponent>
         <LoadingIndicator message="Redirecting..." />
-      </BackgroundCoverComponent>
+      </ActivityMessageContainerComponent>
     )
-    window.location.replace(redirectUri)
+    Router.push(redirectUri)
   }
 
   return (
     <div>
-      <ConfigurationContext.Provider value={response?.configuration}>
+      <ConfigurationContext.Provider value={response ? response.configuration : props.configuration}>
         <UserContext.Provider value={{ user: response?.user, refresh: refetch }}>{content}</UserContext.Provider>
       </ConfigurationContext.Provider>
     </div>

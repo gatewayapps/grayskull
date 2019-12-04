@@ -5,15 +5,16 @@ import { onError } from 'apollo-link-error'
 import { ApolloLink, Observable } from 'apollo-link'
 import { createUploadLink } from 'apollo-upload-client'
 import generateFingerprint from '../utils/generateFingerprint'
+import Router from 'next/router'
 
 export default function createApolloClient() {
   const onErrorHandler = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach((err) => {
         console.error(err)
+
         if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && window.location.pathname !== '/login') {
           window.location.replace('/login')
-          return
         }
         if (err.extensions && err.extensions.code === 'FORBIDDEN' && window.location.pathname !== '/oobe') {
           window.location.replace('/oobe')
