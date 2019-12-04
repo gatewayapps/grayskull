@@ -48,6 +48,7 @@ class OobeIndex extends React.Component<any, any> {
           realmName: 'Grayskull',
           realmLogo: '/grayskull.svg',
           realmBackground: '/bg.jpg',
+          realmFavicon: '/favicon.ico',
           baseUrl: 'http://127.0.0.1'
         },
         Mail: {
