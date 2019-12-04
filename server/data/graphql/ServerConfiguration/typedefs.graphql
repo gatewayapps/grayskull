@@ -3,4 +3,5 @@ type ServerConfiguration {
   realmName: String!
   realmLogo: String!
   realmBackground: String!
+  realmFavicon: String!
 }
