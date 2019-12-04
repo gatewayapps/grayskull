@@ -60,6 +60,7 @@ function getSequelizeConnection() {
     databaseName = connectionUrl.pathname.substr(1)
   }
   let options: Sequelize.Options = {
+    logging: false,
     dialect: dialect!,
     host: server,
     database: databaseName,
