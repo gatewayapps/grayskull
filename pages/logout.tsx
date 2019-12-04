@@ -7,6 +7,8 @@ import gql from 'graphql-tag'
 import Jumbotron from 'reactstrap/lib/Jumbotron'
 import ErrorMessage from '../client/components/ErrorMessage'
 import BackgroundCoverComponent from '../client/components/BackgroundCover'
+import ActivityMessageContainerComponent from '../client/components/ActivityMessageContainer'
+import UserContext from '../client/contexts/UserContext'
 
 const LOGOUT_MUTATION = gql`
   mutation LOGOUT_MUTATION {
@@ -24,41 +26,38 @@ const Logout: NextPage = (props) => {
     logout()
   }
 
-  if (loading) {
-    return (
-      <BackgroundCoverComponent>
-        <Jumbotron>
-          <LoadingIndicator message="Logging you out..." />
-        </Jumbotron>
-      </BackgroundCoverComponent>
-    )
-  } else if (error) {
-    return (
-      <BackgroundCoverComponent>
-        <Jumbotron>
-          <ErrorMessage error={error} />
-        </Jumbotron>
-      </BackgroundCoverComponent>
-    )
-  } else if (data && data.logout && data.logout.success) {
+  const completeLogout = async (refresh) => {
     deleteCookie('sid')
-    window.location.href = '/'
+    if (refresh) {
+      await refresh()
+    }
+    Router.push('/')
+    Router.replace('/')
+  }
+
+  if (error) {
+    completeLogout(undefined)
     return (
-      <BackgroundCoverComponent>
-        <Jumbotron>
-          <LoadingIndicator message="Logging you out..." />
-        </Jumbotron>
-      </BackgroundCoverComponent>
-    )
-  } else {
-    return (
-      <BackgroundCoverComponent>
-        <Jumbotron>
-          <LoadingIndicator message="Logging you out..." />
-        </Jumbotron>
-      </BackgroundCoverComponent>
+      <ActivityMessageContainerComponent>
+        <ErrorMessage error={error} />
+      </ActivityMessageContainerComponent>
     )
   }
+
+  return (
+    <UserContext.Consumer>
+      {({ refresh }) => {
+        if (data && data.logout && data.logout.success) {
+          completeLogout(refresh)
+        }
+        return (
+          <ActivityMessageContainerComponent>
+            <LoadingIndicator message="Logging you out..." />
+          </ActivityMessageContainerComponent>
+        )
+      }}
+    </UserContext.Consumer>
+  )
 }
 
 function deleteCookie(name) {

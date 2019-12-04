@@ -1,10 +1,11 @@
 import React from 'react'
-import { withRouter } from 'next/router'
+import { withRouter, default as Router } from 'next/router'
 import BackgroundCover from '../client/components/BackgroundCover'
 
 import LoginForm from '../client/components/LoginForm'
 import Primary from '../client/layouts/primary'
 import { parseRoutingState } from '../client/utils/routing'
+import UserContext from '../client/contexts/UserContext'
 
 class LoginPage extends React.PureComponent {
   static async getInitialProps({ req, query, res }) {
@@ -12,7 +13,8 @@ class LoginPage extends React.PureComponent {
     return { query, ...locals }
   }
 
-  onAuthenticated = () => {
+  onAuthenticated = async () => {
+    await this.refresh()
     if (this.props.router.query.state) {
       const parsedState = parseRoutingState(this.props.router.query.state)
       if (parsedState) {
@@ -20,7 +22,7 @@ class LoginPage extends React.PureComponent {
         return
       }
     }
-    this.props.router.push('/')
+    Router.push('/')
   }
 
   render() {
@@ -34,7 +36,12 @@ class LoginPage extends React.PureComponent {
         <BackgroundCover>
           <div className="container">
             {headerMessage}
-            <LoginForm onAuthenticated={this.onAuthenticated} />
+            <UserContext.Consumer>
+              {({ refresh }) => {
+                this.refresh = refresh
+                return <LoginForm onAuthenticated={this.onAuthenticated} />
+              }}
+            </UserContext.Consumer>
           </div>
         </BackgroundCover>
       </Primary>
