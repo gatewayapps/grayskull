@@ -57,6 +57,7 @@ class ConfigurationManager {
     serverConfig.baseUrl = await getStringSetting(SettingsKeys.SERVER_BASE_URL)
     serverConfig.realmLogo = await getStringSetting(SettingsKeys.SERVER_REALM_LOGO)
     serverConfig.realmName = await getStringSetting(SettingsKeys.SERVER_REALM_NAME)
+    serverConfig.realmBackground = await getStringSetting(SettingsKeys.SERVER_BACKGROUND_IMAGE)
 
     currentConfig = {
       Mail: mailConfig,

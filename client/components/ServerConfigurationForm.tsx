@@ -65,6 +65,16 @@ const ServerConfigurationForm = ({ data, onConfigurationChanged, onValidated }: 
               onChange={(e) => handleChange(e, validate)}
               helpText="You can drag and drop an image here or click to select one"
             />
+            <ResponsiveValidatingInput
+              validationErrors={validationErrors}
+              label="Realm Background Image"
+              type="photo"
+              style={{ height: '100px', border: '1px dashed black' }}
+              name="realmBackground"
+              value={data.realmBackground || '/bg.jpg'}
+              onChange={(e) => handleChange(e, validate)}
+              helpText="You can drag and drop an image here or click to select one"
+            />
           </div>
         )}
       </FormValidation>

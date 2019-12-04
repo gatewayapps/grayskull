@@ -38,6 +38,7 @@ input ServerConfigurationInput {
   baseUrl: String!
   realmName: String!
   realmLogo: String!
+  realmBackground: String!
 }
 
 input SaveConfigurationArgs {
