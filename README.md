@@ -1,6 +1,6 @@
 # grayskull
 
-A federated user authentication (not authorization) application
+An OpenID Connect Server
 
 # Environment Variables
 
