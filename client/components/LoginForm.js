@@ -11,8 +11,22 @@ import ResponsiveInput from './ResponsiveInput'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 const LOGIN_MUTATION = gql`
-  mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $fingerprint: String!, $extendedSession: Boolean!) {
-    login(data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, fingerprint: $fingerprint, extendedSession: $extendedSession }) {
+  mutation LOGIN_MUTATION(
+    $emailAddress: String!
+    $password: String!
+    $otpToken: String
+    $fingerprint: String!
+    $extendedSession: Boolean!
+  ) {
+    login(
+      data: {
+        emailAddress: $emailAddress
+        password: $password
+        otpToken: $otpToken
+        fingerprint: $fingerprint
+        extendedSession: $extendedSession
+      }
+    ) {
       success
       message
       otpRequired
@@ -95,7 +109,9 @@ class LoginForm extends PureComponent {
   }
 
   render() {
-    const forgotPasswordLink = `/resetPassword${this.state.emailAddress ? '?emailAddress=' + this.state.emailAddress : ''}`
+    const forgotPasswordLink = `/resetPassword${
+      this.state.emailAddress ? '?emailAddress=' + this.state.emailAddress : ''
+    }`
 
     return (
       <RequireConfiguration>
@@ -123,9 +139,23 @@ class LoginForm extends PureComponent {
                         <div className="col-12 col-md-10 ">
                           {!this.state.otpRequired && (
                             <div>
-                              <ResponsiveInput autoComplete="nope" name="emailAddress" type="email" label="E-mail Address" value={this.state.emailAddress} onChange={this.handleChange} autoFocus />
+                              <ResponsiveInput
+                                autoComplete="nope"
+                                name="emailAddress"
+                                type="email"
+                                label="E-mail Address"
+                                value={this.state.emailAddress}
+                                onChange={this.handleChange}
+                                autoFocus
+                              />
 
-                              <ResponsiveInput type="password" name="password" value={this.state.password} onChange={this.handleChange} label="Password" />
+                              <ResponsiveInput
+                                type="password"
+                                name="password"
+                                value={this.state.password}
+                                onChange={this.handleChange}
+                                label="Password"
+                              />
 
                               <div className="form-check mb-3">
                                 <input
@@ -157,16 +187,26 @@ class LoginForm extends PureComponent {
 
                                 {this.state.emailVerificationRequired && !this.state.emailVerificationSent && (
                                   <div className="d-inline ml-2">
-                                    <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                                    <Mutation
+                                      mutation={RESEND_VERIFICATION_MUTATION}
+                                      variables={{ emailAddress: this.state.emailAddress }}>
                                       {(sendVerification, { loading }) => (
-                                        <button type="button" disabled={loading} onClick={() => this.onSendVerificationEmail(sendVerification)} className="btn btn-link text-danger">
+                                        <button
+                                          type="button"
+                                          disabled={loading}
+                                          onClick={() => this.onSendVerificationEmail(sendVerification)}
+                                          className="btn btn-link text-danger">
                                           Re-send Verification E-Mail
                                         </button>
                                       )}
                                     </Mutation>
                                   </div>
                                 )}
-                                {this.state.emailVerificationSent && <div className="alert alert-secondary">A verification e-mail has been sent to {this.state.emailAddress}</div>}
+                                {this.state.emailVerificationSent && (
+                                  <div className="alert alert-secondary">
+                                    A verification e-mail has been sent to {this.state.emailAddress}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           )}
@@ -180,11 +220,21 @@ class LoginForm extends PureComponent {
                                 value={this.state.otpToken}
                                 onChange={this.handleChange}
                               />
-                              {this.state.backupCodeSent && <div>A backup code has been sent to your email address.</div>}
-                              <Mutation mutation={SEND_BACKUP_CODE_MUTATION} variables={{ emailAddress: this.state.emailAddress }}>
+                              {this.state.backupCodeSent && (
+                                <div>A backup code has been sent to your email address.</div>
+                              )}
+                              <Mutation
+                                mutation={SEND_BACKUP_CODE_MUTATION}
+                                variables={{ emailAddress: this.state.emailAddress }}>
                                 {(sendBackupCode, { loading }) => (
-                                  <button type="button" className="btn btn-link pl-0" disabled={loading} onClick={() => this.onSendBackupCode(sendBackupCode)}>
-                                    {this.state.backupCodeSent ? 'Send new backup code' : "I don't have access to my authenticator right now"}
+                                  <button
+                                    type="button"
+                                    className="btn btn-link pl-0"
+                                    disabled={loading}
+                                    onClick={() => this.onSendBackupCode(sendBackupCode)}>
+                                    {this.state.backupCodeSent
+                                      ? 'Send new backup code'
+                                      : "I don't have access to my authenticator right now"}
                                   </button>
                                 )}
                               </Mutation>
@@ -197,8 +247,20 @@ class LoginForm extends PureComponent {
                     }
                     formFooter={
                       <div className="btn-toolbar float-right">
-                        <button type="submit" className="btn btn-outline-info" disabled={loading} onClick={() => this.attemptLogin(login)}>
-                          <i className="fal fa-sign-in" /> Login
+                        <button
+                          type="submit"
+                          className="btn btn-outline-info"
+                          disabled={loading}
+                          onClick={() => this.attemptLogin(login)}>
+                          {loading ? (
+                            <>
+                              <i className="fal fa-fw fa-spin fa-spinner" /> Logging In...
+                            </>
+                          ) : (
+                            <>
+                              <i className="fal fa-sign-in" /> Login
+                            </>
+                          )}
                         </button>
                       </div>
                     }
