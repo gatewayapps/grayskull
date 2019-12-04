@@ -35,16 +35,16 @@ class MyApp extends App<any> {
   }
 
   render() {
-    const { Component, pageProps, user, configuration } = this.props
+    const { Component, pageProps } = this.props
 
     let title = 'Grayskull'
-    if (configuration && configuration.Server) {
-      title = configuration.Server.realmName
+    if (this.state.configuration && this.state.configuration.Server) {
+      title = this.state.configuration.Server.realmName
     }
 
     return (
       <ApolloProvider client={apolloClient}>
-        <ApplicationInitializer configuration={configuration}>
+        <ApplicationInitializer configuration={this.state.configuration}>
           <div>
             <Head>
               <meta name="viewport" content="width=device-width, initial-scale=1" />
