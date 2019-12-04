@@ -58,6 +58,7 @@ class ConfigurationManager {
     serverConfig.realmLogo = await getStringSetting(SettingsKeys.SERVER_REALM_LOGO)
     serverConfig.realmName = await getStringSetting(SettingsKeys.SERVER_REALM_NAME)
     serverConfig.realmBackground = await getStringSetting(SettingsKeys.SERVER_BACKGROUND_IMAGE)
+    serverConfig.realmFavicon = (await getStringSetting(SettingsKeys.SERVER_FAVICON)) || '/favicon.ico'
 
     currentConfig = {
       Mail: mailConfig,

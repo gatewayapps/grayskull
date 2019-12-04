@@ -21,6 +21,7 @@ export const SettingsKeys = {
   SERVER_REALM_NAME: 'SERVER_REALM_NAME',
   SERVER_BASE_URL: 'SERVER_BASE_URL',
   SERVER_BACKGROUND_IMAGE: 'SERVER_BACKGROUND_IMAGE',
+  SERVER_FAVICON: 'SERVER_FAVICON',
   SERVER_CONFIGURED: 'SERVER_CONFIGURED'
 }
 
@@ -186,6 +187,14 @@ export default {
       Example: '/bg.jpg',
       Key: SettingsKeys.SERVER_BACKGROUND_IMAGE,
       Label: 'Realm Background Image',
+      Type: 'File'
+    },
+    {
+      Default: '/favicon.ico',
+      Description: 'Favicon for your realm.',
+      Example: '/favicon.ico',
+      Key: SettingsKeys.SERVER_BACKGROUND_IMAGE,
+      Label: 'Realm Favicon',
       Type: 'File'
     },
     {
