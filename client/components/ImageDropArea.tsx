@@ -6,7 +6,7 @@ import { Mutation, MutationFn } from 'react-apollo'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
 
-const MAX_FILE_SIZE = 10000000 // 10MB
+const MAX_FILE_SIZE = 2000000 // 10MB
 
 export interface IUploadedFile {
   url: string
@@ -65,7 +65,9 @@ export default class ImageDropArea extends React.PureComponent<IImageDropAreaPro
       if (!/^image\//.test(file.type)) {
         message = `The file type for "${file.name}" is not supported. Please choose an image and try again.`
       } else if (file.size > MAX_FILE_SIZE) {
-        message = `The file "${file.name}" with a size of ${prettyBytes(file.size)} is too large to upload. The maximum upload file size is ${prettyBytes(MAX_FILE_SIZE)}.`
+        message = `The file "${file.name}" with a size of ${prettyBytes(
+          file.size
+        )} is too large to upload. The maximum upload file size is ${prettyBytes(MAX_FILE_SIZE)}.`
       } else {
         message = `The file "${file.name}" could not be uploaded.`
       }
@@ -92,7 +94,11 @@ export default class ImageDropArea extends React.PureComponent<IImageDropAreaPro
     return (
       <Mutation mutation={UPLOAD_FILE_MUTATION}>
         {(uploadFile) => (
-          <Dropzone accept="image/*" disabled={this.props.disabled} maxSize={MAX_FILE_SIZE} onDrop={(accepted, rejected) => this.onDrop(accepted, rejected, uploadFile)}>
+          <Dropzone
+            accept="image/*"
+            disabled={this.props.disabled}
+            maxSize={MAX_FILE_SIZE}
+            onDrop={(accepted, rejected) => this.onDrop(accepted, rejected, uploadFile)}>
             {({ getRootProps, getInputProps, isDragActive }) => {
               const dropAreaClasses = cn(this.props.className, {
                 active: isDragActive,
@@ -102,7 +108,15 @@ export default class ImageDropArea extends React.PureComponent<IImageDropAreaPro
               return (
                 <DropArea {...getRootProps()} className={dropAreaClasses} style={this.props.style}>
                   <input {...getInputProps()} aria-describedby={this.props['aria-describedby']} />
-                  {this.props.value ? <img className="d-block ml-auto mr-auto" src={this.props.value} style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }} /> : this.props.children}
+                  {this.props.value ? (
+                    <img
+                      className="d-block ml-auto mr-auto"
+                      src={this.props.value}
+                      style={{ maxWidth: '100%', maxHeight: '100%', height: 'auto' }}
+                    />
+                  ) : (
+                    this.props.children
+                  )}
                 </DropArea>
               )
             }}
