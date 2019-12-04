@@ -21,25 +21,30 @@ class MyApp extends App<any> {
 
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {}
+    let configuration: any
+    if (ctx.req) {
+      const configManager = await import('../server/config/ConfigurationManager')
 
+      configuration = await configManager.getCurrentConfiguration(true)
+    }
     if (Component && Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }
 
-    return { pageProps }
+    return { pageProps, configuration }
   }
 
   render() {
     const { Component, pageProps, user, configuration } = this.props
 
     let title = 'Grayskull'
-    if (this.state.configuration && this.state.configuration.Server) {
-      title = this.state.configuration.Server.realmName
+    if (configuration && configuration.Server) {
+      title = configuration.Server.realmName
     }
 
     return (
       <ApolloProvider client={apolloClient}>
-        <ApplicationInitializer>
+        <ApplicationInitializer configuration={configuration}>
           <div>
             <Head>
               <meta name="viewport" content="width=device-width, initial-scale=1" />
