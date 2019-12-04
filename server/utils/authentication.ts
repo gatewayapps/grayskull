@@ -6,8 +6,9 @@ import SessionService from '../api/services/SessionService'
 import { IUserAccount } from '../data/models/IUserAccount'
 import { getUserContext } from '../middleware/authentication'
 import ClientRepository from '../data/repositories/ClientRepository'
+import { NextApiRequest, NextApiResponse } from 'next'
 
-export type RequestContext = IncomingMessage & {
+export type RequestContext = NextApiRequest & {
   cookies: Cookies
   parsedUrl: URL
   originalUrl: string
@@ -16,7 +17,7 @@ export type RequestContext = IncomingMessage & {
     emailAddress: string
   }
 }
-export type ResponseContext = ServerResponse & {
+export type ResponseContext = NextApiResponse & {
   cookies: Cookies
   session?: ISession
   user?: IUserAccount & {
@@ -108,7 +109,7 @@ export function clearAuthCookies(res: ResponseContext) {
   res.cookies.set(SESSION_ID_COOKIE_NAME, undefined)
 }
 
-export async function buildContext(req: IncomingMessage, res: ServerResponse) {
+export async function buildContext(req: NextApiRequest, res: NextApiResponse) {
   const cookies = new Cookies(req, res)
 
   const finalUrl = originalUrl(req)
