@@ -152,7 +152,12 @@ class ClientEditPage extends PureComponent {
                               </span>
                             </div>
                           </div>
-                          <ClientForm client={mergedClient} onChange={this.handleClientFormChange} onValidated={this.onClientFormValidated} scopes={scopes} />
+                          <ClientForm
+                            client={mergedClient}
+                            onChange={this.handleClientFormChange}
+                            onValidated={this.onClientFormValidated}
+                            scopes={scopes}
+                          />
                           {this.state.result && <div className="alert alert-success">Success!</div>}
                         </div>
                         <div className="card-footer justify-content-end">
@@ -162,7 +167,10 @@ class ClientEditPage extends PureComponent {
                                 <i className="fal fa-fw fa-times" /> Cancel
                               </a>
                             </Link>
-                            <button className="btn btn-success" type="submit" disabled={saving || !this.state.clientFormValid}>
+                            <button
+                              className="btn btn-success"
+                              type="submit"
+                              disabled={saving || !this.state.clientFormValid}>
                               <i className="fal fa-fw fa-save" /> Update
                             </button>
                           </div>

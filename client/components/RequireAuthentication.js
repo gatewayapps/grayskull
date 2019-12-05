@@ -15,7 +15,6 @@ class RequireAuthentication extends Component {
       <UserContext.Consumer>
         {({ user }) => {
           if (!user) {
-            console.log('REDIRECTING TO login')
             const state = generateRoutingState(this.props.router)
             Router.push(`/login?state=${state}`)
           } else {

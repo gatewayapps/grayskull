@@ -24,7 +24,8 @@ export default class ResponsiveValidatingInput extends React.PureComponent {
     const labelMediumColumnClass = `col-md-${labelColumnWidth}`
     const inputMediumColumnClass = `col-md-${12 - labelColumnWidth}`
 
-    const finalClassName = `${this.props.readOnly ? 'form-control-plaintext border-bottom-0' : ''} ${this.props.className || ''}`
+    const finalClassName = `${this.props.readOnly ? 'form-control-plaintext border-bottom-0' : ''} ${this.props
+      .className || ''}`
 
     return (
       <div className="form-group row align-items-start my-1">

@@ -130,7 +130,10 @@ class ClientForm extends PureComponent {
                   aria-describedby="logoImageUrlErrorBlock">
                   <div className="p-3">Click or drag an image here to set the client logo</div>
                 </ImageDropArea>
-                <FormValidationMessage id="logoImageUrlErrorBlock" validationErrors={validationErrors['logoImageUrl']} />
+                <FormValidationMessage
+                  id="logoImageUrlErrorBlock"
+                  validationErrors={validationErrors['logoImageUrl']}
+                />
               </div>
             </div>
             <div className="form-group row">
@@ -170,7 +173,8 @@ class ClientForm extends PureComponent {
                 />
                 <FormValidationMessage id="homePageUrlErrorBlock" validationErrors={validationErrors['homePageUrl']} />
                 <div id="homePageUrlHelpBlock" className="small form-text text-muted">
-                  The url for the home page of the client application. You can leave this blank if the home page is the same as the Base Url.
+                  The url for the home page of the client application. You can leave this blank if the home page is the
+                  same as the Base Url.
                 </div>
               </div>
             </div>
@@ -184,7 +188,9 @@ class ClientForm extends PureComponent {
                     <div className="input-group mb-2">
                       <input
                         type="url"
-                        className={`form-control ${validationErrors[`redirectUris.${index}.value`] ? 'is-invalid' : 'is-valid'}`}
+                        className={`form-control ${
+                          validationErrors[`redirectUris.${index}.value`] ? 'is-invalid' : 'is-valid'
+                        }`}
                         name={`redirectUris.${index}`}
                         onChange={(e) => this.handleRedirectUriChange(redirectUri.key, e.target.value, validate)}
                         required
@@ -193,12 +199,18 @@ class ClientForm extends PureComponent {
                         aria-describedby={`redirectUris.${index}-errorBlock`}
                       />
                       <div className="input-group-append">
-                        <button className="btn btn-outline-danger" type="button" onClick={() => this.removeRedirectUri(redirectUri.key, validate)}>
+                        <button
+                          className="btn btn-outline-danger"
+                          type="button"
+                          onClick={() => this.removeRedirectUri(redirectUri.key, validate)}>
                           <i className="fal fa-fw fa-trash" />
                         </button>
                       </div>
                     </div>
-                    <FormValidationMessage id={`redirectUris.${index}-errorBlock`} validationErrors={validationErrors[`redirectUris.${index}.value`]} />
+                    <FormValidationMessage
+                      id={`redirectUris.${index}-errorBlock`}
+                      validationErrors={validationErrors[`redirectUris.${index}.value`]}
+                    />
                   </div>
                 ))}
                 <button className="btn btn-link btn-sm" onClick={() => this.addRedirectUri(validate)} type="button">
@@ -241,7 +253,8 @@ class ClientForm extends PureComponent {
                   </div>
                 ))}
                 <small id="scopesHelpBlock" className="form-text text-muted">
-                  Scopes identify the information about a user that a client can request permission from the user to access or update.
+                  Scopes identify the information about a user that a client can request permission from the user to
+                  access or update.
                 </small>
               </div>
             </div>

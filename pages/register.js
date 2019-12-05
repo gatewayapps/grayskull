@@ -18,8 +18,24 @@ const RegistrationSteps = {
 }
 
 const REGISTER_USER_MUTATION = gql`
-  mutation REGISTER_USER_MUTATION($emailAddress: String!, $firstName: String!, $lastName: String!, $password: String!, $confirm: String!, $otpSecret: String) {
-    registerUser(data: { emailAddress: $emailAddress, firstName: $firstName, lastName: $lastName, password: $password, confirm: $confirm, otpSecret: $otpSecret }) {
+  mutation REGISTER_USER_MUTATION(
+    $emailAddress: String!
+    $firstName: String!
+    $lastName: String!
+    $password: String!
+    $confirm: String!
+    $otpSecret: String
+  ) {
+    registerUser(
+      data: {
+        emailAddress: $emailAddress
+        firstName: $firstName
+        lastName: $lastName
+        password: $password
+        confirm: $confirm
+        otpSecret: $otpSecret
+      }
+    ) {
       success
       message
       error
@@ -148,15 +164,27 @@ class RegisterPage extends PureComponent {
                               {!this.state.accountCreated && (
                                 <div>
                                   {this.state.step === RegistrationSteps.UserData && (
-                                    <RegistrationForm configuration={securityConfiguration} data={this.state.data} onChange={this.onFormValueChanged} onValidated={this.onFormValidated} />
+                                    <RegistrationForm
+                                      configuration={securityConfiguration}
+                                      data={this.state.data}
+                                      onChange={this.onFormValueChanged}
+                                      onValidated={this.onFormValidated}
+                                    />
                                   )}
                                   {this.state.step === RegistrationSteps.Multifactor && (
                                     <div>
-                                      {securityConfiguration.multifactorRequired && <p>Multi-factor authentication is required to complete account registration.</p>}
+                                      {securityConfiguration.multifactorRequired && (
+                                        <p>Multi-factor authentication is required to complete account registration.</p>
+                                      )}
                                       {!this.state.showMfaForm && !securityConfiguration.multifactorRequired && (
                                         <div>
-                                          <p>Make your account more secure and require a one-time authentication code to login.</p>
-                                          <button className="btn btn-primary" onClick={() => this.setRequireMfaVerification(true)}>
+                                          <p>
+                                            Make your account more secure and require a one-time authentication code to
+                                            login.
+                                          </p>
+                                          <button
+                                            className="btn btn-primary"
+                                            onClick={() => this.setRequireMfaVerification(true)}>
                                             Enable Mulit-Factor Authentication
                                           </button>
                                         </div>
@@ -180,7 +208,11 @@ class RegisterPage extends PureComponent {
                               <button
                                 type="submit"
                                 className="btn btn-primary"
-                                disabled={!this.isValid(securityConfiguration) || this.state.creatingAccount || this.state.accountCreated}
+                                disabled={
+                                  !this.isValid(securityConfiguration) ||
+                                  this.state.creatingAccount ||
+                                  this.state.accountCreated
+                                }
                                 onClick={() => this.onSubmitClick(registerUser)}>
                                 {loading && <i className="fa fa-fw fa-spin fa-spinner mr-2" />}
                                 {this.state.step === RegistrationSteps.Multifactor ? 'Register' : 'Next'}

@@ -6,3 +6,4 @@ public/static
 **/*.d.ts
 node_modules
 dist
+public/**/*.js

@@ -118,7 +118,10 @@ class MultiFactorSetup extends PureComponent {
             {this.state.showSecret && (
               <p>
                 <div>
-                  <CopyTextField label="Type the following key into your authenticator app" text={this.state.otpSecret} />
+                  <CopyTextField
+                    label="Type the following key into your authenticator app"
+                    text={this.state.otpSecret}
+                  />
                 </div>
               </p>
             )}
@@ -127,7 +130,13 @@ class MultiFactorSetup extends PureComponent {
             <li>
               <p>Verify the authenticator app is setup correctly by entering a code below.</p>
               <p>
-                <input type="text" className="form-control" placeholder="Enter code here" value={this.state.token} onChange={this.handleTokenChanged} />
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter code here"
+                  value={this.state.token}
+                  onChange={this.handleTokenChanged}
+                />
               </p>
               <div>
                 <button className="btn btn-primary" onClick={() => this.verifyToken(client)}>

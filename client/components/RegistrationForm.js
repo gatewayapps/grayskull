@@ -43,13 +43,27 @@ class RegistrationForm extends PureComponent {
           const validations = [
             new FormValidationRule('emailAddress', 'isEmpty', false, 'E-mail address is required'),
             new FormValidationRule('emailAddress', 'isEmail', true, 'Not a valid email address'),
-            new FormValidationRule('emailAddress', checkEmailAvailable, true, 'Sorry, this email address is already being used by another account', [apolloClient]),
+            new FormValidationRule(
+              'emailAddress',
+              checkEmailAvailable,
+              true,
+              'Sorry, this email address is already being used by another account',
+              [apolloClient]
+            ),
             new FormValidationRule('firstName', 'isEmpty', false, 'First name is required'),
             new FormValidationRule('lastName', 'isEmpty', false, 'Last name is required'),
             new FormValidationRule('password', 'isEmpty', false, 'Password is required'),
-            new FormValidationRule('password', validatePassword, true, 'Password does not meet complexity requirements', [this.props.configuration]),
+            new FormValidationRule(
+              'password',
+              validatePassword,
+              true,
+              'Password does not meet complexity requirements',
+              [this.props.configuration]
+            ),
             new FormValidationRule('confirm', 'isEmpty', false, 'Confirm password is required'),
-            new FormValidationRule('confirm', 'equals', true, 'Confirm should match the password', [this.props.data.password])
+            new FormValidationRule('confirm', 'equals', true, 'Confirm should match the password', [
+              this.props.data.password
+            ])
           ]
 
           return (
@@ -99,10 +113,15 @@ class RegistrationForm extends PureComponent {
                     onChange={(e) => this.handleChange(e, validate)}
                   />
 
-                  <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                  <div
+                    className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3"
+                    style={{ border: '1px solid' }}>
                     <div className="alert-heading">Password requirements</div>
                     <div>
-                      <PasswordComplexity configuration={this.props.configuration} password={this.props.data.password} />
+                      <PasswordComplexity
+                        configuration={this.props.configuration}
+                        password={this.props.data.password}
+                      />
                     </div>
                   </div>
 

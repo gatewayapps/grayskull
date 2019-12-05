@@ -200,16 +200,23 @@ class ClientAddPage extends PureComponent {
                                 </ApolloConsumer>
                               )}
                               <div id="clientIdHelpBlock" className="small form-text text-muted">
-                                We recommend using the generated Client ID but you can customize it as long as the value is unique.
+                                We recommend using the generated Client ID but you can customize it as long as the value
+                                is unique.
                               </div>
                             </div>
                           </div>
-                          <ClientForm client={this.state.client} onChange={this.handleClientFormChange} onValidated={this.onClientFormValidated} scopes={data.scopes} />
+                          <ClientForm
+                            client={this.state.client}
+                            onChange={this.handleClientFormChange}
+                            onValidated={this.onClientFormValidated}
+                            scopes={data.scopes}
+                          />
                           {this.state.result && (
                             <div className="alert alert-success">
                               <p>
-                                Success! Your client_id and client_secret that your application will use to authenticate users are listed below. Please note these values down as this is the only time
-                                the client_secret will be visible.
+                                Success! Your client_id and client_secret that your application will use to authenticate
+                                users are listed below. Please note these values down as this is the only time the
+                                client_secret will be visible.
                               </p>
                               <div>
                                 <strong>Client Id:</strong> {this.state.result.client_id}
@@ -228,7 +235,10 @@ class ClientAddPage extends PureComponent {
                                   <i className="fal fa-times" /> Cancel
                                 </a>
                               </Link>
-                              <button className="btn btn-success" type="submit" disabled={loading || !this.state.clientIdValid || !this.state.clientFormValid}>
+                              <button
+                                className="btn btn-success"
+                                type="submit"
+                                disabled={loading || !this.state.clientIdValid || !this.state.clientFormValid}>
                                 <i className="fal fa-save" /> Create
                               </button>
                             </div>
