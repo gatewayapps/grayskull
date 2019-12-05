@@ -1,7 +1,7 @@
 import { FormValidation, FormValidationRule, ValidateFn } from '@gatewayapps/react-form-validation'
 import gql from 'graphql-tag'
 import React from 'react'
-import { Mutation, MutationFn } from 'react-apollo'
+import { Mutation, MutationFunction } from 'react-apollo'
 import { validatePassword } from '../utils/passwordComplexity'
 import RequireConfiguration from './RequireConfiguration'
 import ResponsiveForm from './ResponsiveForm'
@@ -107,7 +107,7 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
     }))
   }
 
-  onSubmitClick = async (activateAccount: MutationFn) => {
+  onSubmitClick = async (activateAccount: MutationFunction) => {
     switch (this.state.step) {
       case ActivationStep.Password:
         this.setState({ step: ActivationStep.MFA })

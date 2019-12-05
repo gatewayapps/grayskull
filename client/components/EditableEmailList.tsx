@@ -1,6 +1,6 @@
 import * as React from 'react'
 import gql from 'graphql-tag'
-import { Mutation, Query, QueryResult, MutationResult, MutationFn } from 'react-apollo'
+import { Query, QueryResult } from 'react-apollo'
 import LoadingIndicator from './LoadingIndicator'
 import { OperationVariables } from 'apollo-client'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'

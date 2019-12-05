@@ -15,7 +15,9 @@ const CHANGE_PASSWORD_REDIRECT_COUNTDOWN = 5
 
 const CHANGE_PASSWORD = gql`
   mutation CHANGE_PASSWORD($emailAddress: String!, $newPassword: String!, $confirmPassword: String!, $token: String) {
-    changePassword(data: { emailAddress: $emailAddress, newPassword: $newPassword, confirmPassword: $confirmPassword, token: $token }) {
+    changePassword(
+      data: { emailAddress: $emailAddress, newPassword: $newPassword, confirmPassword: $confirmPassword, token: $token }
+    ) {
       success
       message
     }
@@ -90,9 +92,17 @@ export default class ChangePasswordForm extends React.Component {
           const { securityConfiguration } = configuration
           const validations = [
             new FormValidationRule('newPassword', 'isEmpty', false, 'New password is required'),
-            new FormValidationRule('newPassword', validatePassword, true, 'New password does not meet complexity requirements', [securityConfiguration]),
+            new FormValidationRule(
+              'newPassword',
+              validatePassword,
+              true,
+              'New password does not meet complexity requirements',
+              [securityConfiguration]
+            ),
             new FormValidationRule('confirmPassword', 'isEmpty', false, 'Confirm password is required'),
-            new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [this.state.newPassword])
+            new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [
+              this.state.newPassword
+            ])
           ]
           return (
             <FormValidation validations={validations} data={this.state} onValidated={this.onValidated}>
@@ -128,7 +138,9 @@ export default class ChangePasswordForm extends React.Component {
                         onChange={(e) => handleChange(e, validate)}
                       />
 
-                      <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                      <div
+                        className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3"
+                        style={{ border: '1px solid' }}>
                         <div className="alert-heading">Password requirements</div>
                         <div>
                           <PasswordComplexity configuration={securityConfiguration} password={this.state.newPassword} />
@@ -146,7 +158,8 @@ export default class ChangePasswordForm extends React.Component {
                       />
                       {this.state.passwordChanged && (
                         <div className="alert alert-success mx-4">
-                          Your password has been changed. You will be redirected to the login page in {this.state.redirectCountdown}
+                          Your password has been changed. You will be redirected to the login page in{' '}
+                          {this.state.redirectCountdown}
                           {this.state.redirectCountdown === 1 ? ' second' : ' seconds'} or{' '}
                           <Link href="/login">
                             <a>click here</a>
@@ -170,7 +183,12 @@ export default class ChangePasswordForm extends React.Component {
                                 }}
                                 className="btn btn-outline-success"
                                 type="submit">
-                                {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-check" />} Set Password
+                                {loading ? (
+                                  <i className="fal fa-fw fa-spin fa-spinner" />
+                                ) : (
+                                  <i className="fal fa-fw fa-check" />
+                                )}{' '}
+                                Set Password
                               </button>
                             </div>
                           )

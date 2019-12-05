@@ -2,14 +2,30 @@ import React, { PureComponent } from 'react'
 import { ApolloConsumer } from 'react-apollo'
 import gql from 'graphql-tag'
 import LoadingIndicator from './LoadingIndicator'
-import PropTypes from 'prop-types'
-import SignOut from '../components/SignOut'
+
+import SignOut from './SignOut'
 
 import UserContext from '../contexts/UserContext'
 
 const AUTHORIZE_CLIENT_MUTATION = gql`
-  mutation AUTHORIZE_CLIENT_MUTATION($client_id: String!, $responseType: String!, $redirectUri: String!, $scope: String, $state: String, $nonce: String) {
-    authorizeClient(data: { client_id: $client_id, responseType: $responseType, redirectUri: $redirectUri, scope: $scope, state: $state, nonce: $nonce }) {
+  mutation AUTHORIZE_CLIENT_MUTATION(
+    $client_id: String!
+    $responseType: String!
+    $redirectUri: String!
+    $scope: String
+    $state: String
+    $nonce: String
+  ) {
+    authorizeClient(
+      data: {
+        client_id: $client_id
+        responseType: $responseType
+        redirectUri: $redirectUri
+        scope: $scope
+        state: $state
+        nonce: $nonce
+      }
+    ) {
       pendingScopes
       redirectUri
     }
@@ -22,7 +38,15 @@ const UPDATE_CLIENT_SCOPES_MUTATION = gql`
   }
 `
 
-class ClientAuthorization extends PureComponent {
+interface IClientAuthorizationState {
+  initialized: boolean
+  isSaving: boolean
+  pendingScopes: any[]
+  allowedScopes: any[]
+  deniedScopes: any[]
+}
+
+class ClientAuthorization extends React.Component<IClientAuthorizationProps, IClientAuthorizationState> {
   state = {
     initialized: false,
     isSaving: false,
@@ -30,6 +54,7 @@ class ClientAuthorization extends PureComponent {
     allowedScopes: [],
     deniedScopes: []
   }
+  apolloClient: any
 
   componentDidMount() {
     this.authorizeClient()
@@ -41,7 +66,9 @@ class ClientAuthorization extends PureComponent {
       // add to allowed and remove from denied
       this.setState((prevState) => ({
         ...prevState,
-        allowedScopes: prevState.allowedScopes.includes(name) ? prevState.allowedScopes : prevState.allowedScopes.concat([name]),
+        allowedScopes: prevState.allowedScopes.includes(name)
+          ? prevState.allowedScopes
+          : prevState.allowedScopes.concat([name]),
         deniedScopes: prevState.deniedScopes.filter((denied) => denied !== name)
       }))
     } else {
@@ -49,7 +76,9 @@ class ClientAuthorization extends PureComponent {
       this.setState((prevState) => ({
         ...prevState,
         allowedScopes: prevState.allowedScopes.filter((allowed) => allowed !== name),
-        deniedScopes: prevState.deniedScopes.includes(name) ? prevState.deniedScopes : prevState.deniedScopes.concat([name])
+        deniedScopes: prevState.deniedScopes.includes(name)
+          ? prevState.deniedScopes
+          : prevState.deniedScopes.concat([name])
       }))
     }
   }
@@ -127,13 +156,19 @@ class ClientAuthorization extends PureComponent {
                     <div className="card-header">Authorize {this.props.client.name}</div>
                     <div className="card-body">
                       <div className="row">
-                        <div className="col-lg-3">{this.props.client.logoImageUrl && <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />}</div>
+                        <div className="col-lg-3">
+                          {this.props.client.logoImageUrl && (
+                            <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />
+                          )}
+                        </div>
                         <div className="col-lg-9">
                           <div className="mt-2">
                             <strong>{this.props.client.name}</strong> would like to:
                           </div>
                           {this.props.scopes
-                            .filter((s) => this.state.pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions)
+                            .filter(
+                              (s) => this.state.pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions
+                            )
                             .map((scope) => (
                               <div key={scope.id} className="form-check my-2 mx-4">
                                 <input
@@ -164,7 +199,11 @@ class ClientAuthorization extends PureComponent {
                     </div>
                     <div className="card-footer clearfix">
                       <div className="btn-toolbar float-right">
-                        <button type="button" className="btn btn-outline-danger mr-3" disabled={this.state.isSaving} onClick={this.onDenyClicked}>
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger mr-3"
+                          disabled={this.state.isSaving}
+                          onClick={this.onDenyClicked}>
                           <i className="fal fa-times fa-fw" /> Deny
                         </button>
                         <button type="submit" className="btn btn-success" disabled={this.state.isSaving}>
@@ -183,23 +222,18 @@ class ClientAuthorization extends PureComponent {
   }
 }
 
-ClientAuthorization.propTypes = {
-  client: PropTypes.shape({
-    client_id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    logoImageUrl: PropTypes.string.isRequired
-  }).isRequired,
-  responseType: PropTypes.string.isRequired,
-  redirectUri: PropTypes.string.isRequired,
-  scope: PropTypes.string,
-  scopes: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      userDescription: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  state: PropTypes.string,
-  nonce: PropTypes.string
+export interface IClientAuthorizationProps {
+  client: {
+    client_id: string
+    name: string
+    logoImageUrl: string
+  }
+  responseType: string
+  redirectUri: string
+  scope: string
+  scopes: [{ id: string; userDescription: string; permissionLevel: number; required: boolean }]
+  state?: string
+  nonce?: string
 }
 
 export default ClientAuthorization

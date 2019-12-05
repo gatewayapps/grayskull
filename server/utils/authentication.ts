@@ -7,6 +7,7 @@ import { IUserAccount } from '../data/models/IUserAccount'
 import { getUserContext } from '../middleware/authentication'
 import ClientRepository from '../data/repositories/ClientRepository'
 import { NextApiRequest, NextApiResponse } from 'next'
+import TokenService from '../api/services/TokenService'
 
 export type RequestContext = NextApiRequest & {
   cookies: Cookies
@@ -24,6 +25,18 @@ export type ResponseContext = NextApiResponse & {
     emailAddress: string
   }
   locals?: any
+}
+
+export async function getClientRequestOptionsFromRequest(req: RequestContext) {
+  try {
+    const auth = req.headers.authorization!
+
+    const authParts = auth.split(' ')
+    const accessToken = authParts[1]
+    return await TokenService.validateAndDecodeAccessToken(accessToken)
+  } catch {
+    return undefined
+  }
 }
 
 export const ACCESS_TOKEN_COOKIE_NAME = 'at'

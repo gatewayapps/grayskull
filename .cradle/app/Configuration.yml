@@ -1,13 +1,12 @@
 ServerConfiguration:
   meta:
     topLevel: false
-    sensitive:
-      - enableCertbot
-      - privateKey
   properties:
     baseUrl: string(1024)?
     realmName: string(512)?
     realmLogo: string(512)?
+    realmBackground: string(512)?
+    realmFavicon: string(512)?
 MailConfiguration:
   meta:
     topLevel: false

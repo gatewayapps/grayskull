@@ -16,13 +16,13 @@ class MutationButton extends React.Component<MutationButtonProps, any> {
   public render() {
     return (
       <Mutation mutation={this.props.mutation} variables={this.props.variables}>
-        {(mutationFn: MutationFunction<any, OperationVariables>, result: MutationResult<any>) => (
+        {(MutationFunction: MutationFunction<any, OperationVariables>, result: MutationResult<any>) => (
           <button
             disabled={this.props.disabled || result.loading}
             className={this.props.className}
             onClick={async () => {
               try {
-                const result = await mutationFn()
+                const result = await MutationFunction()
                 if (this.props.onSuccess) {
                   this.props.onSuccess(result)
                 }

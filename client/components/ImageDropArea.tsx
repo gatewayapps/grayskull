@@ -2,7 +2,7 @@ import cn from 'classnames'
 import gql from 'graphql-tag'
 import prettyBytes from 'pretty-bytes-es5'
 import * as React from 'react'
-import { Mutation, MutationFn } from 'react-apollo'
+import { Mutation, MutationFunction } from 'react-apollo'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
 
@@ -58,7 +58,7 @@ const UPLOAD_FILE_MUTATION = gql`
 `
 
 export default class ImageDropArea extends React.PureComponent<IImageDropAreaProps, any> {
-  onDrop = async (acceptedFiles: File[], rejectedFiles: File[], uploadFile: MutationFn) => {
+  onDrop = async (acceptedFiles: File[], rejectedFiles: File[], uploadFile: MutationFunction) => {
     if (rejectedFiles.length > 0) {
       const file = rejectedFiles[0]
       let message: string
