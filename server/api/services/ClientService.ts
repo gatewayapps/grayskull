@@ -1,6 +1,4 @@
-import { ClientInstance } from '../../data/models/Client'
-import { IClient } from '../../data/models/IClient'
-import { IUserAccount } from '../../data/models/IUserAccount'
+import { Client } from '../../data/models/IClient'
 
 import crypto from 'crypto'
 import uuid from 'uuid/v4'
@@ -14,7 +12,7 @@ import ClientRepository from '../../data/repositories/ClientRepository'
 
 class ClientService {
   @hasPermission(Permissions.Admin)
-  public async createClient(data: IClient, options: IQueryOptions): Promise<IClient> {
+  public async createClient(data: Client, options: IQueryOptions): Promise<Client> {
     if (!data.client_id) {
       data.client_id = uuid()
     }
@@ -40,14 +38,14 @@ class ClientService {
   }
 
   @hasPermission(Permissions.Admin)
-  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<IClient[]> {
+  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<Client[]> {
     return ClientRepository.getClients(filter, options)
   }
-  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<IClient | null> {
+  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<Client | null> {
     return ClientRepository.getClient(filter, options)
   }
 
-  public async validateClient(client_id: string, secret: string, options: IQueryOptions): Promise<IClient | null> {
+  public async validateClient(client_id: string, secret: string, options: IQueryOptions): Promise<Client | null> {
     const client = await ClientRepository.getClientWithSensitiveData({ client_id }, options)
     if (client && client.secret === secret) {
       return client
@@ -55,7 +53,11 @@ class ClientService {
     return null
   }
   @hasPermission(Permissions.Admin)
-  public async updateClient(filter: IClientUniqueFilter, data: Partial<IClient>, options: IQueryOptions): Promise<IClient | null> {
+  public async updateClient(
+    filter: IClientUniqueFilter,
+    data: Partial<Client>,
+    options: IQueryOptions
+  ): Promise<Client | null> {
     return ClientRepository.updateClient(filter, data, options)
   }
 }

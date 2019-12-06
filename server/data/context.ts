@@ -60,8 +60,8 @@ function getSequelizeConnection() {
     databaseName = connectionUrl.pathname.substr(1)
   }
   let options: Sequelize.Options = {
-    logging: false,
     dialect: dialect!,
+    logging: false,
     host: server,
     database: databaseName,
     storage: storage
@@ -93,11 +93,13 @@ const db = {
   Setting: SettingFactory(sequelize)
 }
 
-Object.values(db).forEach((model: any) => {
-  if (model.associate) {
-    model.associate(db)
-  }
-})
+// Object.values(db).forEach((model: any) => {
+//   if (model.associate) {
+//     model.associate(db)
+//   }
+// })
+
+sequelize.sync()
 
 export const getContext = async () => {
   if (!initialized) {

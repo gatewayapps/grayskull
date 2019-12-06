@@ -1,23 +1,23 @@
 import { ISettingMeta, ISettingFilter, ISettingUniqueFilter } from '../../interfaces/graphql/ISetting'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import { getContext } from '../../data/context'
-import { ISetting } from '../../data/models/ISetting'
 
-import { AnyWhereOptions } from 'sequelize'
+import { Setting } from '../../data/models/ISetting'
+
+import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
 class SettingRepository {
   public async settingsMeta(filter: ISettingFilter | null, options: IQueryOptions): Promise<ISettingMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await (await getContext()).Setting.count({ where, transaction: options.transaction })
+    const count = await Setting.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getSettings(filter: ISettingFilter | null, options: IQueryOptions): Promise<ISetting[]> {
+  public async getSettings(filter: ISettingFilter | null, options: IQueryOptions): Promise<Setting[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await (await getContext()).Setting.findAll({
+    const results = await Setting.findAll({
       where,
       include: options.include,
       order: options.order,
@@ -26,34 +26,34 @@ class SettingRepository {
 
       transaction: options.transaction
     })
-    return results.map((r) => r.toJSON())
+    return results
   }
 
-  public async getSetting(filter: ISettingUniqueFilter, options: IQueryOptions): Promise<ISetting | null> {
-    const result = await (await getContext()).Setting.findOne({
-      where: filter,
+  public async getSetting(filter: ISettingUniqueFilter, options: IQueryOptions): Promise<Setting | null> {
+    const result = await Setting.findOne({
+      where: filter as WhereAttributeHash,
 
       transaction: options.transaction
     })
     if (result) {
-      return result.toJSON()
+      return result
     } else {
       return null
     }
   }
 
-  public async createSetting(data: ISetting, options: IQueryOptions): Promise<ISetting> {
-    return await (await getContext()).Setting.create(data, { returning: true, transaction: options.transaction })
+  public async createSetting(data: Partial<Setting>, options: IQueryOptions): Promise<Setting> {
+    return await Setting.create(data, { transaction: options.transaction })
   }
 
   public async updateSetting(
     filter: ISettingUniqueFilter,
-    data: Partial<ISetting>,
+    data: Partial<Setting>,
     options: IQueryOptions
-  ): Promise<ISetting | null> {
-    await (await getContext()).Setting.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
+  ): Promise<Setting | null> {
+    await Setting.update(data, {
+      where: filter as WhereOptions,
+
       transaction: options.transaction
     })
     return await this.getSetting(filter, options)

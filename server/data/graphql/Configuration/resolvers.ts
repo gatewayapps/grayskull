@@ -9,7 +9,7 @@ import {
 import ConfigurationManager, { getCurrentConfiguration } from '../../../config/ConfigurationManager'
 import { encrypt } from '../../../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../../../constants'
-import { IUserAccount } from '../../models/IUserAccount'
+import { UserAccount } from '../../models/IUserAccount'
 import { Permissions } from '../../../utils/permissions'
 import { ForbiddenError } from 'apollo-server'
 
@@ -21,7 +21,7 @@ export default {
         throw new ForbiddenError('Cannot load configuration before server is configured')
       }
 
-      const user: IUserAccount | null | undefined = context.user
+      const user: UserAccount | null | undefined = context.user
       const loadMail = user && user.permissions === Permissions.Admin
 
       const configuration = await getCurrentConfiguration(!loadMail)

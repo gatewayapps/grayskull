@@ -1,11 +1,11 @@
-export interface ISessionMeta {
+export interface SessionMeta {
   count: number
 }
 
-export interface ISessionFilter {
-  or?: [ISessionFilter]
-  and?: [ISessionFilter]
-  sessionId_in?: [ string ]
+export interface SessionFilter {
+  or?: [SessionFilter]
+  and?: [SessionFilter]
+  sessionId_in?: [string]
   sessionId_equals?: string
   sessionId_notEquals?: string
   fingerprint_contains?: string
@@ -13,7 +13,7 @@ export interface ISessionFilter {
   fingerprint_endsWith?: string
   fingerprint_equals?: string
   fingerprint_notEquals?: string
-  userAccountId_in?: [ string ]
+  userAccountId_in?: [string]
   userAccountId_equals?: string
   userAccountId_notEquals?: string
   name_contains?: string
@@ -34,14 +34,14 @@ export interface ISessionFilter {
   expiresAt_greaterThan?: Date
   expiresAt_equals?: Date
   expiresAt_notEquals?: Date
-  createdBy_in?: [ string ]
+  createdBy_in?: [string]
   createdBy_equals?: string
   createdBy_notEquals?: string
   createdAt_lessThan?: Date
   createdAt_greaterThan?: Date
   createdAt_equals?: Date
   createdAt_notEquals?: Date
-  updatedBy_in?: [ string ]
+  updatedBy_in?: [string]
   updatedBy_equals?: string
   updatedBy_notEquals?: string
   updatedAt_lessThan?: Date
@@ -50,6 +50,6 @@ export interface ISessionFilter {
   updatedAt_notEquals?: Date
 }
 
-export interface ISessionUniqueFilter {
+export interface SessionUniqueFilter {
   sessionId?: string
-  }
+}

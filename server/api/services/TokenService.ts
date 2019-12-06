@@ -1,9 +1,9 @@
-import { IUserAccount } from '../../data/models/IUserAccount'
+import { UserAccount } from '../../data/models/IUserAccount'
 import moment from 'moment'
 import { IQueryOptions } from '../../data/IQueryOptions'
 import RefreshTokenRepository from '../../data/repositories/RefreshTokenRepository'
-import { IClient } from '../../data/models/IClient'
-import { IRefreshToken } from '../../data/models/IRefreshToken'
+import { Client } from '../../data/models/IClient'
+import { RefreshToken } from '../../data/models/IRefreshToken'
 import { default as crypto, randomBytes } from 'crypto'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { ScopeMap } from '../../api/services/ScopeService'
@@ -61,8 +61,16 @@ class TokenService {
       .digest('hex')
   }
 
-  public async createRefreshToken(client: IClient, userAccount: IUserAccount, maxAge: number | null, options: IQueryOptions): Promise<IRefreshToken> {
-    const userClient = await UserClientRepository.getUserClient({ client_id: client.client_id, userAccountId: userAccount.userAccountId }, options)
+  public async createRefreshToken(
+    client: Client,
+    userAccount: UserAccount,
+    maxAge: number | null,
+    options: IQueryOptions
+  ): Promise<RefreshToken> {
+    const userClient = await UserClientRepository.getUserClient(
+      { client_id: client.client_id, userAccountId: userAccount.userAccountId! },
+      options
+    )
     if (userClient && UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.offline_access.id)) {
       const tokenData = randomBytes(64).toString('hex')
 
@@ -90,7 +98,13 @@ class TokenService {
     }
   }
 
-  public async createIDToken(client: IClient, userAccount: IUserAccount, nonce: string | undefined, accessToken: string | undefined, options: IQueryOptions): Promise<string> {
+  public async createIDToken(
+    client: Client,
+    userAccount: UserAccount,
+    nonce: string | undefined,
+    accessToken: string | undefined,
+    options: IQueryOptions
+  ): Promise<string> {
     const config = await getCurrentConfiguration()
     const security = config.Security!
     const serverConfig = config.Server!
@@ -126,7 +140,10 @@ class TokenService {
     const decoded: IAccessToken | null = jwt.decode(accessToken) as IAccessToken
     if (decoded !== null) {
       const userClient = await UserClientRepository.getUserClient({ userClientId: decoded.sub }, { userContext: null })
-      const client = await ClientRepository.getClientWithSensitiveData({ client_id: userClient!.client_id }, { userContext: null })
+      const client = await ClientRepository.getClientWithSensitiveData(
+        { client_id: userClient!.client_id },
+        { userContext: null }
+      )
       if (client && jwt.verify(accessToken, client.secret)) {
         const userAccount = await UserAccountRepository.getUserAccount(
           {
@@ -146,8 +163,15 @@ class TokenService {
     throw new Error('Invalid access token')
   }
 
-  public async getUserProfileForClient(client: IClient, userAccount: IUserAccount, options: IQueryOptions): Promise<ISubject & IProfileClaim & IEmailClaim> {
-    const userClient = await UserClientRepository.getUserClient({ client_id: client.client_id, userAccountId: userAccount.userAccountId }, options)
+  public async getUserProfileForClient(
+    client: Client,
+    userAccount: UserAccount,
+    options: IQueryOptions
+  ): Promise<ISubject & IProfileClaim & IEmailClaim> {
+    const userClient = await UserClientRepository.getUserClient(
+      { client_id: client.client_id, userAccountId: userAccount.userAccountId! },
+      options
+    )
 
     if (userClient) {
       const result: ISubject & IProfileClaim & IEmailClaim = { sub: userClient.userClientId! }
@@ -160,7 +184,10 @@ class TokenService {
         result.name = `${userAccount.firstName} ${userAccount.lastName}`
       }
       if (UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.email.id)) {
-        const emailAddresses = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: userAccount.userAccountId }, options)
+        const emailAddresses = await EmailAddressRepository.getEmailAddresses(
+          { userAccountId_equals: userAccount.userAccountId },
+          options
+        )
         const primaryEmailAddress = emailAddresses.find((e) => e.primary === true)
         result.email = primaryEmailAddress!.emailAddress
         result.email_verified = primaryEmailAddress!.verified
@@ -170,7 +197,11 @@ class TokenService {
     throw new ForbiddenError('User has not authorized client')
   }
 
-  public async getRefreshTokenFromRawToken(rawToken: string, client: IClient, options: IQueryOptions): Promise<IRefreshToken | null> {
+  public async getRefreshTokenFromRawToken(
+    rawToken: string,
+    client: Client,
+    options: IQueryOptions
+  ): Promise<RefreshToken | null> {
     const hashedToken = this.hashToken(rawToken, client.secret)
     const result = await RefreshTokenRepository.getRefreshToken({ token: hashedToken }, options)
     if (result) {
@@ -202,7 +233,10 @@ class TokenService {
     const userClient = await UserClientRepository.getUserClient({ userClientId: token.userClientId }, options)
     if (userClient) {
       const client = await ClientRepository.getClientWithSensitiveData({ client_id: userClient!.client_id }, options)
-      const userAccount = await UserAccountRepository.getUserAccount({ userAccountId: userClient.userAccountId }, options)
+      const userAccount = await UserAccountRepository.getUserAccount(
+        { userAccountId: userClient.userAccountId },
+        options
+      )
 
       return await this.createAccessToken(client!, userAccount!, token, options)
     }
@@ -210,10 +244,18 @@ class TokenService {
     throw new Error('Failed refreshing access token')
   }
 
-  public async createAccessToken(client: IClient, userAccount: IUserAccount, refreshToken: IRefreshToken | null, options: IQueryOptions): Promise<string> {
+  public async createAccessToken(
+    client: Client,
+    userAccount: UserAccount,
+    refreshToken: RefreshToken | null,
+    options: IQueryOptions
+  ): Promise<string> {
     const config = await getCurrentConfiguration()
 
-    const userClient = await UserClientRepository.getUserClient({ client_id: client.client_id, userAccountId: userAccount.userAccountId }, options)
+    const userClient = await UserClientRepository.getUserClient(
+      { client_id: client.client_id, userAccountId: userAccount.userAccountId! },
+      options
+    )
     if (userClient && userClient.allowedScopes && userClient.allowedScopes.length > 0) {
       const allowedScopes = JSON.parse(userClient.allowedScopes)
       const result: IAccessToken = {

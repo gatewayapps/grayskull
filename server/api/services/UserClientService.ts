@@ -1,19 +1,18 @@
 import _ from 'lodash'
-import { IUserAccount } from '../../data/models/IUserAccount'
+import { UserAccount } from '../../data/models/IUserAccount'
 
-import ClientService from './ClientService'
-import { UserClientInstance } from '../../data/models/UserClient'
 import { IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { getContext } from '../../data/context'
+
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { Permissions } from '../../utils/permissions'
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import ClientRepository from '../../data/repositories/ClientRepository'
-import { IUserClient } from '../../data/models/IUserClient'
+import { UserClient } from '../../data/models/IUserClient'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import { ScopeMap } from './ScopeService'
+import { WhereAttributeHash } from 'sequelize/types'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -68,7 +67,7 @@ class UserClientService {
     }
   }
 
-  public UserClientHasAllowedScope(userClient: IUserClient | null, scope: string) {
+  public UserClientHasAllowedScope(userClient: UserClient | null, scope: string) {
     if (!userClient) {
       return false
     }
@@ -86,16 +85,16 @@ class UserClientService {
   }
 
   @hasPermission(Permissions.User)
-  async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<IUserClient | null> {
+  async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClient | null> {
     if (!AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }
-    return UserClientRepository.getUserClient(filter, options)
+    return UserClientRepository.getUserClient(filter as WhereAttributeHash, options)
   }
 
   @hasPermission(Permissions.User)
   public async updateScopes(
-    userAccount: IUserAccount,
+    userAccount: UserAccount,
     client_id: string,
     allowedScopes: string[],
     deniedScopes: string[],
@@ -106,7 +105,7 @@ class UserClientService {
       throw new Error(`Unknown client: ${client_id}`)
     }
     const userClient = await UserClientRepository.getUserClient(
-      { userAccountId: userAccount.userAccountId, client_id },
+      { userAccountId: userAccount.userAccountId!, client_id },
       options
     )
     if (!userClient) {

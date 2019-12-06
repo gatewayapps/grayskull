@@ -13,7 +13,7 @@ import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
 import { IOperationResponse } from '../../../data/models/IOperationResponse'
-import { IUserAccount } from '../../../data/models/IUserAccount'
+import { UserAccount } from '../../../data/models/IUserAccount'
 import UserAccountRepository from '../../../data/repositories/UserAccountRepository'
 import TokenService from '../../../api/services/TokenService'
 import ClientRepository from '../../../data/repositories/ClientRepository'
@@ -35,7 +35,7 @@ function isValidDate(d: any) {
 
 export default {
   Query: {
-    userAccounts: async (obj, args, context, info) => { 
+    userAccounts: async (obj, args, context, info) => {
       // insert your userAccounts implementation here
       if (!context.user) {
         throw new Error('You must be signed in to do that')
@@ -43,19 +43,24 @@ export default {
         if (context.user.permissions < Permissions.Admin) {
           throw new Error('You must be an administrator to do that')
         } else {
-          return await UserAccountRepository.getUserAccounts(null, { userContext: context.user, order: [['lastName', 'asc'], ['firstName', 'asc']] })
-        } 
+          return await UserAccountRepository.getUserAccounts(null, {
+            userContext: context.user,
+            order: [
+              ['lastName', 'asc'],
+              ['firstName', 'asc']
+            ]
+          })
+        }
       }
     },
     userAccountsMeta: async (obj, args, context, info) => {
       // insert your userAccountsMeta implementation here
 
-      if(context.user?.permissions === Permissions.Admin){
+      if (context.user?.permissions === Permissions.Admin) {
         return await UserAccountRepository.userAccountsMeta(null, { userContext: context.user })
       } else {
         throw new Error('You must be an administrator to do that')
-      } 
-  
+      }
     },
     userAccount: (obj, args, context, info) => {
       // insert your userAccount implementation here
@@ -75,9 +80,17 @@ export default {
         if (!fingerprint) {
           throw new Error('Invalid login request')
         } else {
-          const authResult = await AuthenticationService.authenticateUser(emailAddress, password, fingerprint, context.req.client.remoteAddress, otpToken, extendedSession, {
-            userContext: context.user || null
-          })
+          const authResult = await AuthenticationService.authenticateUser(
+            emailAddress,
+            password,
+            fingerprint,
+            context.req.client.remoteAddress,
+            otpToken,
+            extendedSession,
+            {
+              userContext: context.user || null
+            }
+          )
           if (authResult.session) {
             setAuthCookies(context.res, authResult.session)
 
@@ -101,7 +114,7 @@ export default {
       const token = args.data.token
       const emailAddress = args.data.emailAddress
       const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
-      if(isValid){
+      if (isValid) {
         return {
           success: true
         }
@@ -125,7 +138,12 @@ export default {
         throw new Error('Invalid redirect uri')
       }
 
-      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(context.user.userAccountId, client_id, scope, serviceOptions)
+      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(
+        context.user.userAccountId,
+        client_id,
+        scope,
+        serviceOptions
+      )
       if (pendingScopes && pendingScopes.length > 0) {
         return {
           pendingScopes
@@ -149,7 +167,14 @@ export default {
       const queryParts: any = {}
 
       if (responseTypes.includes('code')) {
-        queryParts.code = AuthenticationService.generateAuthorizationCode(context.user, client_id, userClientId!, approvedScopes!, nonce, serviceOptions)
+        queryParts.code = AuthenticationService.generateAuthorizationCode(
+          context.user,
+          client_id,
+          userClientId!,
+          approvedScopes!,
+          nonce,
+          serviceOptions
+        )
       }
       if (responseTypes.includes('token')) {
         const config = await getCurrentConfiguration()
@@ -159,7 +184,13 @@ export default {
         queryParts.expires_in = config.Security!.accessTokenExpirationSeconds
       }
       if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
-        queryParts.id_token = await TokenService.createIDToken(client, context.user, nonce, queryParts.token, serviceOptions)
+        queryParts.id_token = await TokenService.createIDToken(
+          client,
+          context.user,
+          nonce,
+          queryParts.token,
+          serviceOptions
+        )
       }
 
       const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
@@ -191,10 +222,13 @@ export default {
       // insert your changePassword implementation here
       let result: IOperationResponse
       const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data
-      const userContext: IUserAccount = context.user || null
+      const userContext: UserAccount = context.user || null
 
       //  only check token if user is not signed in
-      const isTokenValid = userContext === null ? await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext }) : true
+      const isTokenValid =
+        userContext === null
+          ? await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext })
+          : true
       if (!isTokenValid) {
         result = {
           success: false,
@@ -202,7 +236,9 @@ export default {
         }
       } else {
         try {
-          const passwordValid = await AuthenticationService.validatePassword(newPassword, confirmPassword, { userContext })
+          const passwordValid = await AuthenticationService.validatePassword(newPassword, confirmPassword, {
+            userContext
+          })
           if (!userContext) {
             const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, { userContext })
 
@@ -213,7 +249,11 @@ export default {
               throw new Error('New password cannot be the same as the old password')
             }
 
-            const passwordVerified = await AuthenticationService.verifyPassword(userContext.userAccountId!, oldPassword, { userContext })
+            const passwordVerified = await AuthenticationService.verifyPassword(
+              userContext.userAccountId!,
+              oldPassword,
+              { userContext }
+            )
             if (passwordVerified) {
               await UserAccountService.changeUserPassword(userContext.userAccountId!, newPassword, { userContext })
               result = { success: true }
@@ -281,7 +321,11 @@ export default {
             message: 'You do not have permission to do that'
           }
         } else {
-          const updatedUser = await UserAccountRepository.updateUserAccount({ userAccountId: args.data.userAccountId }, args.data, { userContext: userAccount })
+          const updatedUser = await UserAccountRepository.updateUserAccount(
+            { userAccountId: args.data.userAccountId },
+            args.data,
+            { userContext: userAccount }
+          )
           if (updatedUser) {
             result = {
               success: true
@@ -297,8 +341,12 @@ export default {
       return result
     },
     verifyAuthorizationRequest: async (obj, args, context, info): Promise<IOperationResponse> => {
-      const validRequest = await AuthenticationService.validateRedirectUri(args.data.client_id, args.data.redirect_uri, {userContext: context.user})
-      if(validRequest){
+      const validRequest = await AuthenticationService.validateRedirectUri(
+        args.data.client_id,
+        args.data.redirect_uri,
+        { userContext: context.user }
+      )
+      if (validRequest) {
         return {
           success: true
         }
@@ -360,7 +408,11 @@ export default {
         try {
           const config = await getCurrentConfiguration()
 
-          const passwordValid = await AuthenticationService.verifyPassword(context.user.userAccountId, args.data.password, { userContext: context.user })
+          const passwordValid = await AuthenticationService.verifyPassword(
+            context.user.userAccountId,
+            args.data.password,
+            { userContext: context.user }
+          )
           if (!passwordValid) {
             return {
               success: false,
@@ -371,7 +423,9 @@ export default {
           if (!args.data.otpSecret && config.Security!.multifactorRequired) {
             return {
               success: false,
-              message: `${config.Server!.realmName} security policy requires you to have an Authenticator App configured`
+              message: `${
+                config.Server!.realmName
+              } security policy requires you to have an Authenticator App configured`
             }
           }
 
@@ -399,14 +453,21 @@ export default {
       return AuthenticationService.generateOtpSecret(args.data.emailAddress)
     },
     verifyMfaKey: (obj, args, context, info) => {
-      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token, { userContext: context.user || null })
+      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token, {
+        userContext: context.user || null
+      })
     },
     resendVerification: async (obj, args, context, info) => {
-      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, { userContext: context.user || null })
+      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, {
+        userContext: context.user || null
+      })
       return !!result
     },
     resendAllVerificationEmails: async (obj, args, context, info) => {
-      const unverifiedEmails = await EmailAddressRepository.getEmailAddresses({ primary_equals: true, verified_equals: false }, { userContext: context.user || null })
+      const unverifiedEmails = await EmailAddressRepository.getEmailAddresses(
+        { primary_equals: true, verified_equals: false },
+        { userContext: context.user || null }
+      )
       await Promise.all(
         unverifiedEmails.map(async (e) => {
           await EmailAddressService.sendVerificationEmail(e.emailAddress, { userContext: context.user || null })
@@ -484,7 +545,7 @@ export default {
         return {
           success: true
         }
-      } catch(err){
+      } catch (err) {
         return {
           success: false,
           message: err.message
@@ -494,7 +555,10 @@ export default {
   },
   UserProfile: {
     emailAddress: async (obj, args, context, info) => {
-      const result = await EmailAddressRepository.getEmailAddresses({ primary_equals: true, userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
+      const result = await EmailAddressRepository.getEmailAddresses(
+        { primary_equals: true, userAccountId_equals: obj.userAccountId },
+        { userContext: context.user || null }
+      )
       if (result.length > 0) {
         return result[0].emailAddress
       } else {
@@ -504,10 +568,16 @@ export default {
   },
   UserAccount: {
     emailAddresses: async (obj, args, context, info) => {
-      return await EmailAddressService.getEmailAddresses({ userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
+      return await EmailAddressService.getEmailAddresses(
+        { userAccountId_equals: obj.userAccountId },
+        { userContext: context.user || null }
+      )
     },
     emailAddress: async (obj, args, context, info) => {
-      const result = await EmailAddressRepository.getEmailAddresses({ primary_equals: true, userAccountId_equals: obj.userAccountId }, { userContext: context.user || null })
+      const result = await EmailAddressRepository.getEmailAddresses(
+        { primary_equals: true, userAccountId_equals: obj.userAccountId },
+        { userContext: context.user || null }
+      )
       if (result.length > 0) {
         return result[0].emailAddress
       } else {

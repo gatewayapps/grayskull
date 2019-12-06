@@ -1,10 +1,10 @@
-import { IUserAccount } from '../data/models/IUserAccount'
-import { FindOptionsOrderArray, IncludeOptions, Model, Transaction, col, fn, literal } from 'sequelize'
+import { UserAccount } from '../data/models/IUserAccount'
+import { Transaction, Includeable } from 'sequelize'
 
 export interface IQueryOptions {
-  userContext: IUserAccount | null
-  order?: string | col | literal | FindOptionsOrderArray | fn | Array<string | col | literal | FindOptionsOrderArray | fn>
-  include?: Array<Model<any, any> | IncludeOptions>
+  userContext: UserAccount | null
+  order?: any
+  include?: Includeable[] | undefined
   limit?: number
   offset?: number
   transaction?: Transaction

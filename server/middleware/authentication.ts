@@ -1,14 +1,18 @@
-
-import { clearAuthCookies, getAuthCookies, setAuthCookies, RequestContext, ResponseContext } from '../utils/authentication'
-import { ISession } from '../data/models/ISession'
-import { IUserAccount } from '../data/models/IUserAccount'
+import {
+  clearAuthCookies,
+  getAuthCookies,
+  setAuthCookies,
+  RequestContext,
+  ResponseContext
+} from '../utils/authentication'
+import { Session } from '../data/models/ISession'
+import { UserAccount } from '../data/models/IUserAccount'
 import SessionService from '../api/services/SessionService'
 import UserAccountService from '../api/services/UserAccountService'
 import UserAccountRepository from '../data/repositories/UserAccountRepository'
 import SessionRepository from '../data/repositories/SessionRepository'
 
 import EmailAddressRepository from '../data/repositories/EmailAddressRepository'
-
 
 let FIRST_USER_CREATED = false
 const MIN_TIME_TO_UPDATE_LAST_ACTIVE = 60 * 1000 // 1 minute
@@ -21,8 +25,8 @@ export interface IRefreshAccessTokenResult {
 declare global {
   namespace Express {
     interface Request {
-      user?: IUserAccount
-      session?: ISession
+      user?: UserAccount
+      session?: Session
     }
   }
 }
@@ -43,14 +47,19 @@ export async function getUserContext(req: RequestContext, res: ResponseContext) 
     return
   }
 
-  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.socket.remoteAddress!, { userContext: null })
+  const session = await SessionService.verifyAndUseSession(sessionId, fingerprint, req.socket.remoteAddress!, {
+    userContext: null
+  })
   if (!session) {
     SessionRepository.deleteSession({ sessionId }, { userContext: null })
     clearAuthCookies(res)
     return
   }
 
-  const user = await UserAccountRepository.getUserAccount({ userAccountId: session.userAccountId }, { userContext: null })
+  const user = await UserAccountRepository.getUserAccount(
+    { userAccountId: session.userAccountId },
+    { userContext: null }
+  )
 
   if (!user) {
     clearAuthCookies(res)
@@ -61,7 +70,10 @@ export async function getUserContext(req: RequestContext, res: ResponseContext) 
     await UserAccountService.updateUserActive(session.userAccountId, { userContext: user })
   }
 
-  const primaryEmail = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: session.userAccountId, primary_equals: true }, { userContext: null })
+  const primaryEmail = await EmailAddressRepository.getEmailAddresses(
+    { userAccountId_equals: session.userAccountId, primary_equals: true },
+    { userContext: null }
+  )
 
   setAuthCookies(res, session)
 

@@ -3,9 +3,9 @@ import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
 import { getContext } from '../../data/context'
-import { ClientInstance } from '../../data/models/Client'
-import { IEmailAddress } from '../../data/models/IEmailAddress'
-import { IUserAccount } from '../../data/models/IUserAccount'
+import { Client } from '../../data/models/IClient'
+import { EmailAddress } from '../../data/models/IEmailAddress'
+import { UserAccount } from '../../data/models/IUserAccount'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 import Cache from 'node-cache'
@@ -13,7 +13,7 @@ import uuid from 'uuid/v4'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { IUserAccountFilter, IUserAccountMeta, IUserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
+import { UserAccountFilter, UserAccountMeta, UserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { randomBytes } from 'crypto'
@@ -25,7 +25,7 @@ const INVITATION_EXPIRES_IN = 3600
 const TokenCache = new Cache({ stdTTL: INVITATION_EXPIRES_IN })
 
 interface ICPTToken {
-  client: ClientInstance | { name: string; client_id: string } | null
+  client: Client | { name: string; client_id: string } | null
   emailAddress: string
   invitedById?: number
 }
@@ -46,7 +46,7 @@ class UserAccountService {
     try {
       const passwordHash = await this.hashPassword(password)
 
-      const updates: Partial<IUserAccount> = {
+      const updates: Partial<UserAccount> = {
         otpEnabled: !!otpSecret,
         otpSecret,
         passwordHash,
@@ -67,10 +67,10 @@ class UserAccountService {
 
   @hasPermission(Permissions.Admin)
   public async createUserAccount(
-    data: IUserAccount,
+    data: UserAccount,
     emailAddress: string,
     options: IQueryOptions
-  ): Promise<IUserAccount> {
+  ): Promise<UserAccount> {
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
     if (!emailAddressAvailable) {
       throw new GrayskullError(
@@ -94,13 +94,13 @@ class UserAccountService {
 
       const user = await UserAccountRepository.createUserAccount(data, options)
 
-      const emailAddressData: IEmailAddress = {
+      const emailAddressData: Partial<EmailAddress> = {
         userAccountId: user.userAccountId!,
         emailAddress: emailAddress,
         primary: true,
         verificationSecret: ''
       }
-      await EmailAddressRepository.createEmailAddress(emailAddressData, options)
+      await EmailAddressRepository.createEmailAddress(emailAddressData as EmailAddress, options)
 
       const activateLink = `${config.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
@@ -130,10 +130,10 @@ class UserAccountService {
    * @param password
    */
   public async createUserAccountWithPassword(
-    data: IUserAccount,
+    data: UserAccount,
     password: string,
     options: IQueryOptions
-  ): Promise<IUserAccount> {
+  ): Promise<UserAccount> {
     data.userAccountId = uuid()
     data.passwordHash = await this.hashPassword(password)
     data.lastPasswordChange = new Date()
@@ -157,10 +157,7 @@ class UserAccountService {
     )
   }
 
-  public async getUserAccountByEmailAddress(
-    emailAddress: string,
-    options: IQueryOptions
-  ): Promise<IUserAccount | null> {
+  public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
@@ -169,7 +166,7 @@ class UserAccountService {
     return this.getUserAccount({ userAccountId: email.userAccountId }, options)
   }
 
-  public async userAccountsMeta(filter: IUserAccountFilter | null, options: IQueryOptions): Promise<IUserAccountMeta> {
+  public async userAccountsMeta(filter: UserAccountFilter | null, options: IQueryOptions): Promise<UserAccountMeta> {
     return UserAccountRepository.userAccountsMeta(filter, options)
   }
 
@@ -178,7 +175,7 @@ class UserAccountService {
   public async getUserAccountByEmailAddressWithSensitiveData(
     emailAddress: string,
     options: IQueryOptions
-  ): Promise<IUserAccount | null> {
+  ): Promise<UserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
     if (!email) {
@@ -188,7 +185,7 @@ class UserAccountService {
     return UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId: email.userAccountId }, options)
   }
 
-  public async getUserAccount(filter: IUserAccountUniqueFilter, options: IQueryOptions): Promise<IUserAccount | null> {
+  public async getUserAccount(filter: UserAccountUniqueFilter, options: IQueryOptions): Promise<UserAccount | null> {
     return UserAccountRepository.getUserAccount(filter, options)
   }
 
@@ -235,11 +232,11 @@ class UserAccountService {
   }
 
   public async registerUser(
-    data: IUserAccount,
+    data: UserAccount,
     emailAddress: string,
     password: string,
     options: IQueryOptions
-  ): Promise<IUserAccount> {
+  ): Promise<UserAccount> {
     if ((await EmailAddressService.isDomainAllowed(emailAddress)) === false) {
       throw new ForbiddenError(`Self registration is not permitted for your email domain`)
     }
@@ -271,7 +268,7 @@ class UserAccountService {
       const user = await this.createUserAccountWithPassword(data, password, newOptions)
 
       // 4. Create the user account email
-      const emailAddressData: IEmailAddress = {
+      const emailAddressData: Partial<EmailAddress> = {
         userAccountId: user.userAccountId!,
         emailAddress: emailAddress,
         primary: true,

@@ -1,23 +1,23 @@
 import { IClientMeta, IClientFilter, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import { getContext } from '../../data/context'
-import { IClient } from '../../data/models/IClient'
+import { Client } from '../../data/models/IClient'
 
-import { AnyWhereOptions } from 'sequelize'
+import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
 class ClientRepository {
   public async clientsMeta(filter: IClientFilter | null, options: IQueryOptions): Promise<IClientMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await (await getContext()).Client.count({ where, transaction: options.transaction })
+    const count = await Client.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<IClient[]> {
+  public async getClients(filter: IClientFilter | null, options: IQueryOptions): Promise<Client[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await (await getContext()).Client.findAll({
+    const results = await Client.findAll({
       where,
       attributes: {
         exclude: ['secret']
@@ -29,23 +29,23 @@ class ClientRepository {
 
       transaction: options.transaction
     })
-    return results.map((r) => r.toJSON())
+    return results
   }
 
-  public async getClientsWithSensitiveData(filter: IClientFilter | null, options: IQueryOptions): Promise<IClient[]> {
+  public async getClientsWithSensitiveData(filter: IClientFilter | null, options: IQueryOptions): Promise<Client[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await (await getContext()).Client.findAll({
+    const results = await Client.findAll({
       where,
 
       transaction: options.transaction
     })
 
-    return results.map((r) => r.toJSON())
+    return results
   }
 
-  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<IClient | null> {
-    const result = await (await getContext()).Client.findOne({
-      where: filter,
+  public async getClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<Client | null> {
+    const result = await Client.findOne({
+      where: filter as WhereAttributeHash,
       attributes: {
         exclude: ['secret']
       },
@@ -53,46 +53,43 @@ class ClientRepository {
       transaction: options.transaction
     })
     if (result) {
-      return result.toJSON()
+      return result
     } else {
       return null
     }
   }
 
-  public async getClientWithSensitiveData(
-    filter: IClientUniqueFilter,
-    options: IQueryOptions
-  ): Promise<IClient | null> {
-    const result = await (await getContext()).Client.findOne({
-      where: filter,
+  public async getClientWithSensitiveData(filter: IClientUniqueFilter, options: IQueryOptions): Promise<Client | null> {
+    const result = await Client.findOne({
+      where: filter as WhereAttributeHash,
 
       transaction: options.transaction
     })
 
     if (result) {
-      return result.toJSON()
+      return result
     } else {
       return null
     }
   }
 
-  public async createClient(data: IClient, options: IQueryOptions): Promise<IClient> {
+  public async createClient(data: Client, options: IQueryOptions): Promise<Client> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await (await getContext()).Client.create(data, { returning: true, transaction: options.transaction })
+    return await Client.create(data, { transaction: options.transaction })
   }
 
   public async deleteClient(filter: IClientUniqueFilter, options: IQueryOptions): Promise<boolean> {
-    const data: Partial<IClient> = {
+    const data: Partial<Client> = {
       deletedAt: new Date()
     }
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [affectedCount] = await (await getContext()).Client.update(data, {
-      where: filter as AnyWhereOptions,
+    const [affectedCount] = await Client.update(data, {
+      where: filter as WhereOptions,
       transaction: options.transaction
     })
     return affectedCount > 0
@@ -100,15 +97,15 @@ class ClientRepository {
 
   public async updateClient(
     filter: IClientUniqueFilter,
-    data: Partial<IClient>,
+    data: Partial<Client>,
     options: IQueryOptions
-  ): Promise<IClient | null> {
+  ): Promise<Client | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await (await getContext()).Client.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
+    await Client.update(data, {
+      where: filter as WhereOptions,
+
       transaction: options.transaction
     })
     return await this.getClient(filter, options)

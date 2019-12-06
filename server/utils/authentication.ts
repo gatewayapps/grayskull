@@ -1,27 +1,27 @@
-import { ISession } from '../data/models/ISession'
+import { Session } from '../data/models/ISession'
 import originalUrl from 'original-url'
-import { ServerResponse, IncomingMessage } from 'http'
+
 import Cookies from 'cookies'
 import SessionService from '../api/services/SessionService'
-import { IUserAccount } from '../data/models/IUserAccount'
+import { UserAccount } from '../data/models/IUserAccount'
 import { getUserContext } from '../middleware/authentication'
 import ClientRepository from '../data/repositories/ClientRepository'
 import { NextApiRequest, NextApiResponse } from 'next'
 import TokenService from '../api/services/TokenService'
 
 export type RequestContext = NextApiRequest & {
-  cookies: Cookies
+  cookies: any
   parsedUrl: URL
   originalUrl: string
-  session?: ISession
-  user?: IUserAccount & {
+  session?: Session
+  user?: UserAccount & {
     emailAddress: string
   }
 }
 export type ResponseContext = NextApiResponse & {
-  cookies: Cookies
-  session?: ISession
-  user?: IUserAccount & {
+  cookies: any
+  session?: Session
+  user?: UserAccount & {
     emailAddress: string
   }
   locals?: any
@@ -83,7 +83,7 @@ export function decodeState(state: string | undefined): IAuthState | null {
   }
 }
 
-export function setAuthCookies(res: ResponseContext, session: ISession) {
+export function setAuthCookies(res: ResponseContext, session: Session) {
   res.cookies.set(SESSION_ID_COOKIE_NAME, session.sessionId!, { httpOnly: true, expires: session.expiresAt })
 }
 

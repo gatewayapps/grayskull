@@ -5,9 +5,9 @@ import {
 } from '../../interfaces/graphql/IEmailAddress'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import { getContext } from '../../data/context'
-import { IEmailAddress } from '../../data/models/IEmailAddress'
+import { EmailAddress } from '../../data/models/IEmailAddress'
 
-import { AnyWhereOptions } from 'sequelize'
+import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
 class EmailAddressRepository {
@@ -16,15 +16,15 @@ class EmailAddressRepository {
     options: IQueryOptions
   ): Promise<IEmailAddressMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await (await getContext()).EmailAddress.count({ where, transaction: options.transaction })
+    const count = await EmailAddress.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<IEmailAddress[]> {
+  public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<EmailAddress[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await (await getContext()).EmailAddress.findAll({
+    const results = await EmailAddress.findAll({
       where,
       include: options.include,
       order: options.order,
@@ -33,42 +33,42 @@ class EmailAddressRepository {
 
       transaction: options.transaction
     })
-    return results.map((r) => r.toJSON())
+    return results
   }
 
   public async getEmailAddress(
     filter: IEmailAddressUniqueFilter,
     options: IQueryOptions
-  ): Promise<IEmailAddress | null> {
-    const result = await (await getContext()).EmailAddress.findOne({
-      where: filter,
+  ): Promise<EmailAddress | null> {
+    const result = await EmailAddress.findOne({
+      where: filter as WhereAttributeHash,
 
       transaction: options.transaction
     })
     if (result) {
-      return result.toJSON()
+      return result
     } else {
       return null
     }
   }
 
-  public async createEmailAddress(data: IEmailAddress, options: IQueryOptions): Promise<IEmailAddress> {
+  public async createEmailAddress(data: EmailAddress, options: IQueryOptions): Promise<EmailAddress> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await (await getContext()).EmailAddress.create(data, { returning: true, transaction: options.transaction })
+    return await EmailAddress.create(data, { transaction: options.transaction })
   }
 
   public async deleteEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions): Promise<boolean> {
-    const data: Partial<IEmailAddress> = {
+    const data: Partial<EmailAddress> = {
       deletedAt: new Date()
     }
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [affectedCount] = await (await getContext()).EmailAddress.update(data, {
-      where: filter as AnyWhereOptions,
+    const [affectedCount] = await EmailAddress.update(data, {
+      where: filter as WhereOptions,
       transaction: options.transaction
     })
     return affectedCount > 0
@@ -76,15 +76,15 @@ class EmailAddressRepository {
 
   public async updateEmailAddress(
     filter: IEmailAddressUniqueFilter,
-    data: Partial<IEmailAddress>,
+    data: Partial<EmailAddress>,
     options: IQueryOptions
-  ): Promise<IEmailAddress | null> {
+  ): Promise<EmailAddress | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await (await getContext()).EmailAddress.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
+    await EmailAddress.update(data, {
+      where: filter as WhereOptions,
+
       transaction: options.transaction
     })
     return await this.getEmailAddress(filter, options)

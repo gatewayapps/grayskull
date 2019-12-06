@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { buildContext, getClientRequestOptionsFromRequest } from '../../../../server/utils/authentication'
 import UserClientService from '../../../../server/api/services/UserClientService'
 import { ScopeMap } from '../../../../server/api/services/ScopeService'
-import { IUserAccount } from '../../../../server/data/models/IUserAccount'
+import { UserAccount } from '../../../../server/data/models/UserAccount'
 import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
 import TokenService from '../../../../server/api/services/TokenService'
 import { Permissions } from '../../../../server/utils/permissions'
@@ -31,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         callingUserClient &&
         UserClientService.UserClientHasAllowedScope(callingUserClient, ScopeMap['admin-profile:write'].id)
       ) {
-        const reqBody: IUserAccount = req.body as IUserAccount
+        const reqBody: UserAccount = req.body as UserAccount
 
         if (reqBody) {
           const { firstName, lastName, displayName, gender, birthday } = reqBody

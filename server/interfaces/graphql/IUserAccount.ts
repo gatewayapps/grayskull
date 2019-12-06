@@ -1,10 +1,10 @@
-export interface IUserAccountMeta {
+export interface UserAccountMeta {
   count: number
 }
 
-export interface IUserAccountFilter {
-  or?: [IUserAccountFilter]
-  and?: [IUserAccountFilter]
+export interface UserAccountFilter {
+  or?: [UserAccountFilter]
+  and?: [UserAccountFilter]
   userAccountId_in?: [ string ]
   userAccountId_equals?: string
   userAccountId_notEquals?: string
@@ -76,6 +76,6 @@ export interface IUserAccountFilter {
   deletedAt_notEquals?: Date
 }
 
-export interface IUserAccountUniqueFilter {
+export interface UserAccountUniqueFilter {
   userAccountId?: string
   }

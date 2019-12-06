@@ -1,23 +1,23 @@
-import { ISessionMeta, ISessionFilter, ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
+import { SessionMeta, SessionFilter, SessionUniqueFilter } from '../../interfaces/graphql/ISession'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import { getContext } from '../../data/context'
-import { ISession } from '../../data/models/ISession'
 
-import { AnyWhereOptions } from 'sequelize'
+import { Session } from '../../data/models/ISession'
+
+import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
 class SessionRepository {
-  public async sessionsMeta(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISessionMeta> {
+  public async sessionsMeta(filter: SessionFilter | null, options: IQueryOptions): Promise<SessionMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await (await getContext()).Session.count({ where, transaction: options.transaction })
+    const count = await Session.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getSessions(filter: ISessionFilter | null, options: IQueryOptions): Promise<ISession[]> {
+  public async getSessions(filter: SessionFilter | null, options: IQueryOptions): Promise<Session[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await (await getContext()).Session.findAll({
+    const results = await Session.findAll({
       where,
       include: options.include,
       order: options.order,
@@ -26,49 +26,49 @@ class SessionRepository {
 
       transaction: options.transaction
     })
-    return results.map((r) => r.toJSON())
+    return results
   }
 
-  public async getSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<ISession | null> {
-    const result = await (await getContext()).Session.findOne({
-      where: filter,
+  public async getSession(filter: SessionUniqueFilter, options: IQueryOptions): Promise<Session | null> {
+    const result = await Session.findOne({
+      where: filter as WhereAttributeHash,
 
       transaction: options.transaction
     })
     if (result) {
-      return result.toJSON()
+      return result
     } else {
       return null
     }
   }
 
-  public async createSession(data: ISession, options: IQueryOptions): Promise<ISession> {
+  public async createSession(data: Partial<Session>, options: IQueryOptions): Promise<Session> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await (await getContext()).Session.create(data, { returning: true, transaction: options.transaction })
+    return await Session.create(data, { transaction: options.transaction })
   }
 
-  public async deleteSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
-    const affectedCount = await (await getContext()).Session.destroy({
-      where: filter as AnyWhereOptions,
+  public async deleteSession(filter: SessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
+    const affectedCount = await Session.destroy({
+      where: filter as WhereOptions,
       transaction: options.transaction
     })
     return affectedCount > 0
   }
 
   public async updateSession(
-    filter: ISessionUniqueFilter,
-    data: Partial<ISession>,
+    filter: SessionUniqueFilter,
+    data: Partial<Session>,
     options: IQueryOptions
-  ): Promise<ISession | null> {
+  ): Promise<Session | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await (await getContext()).Session.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
+    await Session.update(data, {
+      where: filter as WhereOptions,
+
       transaction: options.transaction
     })
     return await this.getSession(filter, options)

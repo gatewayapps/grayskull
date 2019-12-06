@@ -1,8 +1,8 @@
 import { getCurrentConfiguration } from '../../config/ConfigurationManager'
 import { decrypt } from '../../utils/cipher'
 
-import { ISession } from '../../data/models/ISession'
-import { IUserAccount } from '../../data/models/IUserAccount'
+import { Session } from '../../data/models/ISession'
+import { UserAccount } from '../../data/models/IUserAccount'
 import ClientService from '../../api/services/ClientService'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
@@ -18,9 +18,9 @@ import { IQueryOptions } from '../../data/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import ClientRepository from '../../data/repositories/ClientRepository'
-import { IClient } from '../../data/models/IClient'
+import { Client } from '../../data/models/IClient'
 import TokenService from './TokenService'
-import { IRefreshToken } from '../../data/models/IRefreshToken'
+import { RefreshToken } from '../../data/models/IRefreshToken'
 import { ScopeMap } from './ScopeService'
 
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
@@ -45,14 +45,14 @@ interface IAccessTokenResponse {
 interface IAuthenticationCodeCacheResult {
   clientId: string
   scope: string[]
-  userAccount: IUserAccount
+  userAccount: UserAccount
   userClientId: string
   nonce: string | undefined
 }
 
 interface IAuthenticateUserResult {
   success: boolean
-  session?: ISession
+  session?: Session
   message?: string
   otpRequired?: boolean
   emailVerificationRequired?: boolean
@@ -162,7 +162,11 @@ class AuthenticationService {
     const config = await getCurrentConfiguration()
 
     const secret = otplib.authenticator.generateSecret()
-    const result = otplib.authenticator.keyuri(encodeURIComponent(emailAddress), encodeURIComponent(config.Server!.realmName!), secret)
+    const result = otplib.authenticator.keyuri(
+      encodeURIComponent(emailAddress),
+      encodeURIComponent(config.Server!.realmName!),
+      secret
+    )
     return result
   }
 
@@ -180,9 +184,9 @@ class AuthenticationService {
       throw new Error(`Invalid client_id or client_secret`)
     }
     let id_token: string | undefined
-    let userAccount: IUserAccount | null = null
+    let userAccount: UserAccount | null = null
     let session_id: string | undefined
-    let finalRefreshToken: IRefreshToken | null = null
+    let finalRefreshToken: RefreshToken | null = null
     switch (grant_type) {
       case 'authorization_code': {
         if (!code) {
@@ -194,13 +198,22 @@ class AuthenticationService {
           throw new Error(`authorization_code has expired`)
         }
 
-        userAccount = await UserAccountRepository.getUserAccount({ userAccountId: authCodeCacheResult.userAccount.userAccountId || '' }, options)
+        userAccount = await UserAccountRepository.getUserAccount(
+          { userAccountId: authCodeCacheResult.userAccount.userAccountId || '' },
+          options
+        )
         if (!userAccount) {
           throw new Error(`Unable to locate user account`)
         }
 
         if (authCodeCacheResult.scope.includes(ScopeMap.openid.id)) {
-          id_token = await TokenService.createIDToken(client, userAccount, authCodeCacheResult.nonce, undefined, options)
+          id_token = await TokenService.createIDToken(
+            client,
+            userAccount,
+            authCodeCacheResult.nonce,
+            undefined,
+            options
+          )
         }
         if (authCodeCacheResult.scope.includes(ScopeMap.offline_access.id)) {
           finalRefreshToken = await TokenService.createRefreshToken(client, userAccount, null, options)
@@ -220,7 +233,10 @@ class AuthenticationService {
           throw new Error(`Invalid refresh_token`)
         }
 
-        const userClient = await UserClientRepository.getUserClient({ userClientId: finalRefreshToken.userClientId }, options)
+        const userClient = await UserClientRepository.getUserClient(
+          { userClientId: finalRefreshToken.userClientId },
+          options
+        )
         if (!userClient || userClient.client_id !== client_id) {
           throw new Error(`Invalid refresh_token`)
         }
@@ -242,7 +258,10 @@ class AuthenticationService {
       throw new Error(`Unable to locate user account`)
     }
 
-    const userClient = await UserClientRepository.getUserClient({ userAccountId: userAccount.userAccountId!, client_id: client.client_id! }, options)
+    const userClient = await UserClientRepository.getUserClient(
+      { userAccountId: userAccount.userAccountId!, client_id: client.client_id! },
+      options
+    )
     if (!userClient) {
       throw new Error(`Your user account does not have access to ${client.name}`)
     }
@@ -330,7 +349,9 @@ class AuthenticationService {
       requiredParts.push('symbol (!, #, @, etc...)')
     }
 
-    const PasswordValidationError = `Password must contain at least one each of the following: ${requiredParts.join(', ')}`
+    const PasswordValidationError = `Password must contain at least one each of the following: ${requiredParts.join(
+      ', '
+    )}`
 
     if (password !== confirm) {
       throw new Error('Passwords do not match.  Please re-enter your passwords')
@@ -361,13 +382,20 @@ class AuthenticationService {
     return otplib.authenticator.check(token, secret)
   }
 
-  public generateAuthorizationCode(userAccount: IUserAccount, clientId: string, userClientId: string, scope: string[], nonce: string | undefined, options: IQueryOptions): string {
+  public generateAuthorizationCode(
+    userAccount: UserAccount,
+    clientId: string,
+    userClientId: string,
+    scope: string[],
+    nonce: string | undefined,
+    options: IQueryOptions
+  ): string {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId, nonce }, 120)
     return authorizationCode
   }
 
-  private verifyRefreshToken(client: IClient, token: string): Promise<any> {
+  private verifyRefreshToken(client: Client, token: string): Promise<any> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, GRAYSKULL_GLOBAL_SECRET, (err, payload) => {
         if (err) {

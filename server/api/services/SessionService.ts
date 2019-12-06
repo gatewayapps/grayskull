@@ -1,21 +1,21 @@
-import { ISession } from '../../data/models/ISession'
+import { Session } from '../../data/models/ISession'
 
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { ISessionUniqueFilter } from '../../interfaces/graphql/ISession'
+import { SessionUniqueFilter } from '../../interfaces/graphql/ISession'
 import SessionRepository from '../../data/repositories/SessionRepository'
 
 const SESSION_EXPIRATION_SECONDS = 60 * 60
 const EXTENDED_SESSION_EXPIRATION_SECONDS = 60 * 60 * 24 * 365
 
-type ICreateSession = Pick<ISession, 'fingerprint' | 'userAccountId' | 'ipAddress'>
+type ICreateSession = Pick<Session, 'fingerprint' | 'userAccountId' | 'ipAddress'>
 
 class SessionService {
-  public async createSession(data: ICreateSession, extendedSession: boolean, options: IQueryOptions): Promise<ISession> {
+  public async createSession(data: ICreateSession, extendedSession: boolean, options: IQueryOptions): Promise<Session> {
     const fingerprint = await this.hashFingerprint(data.fingerprint)
-    const newSession: ISession = {
+    const newSession: Partial<Session> = {
       ...data,
       fingerprint,
       expiresAt: moment()
@@ -25,7 +25,12 @@ class SessionService {
     return SessionRepository.createSession(newSession, options)
   }
 
-  public async verifyAndUseSession(sessionId: string, fingerprint: string, ipAddress: string, options: IQueryOptions): Promise<ISession | null> {
+  public async verifyAndUseSession(
+    sessionId: string,
+    fingerprint: string,
+    ipAddress: string,
+    options: IQueryOptions
+  ): Promise<Session | null> {
     try {
       const session = await SessionRepository.getSession({ sessionId }, options)
 
@@ -70,7 +75,7 @@ class SessionService {
     return bcrypt.hash(fingerprint, FINGERPRINT_SALT_ROUNDS)
   }
 
-  public async deleteSession(filter: ISessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
+  public async deleteSession(filter: SessionUniqueFilter, options: IQueryOptions): Promise<boolean> {
     return SessionRepository.deleteSession(filter, options)
   }
 }

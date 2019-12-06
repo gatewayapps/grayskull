@@ -1,4 +1,4 @@
-import { IScope } from '../../data/models/IScope'
+import { Scope } from '../../data/models/IScope'
 import { Permissions } from '../../utils/permissions'
 
 export const ScopeMap = {
@@ -53,7 +53,14 @@ export const ScopeMap = {
   // }
 }
 
-export const Scopes: IScope[] = [ScopeMap.openid, ScopeMap.offline_access, ScopeMap.profile, ScopeMap.email, ScopeMap['profile:write'], ScopeMap['admin-profile:write']]
+export const Scopes: Partial<Scope>[] = [
+  ScopeMap.openid,
+  ScopeMap.offline_access,
+  ScopeMap.profile,
+  ScopeMap.email,
+  ScopeMap['profile:write'],
+  ScopeMap['admin-profile:write']
+]
 
 class ScopeService {
   getScopes() {

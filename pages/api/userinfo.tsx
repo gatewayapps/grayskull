@@ -4,7 +4,7 @@ import { buildContext, getClientRequestOptionsFromRequest, RequestContext } from
 import { ScopeMap } from '../../server/api/services/ScopeService'
 import { ensureScope } from '../../server/utils/ensureScope'
 import { IClientRequestOptions } from '../../server/data/IClientRequestOptions'
-import { IUserAccount } from '../../server/data/models/IUserAccount'
+import { UserAccount } from '../../server/data/models/UserAccount'
 import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -54,7 +54,7 @@ async function postUserProfile(
   }
 
   try {
-    const reqBody: IUserAccount = requestContext.body as IUserAccount
+    const reqBody: UserAccount = requestContext.body as UserAccount
     if (reqBody) {
       const { firstName, lastName, displayName, gender, birthday } = reqBody
 

@@ -28,6 +28,7 @@
     "noImplicitThis": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "strictPropertyInitialization":  false,  
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

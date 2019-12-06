@@ -4,10 +4,10 @@ import {
   IRefreshTokenUniqueFilter
 } from '../../interfaces/graphql/IRefreshToken'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import { getContext } from '../../data/context'
-import { IRefreshToken } from '../../data/models/IRefreshToken'
 
-import { AnyWhereOptions } from 'sequelize'
+import { RefreshToken } from '../../data/models/IRefreshToken'
+
+import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
 
 class RefreshTokenRepository {
@@ -16,15 +16,15 @@ class RefreshTokenRepository {
     options: IQueryOptions
   ): Promise<IRefreshTokenMeta> {
     const where = convertFilterToSequelizeWhere(filter)
-    const count = await (await getContext()).RefreshToken.count({ where, transaction: options.transaction })
+    const count = await RefreshToken.count({ where, transaction: options.transaction })
     return {
       count
     }
   }
 
-  public async getRefreshTokens(filter: IRefreshTokenFilter | null, options: IQueryOptions): Promise<IRefreshToken[]> {
+  public async getRefreshTokens(filter: IRefreshTokenFilter | null, options: IQueryOptions): Promise<RefreshToken[]> {
     const where = convertFilterToSequelizeWhere(filter)
-    const results = await (await getContext()).RefreshToken.findAll({
+    const results = await RefreshToken.findAll({
       where,
       include: options.include,
       order: options.order,
@@ -33,42 +33,42 @@ class RefreshTokenRepository {
 
       transaction: options.transaction
     })
-    return results.map((r) => r.toJSON())
+    return results
   }
 
   public async getRefreshToken(
     filter: IRefreshTokenUniqueFilter,
     options: IQueryOptions
-  ): Promise<IRefreshToken | null> {
-    const result = await (await getContext()).RefreshToken.findOne({
-      where: filter,
+  ): Promise<RefreshToken | null> {
+    const result = await RefreshToken.findOne({
+      where: filter as WhereAttributeHash,
 
       transaction: options.transaction
     })
     if (result) {
-      return result.toJSON()
+      return result
     } else {
       return null
     }
   }
 
-  public async createRefreshToken(data: IRefreshToken, options: IQueryOptions): Promise<IRefreshToken> {
+  public async createRefreshToken(data: Partial<RefreshToken>, options: IQueryOptions): Promise<RefreshToken> {
     if (options.userContext) {
       data.createdBy = options.userContext.userAccountId
       data.updatedBy = options.userContext.userAccountId
     }
-    return await (await getContext()).RefreshToken.create(data, { returning: true, transaction: options.transaction })
+    return await RefreshToken.create(data, { transaction: options.transaction })
   }
 
   public async deleteRefreshToken(filter: IRefreshTokenUniqueFilter, options: IQueryOptions): Promise<boolean> {
-    const data: Partial<IRefreshToken> = {
+    const data: Partial<RefreshToken> = {
       deletedAt: new Date()
     }
     if (options.userContext) {
       data.deletedBy = options.userContext.userAccountId
     }
-    const [affectedCount] = await (await getContext()).RefreshToken.update(data, {
-      where: filter as AnyWhereOptions,
+    const [affectedCount] = await RefreshToken.update(data, {
+      where: filter as WhereOptions,
       transaction: options.transaction
     })
     return affectedCount > 0
@@ -76,15 +76,15 @@ class RefreshTokenRepository {
 
   public async updateRefreshToken(
     filter: IRefreshTokenUniqueFilter,
-    data: Partial<IRefreshToken>,
+    data: Partial<RefreshToken>,
     options: IQueryOptions
-  ): Promise<IRefreshToken | null> {
+  ): Promise<RefreshToken | null> {
     if (options.userContext) {
       data.updatedBy = options.userContext.userAccountId
     }
-    await (await getContext()).RefreshToken.update(data, {
-      where: filter as AnyWhereOptions,
-      returning: true,
+    await RefreshToken.update(data, {
+      where: filter as WhereOptions,
+
       transaction: options.transaction
     })
     return await this.getRefreshToken(filter, options)
