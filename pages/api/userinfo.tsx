@@ -4,7 +4,7 @@ import { buildContext, getClientRequestOptionsFromRequest, RequestContext } from
 import { ScopeMap } from '../../server/api/services/ScopeService'
 import { ensureScope } from '../../server/utils/ensureScope'
 import { IClientRequestOptions } from '../../server/data/IClientRequestOptions'
-import { UserAccount } from '../../server/data/models/UserAccount'
+import { UserAccount } from '../../server/data/models/IUserAccount'
 import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
