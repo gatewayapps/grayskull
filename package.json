@@ -4,7 +4,7 @@
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npm run copy-graphql && next build ./public",
+    "build": "tsc && npm run copy-graphql && next build",
     "copy-graphql": "copyfiles -u 1 src/**/*.graphql dist",
     "watch": "tsc -w",
     "debug": "nodemon --inspect=0.0.0.0:9229 --ignore public --exec node -r ts-node/register src/main.ts",
