@@ -34,17 +34,6 @@ export default {
     }
   },
   Client: {
-    createdByUser: (obj, args, context, info) => {
-      // Insert your createdByUser implementation here
-      throw new Error('createdByUser is not implemented')
-    },
-    deletedByUser: (obj, args, context, info) => {
-      // Insert your deletedByUser implementation here
-      throw new Error('deletedByUser is not implemented')
-    },
-    updatedByUser: (obj, args, context, info) => {
-      // Insert your modifiedByUser implementation here
-      throw new Error('updatedByUser is not implemented')
-    }
+
   }
 }

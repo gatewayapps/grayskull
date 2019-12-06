@@ -1,8 +1,6 @@
 RegisterUserResponse:
   meta:
-    database: false
-    graphql: true
-    graphqlResolvers: false
+    noRootQuery: true
   properties:
     success: boolean
     error: string?

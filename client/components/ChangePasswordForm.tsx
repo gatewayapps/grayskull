@@ -39,6 +39,7 @@ export default class ChangePasswordForm extends React.Component {
     emailAddress: PropTypes.string,
     token: PropTypes.string
   }
+  redirectInterval: any
 
   componentWillUnmount() {
     if (this.redirectInterval) {

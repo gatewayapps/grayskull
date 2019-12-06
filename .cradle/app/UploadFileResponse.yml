@@ -1,8 +1,6 @@
 UploadFileResponse:
   meta:
-    database: false
-    graphql: true
-    graphqlResolvers: false
+    noRootQuery: true
   properties:
     url: string
     mimetype: string

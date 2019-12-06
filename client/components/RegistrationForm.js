@@ -5,7 +5,7 @@ import { ApolloConsumer } from 'react-apollo'
 import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'
 import FormValidation, { FormValidationRule } from './FormValidation'
-import ValidatingInput from './ValidatingInput'
+
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 
 const EMAIL_ADDRESS_AVAILABLE = gql`

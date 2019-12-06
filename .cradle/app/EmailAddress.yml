@@ -16,3 +16,16 @@ EmailAddress:
     updatedAt: datetime default(NOW)
     deletedBy: uniqueidentifier?
     deletedAt: datetime?
+  operations:
+    setEmailAddressPrimary:
+      returns: OperationResponse
+      arguments:
+        emailAddressId:
+    addEmailAddress:
+      returns: OperationResponse
+      arguments:
+        emailAddress:
+    sendVerification:
+      returns: OperationResponse
+      arguments:
+        emailAddress:

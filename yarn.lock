@@ -1004,57 +1004,57 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cradlejs/core@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@cradlejs/core/-/core-0.2.5.tgz#20341893e693c20bbdf7864231ee9d6d85adee73"
-  integrity sha512-Zrd8iDM/O9rlEKGikjasJfQNGJH+QTZQdqYbJhzgjUlFJEnvlB69akUSKblOAFwZeYNkYjy/wuze+SiGA2RMYg==
+"@cradlejs/core@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@cradlejs/core/-/core-0.3.0.tgz#cd1cdfd26018d40af93e68941230ff76fb393ee7"
+  integrity sha512-cIpSSQUbtd2rTZhd83E9c5p1HjFO6BzinUugRmVOym3c73iAhi6u4ODEYZK6LUuJiO60alq3Fb13zDVHQUPPsg==
   dependencies:
     chevrotain "^3.7.4"
     colors "^1.3.2"
     js-yaml "^3.12.0"
     yargs "^12.0.2"
 
-"@cradlejs/file-emitter@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@cradlejs/file-emitter/-/file-emitter-0.2.5.tgz#23f3a8785c9616bf2233eab12c204ad1109f4773"
-  integrity sha512-VvcSVTfF2OCNxUiFNs6Ue9c2CE9Qrr2FF5GjHoPT3m+6PlU5+rPPPS+wdGnoTV+UuETFt5590fuycoIrRbucTw==
+"@cradlejs/file-emitter@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@cradlejs/file-emitter/-/file-emitter-0.3.0.tgz#60b77b1994ecc0030ecdacd08ab6ea3db005677b"
+  integrity sha512-9x5wKN/U5zDLlbpQsA/YcNjwgChMeOKat1vGS9bED6pKL194FxSL+GbNXoO8cfg3CsQ8LYjMWgMFLl5cbzidiQ==
   dependencies:
-    "@cradlejs/core" "^0.2.5"
+    "@cradlejs/core" "^0.3.0"
     fs-extra "^8.0.1"
-    prettier "^1.18.2"
+    prettier "^1.19.1"
 
-"@cradlejs/graphql-emitter@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@cradlejs/graphql-emitter/-/graphql-emitter-0.2.5.tgz#5f9808058bb703501b05f2c223c7f9911019af83"
-  integrity sha512-QKq/ul0zSSs7qfYqA+kI7oR3KmWrwAnPTLloX38apCgaKgKUz0LwlFLW80SZjiqIotnUNtBDYlRmc1ivwPRjNg==
+"@cradlejs/graphql-emitter@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@cradlejs/graphql-emitter/-/graphql-emitter-0.3.0.tgz#e34d3b16fc5cd3a4c59f56df3b220cba4607a2a3"
+  integrity sha512-fKTeeaqvJtCKrOdk18gtmbgrkqs8Y49F6+fsSq6IsSDErv93lvBaNy9TjgMbgIxKENQ7QKxuMgbHno73AlMrhg==
   dependencies:
-    "@cradlejs/core" "^0.2.5"
-    "@cradlejs/file-emitter" "^0.2.5"
+    "@cradlejs/core" "^0.3.0"
+    "@cradlejs/file-emitter" "^0.3.0"
     colors "^1.3.2"
     fs-extra "^7.0.0"
     lodash "^4.17.11"
     pluralize "^7.0.0"
 
-"@cradlejs/spec-loader@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@cradlejs/spec-loader/-/spec-loader-0.2.5.tgz#5b74458b0f27b5f722afbd6e54e37c8f2b9bdc6e"
-  integrity sha512-1e/slMtUsisTLylNGo22CjkSIDtc7pgmwoOAyXbAdeI2ZFMAjd/zSugmVQt4O7tmxVPTzkz2Gz50CUDhRKLDnQ==
+"@cradlejs/spec-loader@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@cradlejs/spec-loader/-/spec-loader-0.3.0.tgz#26f140fd698dca203ec1fd2e04f30beea9736f6a"
+  integrity sha512-YN35KaoJahdLVrOhvsxJeiLB0QoxUFuvEyk2HEX2Lk/3qcvQRl4/Iq5NDUd2/5oyjRom+J4Xyxh12QmX/EGHmw==
   dependencies:
-    "@cradlejs/core" "^0.2.5"
+    "@cradlejs/core" "^0.3.0"
     chevrotain "3.7.4"
-    glob "^7.1.4"
+    glob "^7.1.6"
     js-yaml "^3.13.1"
 
-"@cradlejs/typescript-emitter@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@cradlejs/typescript-emitter/-/typescript-emitter-0.2.5.tgz#216488c072e9f753460e2ce94fc106468dcbd644"
-  integrity sha512-uChuAKmYtBCrKDdGNGiVuQSTSEKcgbH9mH9Eg+RDbWfcLDXihR8qZon4o2eKvUQM3pg3JR/5DZnH/hKVL59v5A==
+"@cradlejs/typescript-emitter@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@cradlejs/typescript-emitter/-/typescript-emitter-0.3.0.tgz#d122be6355b1d22da05fcd507f7706fee22eac8d"
+  integrity sha512-wb0sfk3Ua3cmS/BlrWmtgwdDFo79N3Rbtva5fmK7rxVNtKcvlNIdj6OMJgt6u/iq0/6f6pVTxuJMyQLtw7jsRA==
   dependencies:
-    "@cradlejs/core" "^0.2.5"
-    "@cradlejs/file-emitter" "^0.2.5"
-    "@types/node" "^12.0.8"
+    "@cradlejs/core" "^0.3.0"
+    "@cradlejs/file-emitter" "^0.3.0"
+    "@types/node" "^12.12.14"
     ts-morph "^2.3.0"
-    typescript "^3.5.2"
+    typescript "^3.7.3"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -1159,10 +1159,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "^0.2.25"
 
-"@fortawesome/react-fontawesome@^0.1.6":
-  version "0.1.7"
-  resolved "https://npm.fontawesome.com/@fortawesome/react-fontawesome/-/0.1.7/react-fontawesome-0.1.7.tgz#c004ca75c15c5a1218101e8f042b8da8dec0c4b5"
-  integrity sha512-AHWSzOsHBe5vqOkrvs+CKw+8eLl+0XZsVixOWhTPpGpOA8WQUbVU6J9cmtAvTaxUU5OIf+rgxxF8ZKc3BVldxg==
+"@fortawesome/react-fontawesome@^0.1.8":
+  version "0.1.8"
+  resolved "https://npm.fontawesome.com/@fortawesome/react-fontawesome/-/0.1.8/react-fontawesome-0.1.8.tgz#cb6d4dd3aeec45b6ff2d48c812317a6627618511"
+  integrity sha512-I5h9YQg/ePA3Br9ISS18fcwOYmzQYDSM1ftH03/8nHkiqIVHtUyQBw482+60dnzvlr82gHt3mGm+nDUp159FCw==
   dependencies:
     prop-types "^15.5.10"
 
@@ -1494,7 +1494,7 @@
   dependencies:
     node-cache "*"
 
-"@types/node@*", "@types/node@>=6", "@types/node@^12.0.8", "@types/node@^12.7.11":
+"@types/node@*", "@types/node@>=6", "@types/node@^12.12.14", "@types/node@^12.7.11":
   version "12.12.14"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.14.tgz#1c1d6e3c75dba466e0326948d56e8bd72a1903d2"
   integrity sha512-u/SJDyXwuihpwjXy7hOOghagLEV1KdAST6syfnOk6QZAMzZuWZqXy5aYYZbh8Jdpd4escVFP0MvftHNDb9pruA==
@@ -8555,7 +8555,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^1.18.2, prettier@^1.19.1:
+prettier@^1.19.1:
   version "1.19.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
@@ -10327,7 +10327,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.0.1, typescript@^3.5.2:
+typescript@^3.0.1:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.2.tgz#27e489b95fa5909445e9fef5ee48d81697ad18fb"
   integrity sha512-ml7V7JfiN2Xwvcer+XAf2csGO1bPBdRbFCkYBczNZggrBZ9c7G3riSUeJmqEU5uOtXNPMhE3n+R4FA/3YOAWOQ==

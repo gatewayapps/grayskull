@@ -13,6 +13,18 @@ input VerifyDatabaseConnectionArgs {
   adminPassword: String!
 }
 
+type ConfigurationMeta {
+  count: Int!
+}
+
+type Query {
+  configuration: Configuration @anonymous
+}
+
+type Mutation {
+  verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
+}
 input SecurityConfigurationInput {
   passwordRequiresLowercase: Boolean!
   passwordRequiresUppercase: Boolean!
@@ -46,17 +58,4 @@ input SaveConfigurationArgs {
   Security: SecurityConfigurationInput
   Mail: MailConfigurationInput
   Server: ServerConfigurationInput
-}
-
-type ConfigurationMeta {
-  count: Int!
-}
-
-type Query {
-  configuration: Configuration @anonymous
-}
-
-type Mutation {
-  verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse
-  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import gql from 'graphql-tag'
 import Link from 'next/link'
 import PropTypes from 'prop-types'

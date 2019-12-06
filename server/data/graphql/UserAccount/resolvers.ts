@@ -425,7 +425,7 @@ export default {
               success: false,
               message: `${
                 config.Server!.realmName
-              } security policy requires you to have an Authenticator App configured`
+                } security policy requires you to have an Authenticator App configured`
             }
           }
 

@@ -1,6 +1,6 @@
 OperationResponse:
   meta:
-    topLevel: false
+    noRootQuery: true
   properties:
     success: boolean
     error: string?

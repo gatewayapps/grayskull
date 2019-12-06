@@ -8,6 +8,7 @@ import ResponsiveForm from './ResponsiveForm'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import PasswordComplexity from './PasswordComplexity'
 import MultiFactorSetup from './MultiFactorSetup'
+import Router from 'next/router'
 
 const ACTIVATE_ACCOUNT_MUTATION = gql`
   mutation ACTIVATE_ACCOUNT_MUTATION($data: ActivateAccountArgs!) {
@@ -190,7 +191,7 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
                                   type="password"
                                   name="password"
                                   value={this.state.data.password}
-                                  onChange={(e) => this.handleChange(e, validate)}
+                                  onChange={(e: any) => this.handleChange(e, validate)}
                                 />
                                 <div
                                   className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3"

@@ -1,8 +1,6 @@
 LoginResponse:
   meta:
-    database: false
-    graphql: true
-    graphqlResolvers: false
+    noRootQuery: true
   properties:
     success: boolean
     message: string?

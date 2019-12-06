@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 import Link from 'next/link'
 import React from 'react'
 import { Query } from 'react-apollo'
-import Primary from '../../../client/layouts/primary'
+
 import ErrorMessage from '../../../client/components/ErrorMessage'
 import LoadingIndicator from '../../../client/components/LoadingIndicator'
 import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'

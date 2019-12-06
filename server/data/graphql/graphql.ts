@@ -6,7 +6,7 @@ import getConfig from 'next/config'
 const { serverRuntimeConfig } = getConfig()
 
 const typeDefs = mergeTypes(
-  fileLoader(`${serverRuntimeConfig.PROJECT_ROOT}/server/data/graphql/**/*.graphql`, { recursive: true })
+  fileLoader(`${serverRuntimeConfig.PROJECT_ROOT}/data/*.graphql`, { recursive: true })
 )
 import baseResolver from './base/resolvers'
 import clientResolver from './Client/resolvers'

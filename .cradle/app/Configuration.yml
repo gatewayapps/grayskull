@@ -1,6 +1,6 @@
 ServerConfiguration:
   meta:
-    topLevel: false
+    noRootQuery: true
   properties:
     baseUrl: string(1024)?
     realmName: string(512)?
@@ -9,7 +9,7 @@ ServerConfiguration:
     realmFavicon: string(512)?
 MailConfiguration:
   meta:
-    topLevel: false
+    noRootQuery: true
     sensitive:
       - username
       - password
@@ -27,7 +27,7 @@ MailConfiguration:
 
 SecurityConfiguration:
   meta:
-    topLevel: false
+    noRootQuery: true
   properties:
     maxLoginAttemptsPerMinute: integer?
     maxPasswordAge: integer?
@@ -47,7 +47,7 @@ SecurityConfiguration:
 
 Configuration:
   meta:
-    topLevel: true
+    noRootQuery: false
   properties:
     Security:
       modelRef: SecurityConfiguration

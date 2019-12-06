@@ -180,18 +180,6 @@ export default {
           error: err.message
         }
       }
-    },
-    verifyCertbot: async (obj, args, context, info) => {
-      try {
-        return {
-          success: true
-        }
-      } catch (err) {
-        return {
-          success: false,
-          error: err.message
-        }
-      }
     }
   },
   Configuration: {}

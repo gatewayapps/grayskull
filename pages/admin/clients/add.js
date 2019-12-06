@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import gql from 'graphql-tag'
 import debounce from 'lodash/debounce'
 import Link from 'next/link'

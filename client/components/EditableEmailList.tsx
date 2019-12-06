@@ -19,7 +19,7 @@ const MY_EMAIL_ADDRESSES_QUERY = gql`
 `
 const ADD_EMAIL_ADDRESS_MUTATION = gql`
   mutation ADD_EMAIL_ADDRESS_MUTATION($emailAddress: String!) {
-    addEmailAddress(emailAddress: $emailAddress) {
+    addEmailAddress(data: { emailAddress: $emailAddress }) {
       success
       message
     }

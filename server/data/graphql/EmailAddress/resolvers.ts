@@ -38,7 +38,7 @@ export default {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
-      const isAvailable = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, { userContext: context.user })
+      const isAvailable = await EmailAddressService.isEmailAddressAvailable(args.data.emailAddress, { userContext: context.user })
       if (!isAvailable) {
         return {
           success: false,
@@ -47,7 +47,7 @@ export default {
       }
 
       try {
-        await EmailAddressService.createEmailAddress({ emailAddress: args.emailAddress, userAccountId: context.user.userAccountId, verificationSecret: '' }, { userContext: context.user })
+        await EmailAddressService.createEmailAddress({ emailAddress: args.data.emailAddress, userAccountId: context.user.userAccountId, verificationSecret: '' }, { userContext: context.user })
         return {
           success: true
         }
@@ -81,7 +81,8 @@ export default {
         throw new Error('You must be signed in to do that')
       }
 
-      const emailAddress = await EmailAddressRepository.getEmailAddress({ emailAddressId: args.emailAddressId }, { userContext: context.user })
+
+      const emailAddress = await EmailAddressRepository.getEmailAddress({ emailAddressId: args.data.emailAddressId }, { userContext: context.user })
       if (!emailAddress) {
         throw new Error('Unable to find an email address with that id')
       } else {

@@ -31,8 +31,7 @@ UserAccount:
     updatedAt: datetime default(NOW)
     deletedBy: uniqueidentifier?
     deletedAt: datetime?
-  references:
-    emailAddresses: multiple of EmailAddress
+    emailAddresses: ref EmailAddress[] ("userAccountId", "userAccountId")
   operations:
     createUser:
       returns: OperationResponse
@@ -124,6 +123,11 @@ UserAccount:
       returns: boolean
       arguments:
         emailAddress: string
+    verifyEmailAddress:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        code: string
     # Validate a Password #
     validatePassword:
       returns: boolean
@@ -131,6 +135,16 @@ UserAccount:
         password: string
         confirm: string
     # Replace OTP Secret
+    validateResetPasswordToken:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        token: string
+    verifyAuthorizationRequest:
+      returns: OperationResponse
+      arguments:
+        client_id: string
+        redirect_uri: string
     setOtpSecret:
       returns: OperationResponse
       arguments:

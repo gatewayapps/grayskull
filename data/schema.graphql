@@ -1,0 +1,1014 @@
+scalar Date
+
+type Query {
+  clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
+  clientsMeta(filter: ClientFilter): ClientMeta!
+  client(where: ClientUniqueFilter): Client
+
+  emailAddresses(offset: Int, limit: Int, filter: EmailAddressFilter): [EmailAddress!]!
+  emailAddressesMeta(filter: EmailAddressFilter): EmailAddressMeta!
+  emailAddress(where: EmailAddressUniqueFilter): EmailAddress
+  phoneNumbers(offset: Int, limit: Int, filter: PhoneNumberFilter): [PhoneNumber!]!
+  phoneNumbersMeta(filter: PhoneNumberFilter): PhoneNumberMeta!
+  phoneNumber(where: PhoneNumberUniqueFilter): PhoneNumber
+  refreshTokens(offset: Int, limit: Int, filter: RefreshTokenFilter): [RefreshToken!]!
+  refreshTokensMeta(filter: RefreshTokenFilter): RefreshTokenMeta!
+  refreshToken(where: RefreshTokenUniqueFilter): RefreshToken
+  scopes(offset: Int, limit: Int, filter: ScopeFilter): [Scope!]!
+  scopesMeta(filter: ScopeFilter): ScopeMeta!
+  scope(where: ScopeUniqueFilter): Scope
+  sessions(offset: Int, limit: Int, filter: SessionFilter): [Session!]!
+  sessionsMeta(filter: SessionFilter): SessionMeta!
+  session(where: SessionUniqueFilter): Session
+  settings(offset: Int, limit: Int, filter: SettingFilter): [Setting!]!
+  settingsMeta(filter: SettingFilter): SettingMeta!
+  setting(where: SettingUniqueFilter): Setting
+  userAccounts(offset: Int, limit: Int, filter: UserAccountFilter): [UserAccount!]!
+  userAccountsMeta(filter: UserAccountFilter): UserAccountMeta!
+  userAccount(where: UserAccountUniqueFilter): UserAccount
+  userClients(offset: Int, limit: Int, filter: UserClientFilter): [UserClient!]!
+  userClientsMeta(filter: UserClientFilter): UserClientMeta!
+  userClient(where: UserClientUniqueFilter): UserClient
+}
+
+type Mutation {
+  createClient(data: CreateClientArgs!): Client
+  updateClient(data: UpdateClientArgs!): Client
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse
+  setEmailAddressPrimary(data: SetEmailAddressPrimaryArgs!): OperationResponse
+  addEmailAddress(data: AddEmailAddressArgs!): OperationResponse
+  sendVerification(data: SendVerificationArgs!): OperationResponse
+  updateClientScopes(data: UpdateClientScopesArgs!): Boolean
+  generateMfaKey(data: GenerateMfaKeyArgs!): String
+  verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
+  resendVerification(data: ResendVerificationArgs!): Boolean
+  resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
+  sendBackupCode(data: SendBackupCodeArgs!): Boolean
+  resetPassword(data: ResetPasswordArgs!): Boolean
+  validatePassword(data: ValidatePasswordArgs!): Boolean
+  createUser(data: CreateUserArgs!): OperationResponse
+  update(data: UpdateArgs!): OperationResponse
+  login(data: LoginArgs!): LoginResponse
+  authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
+  verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse
+  validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse
+  verifyAuthorizationRequest(data: VerifyAuthorizationRequestArgs!): OperationResponse
+  setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
+  changePassword(data: ChangePasswordArgs!): OperationResponse
+  deleteAccount(data: DeleteAccountArgs!): OperationResponse
+  activateAccount(data: ActivateAccountArgs!): OperationResponse
+  registerUser(data: RegisterUserArgs!): RegisterUserResponse
+}
+
+type AuthorizeClientResponse {
+  pendingScopes: [String!]!
+  redirectUri: String
+}
+type Client {
+  client_id: String!
+  name: String!
+  logoImageUrl: String
+  description: String
+  secret: String!
+  baseUrl: String!
+  homePageUrl: String
+  redirectUris: String!
+  scopes: String!
+  public: Boolean
+  isActive: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
+}
+
+input CreateClientArgs {
+  client_id: String!
+  name: String!
+  logoImageUrl: String
+  description: String
+  public: Boolean
+  secret: String!
+  baseUrl: String!
+  homePageUrl: String
+  redirectUris: String!
+  scopes: String!
+  isActive: Boolean!
+}
+
+input UpdateClientArgs {
+  client_id: String!
+  name: String
+  logoImageUrl: String
+  description: String
+  public: Boolean
+  baseUrl: String
+  homePageUrl: String
+  redirectUris: String
+  scopes: String
+  isActive: Boolean
+}
+
+type ClientMeta {
+  count: Int!
+}
+
+input ClientFilter {
+  or: [ClientFilter!]
+  and: [ClientFilter!]
+  client_id_contains: String
+  client_id_notContains: String
+  client_id_startsWith: String
+  client_id_endsWith: String
+  client_id_equals: String
+  client_id_notEquals: String
+  name_contains: String
+  name_notContains: String
+  name_startsWith: String
+  name_endsWith: String
+  name_equals: String
+  name_notEquals: String
+  logoImageUrl_contains: String
+  logoImageUrl_notContains: String
+  logoImageUrl_startsWith: String
+  logoImageUrl_endsWith: String
+  logoImageUrl_equals: String
+  logoImageUrl_notEquals: String
+  description_contains: String
+  description_notContains: String
+  description_startsWith: String
+  description_endsWith: String
+  description_equals: String
+  description_notEquals: String
+  secret_contains: String
+  secret_notContains: String
+  secret_startsWith: String
+  secret_endsWith: String
+  secret_equals: String
+  secret_notEquals: String
+  baseUrl_contains: String
+  baseUrl_notContains: String
+  baseUrl_startsWith: String
+  baseUrl_endsWith: String
+  baseUrl_equals: String
+  baseUrl_notEquals: String
+  homePageUrl_contains: String
+  homePageUrl_notContains: String
+  homePageUrl_startsWith: String
+  homePageUrl_endsWith: String
+  homePageUrl_equals: String
+  homePageUrl_notEquals: String
+  redirectUris_contains: String
+  redirectUris_notContains: String
+  redirectUris_startsWith: String
+  redirectUris_endsWith: String
+  redirectUris_equals: String
+  redirectUris_notEquals: String
+  scopes_contains: String
+  scopes_notContains: String
+  scopes_startsWith: String
+  scopes_endsWith: String
+  scopes_equals: String
+  scopes_notEquals: String
+  public_equals: Boolean
+  public_notEquals: Boolean
+  isActive_equals: Boolean
+  isActive_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+}
+
+input ClientUniqueFilter {
+  client_id: String
+}
+
+type ServerConfiguration {
+  baseUrl: String
+  realmName: String
+  realmLogo: String
+  realmBackground: String
+  realmFavicon: String
+}
+type MailConfiguration {
+  serverAddress: String
+  username: String
+  password: String
+  tlsSslRequired: Boolean
+  port: Int
+  fromAddress: String
+}
+type SecurityConfiguration {
+  maxLoginAttemptsPerMinute: Int
+  maxPasswordAge: Int
+  passwordRequiresLowercase: Boolean
+  passwordRequiresUppercase: Boolean
+  passwordRequiresNumber: Boolean
+  passwordRequiresSymbol: Boolean
+  passwordMinimumLength: Int
+  multifactorRequired: Boolean
+  requireEmailAddressVerification: Boolean
+  passwordHistoryEnabled: Boolean
+  passwordHistoryCount: Int
+  invitationExpirationSeconds: Int
+  accessTokenExpirationSeconds: Int
+  domainWhitelist: String
+  allowSignup: Boolean
+}
+type Configuration {
+  Security: SecurityConfiguration!
+  Mail: MailConfiguration!
+  Server: ServerConfiguration!
+}
+
+input SaveConfigurationArgs {
+  Security: SecurityConfigurationInput!
+  Mail: MailConfigurationInput!
+  Server: ServerConfigurationInput!
+}
+
+type ConfigurationMeta {
+  count: Int!
+}
+
+type EmailAddress {
+  emailAddressId: ID!
+  userAccountId: ID!
+  emailAddress: String!
+  verificationSecret: String!
+  verified: Boolean!
+  primary: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
+}
+
+input SetEmailAddressPrimaryArgs {
+  emailAddressId: ID!
+}
+
+input AddEmailAddressArgs {
+  emailAddress: String!
+}
+
+input SendVerificationArgs {
+  emailAddress: String!
+}
+
+type EmailAddressMeta {
+  count: Int!
+}
+
+input EmailAddressFilter {
+  or: [EmailAddressFilter!]
+  and: [EmailAddressFilter!]
+  emailAddressId_in: [ID]
+  emailAddressId_equals: ID
+  emailAddressId_notEquals: ID
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  emailAddress_contains: String
+  emailAddress_notContains: String
+  emailAddress_startsWith: String
+  emailAddress_endsWith: String
+  emailAddress_equals: String
+  emailAddress_notEquals: String
+  verificationSecret_contains: String
+  verificationSecret_notContains: String
+  verificationSecret_startsWith: String
+  verificationSecret_endsWith: String
+  verificationSecret_equals: String
+  verificationSecret_notEquals: String
+  verified_equals: Boolean
+  verified_notEquals: Boolean
+  primary_equals: Boolean
+  primary_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+}
+
+input EmailAddressUniqueFilter {
+  emailAddressId: ID
+  userAccountId: ID
+  emailAddress: String
+}
+
+type LoginResponse {
+  success: Boolean!
+  message: String
+  otpRequired: Boolean
+  emailVerificationRequired: Boolean
+}
+type OperationResponse {
+  success: Boolean!
+  error: String
+  message: String
+}
+type PhoneNumber {
+  phoneNumberId: ID!
+  userAccountId: ID!
+  phoneNumber: String!
+  verificationSecret: String!
+  verified: Boolean!
+  primary: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
+}
+
+type PhoneNumberMeta {
+  count: Int!
+}
+
+input PhoneNumberFilter {
+  or: [PhoneNumberFilter!]
+  and: [PhoneNumberFilter!]
+  phoneNumberId_in: [ID]
+  phoneNumberId_equals: ID
+  phoneNumberId_notEquals: ID
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  phoneNumber_contains: String
+  phoneNumber_notContains: String
+  phoneNumber_startsWith: String
+  phoneNumber_endsWith: String
+  phoneNumber_equals: String
+  phoneNumber_notEquals: String
+  verificationSecret_contains: String
+  verificationSecret_notContains: String
+  verificationSecret_startsWith: String
+  verificationSecret_endsWith: String
+  verificationSecret_equals: String
+  verificationSecret_notEquals: String
+  verified_equals: Boolean
+  verified_notEquals: Boolean
+  primary_equals: Boolean
+  primary_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+}
+
+input PhoneNumberUniqueFilter {
+  phoneNumberId: ID
+  userAccountId: ID
+  phoneNumber: String
+}
+
+type RefreshToken {
+  id: ID!
+  userClientId: ID!
+  token: String!
+  issuedAt: Date!
+  activeAt: Date!
+  expiresAt: Date
+  revokedAt: Date
+  createdBy: ID
+  updatedBy: ID
+  revokedBy: ID
+  deletedBy: ID
+  deletedAt: Date
+}
+
+type RefreshTokenMeta {
+  count: Int!
+}
+
+input RefreshTokenFilter {
+  or: [RefreshTokenFilter!]
+  and: [RefreshTokenFilter!]
+  id_in: [ID]
+  id_equals: ID
+  id_notEquals: ID
+  userClientId_in: [ID]
+  userClientId_equals: ID
+  userClientId_notEquals: ID
+  token_contains: String
+  token_notContains: String
+  token_startsWith: String
+  token_endsWith: String
+  token_equals: String
+  token_notEquals: String
+  issuedAt_lessThan: Date
+  issuedAt_greaterThan: Date
+  issuedAt_equals: Date
+  issuedAt_notEquals: Date
+  activeAt_lessThan: Date
+  activeAt_greaterThan: Date
+  activeAt_equals: Date
+  activeAt_notEquals: Date
+  expiresAt_lessThan: Date
+  expiresAt_greaterThan: Date
+  expiresAt_equals: Date
+  expiresAt_notEquals: Date
+  revokedAt_lessThan: Date
+  revokedAt_greaterThan: Date
+  revokedAt_equals: Date
+  revokedAt_notEquals: Date
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  revokedBy_in: [ID]
+  revokedBy_equals: ID
+  revokedBy_notEquals: ID
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+}
+
+input RefreshTokenUniqueFilter {
+  id: ID
+  userClientId: ID
+  token: String
+}
+
+type RegisterUserResponse {
+  success: Boolean!
+  error: String
+  message: String
+}
+type Scope {
+  id: String!
+  clientDescription: String!
+  userDescription: String!
+  required: Boolean!
+  permissionLevel: Int!
+}
+
+type ScopeMeta {
+  count: Int!
+}
+
+input ScopeFilter {
+  or: [ScopeFilter!]
+  and: [ScopeFilter!]
+  id_contains: String
+  id_notContains: String
+  id_startsWith: String
+  id_endsWith: String
+  id_equals: String
+  id_notEquals: String
+  clientDescription_contains: String
+  clientDescription_notContains: String
+  clientDescription_startsWith: String
+  clientDescription_endsWith: String
+  clientDescription_equals: String
+  clientDescription_notEquals: String
+  userDescription_contains: String
+  userDescription_notContains: String
+  userDescription_startsWith: String
+  userDescription_endsWith: String
+  userDescription_equals: String
+  userDescription_notEquals: String
+  required_equals: Boolean
+  required_notEquals: Boolean
+  permissionLevel_lessThan: Int
+  permissionLevel_greaterThan: Int
+  permissionLevel_equals: Int
+  permissionLevel_notEquals: Int
+}
+
+input ScopeUniqueFilter {
+  id: String
+}
+
+type Session {
+  sessionId: ID!
+  fingerprint: String!
+  userAccountId: ID!
+  name: String
+  ipAddress: String!
+  lastUsedAt: Date!
+  expiresAt: Date!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+}
+
+type SessionMeta {
+  count: Int!
+}
+
+input SessionFilter {
+  or: [SessionFilter!]
+  and: [SessionFilter!]
+  sessionId_in: [ID]
+  sessionId_equals: ID
+  sessionId_notEquals: ID
+  fingerprint_contains: String
+  fingerprint_notContains: String
+  fingerprint_startsWith: String
+  fingerprint_endsWith: String
+  fingerprint_equals: String
+  fingerprint_notEquals: String
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  name_contains: String
+  name_notContains: String
+  name_startsWith: String
+  name_endsWith: String
+  name_equals: String
+  name_notEquals: String
+  ipAddress_contains: String
+  ipAddress_notContains: String
+  ipAddress_startsWith: String
+  ipAddress_endsWith: String
+  ipAddress_equals: String
+  ipAddress_notEquals: String
+  lastUsedAt_lessThan: Date
+  lastUsedAt_greaterThan: Date
+  lastUsedAt_equals: Date
+  lastUsedAt_notEquals: Date
+  expiresAt_lessThan: Date
+  expiresAt_greaterThan: Date
+  expiresAt_equals: Date
+  expiresAt_notEquals: Date
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+}
+
+input SessionUniqueFilter {
+  sessionId: ID
+  userAccountId: ID
+}
+
+type Setting {
+  key: String!
+  value: String!
+  type: String!
+  category: String!
+}
+
+type SettingMeta {
+  count: Int!
+}
+
+input SettingFilter {
+  or: [SettingFilter!]
+  and: [SettingFilter!]
+  key_contains: String
+  key_notContains: String
+  key_startsWith: String
+  key_endsWith: String
+  key_equals: String
+  key_notEquals: String
+  value_contains: String
+  value_notContains: String
+  value_startsWith: String
+  value_endsWith: String
+  value_equals: String
+  value_notEquals: String
+  type_contains: String
+  type_notContains: String
+  type_startsWith: String
+  type_endsWith: String
+  type_equals: String
+  type_notEquals: String
+  category_contains: String
+  category_notContains: String
+  category_startsWith: String
+  category_endsWith: String
+  category_equals: String
+  category_notEquals: String
+}
+
+input SettingUniqueFilter {
+  key: String
+}
+
+type UploadFileResponse {
+  url: String!
+  mimetype: String!
+  size: Int!
+}
+type UserAccount {
+  userAccountId: ID!
+  firstName: String!
+  lastName: String!
+  displayName: String
+  lastActive: Date!
+  lastPasswordChange: Date!
+  passwordHash: String!
+  gender: String
+  birthday: Date
+  profileImageUrl: String
+  permissions: Int!
+  otpSecret: String
+  otpEnabled: Boolean!
+  resetPasswordToken: String
+  resetPasswordTokenExpiresAt: Date
+  isActive: Boolean!
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
+  emailAddresses: [EmailAddress!]!
+}
+
+input UpdateClientScopesArgs {
+  client_id: String!
+  allowedScopes: [String!]!
+  deniedScopes: [String!]!
+}
+
+input GenerateMfaKeyArgs {
+  emailAddress: String!
+}
+
+input VerifyMfaKeyArgs {
+  secret: String!
+  token: String!
+}
+
+input ResendVerificationArgs {
+  emailAddress: String!
+}
+
+input ResendAllVerificationEmailsArgs {
+  dryRun: Boolean
+}
+
+input SendBackupCodeArgs {
+  emailAddress: String!
+}
+
+input ResetPasswordArgs {
+  emailAddress: String!
+}
+
+input ValidatePasswordArgs {
+  password: String!
+  confirm: String!
+}
+
+input CreateUserArgs {
+  emailAddress: String!
+  firstName: String!
+  lastName: String!
+  permissions: Int!
+  displayName: String
+  gender: String
+  birthday: Date
+  profileImageUrl: String
+}
+
+input UpdateArgs {
+  userAccountId: String
+  firstName: String
+  lastName: String
+  permissions: Int
+  displayName: String
+  gender: String
+  birthday: Date
+  profileImageUrl: String
+}
+
+input LoginArgs {
+  emailAddress: String!
+  password: String!
+  otpToken: String
+  fingerprint: String!
+  extendedSession: Boolean!
+}
+
+input AuthorizeClientArgs {
+  client_id: String!
+  responseType: String!
+  redirectUri: String!
+  scope: String
+  state: String
+  nonce: String
+}
+
+input VerifyEmailAddressArgs {
+  emailAddress: String!
+  code: String!
+}
+
+input ValidateResetPasswordTokenArgs {
+  emailAddress: String!
+  token: String!
+}
+
+input VerifyAuthorizationRequestArgs {
+  client_id: String!
+  redirect_uri: String!
+}
+
+input SetOtpSecretArgs {
+  password: String!
+  otpSecret: String!
+}
+
+input ChangePasswordArgs {
+  emailAddress: String
+  oldPassword: String
+  newPassword: String!
+  confirmPassword: String!
+  token: String
+}
+
+input DeleteAccountArgs {
+  userAccountId: String!
+}
+
+input ActivateAccountArgs {
+  emailAddress: String!
+  token: String!
+  password: String!
+  confirmPassword: String!
+  otpSecret: String
+}
+
+input RegisterUserArgs {
+  emailAddress: String!
+  password: String!
+  confirm: String!
+  client_id: String
+  firstName: String!
+  lastName: String!
+  otpSecret: String
+}
+
+type UserAccountMeta {
+  count: Int!
+}
+
+input UserAccountFilter {
+  or: [UserAccountFilter!]
+  and: [UserAccountFilter!]
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  firstName_contains: String
+  firstName_notContains: String
+  firstName_startsWith: String
+  firstName_endsWith: String
+  firstName_equals: String
+  firstName_notEquals: String
+  lastName_contains: String
+  lastName_notContains: String
+  lastName_startsWith: String
+  lastName_endsWith: String
+  lastName_equals: String
+  lastName_notEquals: String
+  displayName_contains: String
+  displayName_notContains: String
+  displayName_startsWith: String
+  displayName_endsWith: String
+  displayName_equals: String
+  displayName_notEquals: String
+  lastActive_lessThan: Date
+  lastActive_greaterThan: Date
+  lastActive_equals: Date
+  lastActive_notEquals: Date
+  lastPasswordChange_lessThan: Date
+  lastPasswordChange_greaterThan: Date
+  lastPasswordChange_equals: Date
+  lastPasswordChange_notEquals: Date
+  passwordHash_contains: String
+  passwordHash_notContains: String
+  passwordHash_startsWith: String
+  passwordHash_endsWith: String
+  passwordHash_equals: String
+  passwordHash_notEquals: String
+  gender_contains: String
+  gender_notContains: String
+  gender_startsWith: String
+  gender_endsWith: String
+  gender_equals: String
+  gender_notEquals: String
+  birthday_lessThan: Date
+  birthday_greaterThan: Date
+  birthday_equals: Date
+  birthday_notEquals: Date
+  profileImageUrl_contains: String
+  profileImageUrl_notContains: String
+  profileImageUrl_startsWith: String
+  profileImageUrl_endsWith: String
+  profileImageUrl_equals: String
+  profileImageUrl_notEquals: String
+  permissions_lessThan: Int
+  permissions_greaterThan: Int
+  permissions_equals: Int
+  permissions_notEquals: Int
+  otpSecret_contains: String
+  otpSecret_notContains: String
+  otpSecret_startsWith: String
+  otpSecret_endsWith: String
+  otpSecret_equals: String
+  otpSecret_notEquals: String
+  otpEnabled_equals: Boolean
+  otpEnabled_notEquals: Boolean
+  resetPasswordToken_contains: String
+  resetPasswordToken_notContains: String
+  resetPasswordToken_startsWith: String
+  resetPasswordToken_endsWith: String
+  resetPasswordToken_equals: String
+  resetPasswordToken_notEquals: String
+  resetPasswordTokenExpiresAt_lessThan: Date
+  resetPasswordTokenExpiresAt_greaterThan: Date
+  resetPasswordTokenExpiresAt_equals: Date
+  resetPasswordTokenExpiresAt_notEquals: Date
+  isActive_equals: Boolean
+  isActive_notEquals: Boolean
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+}
+
+input UserAccountUniqueFilter {
+  userAccountId: ID
+}
+
+type UserClient {
+  userClientId: ID!
+  userAccountId: ID!
+  client_id: String!
+  allowedScopes: String!
+  deniedScopes: String!
+  revoked: Boolean!
+  revokedBy: ID
+  RevokedAt: Date
+  createdBy: ID
+  createdAt: Date!
+  updatedBy: ID
+  updatedAt: Date!
+  deletedBy: ID
+  deletedAt: Date
+}
+
+type UserClientMeta {
+  count: Int!
+}
+
+input UserClientFilter {
+  or: [UserClientFilter!]
+  and: [UserClientFilter!]
+  userClientId_in: [ID]
+  userClientId_equals: ID
+  userClientId_notEquals: ID
+  userAccountId_in: [ID]
+  userAccountId_equals: ID
+  userAccountId_notEquals: ID
+  client_id_contains: String
+  client_id_notContains: String
+  client_id_startsWith: String
+  client_id_endsWith: String
+  client_id_equals: String
+  client_id_notEquals: String
+  allowedScopes_contains: String
+  allowedScopes_notContains: String
+  allowedScopes_startsWith: String
+  allowedScopes_endsWith: String
+  allowedScopes_equals: String
+  allowedScopes_notEquals: String
+  deniedScopes_contains: String
+  deniedScopes_notContains: String
+  deniedScopes_startsWith: String
+  deniedScopes_endsWith: String
+  deniedScopes_equals: String
+  deniedScopes_notEquals: String
+  revoked_equals: Boolean
+  revoked_notEquals: Boolean
+  revokedBy_in: [ID]
+  revokedBy_equals: ID
+  revokedBy_notEquals: ID
+  RevokedAt_lessThan: Date
+  RevokedAt_greaterThan: Date
+  RevokedAt_equals: Date
+  RevokedAt_notEquals: Date
+  createdBy_in: [ID]
+  createdBy_equals: ID
+  createdBy_notEquals: ID
+  createdAt_lessThan: Date
+  createdAt_greaterThan: Date
+  createdAt_equals: Date
+  createdAt_notEquals: Date
+  updatedBy_in: [ID]
+  updatedBy_equals: ID
+  updatedBy_notEquals: ID
+  updatedAt_lessThan: Date
+  updatedAt_greaterThan: Date
+  updatedAt_equals: Date
+  updatedAt_notEquals: Date
+  deletedBy_in: [ID]
+  deletedBy_equals: ID
+  deletedBy_notEquals: ID
+  deletedAt_lessThan: Date
+  deletedAt_greaterThan: Date
+  deletedAt_equals: Date
+  deletedAt_notEquals: Date
+}
+
+input UserClientUniqueFilter {
+  userClientId: ID
+  userAccountId: ID
+  client_id: String
+}

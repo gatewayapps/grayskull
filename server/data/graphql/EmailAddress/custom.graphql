@@ -2,8 +2,3 @@ type Query {
   emailAddressAvailable(emailAddress: String!): Boolean @anonymous
   myEmailAddresses: [EmailAddress!]!
 }
-type Mutation {
-  addEmailAddress(emailAddress: String!): OperationResponse
-  setEmailAddressPrimary(emailAddressId: String!): OperationResponse
-  sendVerification(emailAddressId: String!): OperationResponse
-}

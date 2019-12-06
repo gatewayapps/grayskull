@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import gql from 'graphql-tag'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
