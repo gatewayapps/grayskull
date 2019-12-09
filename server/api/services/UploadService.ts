@@ -1,5 +1,4 @@
-import { getCurrentConfiguration } from '../../config/ConfigurationManager'
-import { CONFIG_DIR } from '../../constants'
+import { v2 as cloudinary } from 'cloudinary'
 import fs, { ReadStream } from 'fs-extra'
 import { FileUpload } from '../../types/FileUpload'
 import path, { join } from 'path'
@@ -16,11 +15,24 @@ class UploadService {
       const { createReadStream, filename, mimetype } = await upload
       const stream = createReadStream()
       const { localFilename, size } = await this.writeToDisk(stream, filename)
-      const url = `/uploads/${localFilename}`
-      return {
-        url,
-        mimetype,
-        size
+      if (process.env.CLOUDINARY_URL) {
+        const fullLocalPath = path.join(UPLOAD_DIR, localFilename)
+        const result = await cloudinary.uploader.upload(fullLocalPath, {
+          folder: process.env.CLOUDINARY_FOLDER
+        })
+
+        return {
+          url: result.secure_url,
+          size: 0,
+          mimetype: 'image/jpg'
+        }
+      } else {
+        const url = `/uploads/${localFilename}`
+        return {
+          url,
+          mimetype,
+          size
+        }
       }
     } catch (err) {
       console.error(err)
