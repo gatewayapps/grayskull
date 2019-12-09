@@ -2,11 +2,11 @@ import { makeExecutableSchema } from 'apollo-server'
 import { fileLoader, mergeResolvers, mergeTypes } from 'merge-graphql-schemas'
 import { AuthorizationDirective } from './AuthorizationDirective'
 import { AnonymousDirective } from './AnonymousDirective'
-import getConfig from 'next/config'
-const { serverRuntimeConfig } = getConfig()
+
+
 
 const typeDefs = mergeTypes(
-  fileLoader(`${serverRuntimeConfig.PROJECT_ROOT}/data/*.graphql`, { recursive: true })
+  fileLoader(`${process.env.PROJECT_ROOT!}/data/*.graphql`, { recursive: true })
 )
 import baseResolver from './base/resolvers'
 import clientResolver from './Client/resolvers'

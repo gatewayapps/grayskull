@@ -4,10 +4,10 @@ import { FileUpload } from '../../types/FileUpload'
 import path, { join } from 'path'
 import uuid from 'uuid/v4'
 import { IUploadFileResponse } from '../../data/models/IUploadFileResponse'
-import getConfig from 'next/config'
-const { serverRuntimeConfig } = getConfig()
 
-const UPLOAD_DIR = join(serverRuntimeConfig.PROJECT_ROOT, `public/uploads/`)
+
+
+const UPLOAD_DIR = join(process.env.PROJECT_ROOT!, `public/uploads/`)
 
 class UploadService {
   public async createUpload(upload: FileUpload): Promise<IUploadFileResponse | undefined> {

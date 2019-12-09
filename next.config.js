@@ -8,7 +8,8 @@ module.exports = withSass(
         return [{ source: '/token', destination: '/api/token' }]
       }
     },
-    serverRuntimeConfig: {
+    target: 'serverless',
+    env: {
       PROJECT_ROOT: __dirname
     }
   })

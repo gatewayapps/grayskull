@@ -4,8 +4,8 @@ import { join, normalize } from 'path'
 import handlebars from 'handlebars'
 import { existsSync, readFileSync } from 'fs'
 import { getCurrentConfiguration } from '../../config/ConfigurationManager'
-import getConfig from 'next/config'
-const { serverRuntimeConfig } = getConfig()
+
+
 
 const TEMPLATE_PATH = './server/templates'
 
@@ -21,9 +21,9 @@ class MailService {
       secure: mailConfig.tlsSslRequired,
       auth: mailConfig.username
         ? {
-            user: mailConfig.username,
-            pass: mailConfig.password
-          }
+          user: mailConfig.username,
+          pass: mailConfig.password
+        }
         : undefined
     }
 
@@ -49,8 +49,8 @@ class MailService {
     const textTemplateFileName = `${templateName}.text.handlebars`
     const htmlTemplateFileName = `${templateName}.html.handlebars`
 
-    const textTemplatePath = normalize(join(serverRuntimeConfig.PROJECT_ROOT, TEMPLATE_PATH, textTemplateFileName))
-    const htmlTemplatePath = normalize(join(serverRuntimeConfig.PROJECT_ROOT, TEMPLATE_PATH, htmlTemplateFileName))
+    const textTemplatePath = normalize(join(process.env.PROJECT_ROOT!, TEMPLATE_PATH, textTemplateFileName))
+    const htmlTemplatePath = normalize(join(process.env.PROJECT_ROOT!, TEMPLATE_PATH, htmlTemplateFileName))
 
     if (!existsSync(textTemplatePath) && !existsSync(htmlTemplatePath)) {
       throw new Error(`No template found in ${TEMPLATE_PATH} with name ${templateName} - looked for ${textTemplateFileName}, ${htmlTemplateFileName}`)
