@@ -21,6 +21,7 @@ function getSequelizeConnection() {
   let password = process.env.GRAYSKULL_DB_PASSWORD
   let server = process.env.GRAYSKULL_DB_HOST
   let storage = process.env.GRAYSKULL_DB_STORAGE
+  let dialectModule: any = undefined
   let dialect: 'mysql' | 'sqlite' | 'postgres' | 'mssql' | undefined = process.env.GRAYSKULL_DB_PROVIDER as
     | 'mysql'
     | 'sqlite'
@@ -47,6 +48,7 @@ function getSequelizeConnection() {
         storage = connectionUrl.pathname
         break
       case 'postgres':
+        dialectModule = 'pg'
         dialect = 'postgres'
         break
       case 'jdbc:sqlserver':
@@ -54,15 +56,35 @@ function getSequelizeConnection() {
         break
     }
 
+
+
+
     user = connectionUrl.username
     password = connectionUrl.password
     server = connectionUrl.host
     databaseName = connectionUrl.pathname.substr(1)
   }
+  switch (dialect) {
+    case 'mysql': {
+      dialectModule = 'mysql2'
+      break
+    }
+    case 'postgres': {
+      dialectModule = 'pg'
+      break
+    }
+    case 'mssql': {
+      dialectModule = 'tedious'
+      break
+    }
+  }
+
+
   let options: Sequelize.Options = {
     dialect: dialect!,
     logging: false,
     host: server,
+    dialectModule: dialectModule,
     database: databaseName,
     storage: storage
   }
