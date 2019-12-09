@@ -34,30 +34,30 @@ type Query {
 type Mutation {
   createClient(data: CreateClientArgs!): Client
   updateClient(data: UpdateClientArgs!): Client
-  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
   setEmailAddressPrimary(data: SetEmailAddressPrimaryArgs!): OperationResponse
   addEmailAddress(data: AddEmailAddressArgs!): OperationResponse
   sendVerification(data: SendVerificationArgs!): OperationResponse
   updateClientScopes(data: UpdateClientScopesArgs!): Boolean
-  generateMfaKey(data: GenerateMfaKeyArgs!): String
-  verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean
-  resendVerification(data: ResendVerificationArgs!): Boolean
+  generateMfaKey(data: GenerateMfaKeyArgs!): String @anonymous
+  verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean @anonymous
+  resendVerification(data: ResendVerificationArgs!): Boolean @anonymous
   resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
-  sendBackupCode(data: SendBackupCodeArgs!): Boolean
-  resetPassword(data: ResetPasswordArgs!): Boolean
-  validatePassword(data: ValidatePasswordArgs!): Boolean
+  sendBackupCode(data: SendBackupCodeArgs!): Boolean @anonymous
+  resetPassword(data: ResetPasswordArgs!): Boolean @anonymous
+  validatePassword(data: ValidatePasswordArgs!): Boolean @anonymous
   createUser(data: CreateUserArgs!): OperationResponse
   update(data: UpdateArgs!): OperationResponse
-  login(data: LoginArgs!): LoginResponse
+  login(data: LoginArgs!): LoginResponse @anonymous
   authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
   verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse
-  validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse
+  validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse @anonymous
   verifyAuthorizationRequest(data: VerifyAuthorizationRequestArgs!): OperationResponse
   setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
-  changePassword(data: ChangePasswordArgs!): OperationResponse
+  changePassword(data: ChangePasswordArgs!): OperationResponse @anonymous
   deleteAccount(data: DeleteAccountArgs!): OperationResponse
   activateAccount(data: ActivateAccountArgs!): OperationResponse
-  registerUser(data: RegisterUserArgs!): RegisterUserResponse
+  registerUser(data: RegisterUserArgs!): RegisterUserResponse @anonymous
 }
 
 type AuthorizeClientResponse {
@@ -236,9 +236,9 @@ type SecurityConfiguration {
   allowSignup: Boolean
 }
 type Configuration {
-  Security: SecurityConfiguration!
+  Security: SecurityConfiguration! @anonymous
   Mail: MailConfiguration!
-  Server: ServerConfiguration!
+  Server: ServerConfiguration! @anonymous
 }
 
 input SaveConfigurationArgs {

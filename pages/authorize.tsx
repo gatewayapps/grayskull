@@ -11,8 +11,8 @@ import LoadingIndicator from '../client/components/LoadingIndicator'
 import RequireAuthentication from '../client/components/RequireAuthentication'
 
 const VERIFY_AUTHORIZATION_REQUEST_MUTATION = gql`
-  mutation VERIFY_AUTHORIZATION_REQUEST_MUTATION($client_id: String!, $redirect_uri: $String!){
-    verifyAuthorizationRequest(data: {client_id: $client_id, redirectUri: $redirect_uri}){
+  mutation VERIFY_AUTHORIZATION_REQUEST_MUTATION($client_id: String!, $redirect_uri: String!) {
+    verifyAuthorizationRequest(data: { client_id: $client_id, redirectUri: $redirect_uri }) {
       success
       message
     }
@@ -41,11 +41,16 @@ export interface AuthorizePageProps {
 }
 
 const AuthorizePage = (props: AuthorizePageProps) => {
-  const [verifyAuthorizationRequest, { data: verificationData, loading: verificationLoading, error: verificationError }] = useMutation(VERIFY_AUTHORIZATION_REQUEST_MUTATION, {
+  const [
+    verifyAuthorizationRequest,
+    { data: verificationData, loading: verificationLoading, error: verificationError }
+  ] = useMutation(VERIFY_AUTHORIZATION_REQUEST_MUTATION, {
     variables: { clientId: props.router.query.client_id, redirectUri: props.router.query.redirect_uri }
   })
 
-  const { data, loading, error } = useQuery(LOAD_AUTHORIZE_QUERY, { variables: { client_id: props.router.query.client_id } })
+  const { data, loading, error } = useQuery(LOAD_AUTHORIZE_QUERY, {
+    variables: { client_id: props.router.query.client_id }
+  })
 
   let content
 
