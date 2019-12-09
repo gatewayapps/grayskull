@@ -5,6 +5,10 @@ if (config && typeof config === 'function') {
 
 import Sequelize from 'sequelize'
 
+import pg from 'pg'
+import mysql2 from 'mysql2'
+// import tedious from 'tedious'
+
 import ClientFactory from './models/Client'
 import EmailAddressFactory from './models/EmailAddress'
 import UserAccountFactory from './models/UserAccount'
@@ -66,17 +70,14 @@ function getSequelizeConnection() {
   }
   switch (dialect) {
     case 'mysql': {
-      dialectModule = 'mysql2'
+      dialectModule = mysql2
       break
     }
     case 'postgres': {
-      dialectModule = 'pg'
+      dialectModule = pg
       break
     }
-    case 'mssql': {
-      dialectModule = 'tedious'
-      break
-    }
+
   }
 
 

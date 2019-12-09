@@ -1,8 +1,11 @@
 {
   "name": "grayskull",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "build": "next build",
     "copy-graphql": "copyfiles -u 1 src/**/*.graphql dist",
@@ -24,6 +27,10 @@
   "browser": {
     "sqlite3": false,
     "sequelize": false,
+    "pg": false,
+    "dns": false,
+    "tedious": false,
+    "mysql2": false,
     "aws-sdk": false,
     "fs": false,
     "dotenv": false,
@@ -120,6 +127,7 @@
     "core-js": "^3.4.8",
     "decache": "^4.5.0",
     "dotenv": "^8.2.0",
+    "dns": "file:./client/dns",
     "fs-capacitor": "^5.0.1",
     "fs-extra": "^8.1.0",
     "graceful-fs": "4.2.3",
