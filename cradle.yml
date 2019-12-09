@@ -3,12 +3,13 @@ loader:
   options:
     source: './.cradle/app/**/*.yml'
 emitters:
-  graphql:
-    module: '@cradlejs/graphql-emitter'
-    output: './data/schema.graphql'
-    options:
-      overwrite: true
-      formatting: 'prettier'
+  # !!!!!!!  Disabled because cradle-graphql-emitter doesn't support directives yet
+  # graphql:
+  #   module: '@cradlejs/graphql-emitter'
+  #   output: './data/schema.graphql'
+  #   options:
+  #     overwrite: true
+  #     formatting: 'prettier'
   typescript:
     module: '@cradlejs/typescript-emitter'
     output: './data/types.ts'
