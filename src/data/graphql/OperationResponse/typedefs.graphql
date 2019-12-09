@@ -1,5 +1,0 @@
-type OperationResponse {
-  success: Boolean!
-  error: String
-  message: String
-}

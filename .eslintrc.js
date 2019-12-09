@@ -45,7 +45,7 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'sort-imports': [
-      'warn',
+      'off',
       {
         ignoreCase: false,
         ignoreDeclarationSort: false,
@@ -53,8 +53,8 @@ module.exports = {
         memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
       }
     ],
-    'sort-keys': 'warn',
-    'sort-vars': 'warn'
+    'sort-keys': 'off',
+    'sort-vars': 'off'
   },
   settings: {
     react: {

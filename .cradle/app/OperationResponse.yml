@@ -1,0 +1,7 @@
+OperationResponse:
+  meta:
+    noRootQuery: true
+  properties:
+    success: boolean
+    error: string?
+    message: string?

@@ -1,9 +1,0 @@
-RegisterUserResponse:
-  meta:
-    database: false
-    graphql: true
-    graphqlResolvers: false
-  properties:
-    success: boolean
-    error: string?
-    message: string?

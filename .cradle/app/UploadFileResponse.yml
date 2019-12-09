@@ -1,0 +1,7 @@
+UploadFileResponse:
+  meta:
+    noRootQuery: true
+  properties:
+    url: string
+    mimetype: string
+    size: integer

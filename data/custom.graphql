@@ -1,0 +1,77 @@
+scalar Upload
+
+enum Role {
+  None
+  User
+  Admin
+}
+
+type UserProfile {
+  userAccountId: String!
+  firstName: String!
+  lastName: String!
+  displayName: String
+  gender: String
+  birthday: Date
+  profileImageUrl: String
+  permissions: Int!
+  lastPasswordChange: Date
+  emailAddress: String
+  otpEnabled: Boolean
+}
+
+extend type UserAccount {
+  emailAddress: String
+}
+
+directive @anonymous on QUERY | MUTATION | FIELD_DEFINITION
+
+directive @auth(requires: Role) on OBJECT | FIELD_DEFINITION
+
+directive @authOrSelf(requires: Role) on OBJECT | FIELD_DEFINITION
+
+type Query {
+  isOobe: Boolean! @anonymous
+  scopes: [Scope!]!
+  configuration: Configuration!
+  securityConfiguration: SecurityConfiguration!
+  serverConfiguration: ServerConfiguration!
+  emailAddressAvailable(emailAddress: String!): Boolean @anonymous
+  myEmailAddresses: [EmailAddress!]!
+  me: UserProfile
+}
+
+type Mutation {
+  uploadFile(file: Upload!): UploadFileResponse
+  logout: OperationResponse
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
+}
+
+input SecurityConfigurationInput {
+  passwordRequiresLowercase: Boolean!
+  passwordRequiresUppercase: Boolean!
+  passwordRequiresNumber: Boolean!
+  passwordRequiresSymbol: Boolean!
+  passwordMinimumLength: Int!
+  multifactorRequired: Boolean!
+  accessTokenExpirationSeconds: Int!
+  allowSignup: Boolean!
+  domainWhitelist: String!
+}
+
+input MailConfigurationInput {
+  serverAddress: String!
+  username: String
+  password: String
+  port: Int!
+  fromAddress: String!
+  tlsSslRequired: Boolean!
+}
+
+input ServerConfigurationInput {
+  baseUrl: String!
+  realmName: String!
+  realmLogo: String!
+  realmBackground: String!
+  realmFavicon: String!
+}

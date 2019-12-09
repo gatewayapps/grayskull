@@ -1,0 +1,8 @@
+LoginResponse:
+  meta:
+    noRootQuery: true
+  properties:
+    success: boolean
+    message: string?
+    otpRequired: boolean?
+    emailVerificationRequired: boolean?

@@ -1,9 +1,0 @@
-UploadFileResponse:
-  meta:
-    database: false
-    graphql: true
-    graphqlResolvers: false
-  properties:
-    url: string
-    mimetype: string
-    size: integer

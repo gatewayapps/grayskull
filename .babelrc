@@ -1,20 +1,17 @@
 {
   "presets": [
-    ["next/babel", {
-      "preset-env": {
-        "useBuiltIns": "entry",
-        "corejs": "3.0.0"
-      }
-    }]
+    "next/babel"
   ],
   "plugins": [
     [
-      "babel-plugin-styled-components", 
+      "styled-components",
       {
-        "ssr": true, 
-        "displayName": true, 
-        "preprocess": false 
+        "ssr": true,
+        "displayName": true,
+        "preprocess": false
       }
-    ]
+    ],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-optional-chaining"]
   ]
 }

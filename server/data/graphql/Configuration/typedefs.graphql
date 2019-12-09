@@ -1,0 +1,61 @@
+type Configuration {
+  Security: SecurityConfiguration @anonymous
+  Mail: MailConfiguration
+  Server: ServerConfiguration @anonymous
+}
+
+input VerifyDatabaseConnectionArgs {
+  provider: String!
+  serverAddress: String!
+  serverPort: String!
+  databaseName: String!
+  adminUsername: String!
+  adminPassword: String!
+}
+
+type ConfigurationMeta {
+  count: Int!
+}
+
+type Query {
+  configuration: Configuration @anonymous
+}
+
+type Mutation {
+  verifyDatabaseConnection(data: VerifyDatabaseConnectionArgs!): OperationResponse
+  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
+}
+input SecurityConfigurationInput {
+  passwordRequiresLowercase: Boolean!
+  passwordRequiresUppercase: Boolean!
+  passwordRequiresNumber: Boolean!
+  passwordRequiresSymbol: Boolean!
+  passwordMinimumLength: Int!
+  multifactorRequired: Boolean!
+  accessTokenExpirationSeconds: Int!
+  allowSignup: Boolean!
+  domainWhitelist: String!
+}
+
+input MailConfigurationInput {
+  serverAddress: String!
+  username: String
+  password: String
+  port: Int!
+  fromAddress: String!
+  tlsSslRequired: Boolean!
+}
+
+input ServerConfigurationInput {
+  baseUrl: String!
+  realmName: String!
+  realmLogo: String!
+  realmBackground: String!
+  realmFavicon: String!
+}
+
+input SaveConfigurationArgs {
+  Security: SecurityConfigurationInput
+  Mail: MailConfigurationInput
+  Server: ServerConfigurationInput
+}

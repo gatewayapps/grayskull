@@ -1,0 +1,64 @@
+ServerConfiguration:
+  meta:
+    noRootQuery: true
+  properties:
+    baseUrl: string(1024)?
+    realmName: string(512)?
+    realmLogo: string(512)?
+    realmBackground: string(512)?
+    realmFavicon: string(512)?
+MailConfiguration:
+  meta:
+    noRootQuery: true
+    sensitive:
+      - username
+      - password
+      - serverAddress
+      - tlsSslRequired
+      - port
+      - fromAddress
+  properties:
+    serverAddress: string?
+    username: string?
+    password: string?
+    tlsSslRequired: boolean?
+    port: integer?
+    fromAddress: string?
+
+SecurityConfiguration:
+  meta:
+    noRootQuery: true
+  properties:
+    maxLoginAttemptsPerMinute: integer?
+    maxPasswordAge: integer?
+    passwordRequiresLowercase: boolean?
+    passwordRequiresUppercase: boolean?
+    passwordRequiresNumber: boolean?
+    passwordRequiresSymbol: boolean?
+    passwordMinimumLength: integer?
+    multifactorRequired: boolean?
+    requireEmailAddressVerification: boolean?
+    passwordHistoryEnabled: boolean?
+    passwordHistoryCount: integer?
+    invitationExpirationSeconds: integer?
+    accessTokenExpirationSeconds: integer?
+    domainWhitelist: string(1024)?
+    allowSignup: boolean? default(0)
+
+Configuration:
+  meta:
+    noRootQuery: false
+  properties:
+    Security:
+      modelRef: SecurityConfiguration
+    Mail:
+      modelRef: MailConfiguration
+    Server:
+      modelRef: ServerConfiguration
+  operations:
+    saveConfiguration:
+      returns: OperationResponse
+      arguments:
+        Security:
+        Mail:
+        Server:

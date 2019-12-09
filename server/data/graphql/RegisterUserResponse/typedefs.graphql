@@ -1,0 +1,5 @@
+type RegisterUserResponse {
+	success: Boolean!
+	error: String
+	message: String
+}

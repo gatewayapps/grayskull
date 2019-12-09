@@ -1,0 +1,173 @@
+UserAccount:
+  meta:
+    sensitive:
+      - passwordHash
+      - otpSecret
+      - resetPasswordToken
+      - resetPasswordTokenExpiresAt
+    database: true
+    graphql: true
+    graphqlResolvers: true
+  properties:
+    userAccountId: uniqueidentifier primary auto
+    firstName: string(30)
+    lastName: string(30)
+    displayName: string(30)?
+    lastActive: datetime default(NOW)
+    lastPasswordChange: datetime
+    passwordHash: string
+    gender: string?
+    birthday: datetime?
+    profileImageUrl: string?
+    permissions: integer default(0)
+    otpSecret: string?
+    otpEnabled: boolean default(false)
+    resetPasswordToken: string?
+    resetPasswordTokenExpiresAt: datetime?
+    isActive: boolean default(true)
+    createdBy: uniqueidentifier?
+    createdAt: datetime default(NOW)
+    updatedBy: uniqueidentifier?
+    updatedAt: datetime default(NOW)
+    deletedBy: uniqueidentifier?
+    deletedAt: datetime?
+    emailAddresses: ref EmailAddress[] ("userAccountId", "userAccountId")
+  operations:
+    createUser:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        firstName: string
+        lastName: string
+        permissions: integer
+        displayName: string?
+        gender: string?
+        birthday: datetime?
+        profileImageUrl: string?
+    # Update User #
+    update:
+      returns: OperationResponse
+      arguments:
+        userAccountId: string?
+        firstName: string?
+        lastName: string?
+        permissions: integer?
+        displayName: string?
+        gender: string?
+        birthday: datetime?
+        profileImageUrl: string?
+    # Login User #
+    login:
+      returns: LoginResponse
+      arguments:
+        emailAddress: string
+        password: string
+        otpToken: string?
+        fingerprint: string
+        extendedSession: boolean default(0)
+    # Authorize Client #
+    authorizeClient:
+      returns: AuthorizeClientResponse
+      arguments:
+        client_id: string
+        responseType: string
+        redirectUri: string
+        scope: string?
+        state: string?
+        nonce: string?
+    # Update Client Scopes #
+    updateClientScopes:
+      returns: boolean
+      arguments:
+        client_id: string
+        allowedScopes: string[]
+        deniedScopes: string[]
+    # Create User Account #
+    registerUser:
+      returns: RegisterUserResponse
+      arguments:
+        emailAddress: string
+        password: string
+        confirm: string
+        firstName:
+        lastName:
+        otpSecret:
+        client_id: string?
+    # Register for Multifactor #
+    generateMfaKey:
+      returns: string
+      arguments:
+        emailAddress: string
+    # Verify Multifactor Auth key #
+    verifyMfaKey:
+      returns: boolean
+      arguments:
+        secret: string
+        token: string
+    # Send Verification Email #
+    resendVerification:
+      returns: boolean
+      arguments:
+        emailAddress: string
+    resendAllVerificationEmails:
+      returns: boolean
+      arguments:
+        dryRun: boolean? default(0)
+    # Send Backup Code #
+    sendBackupCode:
+      returns: boolean
+      arguments:
+        emailAddress: string
+    # Reset Password #
+    resetPassword:
+      returns: boolean
+      arguments:
+        emailAddress: string
+    verifyEmailAddress:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        code: string
+    # Validate a Password #
+    validatePassword:
+      returns: boolean
+      arguments:
+        password: string
+        confirm: string
+    # Replace OTP Secret
+    validateResetPasswordToken:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        token: string
+    verifyAuthorizationRequest:
+      returns: OperationResponse
+      arguments:
+        client_id: string
+        redirect_uri: string
+    setOtpSecret:
+      returns: OperationResponse
+      arguments:
+        password: string
+        otpSecret: string
+    # Change Password #
+    changePassword:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string?
+        oldPassword: string?
+        newPassword: string
+        confirmPassword: string
+        token: string?
+    deleteAccount:
+      returns: OperationResponse
+      arguments:
+        userAccountId: string
+    activateAccount:
+      returns: OperationResponse
+      arguments:
+        emailAddress: string
+        token: string
+        password: string
+        confirmPassword: string
+        otpSecret: string?
