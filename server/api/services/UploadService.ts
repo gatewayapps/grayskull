@@ -14,19 +14,30 @@ class UploadService {
     try {
       const { createReadStream, filename, mimetype } = await upload
       const stream = createReadStream()
-      const { localFilename, size } = await this.writeToDisk(stream, filename)
-      if (process.env.CLOUDINARY_URL) {
-        const fullLocalPath = path.join(UPLOAD_DIR, localFilename)
-        const result = await cloudinary.uploader.upload(fullLocalPath, {
-          folder: process.env.CLOUDINARY_FOLDER
-        })
 
-        return {
-          url: result.secure_url,
-          size: 0,
-          mimetype: 'image/jpg'
-        }
+      if (process.env.CLOUDINARY_URL) {
+        //const fullLocalPath = path.join(UPLOAD_DIR, localFilename)
+        return new Promise((resolve, reject) => {
+
+
+          const uploader: any = cloudinary.uploader
+          const outStream = uploader.upload_stream((err, result) => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve({
+                url: result.secure_url,
+                size: 0,
+                mimetype: 'image/jpg'
+              })
+            }
+          })
+
+          stream.pipe(outStream)
+
+        })
       } else {
+        const { localFilename, size } = await this.writeToDisk(stream, filename)
         const url = `/uploads/${localFilename}`
         return {
           url,
