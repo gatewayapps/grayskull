@@ -77,7 +77,7 @@ export async function getUserContext(req: RequestContext, res: ResponseContext) 
 
   setAuthCookies(res, session)
 
-  const finalUser = Object.assign(user, { emailAddress: primaryEmail[0].emailAddress })
+  const finalUser = Object.assign(user.toJSON(), { emailAddress: primaryEmail[0].emailAddress })
 
   return {
     user: finalUser,

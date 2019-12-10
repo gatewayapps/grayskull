@@ -200,6 +200,7 @@ class AuthenticationService {
         }
 
         const authCodeCacheResult = JSON.parse(codeStringValue)
+        await deleteFromCache(code)
 
         if (!authCodeCacheResult) {
           throw new Error(`authorization_code has expired`)
