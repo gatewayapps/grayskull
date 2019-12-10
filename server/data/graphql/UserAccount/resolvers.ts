@@ -196,6 +196,7 @@ export default {
             serviceOptions
           )
         }
+        console.log('DONE WITH CODES AND TOKENS, BUILDING QUERY')
 
         const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
 
@@ -206,6 +207,8 @@ export default {
         const result = {
           redirectUri: `${redirectUri}${query.length > 0 ? '?' + query.join('&') : ''}`
         }
+
+        console.log('ABOUT TO RETURN RESULT', result)
 
         return result
       } catch (err) {
