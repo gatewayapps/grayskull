@@ -45,7 +45,7 @@ const AuthorizePage = (props: AuthorizePageProps) => {
     verifyAuthorizationRequest,
     { data: verificationData, loading: verificationLoading, error: verificationError }
   ] = useMutation(VERIFY_AUTHORIZATION_REQUEST_MUTATION, {
-    variables: { clientId: props.router.query.client_id, redirectUri: props.router.query.redirect_uri }
+    variables: { client_id: props.router.query.client_id, redirect_uri: props.router.query.redirect_uri }
   })
 
   const { data, loading, error } = useQuery(LOAD_AUTHORIZE_QUERY, {
