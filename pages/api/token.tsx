@@ -35,7 +35,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await getContext()
     const { requestContext, responseContext } = await buildContext(req, res)
-    const clientCredentials = this.getClientCredentialsFromRequest(req)
+    const clientCredentials = getClientCredentialsFromRequest(req)
 
     if (!req.body) {
       res.status(400).json({ success: false, message: 'Invalid request body' })
