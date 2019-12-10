@@ -1,4 +1,4 @@
-scalar Date
+export default `scalar Date
 
 type Query {
   clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
@@ -1011,4 +1011,4 @@ input UserClientUniqueFilter {
   userClientId: ID
   userAccountId: ID
   client_id: String
-}
+}`

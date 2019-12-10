@@ -1,4 +1,0 @@
-type Query {
-  emailAddressAvailable(emailAddress: String!): Boolean @anonymous
-  myEmailAddresses: [EmailAddress!]!
-}

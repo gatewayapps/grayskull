@@ -1,4 +1,4 @@
-scalar Upload
+export default `scalar Upload
 
 enum Role {
   None
@@ -74,4 +74,4 @@ input ServerConfigurationInput {
   realmLogo: String!
   realmBackground: String!
   realmFavicon: String!
-}
+}`

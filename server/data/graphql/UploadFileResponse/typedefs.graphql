@@ -1,5 +1,0 @@
-type UploadFileResponse {
-	url: String!
-	mimetype: String!
-	size: Int!
-}

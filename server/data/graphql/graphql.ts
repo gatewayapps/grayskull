@@ -4,9 +4,12 @@ import { AuthorizationDirective } from './AuthorizationDirective'
 import { AnonymousDirective } from './AnonymousDirective'
 
 
+import graphqlSchema from '../../../data/schema.graphql'
+import customSchema from '../../../data/custom.graphql'
+
 
 const typeDefs = mergeTypes(
-  fileLoader(`${process.env.PROJECT_ROOT!}/data/*.graphql`, { recursive: true })
+  [graphqlSchema, customSchema]
 )
 import baseResolver from './base/resolvers'
 import clientResolver from './Client/resolvers'
