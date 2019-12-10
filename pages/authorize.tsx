@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 import { withRouter, Router } from 'next/router'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Query, useMutation, useQuery } from 'react-apollo'
 
 import Primary from '../client/layouts/primary'
@@ -9,6 +9,7 @@ import ErrorMessage from '../client/components/ErrorMessage'
 import ClientAuthorization from '../client/components/ClientAuthorization'
 import LoadingIndicator from '../client/components/LoadingIndicator'
 import RequireAuthentication from '../client/components/RequireAuthentication'
+import ActivityMessageContainerComponent from '../client/components/ActivityMessageContainer'
 
 const VERIFY_AUTHORIZATION_REQUEST_MUTATION = gql`
   mutation VERIFY_AUTHORIZATION_REQUEST_MUTATION($client_id: String!, $redirect_uri: String!) {
@@ -53,22 +54,44 @@ const AuthorizePage = (props: AuthorizePageProps) => {
   })
 
   let content
-
-  if (!verificationData && !verificationLoading) {
+  useEffect(() => {
     verifyAuthorizationRequest()
+  }, [props.router.query.client_id])
+  if (verificationError) {
+    content = (
+      <ActivityMessageContainerComponent>
+        <ErrorMessage error={verificationError} />
+      </ActivityMessageContainerComponent>
+    )
   }
   if (verificationLoading) {
-    content = <LoadingIndicator message="Verifying authorization request..." />
+    content = (
+      <ActivityMessageContainerComponent>
+        <LoadingIndicator message="Verifying authorization request..." />
+      </ActivityMessageContainerComponent>
+    )
   } else {
     if (verificationData && !verificationData.verifyAuthorizationRequest.success) {
-      content = <ErrorMessage error={{ message: verificationData.verifyAuthorizationRequest.message }} />
+      content = (
+        <ActivityMessageContainerComponent>
+          <ErrorMessage error={{ message: verificationData.verifyAuthorizationRequest.message }} />
+        </ActivityMessageContainerComponent>
+      )
     }
 
-    if (verificationData && verificationData.success) {
+    if (verificationData && verificationData.verifyAuthorizationRequest.success) {
       if (loading) {
-        content = <LoadingIndicator message="Loading client..." />
+        content = (
+          <ActivityMessageContainerComponent>
+            <LoadingIndicator message="Loading client..." />
+          </ActivityMessageContainerComponent>
+        )
       } else if (!data || !data.client) {
-        content = <div className="alert alert-danger">Client not found</div>
+        content = (
+          <ActivityMessageContainerComponent>
+            <div className="alert alert-danger">Client not found</div>
+          </ActivityMessageContainerComponent>
+        )
       } else {
         content = (
           <div style={{ display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
@@ -77,12 +100,12 @@ const AuthorizePage = (props: AuthorizePageProps) => {
                 <div className="col col-md-8 offset-md-2">
                   <ClientAuthorization
                     client={data.client}
-                    responseType={props.router.query.response_type}
-                    redirectUri={props.router.query.redirect_uri}
-                    scope={props.router.query.scope}
+                    responseType={props.router.query.response_type?.toString()}
+                    redirectUri={props.router.query.redirect_uri?.toString()}
+                    scope={props.router.query.scope?.toString()}
                     scopes={data.scopes}
-                    state={props.router.query.state}
-                    nonce={props.router.query.nonce}
+                    state={props.router.query.state?.toString()}
+                    nonce={props.router.query.nonce?.toString()}
                   />
                 </div>
               </div>

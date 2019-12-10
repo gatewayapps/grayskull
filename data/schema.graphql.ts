@@ -61,7 +61,7 @@ type Mutation {
 }
 
 type AuthorizeClientResponse {
-  pendingScopes: [String!]!
+  pendingScopes: [String!]
   redirectUri: String
 }
 type Client {

@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useMutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import LoadingIndicator from './LoadingIndicator'
-
+import _ from 'lodash'
 import SignOut from './SignOut'
 
 import UserContext from '../contexts/UserContext'
+import ActivityMessageContainerComponent from './ActivityMessageContainer'
 
 const AUTHORIZE_CLIENT_MUTATION = gql`
   mutation AUTHORIZE_CLIENT_MUTATION(
@@ -33,7 +34,7 @@ const AUTHORIZE_CLIENT_MUTATION = gql`
 `
 
 const UPDATE_CLIENT_SCOPES_MUTATION = gql`
-  mutation UPDATE_CLIENT_SCOPES_MUTATION($client_id: String!, $allowedScopes: [String]!, $deniedScopes: [String]!) {
+  mutation UPDATE_CLIENT_SCOPES_MUTATION($client_id: String!, $allowedScopes: [String!]!, $deniedScopes: [String!]!) {
     updateClientScopes(data: { client_id: $client_id, allowedScopes: $allowedScopes, deniedScopes: $deniedScopes })
   }
 `
@@ -94,10 +95,14 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
 
   const updateClientScopes = async () => {
     updateScopes()
+  }
+
+  useEffect(() => {
     if (updateScopesData && updateScopesData.updateClientScopes) {
       authorizeClient()
     }
-  }
+  }, [updateScopesData])
+
   const onDenyClicked = async () => {
     const query = ['error=consent_required']
     if (props.state) {
@@ -117,20 +122,27 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
     authorizeClient()
   }, [props.client.client_id])
 
-  if (authorizeClientLoading) {
-    return <LoadingIndicator />
-  }
-
   if (authorizeClientData && authorizeClientData.authorizeClient) {
-    setIsSaving(false)
+    if (isSaving) {
+      setIsSaving(false)
+    }
     if (authorizeClientData.authorizeClient.redirectUri) {
       window.location.replace(authorizeClientData.authorizeClient.redirectUri)
       return <LoadingIndicator message="Redirecting..." />
     }
     if (authorizeClientData.authorizeClient.pendingScopes) {
-      setAllowedScopes(authorizeClientData.authorizeClient.pendingScopes)
-      setPendingScopes(authorizeClientData.authorizeClient.pendingScopes)
+      if (!_.isEqual(authorizeClientData.authorizeClient.pendingScopes, pendingScopes)) {
+        setAllowedScopes(authorizeClientData.authorizeClient.pendingScopes)
+        setPendingScopes(authorizeClientData.authorizeClient.pendingScopes)
+      }
     }
+  }
+  if (authorizeClientLoading) {
+    return (
+      <ActivityMessageContainerComponent>
+        <LoadingIndicator />
+      </ActivityMessageContainerComponent>
+    )
   }
 
   return (
