@@ -402,7 +402,7 @@ class AuthenticationService {
     options: IQueryOptions
   ): Promise<string> {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
-    await cacheValue(authorizationCode, JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }), 120)
+    await cacheValue(authorizationCode, JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }), 120, true)
 
     return authorizationCode
   }
