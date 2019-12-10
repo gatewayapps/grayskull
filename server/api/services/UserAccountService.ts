@@ -8,7 +8,6 @@ import { EmailAddress } from '../../data/models/IEmailAddress'
 import { UserAccount } from '../../data/models/IUserAccount'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
-import Cache from 'node-cache'
 import uuid from 'uuid/v4'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
@@ -22,13 +21,7 @@ import { hasPermission } from '../../decorators/permissionDecorator'
 
 const INVITATION_EXPIRES_IN = 3600
 
-const TokenCache = new Cache({ stdTTL: INVITATION_EXPIRES_IN })
 
-interface ICPTToken {
-  client: Client | { name: string; client_id: string } | null
-  emailAddress: string
-  invitedById?: number
-}
 
 class UserAccountService {
   public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
@@ -215,7 +208,7 @@ class UserAccountService {
 
       const resetPasswordLink = `${
         config.Server!.baseUrl
-      }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+        }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'resetPasswordTemplate',
         emailAddress,
