@@ -17,6 +17,7 @@ import SessionFactory from './models/Session'
 import RefreshTokenFactory from './models/RefreshToken'
 import PhoneNumberFactory from './models/PhoneNumber'
 import SettingFactory from './models/Setting'
+import KeyValueCacheFactory from './models/KeyValueCache'
 
 let initialized = false
 
@@ -109,6 +110,7 @@ const db = {
   Client: ClientFactory(sequelize),
   EmailAddress: EmailAddressFactory(sequelize),
   UserAccount: UserAccountFactory(sequelize),
+  KeyValueCache: KeyValueCacheFactory(sequelize),
   UserClient: UserClientFactory(sequelize),
   Session: SessionFactory(sequelize),
   RefreshToken: RefreshTokenFactory(sequelize),
