@@ -126,84 +126,89 @@ export default {
       }
     },
     authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
-      if (!context.user) {
-        throw new Error('You must be logged in')
-      }
-
-      const serviceOptions = { userContext: context.user || null }
-
-      const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
-
-      if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
-        throw new Error('Invalid redirect uri')
-      }
-
-      const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(
-        context.user.userAccountId,
-        client_id,
-        scope,
-        serviceOptions
-      )
-      if (pendingScopes && pendingScopes.length > 0) {
-        return {
-          pendingScopes
+      try {
+        if (!context.user) {
+          throw new Error('You must be logged in')
         }
-      }
 
-      const client = await ClientRepository.getClientWithSensitiveData({ client_id }, serviceOptions)
-      if (!client) {
-        throw new Error('Invalid client_id')
-      }
-      if (!approvedScopes || approvedScopes.length === 0) {
-        throw new Error('You have not approved any scopes')
-      }
+        const serviceOptions = { userContext: context.user || null }
 
-      const responseTypes: string[] = responseType.split(' ')
+        const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
 
-      if (!responseTypes.every((rt) => VALID_RESPONSE_TYPES.includes(rt))) {
-        throw new Error('Invalid response type')
-      }
+        if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
+          throw new Error('Invalid redirect uri')
+        }
 
-      const queryParts: any = {}
-
-      if (responseTypes.includes('code')) {
-        queryParts.code = AuthenticationService.generateAuthorizationCode(
-          context.user,
+        const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(
+          context.user.userAccountId,
           client_id,
-          userClientId!,
-          approvedScopes!,
-          nonce,
+          scope,
           serviceOptions
         )
-      }
-      if (responseTypes.includes('token')) {
-        const config = await getCurrentConfiguration()
+        if (pendingScopes && pendingScopes.length > 0) {
+          return {
+            pendingScopes
+          }
+        }
 
-        queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
-        queryParts.token_type = 'Bearer'
-        queryParts.expires_in = config.Security!.accessTokenExpirationSeconds
-      }
-      if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
-        queryParts.id_token = await TokenService.createIDToken(
-          client,
-          context.user,
-          nonce,
-          queryParts.token,
-          serviceOptions
-        )
-      }
+        const client = await ClientRepository.getClientWithSensitiveData({ client_id }, serviceOptions)
+        if (!client) {
+          throw new Error('Invalid client_id')
+        }
+        if (!approvedScopes || approvedScopes.length === 0) {
+          throw new Error('You have not approved any scopes')
+        }
 
-      const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
+        const responseTypes: string[] = responseType.split(' ')
 
-      if (state) {
-        query.push(`state=${encodeURIComponent(state)}`)
+        if (!responseTypes.every((rt) => VALID_RESPONSE_TYPES.includes(rt))) {
+          throw new Error('Invalid response type')
+        }
+
+        const queryParts: any = {}
+
+        if (responseTypes.includes('code')) {
+          queryParts.code = AuthenticationService.generateAuthorizationCode(
+            context.user,
+            client_id,
+            userClientId!,
+            approvedScopes!,
+            nonce,
+            serviceOptions
+          )
+        }
+        if (responseTypes.includes('token')) {
+          const config = await getCurrentConfiguration()
+
+          queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
+          queryParts.token_type = 'Bearer'
+          queryParts.expires_in = config.Security!.accessTokenExpirationSeconds
+        }
+        if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
+          queryParts.id_token = await TokenService.createIDToken(
+            client,
+            context.user,
+            nonce,
+            queryParts.token,
+            serviceOptions
+          )
+        }
+
+        const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
+
+        if (state) {
+          query.push(`state=${encodeURIComponent(state)}`)
+        }
+
+        const result = {
+          redirectUri: `${redirectUri}${query.length > 0 ? '?' + query.join('&') : ''}`
+        }
+
+        return result
+      } catch (err) {
+        console.error(err)
+        throw err
       }
-
-      const result = {
-        redirectUri: `${redirectUri}${query.length > 0 ? '?' + query.join('&') : ''}`
-      }
-
-      return result
     },
     updateClientScopes: async (obj, args, context, info) => {
       if (!context.user) {
