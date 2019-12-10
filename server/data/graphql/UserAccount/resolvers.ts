@@ -170,7 +170,7 @@ export default {
 
         if (responseTypes.includes('code')) {
           console.log('GENERATING AUTHORIZATION CODE')
-          queryParts.code = AuthenticationService.generateAuthorizationCode(
+          queryParts.code = await AuthenticationService.generateAuthorizationCode(
             context.user,
             client_id,
             userClientId!,

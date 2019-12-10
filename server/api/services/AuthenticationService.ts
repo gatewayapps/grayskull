@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
-import NodeCache from 'node-cache'
+
 import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
@@ -25,6 +25,9 @@ import { ScopeMap } from './ScopeService'
 
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
+import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
+
+const CACHE_PREFIX = 'BACKUP_CODE_'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/
@@ -69,10 +72,7 @@ otplib.authenticator.options = {
 }
 
 class AuthenticationService {
-  private localCache: NodeCache
-  constructor() {
-    this.localCache = new NodeCache()
-  }
+
 
   public async verifyPassword(userAccountId: string, password: string, options: IQueryOptions) {
     const user = await UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId }, options)
@@ -124,10 +124,11 @@ class AuthenticationService {
     // 3. Determine if the user requires a OTP to login
     if (user.otpEnabled && user.otpSecret) {
       const otpSecret = decrypt(user.otpSecret)
-
+      const cacheKey = `${CACHE_PREFIX}${emailAddress}`
       // 3a. Verify the OTP token
       if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken, options)) {
-        const backupCode = this.localCache.get<string>(emailAddress)
+
+        const backupCode = await getValueFromCache(cacheKey, true)
 
         if (!backupCode || backupCode !== otpToken) {
           return {
@@ -137,8 +138,8 @@ class AuthenticationService {
           }
         }
       }
+      await deleteFromCache(cacheKey)
 
-      this.localCache.del(emailAddress)
     }
 
     // 4. Create a session for the user
@@ -193,7 +194,14 @@ class AuthenticationService {
           throw new Error(`code is missing`)
         }
 
-        const authCodeCacheResult = this.localCache.get<IAuthenticationCodeCacheResult>(code)
+        const codeStringValue = await getValueFromCache(code, true)
+        if (!codeStringValue) {
+          throw new Error(`authorization_code has expired`)
+        }
+
+        const authCodeCacheResult = JSON.parse(codeStringValue)
+        await deleteFromCache(code)
+
         if (!authCodeCacheResult) {
           throw new Error(`authorization_code has expired`)
         }
@@ -292,7 +300,10 @@ class AuthenticationService {
     }
 
     const backupCode = otplib.authenticator.generate(otpSecret)
-    this.localCache.set(emailAddress, backupCode, 16 * 60)
+
+    const cacheKey = `${CACHE_PREFIX}${emailAddress}`
+    await cacheValue(cacheKey, backupCode, 16 * 16, true)
+
 
     await MailService.sendEmailTemplate('backupCodeTemplate', emailAddress, `${config.Server!.realmName} Backup Code`, {
       realmName: config.Server!.realmName,
@@ -382,16 +393,17 @@ class AuthenticationService {
     return otplib.authenticator.check(token, secret)
   }
 
-  public generateAuthorizationCode(
+  public async generateAuthorizationCode(
     userAccount: UserAccount,
     clientId: string,
     userClientId: string,
     scope: string[],
     nonce: string | undefined,
     options: IQueryOptions
-  ): string {
+  ): Promise<string> {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
-    this.localCache.set(authorizationCode, { clientId, scope, userAccount, userClientId, nonce }, 120)
+    await cacheValue(authorizationCode, JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }), 120)
+
     return authorizationCode
   }
 

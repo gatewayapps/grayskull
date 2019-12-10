@@ -31,7 +31,10 @@ export interface SecurityMutifactorStatusState {
   otpUpdated: boolean
 }
 
-export default class SecurityMutifactorStatus extends React.Component<SecurityMutifactorStatusProps, SecurityMutifactorStatusState> {
+export default class SecurityMutifactorStatus extends React.Component<
+  SecurityMutifactorStatusProps,
+  SecurityMutifactorStatusState
+> {
   constructor(props: SecurityMutifactorStatusProps) {
     super(props)
 
@@ -74,7 +77,12 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
   }
 
   renderChangePrompt = () => {
-    return <div className="alert alert-danger">You already have an authenticator app configured. If you proceed, your existing authenticator app will no longer work.</div>
+    return (
+      <div className="alert alert-danger">
+        You already have an authenticator app configured. If you proceed, your existing authenticator app will no longer
+        work.
+      </div>
+    )
   }
   renderChangePromptFooter = () => {
     return (
@@ -101,7 +109,10 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
   renderDisable = () => {
     return (
       <div>
-        <div className="alert alert-danger">You already have an authenticator app configured. If you proceed, your existing authenticator app will no longer work.</div>
+        <div className="alert alert-danger">
+          You already have an authenticator app configured. If you proceed, your existing authenticator app will no
+          longer work.
+        </div>
         <div className="m-4 px-4">
           <ResponsiveInput
             label="Enter your password"
@@ -137,7 +148,13 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
           }}
           onSuccess={(result) => {
             if (result.data.setOtpSecret.success) {
-              this.setState({ promptForDisable: false, changing: false, otpUpdated: false, password: '', otpSecret: '' })
+              this.setState({
+                promptForDisable: false,
+                changing: false,
+                otpUpdated: false,
+                password: '',
+                otpSecret: ''
+              })
               this.props.refresh()
             } else {
               this.setState({ message: result.data.setOtpSecret.message })
@@ -161,8 +178,16 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
   renderDefault = () => {
     return (
       <div>
-        <ResponsiveInput label="Status" value={this.props.user.otpEnabled ? 'Configured' : 'Not Configured'} type="static" className="form-control form-control-static" readOnly />
-        {this.state.otpUpdated && <div className="alert alert-success mx-4">Your account is now protected by an Authenticator App.</div>}
+        <ResponsiveInput
+          label="Status"
+          value={this.props.user.otpEnabled ? 'Configured' : 'Not Configured'}
+          type="static"
+          className="form-control form-control-static"
+          readOnly
+        />
+        {this.state.otpUpdated && (
+          <div className="alert alert-success mx-4">Your account is now protected by an Authenticator App.</div>
+        )}
       </div>
     )
   }
@@ -215,16 +240,15 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
         {(configuration) => {
           return (
             <div className="btn-toolbar ml-auto">
-              {this.props.user.otpEnabled &&
-                !configuration.securityConfiguration.multifactorRequired && (
-                  <button
-                    className="btn btn-danger mr-2"
-                    onClick={() => {
-                      this.setState({ promptForDisable: true })
-                    }}>
-                    <i className="fa fa-fw fa-skull-crossbones" /> Disable
-                  </button>
-                )}
+              {this.props.user.otpEnabled && !configuration.Security.multifactorRequired && (
+                <button
+                  className="btn btn-danger mr-2"
+                  onClick={() => {
+                    this.setState({ promptForDisable: true })
+                  }}>
+                  <i className="fa fa-fw fa-skull-crossbones" /> Disable
+                </button>
+              )}
               <button
                 className="btn btn-secondary"
                 onClick={() => {
@@ -269,7 +293,11 @@ export default class SecurityMutifactorStatus extends React.Component<SecurityMu
         <div className="card-body">
           <h5 className="card-title">
             Authenticator App
-            {this.props.user.otpEnabled ? <i className="ml-2 text-success fa fa-fw fa-shield-check" /> : <i className="ml-2 text-danger fa fa-fw fa-exclamation-triangle" />}
+            {this.props.user.otpEnabled ? (
+              <i className="ml-2 text-success fa fa-fw fa-shield-check" />
+            ) : (
+              <i className="ml-2 text-danger fa fa-fw fa-exclamation-triangle" />
+            )}
           </h5>
           {body}
         </div>

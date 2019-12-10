@@ -14,14 +14,12 @@ export type RequestContext = NextApiRequest & {
   parsedUrl: URL
   originalUrl: string
   session?: Session
-  user?: UserAccount & {
-    emailAddress: string
-  }
+  user?: any
 }
 export type ResponseContext = NextApiResponse & {
   cookies: any
   session?: Session
-  user?: UserAccount & {
+  user?: Partial<UserAccount> & {
     emailAddress: string
   }
   locals?: any
