@@ -127,6 +127,7 @@ export default {
     },
     authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
       try {
+        console.log('IN AUTHORIZE CLIENT')
         if (!context.user) {
           throw new Error('You must be logged in')
         }
@@ -134,11 +135,11 @@ export default {
         const serviceOptions = { userContext: context.user || null }
 
         const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
-
+        console.log('VALIDATING REDIRECT URI')
         if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
           throw new Error('Invalid redirect uri')
         }
-
+        console.log('VERIFYING SCOPE')
         const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(
           context.user.userAccountId,
           client_id,
@@ -150,7 +151,7 @@ export default {
             pendingScopes
           }
         }
-
+        console.log('GET CLIENT WITH SENSITIVE DATA')
         const client = await ClientRepository.getClientWithSensitiveData({ client_id }, serviceOptions)
         if (!client) {
           throw new Error('Invalid client_id')
@@ -168,6 +169,7 @@ export default {
         const queryParts: any = {}
 
         if (responseTypes.includes('code')) {
+          console.log('GENERATING AUTHORIZATION CODE')
           queryParts.code = AuthenticationService.generateAuthorizationCode(
             context.user,
             client_id,
@@ -178,6 +180,7 @@ export default {
           )
         }
         if (responseTypes.includes('token')) {
+
           const config = await getCurrentConfiguration()
 
           queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
