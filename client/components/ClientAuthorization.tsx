@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import { ApolloConsumer } from 'react-apollo'
+import React, { useState, useEffect } from 'react'
+import { useMutation } from 'react-apollo'
 import gql from 'graphql-tag'
 import LoadingIndicator from './LoadingIndicator'
 
@@ -46,181 +46,262 @@ interface IClientAuthorizationState {
   deniedScopes: any[]
 }
 
-class ClientAuthorization extends React.Component<IClientAuthorizationProps, IClientAuthorizationState> {
-  state = {
-    initialized: false,
-    isSaving: false,
-    pendingScopes: [],
-    allowedScopes: [],
-    deniedScopes: []
-  }
-  apolloClient: any
+const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props) => {
+  const [isSaving, setIsSaving] = useState(false)
+  const [pendingScopes, setPendingScopes] = useState([])
+  const [allowedScopes, setAllowedScopes] = useState([])
+  const [deniedScopes, setDeniedScopes] = useState([])
 
-  componentDidMount() {
-    this.authorizeClient()
-  }
+  const [
+    authorizeClient,
+    { data: authorizeClientData, loading: authorizeClientLoading, error: authorizeClientError }
+  ] = useMutation(AUTHORIZE_CLIENT_MUTATION, {
+    variables: {
+      client_id: props.client.client_id,
+      responseType: props.responseType,
+      redirectUri: props.redirectUri,
+      scope: props.scope,
+      state: props.state,
+      nonce: props.nonce
+    }
+  })
 
-  handleScopeCheckChanged = (e) => {
+  const [
+    updateScopes,
+    { data: updateScopesData, loading: updateScopesLoading, error: updateScopesError }
+  ] = useMutation(UPDATE_CLIENT_SCOPES_MUTATION, {
+    variables: {
+      client_id: props.client.client_id,
+      allowedScopes: allowedScopes,
+      deniedScopes: deniedScopes
+    }
+  })
+
+  const handleScopeCheckChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target
     if (checked) {
-      // add to allowed and remove from denied
-      this.setState((prevState) => ({
-        ...prevState,
-        allowedScopes: prevState.allowedScopes.includes(name)
-          ? prevState.allowedScopes
-          : prevState.allowedScopes.concat([name]),
-        deniedScopes: prevState.deniedScopes.filter((denied) => denied !== name)
-      }))
+      if (!allowedScopes.includes(name)) {
+        setAllowedScopes([...allowedScopes, name])
+      }
+      setDeniedScopes(deniedScopes.filter((s) => s !== name))
     } else {
-      // add to denied and remove from allowed
-      this.setState((prevState) => ({
-        ...prevState,
-        allowedScopes: prevState.allowedScopes.filter((allowed) => allowed !== name),
-        deniedScopes: prevState.deniedScopes.includes(name)
-          ? prevState.deniedScopes
-          : prevState.deniedScopes.concat([name])
-      }))
+      if (!deniedScopes.includes(name)) {
+        setDeniedScopes([...deniedScopes, name])
+      }
+      setAllowedScopes(allowedScopes.filter((s) => s !== name))
     }
   }
 
-  authorizeClient = async () => {
-    const { data } = await this.apolloClient.mutate({
-      mutation: AUTHORIZE_CLIENT_MUTATION,
-      variables: {
-        client_id: this.props.client.client_id,
-        responseType: this.props.responseType,
-        redirectUri: this.props.redirectUri,
-        scope: this.props.scope,
-        state: this.props.state,
-        nonce: this.props.nonce
-      }
-    })
-    if (data && data.authorizeClient) {
-      if (data.authorizeClient.redirectUri) {
-        window.location.replace(data.authorizeClient.redirectUri)
-        return
-      }
-      if (data.authorizeClient.pendingScopes) {
-        this.setState({
-          initialized: true,
-          allowedScopes: data.authorizeClient.pendingScopes,
-          pendingScopes: data.authorizeClient.pendingScopes
-        })
-      }
+  const updateClientScopes = async () => {
+    updateScopes()
+    if (updateScopesData && updateScopesData.updateClientScopes) {
+      authorizeClient()
     }
   }
-
-  updateClientScopes = async () => {
-    const { data } = await this.apolloClient.mutate({
-      mutation: UPDATE_CLIENT_SCOPES_MUTATION,
-      variables: {
-        client_id: this.props.client.client_id,
-        allowedScopes: this.state.allowedScopes,
-        deniedScopes: this.state.deniedScopes
-      }
-    })
-    if (data && data.updateClientScopes) {
-      await this.authorizeClient()
-    }
-  }
-
-  onDenyClicked = async () => {
+  const onDenyClicked = async () => {
     const query = ['error=consent_required']
-    if (this.props.state) {
-      query.push(`state=${encodeURIComponent(this.props.state)}`)
+    if (props.state) {
+      query.push(`state=${encodeURIComponent(props.state)}`)
     }
 
-    window.location.replace(`${this.props.redirectUri}?${query.join('&')}`)
+    window.location.replace(`${props.redirectUri}?${query.join('&')}`)
   }
 
-  onSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    this.setState({ isSaving: true })
-    await this.updateClientScopes()
-    this.setState({ isSaving: false })
+    setIsSaving(true)
+    updateClientScopes()
   }
 
-  render() {
-    return (
-      <ApolloConsumer>
-        {(apolloClient) => {
-          this.apolloClient = apolloClient
-          if (!this.state.initialized) {
-            return <LoadingIndicator />
-          }
-          return (
-            <UserContext.Consumer>
-              {({ user }) => (
-                <form onSubmit={this.onSubmit}>
-                  <div className="card">
-                    <div className="card-header">Authorize {this.props.client.name}</div>
-                    <div className="card-body">
-                      <div className="row">
-                        <div className="col-lg-3">
-                          {this.props.client.logoImageUrl && (
-                            <img src={this.props.client.logoImageUrl} style={{ width: '100%' }} />
-                          )}
-                        </div>
-                        <div className="col-lg-9">
-                          <div className="mt-2">
-                            <strong>{this.props.client.name}</strong> would like to:
-                          </div>
-                          {this.props.scopes
-                            .filter(
-                              (s) => this.state.pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions
-                            )
-                            .map((scope) => (
-                              <div key={scope.id} className="form-check my-2 mx-4">
-                                <input
-                                  type="checkbox"
-                                  id={scope.id}
-                                  disabled={scope.required}
-                                  name={scope.id}
-                                  className="form-check-input"
-                                  checked={this.state.allowedScopes.includes(scope.id)}
-                                  onChange={this.handleScopeCheckChanged}
-                                />
-                                <label htmlFor={scope.id} className="form-check-label">
-                                  {scope.userDescription}
-                                </label>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
-                      <div className="d-flex align-items-center justify-content-center mt-2">
-                        <div>
-                          Logged in as{' '}
-                          <strong>
-                            {user.firstName} {user.lastName}
-                          </strong>{' '}
-                          (<SignOut includeState>Not You?</SignOut>)
-                        </div>
-                      </div>
-                    </div>
-                    <div className="card-footer clearfix">
-                      <div className="btn-toolbar float-right">
-                        <button
-                          type="button"
-                          className="btn btn-outline-danger mr-3"
-                          disabled={this.state.isSaving}
-                          onClick={this.onDenyClicked}>
-                          <i className="fal fa-times fa-fw" /> Deny
-                        </button>
-                        <button type="submit" className="btn btn-success" disabled={this.state.isSaving}>
-                          <i className="fal fa-check fa-fw" /> Authorize
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              )}
-            </UserContext.Consumer>
-          )
-        }}
-      </ApolloConsumer>
-    )
+  useEffect(() => {
+    authorizeClient()
+  }, [props.client.client_id])
+
+  if (authorizeClientLoading) {
+    return <LoadingIndicator />
   }
+
+  if (authorizeClientData && authorizeClientData.authorizeClient) {
+    setIsSaving(false)
+    if (authorizeClientData.authorizeClient.redirectUri) {
+      window.location.replace(authorizeClientData.authorizeClient.redirectUri)
+      return <LoadingIndicator message="Redirecting..." />
+    }
+    if (authorizeClientData.authorizeClient.pendingScopes) {
+      setAllowedScopes(authorizeClientData.authorizeClient.pendingScopes)
+      setPendingScopes(authorizeClientData.authorizeClient.pendingScopes)
+    }
+  }
+
+  return (
+    <UserContext.Consumer>
+      {({ user }) => (
+        <form onSubmit={onSubmit}>
+          <div className="card">
+            <div className="card-header">Authorize {props.client.name}</div>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-lg-3">
+                  {props.client.logoImageUrl && <img src={props.client.logoImageUrl} style={{ width: '100%' }} />}
+                </div>
+                <div className="col-lg-9">
+                  <div className="mt-2">
+                    <strong>{props.client.name}</strong> would like to:
+                  </div>
+                  {props.scopes
+                    .filter((s) => pendingScopes.includes(s.id) && s.permissionLevel <= user.permissions)
+                    .map((scope) => (
+                      <div key={scope.id} className="form-check my-2 mx-4">
+                        <input
+                          type="checkbox"
+                          id={scope.id}
+                          disabled={scope.required}
+                          name={scope.id}
+                          className="form-check-input"
+                          checked={allowedScopes.includes(scope.id)}
+                          onChange={handleScopeCheckChanged}
+                        />
+                        <label htmlFor={scope.id} className="form-check-label">
+                          {scope.userDescription}
+                        </label>
+                      </div>
+                    ))}
+                </div>
+              </div>
+              <div className="d-flex align-items-center justify-content-center mt-2">
+                <div>
+                  Logged in as{' '}
+                  <strong>
+                    {user.firstName} {user.lastName}
+                  </strong>{' '}
+                  (<SignOut includeState>Not You?</SignOut>)
+                </div>
+              </div>
+            </div>
+            <div className="card-footer clearfix">
+              <div className="btn-toolbar float-right">
+                <button
+                  type="button"
+                  className="btn btn-outline-danger mr-3"
+                  disabled={isSaving}
+                  onClick={onDenyClicked}>
+                  <i className="fal fa-times fa-fw" /> Deny
+                </button>
+                <button type="submit" className="btn btn-success" disabled={isSaving}>
+                  <i className="fal fa-check fa-fw" /> Authorize
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      )}
+    </UserContext.Consumer>
+  )
 }
+
+// class ClientAuthorization extends React.Component<IClientAuthorizationProps, IClientAuthorizationState> {
+//   state = {
+//     initialized: false,
+//     isSaving: false,
+//     pendingScopes: [],
+//     allowedScopes: [],
+//     deniedScopes: []
+//   }
+//   apolloClient: any
+
+//   componentDidMount() {
+//     authorizeClient()
+//   }
+
+//   handleScopeCheckChanged = (e) => {
+//     const { name, checked } = e.target
+//     if (checked) {
+//       // add to allowed and remove from denied
+//       setState((prevState) => ({
+//         ...prevState,
+//         allowedScopes: prevallowedScopes.includes(name) ? prevallowedScopes : prevallowedScopes.concat([name]),
+//         deniedScopes: prevdeniedScopes.filter((denied) => denied !== name)
+//       }))
+//     } else {
+//       // add to denied and remove from allowed
+//       setState((prevState) => ({
+//         ...prevState,
+//         allowedScopes: prevallowedScopes.filter((allowed) => allowed !== name),
+//         deniedScopes: prevdeniedScopes.includes(name) ? prevdeniedScopes : prevdeniedScopes.concat([name])
+//       }))
+//     }
+//   }
+
+//   authorizeClient = async () => {
+//     const { data } = await apolloClient.mutate({
+//       mutation: AUTHORIZE_CLIENT_MUTATION,
+//       variables: {
+//         client_id: props.client.client_id,
+//         responseType: props.responseType,
+//         redirectUri: props.redirectUri,
+//         scope: props.scope,
+//         state: props.state,
+//         nonce: props.nonce
+//       }
+//     })
+//     if (data && data.authorizeClient) {
+//       if (data.authorizeClient.redirectUri) {
+//         window.location.replace(data.authorizeClient.redirectUri)
+//         return
+//       }
+//       if (data.authorizeClient.pendingScopes) {
+//         setState({
+//           initialized: true,
+//           allowedScopes: data.authorizeClient.pendingScopes,
+//           pendingScopes: data.authorizeClient.pendingScopes
+//         })
+//       }
+//     }
+//   }
+
+//   updateClientScopes = async () => {
+//     const { data } = await apolloClient.mutate({
+//       mutation: UPDATE_CLIENT_SCOPES_MUTATION,
+//       variables: {
+//         client_id: props.client.client_id,
+//         allowedScopes: allowedScopes,
+//         deniedScopes: deniedScopes
+//       }
+//     })
+//     if (data && data.updateClientScopes) {
+//       await authorizeClient()
+//     }
+//   }
+
+//   onDenyClicked = async () => {
+//     const query = ['error=consent_required']
+//     if (props.state) {
+//       query.push(`state=${encodeURIComponent(props.state)}`)
+//     }
+
+//     window.location.replace(`${props.redirectUri}?${query.join('&')}`)
+//   }
+
+//   onSubmit = async (e) => {
+//     e.preventDefault()
+//     setState({ isSaving: true })
+//     await updateClientScopes()
+//     setState({ isSaving: false })
+//   }
+
+//   render() {
+//     return (
+//       <ApolloConsumer>
+//         {(apolloClient) => {
+//           apolloClient = apolloClient
+//           if (!initialized) {
+//             return <LoadingIndicator />
+//           }
+//         }}
+//       </ApolloConsumer>
+//     )
+//   }
+// }
 
 export interface IClientAuthorizationProps {
   client: {
@@ -236,4 +317,4 @@ export interface IClientAuthorizationProps {
   nonce?: string
 }
 
-export default ClientAuthorization
+export default ClientAuthorizationComponent
