@@ -6,12 +6,14 @@ import moment from "moment"
 export const getValueFromCache = async (key: string, encrypted = false) => {
   await deleteExpiredFromCache()
 
-  const record = await KeyValueCache.findByPk(key)
+  const record = await KeyValueCache.findOne({ where: { key } })
   if (record) {
+    const resultObject: any = record.toJSON()
     if (encrypted) {
-      return decrypt(record.value)
+
+      return decrypt(resultObject.value)
     } else {
-      return record.value
+      return resultObject.value
     }
   } else {
     return undefined
