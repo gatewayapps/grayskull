@@ -12,7 +12,7 @@ import RequireAuthentication from '../client/components/RequireAuthentication'
 
 const VERIFY_AUTHORIZATION_REQUEST_MUTATION = gql`
   mutation VERIFY_AUTHORIZATION_REQUEST_MUTATION($client_id: String!, $redirect_uri: String!) {
-    verifyAuthorizationRequest(data: { client_id: $client_id, redirectUri: $redirect_uri }) {
+    verifyAuthorizationRequest(data: { client_id: $client_id, redirect_uri: $redirect_uri }) {
       success
       message
     }
