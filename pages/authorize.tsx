@@ -102,7 +102,9 @@ const AuthorizePage = (props: AuthorizePageProps) => {
                     client={data.client}
                     responseType={props.router.query.response_type?.toString()}
                     redirectUri={props.router.query.redirect_uri?.toString()}
-                    scope={props.router.query.scope?.toString()}
+                    //TODO: This needs to be fixed to be only scope in the future
+
+                    scope={(props.router.query.scope || props.router.query.scopes)?.toString()}
                     scopes={data.scopes}
                     state={props.router.query.state?.toString()}
                     nonce={props.router.query.nonce?.toString()}
