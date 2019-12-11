@@ -41,7 +41,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).json({ success: false, message: 'Invalid request body' })
       return
     }
-    const body = JSON.parse(req.body)
+    const body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
 
     if (!body || !body.grant_type || !clientCredentials) {
       res.statusCode = 400

@@ -223,7 +223,9 @@ class AuthenticationService {
             options
           )
         }
+
         if (authCodeCacheResult.scope.includes(ScopeMap.offline_access.id)) {
+
           finalRefreshToken = await TokenService.createRefreshToken(client, userAccount, null, options)
         }
 

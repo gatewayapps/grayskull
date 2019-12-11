@@ -8,11 +8,11 @@ function KeyValueCacheFactory(sequelize: Sequelize.Sequelize) {
       key: {
         primaryKey: true,
         allowNull: false,
-        type: Sequelize.STRING(1024)
+        type: Sequelize.STRING(2048)
       },
       value: {
         allowNull: false,
-        type: Sequelize.STRING(1024)
+        type: Sequelize.STRING(2048)
       },
       expires: {
         allowNull: false,
