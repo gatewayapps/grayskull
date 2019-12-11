@@ -1,9 +1,9 @@
-import { getCurrentConfiguration } from '../../../config/ConfigurationManager'
+import ConfigurationManager from '../../../config/ConfigurationManager'
 import { GraphQLUpload } from 'apollo-server-micro'
 import { GraphQLEnumType, GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../utils/permissions'
 import UploadService from '../../../api/services/UploadService'
-import { getBooleanSetting } from '../../../api/services/SettingService'
+import SettingsService from '../../../api/services/SettingService'
 import { SettingsKeys } from '../../../config/KnownSettings'
 
 export default {
@@ -31,7 +31,7 @@ export default {
   }),
   Query: {
     securityConfiguration: async (obj, args, context, info) => {
-      const config = await getCurrentConfiguration()
+      const config = await ConfigurationManager.GetCurrentConfiguration()
 
       return {
         multifactorRequired: config.Security!.multifactorRequired,
@@ -44,11 +44,11 @@ export default {
       }
     },
     serverConfiguration: async (obj, args, context, info) => {
-      const config = await getCurrentConfiguration()
+      const config = await ConfigurationManager.GetCurrentConfiguration()
       return config.Server
     },
     isOobe: async (obj, args, context, info) => {
-      const isServerConfigured = await getBooleanSetting(SettingsKeys.SERVER_CONFIGURED)
+      const isServerConfigured = await SettingsService.getBooleanSetting(SettingsKeys.SERVER_CONFIGURED)
       return !isServerConfigured
     }
   },

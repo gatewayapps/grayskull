@@ -55,7 +55,11 @@ const SecurityComponent = (props) => {
                       className="float-right btn btn-primary"
                       disabled={!saveEnabled}
                       mutation={SAVE_CONFIGURATION}
-                      variables={{ configuration: { Security: localConfiguration.Security } }}
+                      variables={{
+                        configuration: {
+                          Security: localConfiguration.Security
+                        }
+                      }}
                     />
                   </div>
                 </div>

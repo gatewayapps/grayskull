@@ -25,7 +25,7 @@ class MyApp extends App<any> {
     if (ctx.req) {
       const configManager = await import('../server/config/ConfigurationManager')
 
-      configuration = await configManager.getCurrentConfiguration(true)
+      configuration = await configManager.default.GetCurrentConfiguration(true)
     }
     if (Component && Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)

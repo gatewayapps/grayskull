@@ -1,4 +1,4 @@
-import { getCurrentConfiguration } from '../../config/ConfigurationManager'
+
 import { decrypt } from '../../utils/cipher'
 
 import { Session } from '../../data/models/ISession'
@@ -26,6 +26,7 @@ import { ScopeMap } from './ScopeService'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
+import ConfigurationManager from '../../config/ConfigurationManager'
 
 const CACHE_PREFIX = 'BACKUP_CODE_'
 
@@ -160,7 +161,7 @@ class AuthenticationService {
   }
 
   public async generateOtpSecret(emailAddress: string): Promise<string> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
 
     const secret = otplib.authenticator.generateSecret()
     const result = otplib.authenticator.keyuri(
@@ -179,7 +180,7 @@ class AuthenticationService {
     refresh_token: string | null,
     options: IQueryOptions
   ): Promise<IAccessTokenResponse> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
     const client = await ClientService.validateClient(client_id, client_secret, options)
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
@@ -289,7 +290,7 @@ class AuthenticationService {
   }
 
   public async sendBackupCode(emailAddress: string, options: IQueryOptions): Promise<boolean> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
 
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
     if (!user || !user.otpEnabled || !user.otpSecret) {
@@ -317,7 +318,7 @@ class AuthenticationService {
   }
 
   public async shouldUserChangePassword(emailAddress: string, options: IQueryOptions): Promise<boolean> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
     if (config.Security!.maxPasswordAge && config.Security!.maxPasswordAge > 0) {
       const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, options)
       if (userAccount) {
@@ -346,7 +347,7 @@ class AuthenticationService {
   }
 
   public async validatePassword(password: string, confirm: string, options: IQueryOptions): Promise<boolean> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
 
     const requiredParts: string[] = []
     if (config.Security!.passwordRequiresLowercase) {

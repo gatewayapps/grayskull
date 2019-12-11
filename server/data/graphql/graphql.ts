@@ -1,11 +1,11 @@
 import { makeExecutableSchema } from 'apollo-server'
-import { fileLoader, mergeResolvers, mergeTypes } from 'merge-graphql-schemas'
+import { mergeResolvers, mergeTypes } from 'merge-graphql-schemas'
 import { AuthorizationDirective } from './AuthorizationDirective'
 import { AnonymousDirective } from './AnonymousDirective'
 
+const graphqlSchema = require('../../../data/schema.graphql')
+const customSchema = require('../../../data/custom.graphql')
 
-import graphqlSchema from '../../../data/schema.graphql'
-import customSchema from '../../../data/custom.graphql'
 
 
 const typeDefs = mergeTypes(

@@ -55,7 +55,11 @@ const serverComponent = (props) => {
                       className="float-right btn btn-primary"
                       disabled={!saveEnabled}
                       mutation={SAVE_CONFIGURATION}
-                      variables={{ configuration: { Server: localConfiguration.Server } }}
+                      variables={{
+                        configuration: {
+                          Server: localConfiguration.Server
+                        }
+                      }}
                     />
                   </div>
                 </div>

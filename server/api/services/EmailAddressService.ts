@@ -12,7 +12,7 @@ import { Permissions } from '../../utils/permissions'
 
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
-import ConfigurationManager, { getCurrentConfiguration } from '../../config/ConfigurationManager'
+import ConfigurationManager from '../../config/ConfigurationManager'
 
 import { randomBytes } from 'crypto'
 
@@ -36,7 +36,7 @@ class EmailAddressService {
 
   public async isDomainAllowed(emailAddress: string): Promise<boolean> {
     const domain = emailAddress.split('@')[1].toLowerCase()
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
     if (config.Security!.domainWhitelist) {
       const allowedDomains = _.compact(config.Security!.domainWhitelist.toLowerCase().split(';'))
 
@@ -54,7 +54,7 @@ class EmailAddressService {
   }
 
   public async sendVerificationEmail(emailAddress: string, options: IQueryOptions) {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
     const verificationSecret = randomBytes(16).toString('hex')
 
     const data = await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verificationSecret }, options)
@@ -69,7 +69,7 @@ class EmailAddressService {
           user: userAccount,
           verificationLink: `${config.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${
             data.verificationSecret
-          }`
+            }`
         }
       )
     } else {

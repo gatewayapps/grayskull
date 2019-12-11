@@ -8,7 +8,7 @@ import UserAccountService from '../../../api/services/UserAccountService'
 import { setAuthCookies, doLogout } from '../../../utils/authentication'
 import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
-
+import ConfigurationManager from '../../../config/ConfigurationManager'
 import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
@@ -18,10 +18,12 @@ import UserAccountRepository from '../../../data/repositories/UserAccountReposit
 import TokenService from '../../../api/services/TokenService'
 import ClientRepository from '../../../data/repositories/ClientRepository'
 import { ScopeMap } from '../../../api/services/ScopeService'
-import { getCurrentConfiguration } from '../../../config/ConfigurationManager'
+
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
 import { encrypt } from '../../../utils/cipher'
 import { Permissions } from '../../../utils/permissions'
+import { readdirSync } from 'fs'
+import { join } from 'path'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -56,7 +58,7 @@ export default {
     userAccountsMeta: async (obj, args, context, info) => {
       // insert your userAccountsMeta implementation here
 
-      if (context.user?.permissions === Permissions.Admin) {
+      if (context.user ?.permissions === Permissions.Admin) {
         return await UserAccountRepository.userAccountsMeta(null, { userContext: context.user })
       } else {
         throw new Error('You must be an administrator to do that')
@@ -181,7 +183,7 @@ export default {
         }
         if (responseTypes.includes('token')) {
 
-          const config = await getCurrentConfiguration()
+          const config = await ConfigurationManager.GetCurrentConfiguration()
 
           queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
           queryParts.token_type = 'Bearer'
@@ -284,11 +286,15 @@ export default {
     },
     resetPassword: async (obj, args, context, info) => {
       // insert your resetPassword implementation here
+
+      const fileNames = readdirSync(join(process.cwd(), '.next/serverless'))
+
       const options: IQueryOptions = { userContext: context.user || null }
       try {
         await UserAccountService.resetPassword(args.data.emailAddress, options)
         return true
       } catch (err) {
+        console.error(err)
         return false
       }
     },
@@ -417,7 +423,7 @@ export default {
         throw new Error('You must be signed in to do that')
       } else {
         try {
-          const config = await getCurrentConfiguration()
+          const config = await ConfigurationManager.GetCurrentConfiguration()
 
           const passwordValid = await AuthenticationService.verifyPassword(
             context.user.userAccountId,

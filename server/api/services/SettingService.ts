@@ -4,59 +4,76 @@ type CategoryKeys = 'Server' | 'Security' | 'Mail'
 
 let settings: Setting[] = []
 
-export async function refreshSettings() {
-  const db = await getContext()
-  settings = await db.Setting.findAll()
-}
 
-async function getSettingRecord(key: string, type: string) {
-  if (settings.length === 0) {
-    await refreshSettings()
+class SettingsService {
+  private settings: Setting[] = []
+
+  public async refreshSettings() {
+    this.settings = []
+    const db = await getContext()
+    this.settings = await Setting.findAll()
   }
-  return settings.find((s) => s.key === key && s.type === type)
-}
 
-export async function saveStringSetting(key: string, value: string, category: CategoryKeys) {
-  const db = await getContext()
-  await Setting.upsert({ key, value, type: 'String', category })
-  settings = []
-}
+  private async  getSettingRecord(key: string, type: string) {
 
-export async function saveNumberSetting(key: string, value: number, category: CategoryKeys) {
-  const db = await getContext()
-  await Setting.upsert({ key, value: value.toString(), type: 'Number', category })
-  settings = []
-}
+    const foundSetting = this.settings.find((s) => s.key === key && s.type === type)
 
-export async function saveBooleanSetting(key: string, value: boolean, category: CategoryKeys) {
-  const db = await getContext()
-  await Setting.upsert({ key, value: value.toString(), type: 'Boolean', category })
-  settings = []
-}
+    if (!foundSetting) {
+      await this.refreshSettings()
+    }
 
-export async function getStringSetting(key: string) {
-  const setting = await getSettingRecord(key, 'String')
-  if (setting) {
-    return setting.value
-  } else {
-    return undefined
+    return this.settings.find((s) => s.key === key && s.type === type)
+  }
+
+  public async  saveStringSetting(key: string, value: string, category: CategoryKeys) {
+    await getContext()
+    await Setting.upsert({ key, value, type: 'String', category })
+
+    this.settings = []
+  }
+
+  public async  saveNumberSetting(key: string, value: number, category: CategoryKeys) {
+    await getContext()
+    await Setting.upsert({ key, value: value.toString(), type: 'Number', category })
+    this.settings = []
+  }
+
+  public async  saveBooleanSetting(key: string, value: boolean, category: CategoryKeys) {
+    const db = await getContext()
+    await Setting.upsert({ key, value: value.toString(), type: 'Boolean', category })
+    this.settings.splice(0, settings.length)
+    this.settings = []
+  }
+
+  public async  getStringSetting(key: string) {
+    const setting = await this.getSettingRecord(key, 'String')
+    if (setting) {
+      return setting.value
+    } else {
+      return undefined
+    }
+  }
+
+  public async  getNumberSetting(key: string) {
+    const setting = await this.getSettingRecord(key, 'Number')
+    if (setting) {
+      return parseInt(setting.value)
+    } else {
+      return undefined
+    }
+  }
+
+  public async  getBooleanSetting(key: string) {
+    const setting = await this.getSettingRecord(key, 'Boolean')
+    if (setting) {
+      return setting.value.toString() === 'true'
+    } else {
+      return undefined
+    }
   }
 }
 
-export async function getNumberSetting(key: string) {
-  const setting = await getSettingRecord(key, 'Number')
-  if (setting) {
-    return parseInt(setting.value)
-  } else {
-    return undefined
-  }
-}
+export default new SettingsService()
 
-export async function getBooleanSetting(key: string) {
-  const setting = await getSettingRecord(key, 'Boolean')
-  if (setting) {
-    return setting.value.toString() === 'true'
-  } else {
-    return undefined
-  }
-}
+
+

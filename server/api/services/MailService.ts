@@ -1,17 +1,49 @@
 import nodemailer, { SendMailOptions, TransportOptions } from 'nodemailer'
 
-import { join, normalize } from 'path'
-import handlebars from 'handlebars'
-import { existsSync, readFileSync } from 'fs'
-import { getCurrentConfiguration } from '../../config/ConfigurationManager'
 
+import handlebars from 'handlebars'
+
+import ConfigurationManager from '../../config/ConfigurationManager'
+
+
+
+const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
+const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default
+
+const backupCodeHtmlTemplate = require('../../templates/backupCodeTemplate.html.handlebars').default
+const backupCodeTextTemplate = require('../../templates/backupCodeTemplate.text.handlebars').default
+
+const resetPasswordHtmlTemplate = require('../../templates/resetPasswordTemplate.html.handlebars').default
+const resetPasswordTextTemplate = require('../../templates/resetPasswordTemplate.text.handlebars').default
+
+const verifyEmailHtmlTemplate = require('../../templates/verifyEmailTemplate.html.handlebars').default
+const verifyEmailTextTemplate = require('../../templates/verifyEmailTemplate.text.handlebars').default
+
+const KNOWN_TEMPLATES = {
+  activateAccountTemplate: {
+    html: activateAccountHtmlTemplate,
+    text: activateAccountTextTemplate
+  },
+  backupCodeTemplate: {
+    html: backupCodeHtmlTemplate,
+    text: backupCodeTextTemplate
+  },
+  resetPasswordTemplate: {
+    html: resetPasswordHtmlTemplate,
+    text: resetPasswordTextTemplate
+  },
+  verifyEmailTemplate: {
+    html: verifyEmailHtmlTemplate,
+    text: verifyEmailTextTemplate
+  }
+}
 
 
 const TEMPLATE_PATH = './server/templates'
 
 class MailService {
   public async sendMail(to: string, subject: string, textBody: string, htmlBody: string): Promise<any> {
-    const config = await getCurrentConfiguration(false)
+    const config = await ConfigurationManager.GetCurrentConfiguration(false)
     const mailConfig = config.Mail!
     const hostAddress = mailConfig.serverAddress!
 
@@ -46,35 +78,22 @@ class MailService {
   }
 
   public sendEmailTemplate(templateName: string, to: string, subject: string, context: object): Promise<any> {
-    const textTemplateFileName = `${templateName}.text.handlebars`
-    const htmlTemplateFileName = `${templateName}.html.handlebars`
 
-    const textTemplatePath = normalize(join(process.env.PROJECT_ROOT!, TEMPLATE_PATH, textTemplateFileName))
-    const htmlTemplatePath = normalize(join(process.env.PROJECT_ROOT!, TEMPLATE_PATH, htmlTemplateFileName))
-
-    if (!existsSync(textTemplatePath) && !existsSync(htmlTemplatePath)) {
-      throw new Error(`No template found in ${TEMPLATE_PATH} with name ${templateName} - looked for ${textTemplateFileName}, ${htmlTemplateFileName}`)
+    if (!KNOWN_TEMPLATES[templateName]) {
+      throw new Error('Invalid template name: ' + templateName)
     }
 
-    let textBody = ''
-    let htmlBody = ''
+    const textBody = this.processTemplateWithContext(KNOWN_TEMPLATES[templateName].text, context)
 
-    if (existsSync(textTemplatePath)) {
-      textBody = this.processTemplateWithContext(textTemplatePath, context)
-    }
-    if (existsSync(htmlTemplatePath)) {
-      htmlBody = this.processTemplateWithContext(htmlTemplatePath, context)
-    }
+
+    const htmlBody = this.processTemplateWithContext(KNOWN_TEMPLATES[templateName].html, context)
+
 
     return this.sendMail(to, subject, textBody, htmlBody)
   }
 
-  private processTemplateWithContext(templateFilePath: string, context: object): string {
-    if (!existsSync(templateFilePath)) {
-      throw new Error(`File not found: ${templateFilePath}`)
-    }
+  private processTemplateWithContext(templateContents: string, context: object): string {
 
-    const templateContents = readFileSync(templateFilePath, 'utf8')
     const templateFunction = handlebars.compile(templateContents)
     return templateFunction(context)
   }

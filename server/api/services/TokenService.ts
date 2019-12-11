@@ -9,7 +9,7 @@ import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { ScopeMap } from '../../api/services/ScopeService'
 import UserClientService from './UserClientService'
 import { ForbiddenError } from 'apollo-server'
-import { getCurrentConfiguration } from '../../config/ConfigurationManager'
+import ConfigurationManager from '../../config/ConfigurationManager'
 import jwt from 'jsonwebtoken'
 import ClientRepository from '../../data/repositories/ClientRepository'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
@@ -105,7 +105,7 @@ class TokenService {
     accessToken: string | undefined,
     options: IQueryOptions
   ): Promise<string> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
     const security = config.Security!
     const serverConfig = config.Server!
 
@@ -250,7 +250,7 @@ class TokenService {
     refreshToken: RefreshToken | null,
     options: IQueryOptions
   ): Promise<string> {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
 
     const userClient = await UserClientRepository.getUserClient(
       { client_id: client.client_id, userAccountId: userAccount.userAccountId! },

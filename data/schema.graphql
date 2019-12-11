@@ -1,4 +1,4 @@
-export default `scalar Date
+scalar Date
 
 type Query {
   clients(offset: Int, limit: Int, filter: ClientFilter): [Client!]!
@@ -242,9 +242,9 @@ type Configuration {
 }
 
 input SaveConfigurationArgs {
-  Security: SecurityConfigurationInput!
-  Mail: MailConfigurationInput!
-  Server: ServerConfigurationInput!
+  Security: SecurityConfigurationInput
+  Mail: MailConfigurationInput
+  Server: ServerConfigurationInput
 }
 
 type ConfigurationMeta {
@@ -1011,4 +1011,4 @@ input UserClientUniqueFilter {
   userClientId: ID
   userAccountId: ID
   client_id: String
-}`
+}

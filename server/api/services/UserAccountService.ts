@@ -1,4 +1,4 @@
-import ConfigurationManager, { getCurrentConfiguration } from '../../config/ConfigurationManager'
+import ConfigurationManager from '../../config/ConfigurationManager'
 import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
@@ -71,7 +71,7 @@ class UserAccountService {
         'The email address has already been registered'
       )
     }
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
 
     options.transaction = await (await getContext()).sequelize.transaction()
 
@@ -194,7 +194,7 @@ class UserAccountService {
   }
 
   public async resetPassword(emailAddress: string, options: IQueryOptions) {
-    const config = await getCurrentConfiguration()
+    const config = await ConfigurationManager.GetCurrentConfiguration()
     const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
     if (userAccount) {
       const resetToken = randomBytes(16).toString('hex')

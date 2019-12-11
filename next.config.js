@@ -3,6 +3,18 @@ const withCss = require('@zeit/next-css')
 
 module.exports = withSass(
   withCss({
+    webpack(config, options) {
+      config.module.rules.push({
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader'
+      })
+      config.module.rules.push({
+        test: /\.handlebars$/i,
+        use: 'raw-loader'
+      })
+      return config
+    },
     experimental: {
       async rewrites() {
         return [
