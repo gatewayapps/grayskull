@@ -50,7 +50,7 @@ type Mutation {
   update(data: UpdateArgs!): OperationResponse
   login(data: LoginArgs!): LoginResponse @anonymous
   authorizeClient(data: AuthorizeClientArgs!): AuthorizeClientResponse
-  verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse
+  verifyEmailAddress(data: VerifyEmailAddressArgs!): OperationResponse @anonymous
   validateResetPasswordToken(data: ValidateResetPasswordTokenArgs!): OperationResponse @anonymous
   verifyAuthorizationRequest(data: VerifyAuthorizationRequestArgs!): OperationResponse
   setOtpSecret(data: SetOtpSecretArgs!): OperationResponse

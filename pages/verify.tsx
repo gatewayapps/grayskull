@@ -7,9 +7,9 @@ import LoadingIndicator from '../client/components/LoadingIndicator'
 import ErrorMessage from '../client/components/ErrorMessage'
 import { Jumbotron } from 'reactstrap'
 
-import WithUser from '../client/components/WithUser'
 import Primary from '../client/layouts/primary'
 import BackgroundCoverComponent from '../client/components/BackgroundCover'
+import UserContext from '../client/contexts/UserContext'
 
 const VERIFY_EMAIL_ADDRESS_MUTATION = gql`
   mutation VERIFY_EMAIL_ADDRESS_MUTATION($emailAddress: String!, $code: String!) {
@@ -22,7 +22,9 @@ const VERIFY_EMAIL_ADDRESS_MUTATION = gql`
 //http://127.0.0.1/verify?address=daniel@gatewayapps.com&code=058c94fc90a2307d4e0db42347989b4c
 
 const VerifyEmailAddress = (props) => {
-  const [verifyEmailAddressMutation, { loading, data: result, error }] = useMutation(VERIFY_EMAIL_ADDRESS_MUTATION, { variables: { emailAddress: props.query.address, code: props.query.code } })
+  const [verifyEmailAddressMutation, { loading, data: result, error }] = useMutation(VERIFY_EMAIL_ADDRESS_MUTATION, {
+    variables: { emailAddress: props.query.address, code: props.query.code }
+  })
 
   const data = result ? result.verifyEmailAddress : undefined
   return (
@@ -30,7 +32,7 @@ const VerifyEmailAddress = (props) => {
       <BackgroundCoverComponent>
         <Jumbotron>
           <div style={{ maxWidth: '960px', width: '100vw' }} className="alert alert-primary">
-            <WithUser>
+            <UserContext.Consumer>
               {({ user }) => {
                 if (!loading && !data) {
                   verifyEmailAddressMutation()
@@ -56,7 +58,7 @@ const VerifyEmailAddress = (props) => {
                 }
                 return <Jumbotron>Something went wrong!</Jumbotron>
               }}
-            </WithUser>
+            </UserContext.Consumer>
           </div>
         </Jumbotron>
       </BackgroundCoverComponent>
