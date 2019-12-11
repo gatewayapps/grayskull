@@ -8,7 +8,16 @@ import { faCircle, faCheckCircle } from '@fortawesome/free-regular-svg-icons'
 import { faCircleNotch, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 const CREATE_USER_MUTATION = gql`
-  mutation CREATE_USER_MUTATION($firstName: String!, $lastName: String!, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $permissions: Int!, $emailAddress: String!) {
+  mutation CREATE_USER_MUTATION(
+    $firstName: String!
+    $lastName: String!
+    $displayName: String
+    $gender: String
+    $birthday: Date
+    $profileImageUrl: String
+    $permissions: Int!
+    $emailAddress: String!
+  ) {
     createUser(
       data: {
         firstName: $firstName
@@ -110,7 +119,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
   }
 
   handleOnError = (err, file, inputElem, reason) => {
-    console.log(err)
+    console.error(err)
   }
 
   handleImportOffer = () => {
@@ -136,9 +145,14 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
         </div>
         <form>
           <div className="form-group" style={{ padding: '20px' }}>
-            Please upload your CSV file in the following format: <br /> Email, First Name, Last Name, Permissions, Gender (optional), Display Name (optional), Birthday (optional) (mm/dd/yyyy)
+            Please upload your CSV file in the following format: <br /> Email, First Name, Last Name, Permissions,
+            Gender (optional), Display Name (optional), Birthday (optional) (mm/dd/yyyy)
           </div>
-          {this.state.importedCSVData && <div style={{ padding: '20px', maxHeight: '350px', overflowY: 'auto' }}>{this.renderCSVUsersImportList()}</div>}
+          {this.state.importedCSVData && (
+            <div style={{ padding: '20px', maxHeight: '350px', overflowY: 'auto' }}>
+              {this.renderCSVUsersImportList()}
+            </div>
+          )}
 
           {this.state.loadingMessage && (
             <div className="alert alert-warning" style={{ width: '60%', margin: '20px auto' }}>
@@ -177,7 +191,11 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                           onError={this.handleOnError}
                           configOptions={{ skipEmptyLines: 'greedy' }}
                         />
-                        <button disabled={this.state.importedCSVData} className="btn btn-outline-success" style={{ width: '40%' }} onClick={this.handleImportOffer}>
+                        <button
+                          disabled={this.state.importedCSVData}
+                          className="btn btn-outline-success"
+                          style={{ width: '40%' }}
+                          onClick={this.handleImportOffer}>
                           Upload CSV file
                         </button>
                         <button
@@ -204,7 +222,9 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                             if (this.state.importedCSVData) {
                               const CSVData = this.state.importedCSVData.data
                               totalUsersToImport = CSVData.length - 1
-                              this.setState({ loadingMessage: `Please wait while we import your users. ${successCount.length} of ${totalUsersToImport} users imported` })
+                              this.setState({
+                                loadingMessage: `Please wait while we import your users. ${successCount.length} of ${totalUsersToImport} users imported`
+                              })
 
                               for (let i = 0; i < CSVData.length; i++) {
                                 const item = CSVData[i]
@@ -214,7 +234,8 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                     emailAddress: item[0],
                                     firstName: item[1],
                                     lastName: item[2],
-                                    permissions: item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value,
+                                    permissions:
+                                      item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value,
                                     gender: item[4],
                                     displayName: item[5],
                                     birthday: item[6]
