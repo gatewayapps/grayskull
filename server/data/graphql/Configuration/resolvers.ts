@@ -46,7 +46,11 @@ export default {
             await SettingsService.saveStringSetting(SettingsKeys.SERVER_REALM_NAME, data.Server!.realmName!, 'Server')
           }
           if (!!data.Server.realmBackground) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_BACKGROUND_IMAGE, data.Server!.realmBackground!, 'Server')
+            await SettingsService.saveStringSetting(
+              SettingsKeys.SERVER_BACKGROUND_IMAGE,
+              data.Server!.realmBackground!,
+              'Server'
+            )
           }
         }
 
@@ -80,10 +84,18 @@ export default {
             )
           }
           if (data.Security.allowSignup !== undefined && data.Security.allowSignup !== null) {
-            await SettingsService.saveBooleanSetting(SettingsKeys.SECURITY_ALLOW_USER_SIGNUP, !!data.Security.allowSignup, 'Security')
+            await SettingsService.saveBooleanSetting(
+              SettingsKeys.SECURITY_ALLOW_USER_SIGNUP,
+              !!data.Security.allowSignup,
+              'Security'
+            )
           }
           if (data.Security.domainWhitelist !== undefined && data.Security.domainWhitelist !== null) {
-            await SettingsService.saveStringSetting(SettingsKeys.SECURITY_DOMAIN_WHITELIST, data.Security.domainWhitelist, 'Security')
+            await SettingsService.saveStringSetting(
+              SettingsKeys.SECURITY_DOMAIN_WHITELIST,
+              data.Security.domainWhitelist,
+              'Security'
+            )
           }
           if (
             data.Security.invitationExpirationSeconds !== undefined &&
@@ -163,9 +175,6 @@ export default {
         }
 
         await SettingsService.saveBooleanSetting(SettingsKeys.SERVER_CONFIGURED, true, 'Server')
-
-
-
 
         return {
           success: true

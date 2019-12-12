@@ -58,7 +58,7 @@ export default {
     userAccountsMeta: async (obj, args, context, info) => {
       // insert your userAccountsMeta implementation here
 
-      if (context.user ?.permissions === Permissions.Admin) {
+      if (context.user?.permissions === Permissions.Admin) {
         return await UserAccountRepository.userAccountsMeta(null, { userContext: context.user })
       } else {
         throw new Error('You must be an administrator to do that')
@@ -129,7 +129,6 @@ export default {
     },
     authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
       try {
-
         if (!context.user) {
           throw new Error('You must be logged in')
         }
@@ -171,7 +170,6 @@ export default {
         const queryParts: any = {}
 
         if (responseTypes.includes('code')) {
-
           queryParts.code = await AuthenticationService.generateAuthorizationCode(
             context.user,
             client_id,
@@ -182,7 +180,6 @@ export default {
           )
         }
         if (responseTypes.includes('token')) {
-
           const config = await ConfigurationManager.GetCurrentConfiguration()
 
           queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
@@ -199,7 +196,6 @@ export default {
           )
         }
 
-
         const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
 
         if (state) {
@@ -209,8 +205,6 @@ export default {
         const result = {
           redirectUri: `${redirectUri}${query.length > 0 ? '?' + query.join('&') : ''}`
         }
-
-
 
         return result
       } catch (err) {
@@ -442,7 +436,7 @@ export default {
               success: false,
               message: `${
                 config.Server!.realmName
-                } security policy requires you to have an Authenticator App configured`
+              } security policy requires you to have an Authenticator App configured`
             }
           }
 

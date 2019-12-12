@@ -5,10 +5,10 @@ export interface IEmailAddressMeta {
 export interface IEmailAddressFilter {
   or?: [IEmailAddressFilter]
   and?: [IEmailAddressFilter]
-  emailAddressId_in?: [ string ]
+  emailAddressId_in?: [string]
   emailAddressId_equals?: string
   emailAddressId_notEquals?: string
-  userAccountId_in?: [ string ]
+  userAccountId_in?: [string]
   userAccountId_equals?: string
   userAccountId_notEquals?: string
   emailAddress_contains?: string
@@ -25,21 +25,21 @@ export interface IEmailAddressFilter {
   verified_notEquals?: boolean
   primary_equals?: boolean
   primary_notEquals?: boolean
-  createdBy_in?: [ string ]
+  createdBy_in?: [string]
   createdBy_equals?: string
   createdBy_notEquals?: string
   createdAt_lessThan?: Date
   createdAt_greaterThan?: Date
   createdAt_equals?: Date
   createdAt_notEquals?: Date
-  updatedBy_in?: [ string ]
+  updatedBy_in?: [string]
   updatedBy_equals?: string
   updatedBy_notEquals?: string
   updatedAt_lessThan?: Date
   updatedAt_greaterThan?: Date
   updatedAt_equals?: Date
   updatedAt_notEquals?: Date
-  deletedBy_in?: [ string ]
+  deletedBy_in?: [string]
   deletedBy_equals?: string
   deletedBy_notEquals?: string
   deletedAt_lessThan?: Date
@@ -50,5 +50,5 @@ export interface IEmailAddressFilter {
 
 export interface IEmailAddressUniqueFilter {
   emailAddressId?: string
-    emailAddress?: string
+  emailAddress?: string
 }

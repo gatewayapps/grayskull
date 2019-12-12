@@ -33,7 +33,5 @@ export default {
       return ClientService.updateClient({ client_id }, data, { userContext: context.user || null })
     }
   },
-  Client: {
-
-  }
+  Client: {}
 }

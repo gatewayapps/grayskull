@@ -5,8 +5,6 @@ import path, { join } from 'path'
 import uuid from 'uuid/v4'
 import { IUploadFileResponse } from '../../data/models/IUploadFileResponse'
 
-
-
 const UPLOAD_DIR = join(process.env.PROJECT_ROOT!, `public/uploads/`)
 
 class UploadService {
@@ -18,8 +16,6 @@ class UploadService {
       if (process.env.CLOUDINARY_URL) {
         //const fullLocalPath = path.join(UPLOAD_DIR, localFilename)
         return new Promise((resolve, reject) => {
-
-
           const uploader: any = cloudinary.uploader
           const outStream = uploader.upload_stream((err, result) => {
             if (err) {
@@ -34,7 +30,6 @@ class UploadService {
           })
 
           stream.pipe(outStream)
-
         })
       } else {
         const { localFilename, size } = await this.writeToDisk(stream, filename)

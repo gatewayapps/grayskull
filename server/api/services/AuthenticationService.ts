@@ -1,4 +1,3 @@
-
 import { decrypt } from '../../utils/cipher'
 
 import { Session } from '../../data/models/ISession'
@@ -73,8 +72,6 @@ otplib.authenticator.options = {
 }
 
 class AuthenticationService {
-
-
   public async verifyPassword(userAccountId: string, password: string, options: IQueryOptions) {
     const user = await UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId }, options)
     if (user) {
@@ -128,7 +125,6 @@ class AuthenticationService {
       const cacheKey = `${CACHE_PREFIX}${emailAddress}`
       // 3a. Verify the OTP token
       if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken, options)) {
-
         const backupCode = await getValueFromCache(cacheKey, true)
 
         if (!backupCode || backupCode !== otpToken) {
@@ -140,7 +136,6 @@ class AuthenticationService {
         }
       }
       await deleteFromCache(cacheKey)
-
     }
 
     // 4. Create a session for the user
@@ -187,7 +182,7 @@ class AuthenticationService {
     }
     let id_token: string | undefined
     let userAccount: UserAccount | null = null
-    let session_id: string | undefined
+
     let finalRefreshToken: RefreshToken | null = null
     switch (grant_type) {
       case 'authorization_code': {
@@ -226,7 +221,6 @@ class AuthenticationService {
         }
 
         if (authCodeCacheResult.scope.includes(ScopeMap.offline_access.id)) {
-
           finalRefreshToken = await TokenService.createRefreshToken(client, userAccount, null, options)
         }
 
@@ -306,7 +300,6 @@ class AuthenticationService {
 
     const cacheKey = `${CACHE_PREFIX}${emailAddress}`
     await cacheValue(cacheKey, backupCode, 16 * 16, true)
-
 
     await MailService.sendEmailTemplate('backupCodeTemplate', emailAddress, `${config.Server!.realmName} Backup Code`, {
       realmName: config.Server!.realmName,
@@ -405,7 +398,12 @@ class AuthenticationService {
     options: IQueryOptions
   ): Promise<string> {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
-    await cacheValue(authorizationCode, JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }), 120, true)
+    await cacheValue(
+      authorizationCode,
+      JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }),
+      120,
+      true
+    )
 
     return authorizationCode
   }

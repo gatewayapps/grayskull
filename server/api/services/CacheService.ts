@@ -1,7 +1,7 @@
-import { KeyValueCache } from "../../data/models/IKeyValueCache"
-import Sequelize from "sequelize"
-import { decrypt, encrypt } from "../../utils/cipher"
-import moment from "moment"
+import { KeyValueCache } from '../../data/models/IKeyValueCache'
+import Sequelize from 'sequelize'
+import { decrypt, encrypt } from '../../utils/cipher'
+import moment from 'moment'
 
 export const getValueFromCache = async (key: string, encrypted = false) => {
   await deleteExpiredFromCache()
@@ -10,7 +10,6 @@ export const getValueFromCache = async (key: string, encrypted = false) => {
   if (record) {
     const resultObject: any = record.toJSON()
     if (encrypted) {
-
       return decrypt(resultObject.value)
     } else {
       return resultObject.value
@@ -23,7 +22,9 @@ export const getValueFromCache = async (key: string, encrypted = false) => {
 export const cacheValue = async (key: string, value: string, ttlSeconds: number, encrypted = false) => {
   await deleteExpiredFromCache()
   await deleteFromCache(key)
-  const expires = moment().add(ttlSeconds, 'second').toDate()
+  const expires = moment()
+    .add(ttlSeconds, 'second')
+    .toDate()
 
   const newRecord = new KeyValueCache({
     key,
@@ -32,7 +33,6 @@ export const cacheValue = async (key: string, value: string, ttlSeconds: number,
   })
 
   await newRecord.save()
-
 }
 
 export const deleteFromCache = async (key: string) => {
@@ -49,7 +49,6 @@ const deleteExpiredFromCache = async () => {
       expires: {
         [Sequelize.Op.lte]: new Date()
       }
-
     }
   })
 }

@@ -8,9 +8,15 @@ export function hasPermission(permission: number) {
     descriptor.value = function(...params) {
       const serviceOptions: IQueryOptions = params[params.length - 1]
       if (!serviceOptions) {
-        throw new Error('Invalid method signature.  @hasPermission can only be applied to methods with IQueryOptions as last argument')
+        throw new Error(
+          'Invalid method signature.  @hasPermission can only be applied to methods with IQueryOptions as last argument'
+        )
       } else {
-        if (!serviceOptions.userContext || serviceOptions.userContext.permissions === undefined || serviceOptions.userContext.permissions < permission) {
+        if (
+          !serviceOptions.userContext ||
+          serviceOptions.userContext.permissions === undefined ||
+          serviceOptions.userContext.permissions < permission
+        ) {
           throw new Error('Not authorized')
         } else {
           return originalFunction!.apply(this, params)

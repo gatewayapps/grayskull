@@ -69,7 +69,7 @@ class EmailAddressService {
           user: userAccount,
           verificationLink: `${config.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${
             data.verificationSecret
-            }`
+          }`
         }
       )
     } else {

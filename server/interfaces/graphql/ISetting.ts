@@ -29,4 +29,4 @@ export interface ISettingFilter {
 
 export interface ISettingUniqueFilter {
   key?: string
-  }
+}

@@ -1,11 +1,8 @@
 import nodemailer, { SendMailOptions, TransportOptions } from 'nodemailer'
 
-
 import handlebars from 'handlebars'
 
 import ConfigurationManager from '../../config/ConfigurationManager'
-
-
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
 const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default
@@ -38,7 +35,6 @@ const KNOWN_TEMPLATES = {
   }
 }
 
-
 const TEMPLATE_PATH = './server/templates'
 
 class MailService {
@@ -53,9 +49,9 @@ class MailService {
       secure: mailConfig.tlsSslRequired,
       auth: mailConfig.username
         ? {
-          user: mailConfig.username,
-          pass: mailConfig.password
-        }
+            user: mailConfig.username,
+            pass: mailConfig.password
+          }
         : undefined
     }
 
@@ -78,22 +74,18 @@ class MailService {
   }
 
   public sendEmailTemplate(templateName: string, to: string, subject: string, context: object): Promise<any> {
-
     if (!KNOWN_TEMPLATES[templateName]) {
       throw new Error('Invalid template name: ' + templateName)
     }
 
     const textBody = this.processTemplateWithContext(KNOWN_TEMPLATES[templateName].text, context)
 
-
     const htmlBody = this.processTemplateWithContext(KNOWN_TEMPLATES[templateName].html, context)
-
 
     return this.sendMail(to, subject, textBody, htmlBody)
   }
 
   private processTemplateWithContext(templateContents: string, context: object): string {
-
     const templateFunction = handlebars.compile(templateContents)
     return templateFunction(context)
   }

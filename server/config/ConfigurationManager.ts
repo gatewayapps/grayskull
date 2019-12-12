@@ -8,11 +8,7 @@ import SettingsService from '../api/services/SettingService'
 import { decrypt } from '../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../constants'
 
-
-
-
 class ConfigurationManager {
-
   private currentConfig: IConfiguration = {}
 
   public async loadConfigurationAsync() {
@@ -41,17 +37,25 @@ class ConfigurationManager {
     securityConfig.maxLoginAttemptsPerMinute = await SettingsService.getNumberSetting(
       SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE
     )
-    securityConfig.multifactorRequired = await SettingsService.getBooleanSetting(SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED)
+    securityConfig.multifactorRequired = await SettingsService.getBooleanSetting(
+      SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED
+    )
     securityConfig.maxPasswordAge = await SettingsService.getNumberSetting(SettingsKeys.SECURITY_PASSWORD_EXPIRES_DAYS)
-    securityConfig.passwordMinimumLength = await SettingsService.getNumberSetting(SettingsKeys.SECURITY_PASSWORD_MINIMUM_LENGTH)
+    securityConfig.passwordMinimumLength = await SettingsService.getNumberSetting(
+      SettingsKeys.SECURITY_PASSWORD_MINIMUM_LENGTH
+    )
     securityConfig.passwordRequiresLowercase = await SettingsService.getBooleanSetting(
       SettingsKeys.SECURITY_PASSWORD_REQUIRES_LOWERCASE
     )
     securityConfig.passwordRequiresUppercase = await SettingsService.getBooleanSetting(
       SettingsKeys.SECURITY_PASSWORD_REQUIRES_UPPERCASE
     )
-    securityConfig.passwordRequiresSymbol = await SettingsService.getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_SYMBOL)
-    securityConfig.passwordRequiresNumber = await SettingsService.getBooleanSetting(SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER)
+    securityConfig.passwordRequiresSymbol = await SettingsService.getBooleanSetting(
+      SettingsKeys.SECURITY_PASSWORD_REQUIRES_SYMBOL
+    )
+    securityConfig.passwordRequiresNumber = await SettingsService.getBooleanSetting(
+      SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER
+    )
     securityConfig.accessTokenExpirationSeconds = await SettingsService.getNumberSetting(
       SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS
     )
@@ -81,8 +85,5 @@ class ConfigurationManager {
     return config
   }
 }
-
-
-
 
 export default new ConfigurationManager()

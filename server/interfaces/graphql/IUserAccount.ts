@@ -5,7 +5,7 @@ export interface UserAccountMeta {
 export interface UserAccountFilter {
   or?: [UserAccountFilter]
   and?: [UserAccountFilter]
-  userAccountId_in?: [ string ]
+  userAccountId_in?: [string]
   userAccountId_equals?: string
   userAccountId_notEquals?: string
   firstName_contains?: string
@@ -53,21 +53,21 @@ export interface UserAccountFilter {
   otpEnabled_notEquals?: boolean
   isActive_equals?: boolean
   isActive_notEquals?: boolean
-  createdBy_in?: [ string ]
+  createdBy_in?: [string]
   createdBy_equals?: string
   createdBy_notEquals?: string
   createdAt_lessThan?: Date
   createdAt_greaterThan?: Date
   createdAt_equals?: Date
   createdAt_notEquals?: Date
-  updatedBy_in?: [ string ]
+  updatedBy_in?: [string]
   updatedBy_equals?: string
   updatedBy_notEquals?: string
   updatedAt_lessThan?: Date
   updatedAt_greaterThan?: Date
   updatedAt_equals?: Date
   updatedAt_notEquals?: Date
-  deletedBy_in?: [ string ]
+  deletedBy_in?: [string]
   deletedBy_equals?: string
   deletedBy_notEquals?: string
   deletedAt_lessThan?: Date
@@ -78,4 +78,4 @@ export interface UserAccountFilter {
 
 export interface UserAccountUniqueFilter {
   userAccountId?: string
-  }
+}

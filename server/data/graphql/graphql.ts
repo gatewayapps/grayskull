@@ -6,11 +6,7 @@ import { AnonymousDirective } from './AnonymousDirective'
 const graphqlSchema = require('../../../data/schema.graphql')
 const customSchema = require('../../../data/custom.graphql')
 
-
-
-const typeDefs = mergeTypes(
-  [graphqlSchema, customSchema]
-)
+const typeDefs = mergeTypes([graphqlSchema, customSchema])
 import baseResolver from './base/resolvers'
 import clientResolver from './Client/resolvers'
 import configurationResolver from './Configuration/resolvers'

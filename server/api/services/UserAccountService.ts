@@ -21,8 +21,6 @@ import { hasPermission } from '../../decorators/permissionDecorator'
 
 const INVITATION_EXPIRES_IN = 3600
 
-
-
 class UserAccountService {
   public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
     const options: IQueryOptions = {
@@ -208,7 +206,7 @@ class UserAccountService {
 
       const resetPasswordLink = `${
         config.Server!.baseUrl
-        }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'resetPasswordTemplate',
         emailAddress,

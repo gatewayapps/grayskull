@@ -61,9 +61,6 @@ function getSequelizeConnection() {
         break
     }
 
-
-
-
     user = connectionUrl.username
     password = connectionUrl.password
     server = connectionUrl.host
@@ -78,9 +75,7 @@ function getSequelizeConnection() {
       dialectModule = pg
       break
     }
-
   }
-
 
   let options: Sequelize.Options = {
     dialect: dialect!,

@@ -4,7 +4,6 @@ type CategoryKeys = 'Server' | 'Security' | 'Mail'
 
 let settings: Setting[] = []
 
-
 class SettingsService {
   private settings: Setting[] = []
 
@@ -14,8 +13,7 @@ class SettingsService {
     this.settings = await Setting.findAll()
   }
 
-  private async  getSettingRecord(key: string, type: string) {
-
+  private async getSettingRecord(key: string, type: string) {
     const foundSetting = this.settings.find((s) => s.key === key && s.type === type)
 
     if (!foundSetting) {
@@ -25,27 +23,27 @@ class SettingsService {
     return this.settings.find((s) => s.key === key && s.type === type)
   }
 
-  public async  saveStringSetting(key: string, value: string, category: CategoryKeys) {
+  public async saveStringSetting(key: string, value: string, category: CategoryKeys) {
     await getContext()
     await Setting.upsert({ key, value, type: 'String', category })
 
     this.settings = []
   }
 
-  public async  saveNumberSetting(key: string, value: number, category: CategoryKeys) {
+  public async saveNumberSetting(key: string, value: number, category: CategoryKeys) {
     await getContext()
     await Setting.upsert({ key, value: value.toString(), type: 'Number', category })
     this.settings = []
   }
 
-  public async  saveBooleanSetting(key: string, value: boolean, category: CategoryKeys) {
+  public async saveBooleanSetting(key: string, value: boolean, category: CategoryKeys) {
     const db = await getContext()
     await Setting.upsert({ key, value: value.toString(), type: 'Boolean', category })
     this.settings.splice(0, settings.length)
     this.settings = []
   }
 
-  public async  getStringSetting(key: string) {
+  public async getStringSetting(key: string) {
     const setting = await this.getSettingRecord(key, 'String')
     if (setting) {
       return setting.value
@@ -54,7 +52,7 @@ class SettingsService {
     }
   }
 
-  public async  getNumberSetting(key: string) {
+  public async getNumberSetting(key: string) {
     const setting = await this.getSettingRecord(key, 'Number')
     if (setting) {
       return parseInt(setting.value)
@@ -63,7 +61,7 @@ class SettingsService {
     }
   }
 
-  public async  getBooleanSetting(key: string) {
+  public async getBooleanSetting(key: string) {
     const setting = await this.getSettingRecord(key, 'Boolean')
     if (setting) {
       return setting.value.toString() === 'true'
@@ -74,6 +72,3 @@ class SettingsService {
 }
 
 export default new SettingsService()
-
-
-

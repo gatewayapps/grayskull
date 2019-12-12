@@ -22,14 +22,19 @@ export default {
       return EmailAddressService.getEmailAddress(args.where, { userContext: context.user || null })
     },
     emailAddressAvailable: async (obj, args, context, info) => {
-      const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, { userContext: context.user || null })
+      const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, {
+        userContext: context.user || null
+      })
       return result
     },
     myEmailAddresses: async (obj, args, context, info) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       } else {
-        return await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: context.user.userAccountId }, { userContext: context.user })
+        return await EmailAddressRepository.getEmailAddresses(
+          { userAccountId_equals: context.user.userAccountId },
+          { userContext: context.user }
+        )
       }
     }
   },
@@ -38,7 +43,9 @@ export default {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
-      const isAvailable = await EmailAddressService.isEmailAddressAvailable(args.data.emailAddress, { userContext: context.user })
+      const isAvailable = await EmailAddressService.isEmailAddressAvailable(args.data.emailAddress, {
+        userContext: context.user
+      })
       if (!isAvailable) {
         return {
           success: false,
@@ -47,7 +54,10 @@ export default {
       }
 
       try {
-        await EmailAddressService.createEmailAddress({ emailAddress: args.data.emailAddress, userAccountId: context.user.userAccountId, verificationSecret: '' }, { userContext: context.user })
+        await EmailAddressService.createEmailAddress(
+          { emailAddress: args.data.emailAddress, userAccountId: context.user.userAccountId, verificationSecret: '' },
+          { userContext: context.user }
+        )
         return {
           success: true
         }
@@ -63,7 +73,10 @@ export default {
         throw new Error('You must be signed in to do that')
       }
 
-      const emailAddress = await EmailAddressRepository.getEmailAddress({ emailAddressId: args.emailAddressId }, { userContext: context.user })
+      const emailAddress = await EmailAddressRepository.getEmailAddress(
+        { emailAddressId: args.emailAddressId },
+        { userContext: context.user }
+      )
       if (emailAddress && !emailAddress.verified) {
         await EmailAddressService.sendVerificationEmail(emailAddress.emailAddress, { userContext: context.user })
         return {
@@ -81,12 +94,17 @@ export default {
         throw new Error('You must be signed in to do that')
       }
 
-
-      const emailAddress = await EmailAddressRepository.getEmailAddress({ emailAddressId: args.data.emailAddressId }, { userContext: context.user })
+      const emailAddress = await EmailAddressRepository.getEmailAddress(
+        { emailAddressId: args.data.emailAddressId },
+        { userContext: context.user }
+      )
       if (!emailAddress) {
         throw new Error('Unable to find an email address with that id')
       } else {
-        if (emailAddress.userAccountId !== context.user.userAccountId && context.user.permissions !== Permissions.Admin) {
+        if (
+          emailAddress.userAccountId !== context.user.userAccountId &&
+          context.user.permissions !== Permissions.Admin
+        ) {
           throw new Error('You do not have access to that')
         }
         if (!emailAddress.verified) {
@@ -95,11 +113,22 @@ export default {
             message: 'Only verified email addresses can be set as primary'
           }
         } else {
-          const currentPrimaryEmailAddress = await EmailAddressRepository.getEmailAddresses({ userAccountId_equals: emailAddress.userAccountId, primary_equals: true }, { userContext: context.user })
+          const currentPrimaryEmailAddress = await EmailAddressRepository.getEmailAddresses(
+            { userAccountId_equals: emailAddress.userAccountId, primary_equals: true },
+            { userContext: context.user }
+          )
           if (currentPrimaryEmailAddress.length === 1) {
-            await EmailAddressRepository.updateEmailAddress({ emailAddressId: currentPrimaryEmailAddress[0].emailAddressId }, { primary: false }, { userContext: context.user })
+            await EmailAddressRepository.updateEmailAddress(
+              { emailAddressId: currentPrimaryEmailAddress[0].emailAddressId },
+              { primary: false },
+              { userContext: context.user }
+            )
           }
-          await EmailAddressRepository.updateEmailAddress({ emailAddressId: emailAddress.emailAddressId }, { primary: true }, { userContext: context.user })
+          await EmailAddressRepository.updateEmailAddress(
+            { emailAddressId: emailAddress.emailAddressId },
+            { primary: true },
+            { userContext: context.user }
+          )
           return {
             success: true
           }
