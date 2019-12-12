@@ -38,16 +38,18 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
 
   private renderPhotoInput = (props: any, className: string | undefined) => {
     if (props.readOnly) {
+      const { style, ...renderProps } = props
       return (
-        <div className={className} {...props}>
-          <img className="d-block ml-auto mr-auto" style={{ maxHeight: '100%', maxWidth: '100%' }} src={props.value} />
-        </div>
+
+        <img className="d-block" style={{ height: '150px' }} src={props.value} />
+
       )
     } else {
+      const { style, className, ...restProps } = props
       return (
         <ImageDropArea
-          className={className}
-          {...props}
+          {...restProps}
+          style={{ height: '150px', maxWidth: '400px', padding: '2px', border: '1px black dashed' }}
           src={props.value}
           onUploadComplete={(file) => {
             this.props.onChange({ target: { name: props.name, value: file.url } })
@@ -113,7 +115,7 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
 
   private renderSelectInput = (props: any, className: string | undefined) => {
     if (props.readOnly) {
-      return this.renderTextInput({ name: props.name, defaultValue: props.value }, className)
+      return this.renderTextInput({ name: props.name, defaultValue: props.value, readOnly: true, placeholder: 'Gender' }, className)
     }
     const { options, allowCustom, ...finalProps } = props
 
