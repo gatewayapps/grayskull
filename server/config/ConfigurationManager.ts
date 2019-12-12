@@ -10,6 +10,7 @@ import { PASSWORD_PLACEHOLDER } from '../constants'
 
 class ConfigurationManager {
   private currentConfig: IConfiguration = {}
+  private refreshedAt?: Date
 
   public async loadConfigurationAsync() {
     let mailConfig: IMailConfiguration = {}
