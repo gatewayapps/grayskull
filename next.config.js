@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 const withSass = require('next-dart-sass')
 const withCss = require('@zeit/next-css')
 
@@ -13,6 +14,9 @@ module.exports = withSass(
         test: /\.handlebars$/i,
         use: 'raw-loader'
       })
+
+      config.plugins.push(new webpack.IgnorePlugin(/^pg-native$/))
+
       return config
     },
     experimental: {

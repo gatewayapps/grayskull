@@ -8,10 +8,18 @@ import SettingsService from '../api/services/SettingService'
 import { decrypt } from '../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../constants'
 
+import moment from 'moment'
+
 class ConfigurationManager {
   private currentConfig: IConfiguration = {}
+  private expiresAt?: number
 
   public async loadConfigurationAsync() {
+
+    if (this.expiresAt && this.expiresAt > new Date().getTime() && this.currentConfig.Server) {
+      return this.currentConfig
+    }
+
     let mailConfig: IMailConfiguration = {}
     let serverConfig: IServerConfiguration = {}
     let securityConfig: ISecurityConfiguration = {}
@@ -71,6 +79,8 @@ class ConfigurationManager {
       Security: securityConfig,
       Server: serverConfig
     }
+
+    this.expiresAt = moment().add(5, 'seconds').toDate().getTime()
 
     return this.currentConfig
   }
