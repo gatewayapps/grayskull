@@ -12,5 +12,3 @@ jobs:
       yarn install
       yarn eslint --quiet ./
       yarn next build
-
-      
