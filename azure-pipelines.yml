@@ -11,6 +11,6 @@ jobs:
   - script: |
       yarn install
       yarn eslint --quiet ./
-      yarn build
+      yarn next build
 
       
