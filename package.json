@@ -8,12 +8,8 @@
   },
   "scripts": {
     "build": "next build",
-    "copy-graphql": "copyfiles -u 1 src/**/*.graphql dist",
-    "watch": "tsc -w",
     "debug": "next dev",
-    "docker-debug": "docker-compose up",
-    "start": "next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "next start"
   },
   "repository": {
     "type": "git",
