@@ -1,6 +1,6 @@
 {
   "name": "grayskull",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "engines": {
@@ -21,7 +21,8 @@
     "url": "https://github.com/gatewayapps/grayskull/issues"
   },
   "resolutions": {
-    "graceful-fs": "4.2.2"
+    "graceful-fs": "4.2.2",
+    "fast-glob": "https://files-5653q5abb.now.sh"
   },
   "browser": {
     "sqlite3": false,
