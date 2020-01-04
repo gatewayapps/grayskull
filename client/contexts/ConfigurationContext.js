@@ -4,7 +4,8 @@ import { any } from 'bluebird'
 const ConfigurationContext = React.createContext({
   Mail: any,
   Server: any,
-  Security: any
+  Security: any,
+  HeaderItems: any
 })
 
 export default ConfigurationContext

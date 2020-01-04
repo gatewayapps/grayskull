@@ -26,6 +26,7 @@ const UPDATE_CLIENT_QUERY = gql`
       description
       scopes
       public
+      pinToHeader
     }
 
     scopes {
@@ -48,6 +49,7 @@ const UPDATE_CLIENT_MUTATION = gql`
       description
       scopes
       public
+      pinToHeader
     }
   }
 `

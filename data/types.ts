@@ -6,6 +6,7 @@ export interface IAuthorizeClientResponse {
 export interface IClient {
   client_id: string
   name: string
+  pinToHeader: boolean | null
   logoImageUrl: string | null
   description: string | null
   secret: string
@@ -26,6 +27,7 @@ export interface CreateClientOperationArgs {
   client_id: string
   name: string
   logoImageUrl: string | null
+  pinToHeader: boolean | null
   description: string | null
   public: boolean | null
   secret: string
@@ -37,6 +39,7 @@ export interface CreateClientOperationArgs {
 }
 export interface UpdateClientOperationArgs {
   client_id: string
+  pinToHeader: boolean | null
   name: string | null
   logoImageUrl: string | null
   description: string | null
@@ -116,6 +119,12 @@ export interface AddEmailAddressOperationArgs {
 }
 export interface SendVerificationOperationArgs {
   emailAddress: string
+}
+
+export interface IKeyValueCache {
+  key: string
+  value: string
+  expires: Date | null
 }
 
 export interface ILoginResponse {

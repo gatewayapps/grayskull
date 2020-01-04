@@ -8,6 +8,7 @@ Client:
   properties:
     client_id: string(50) primary
     name: string(50)
+    pinToHeader: boolean? default(false)
     logoImageUrl: string?
     description: string(500)?
     secret: string(500)
@@ -34,8 +35,9 @@ Client:
         client_id:
         name:
         logoImageUrl:
+        pinToHeader:
         description:
-        public: 
+        public:
         secret:
         baseUrl:
         homePageUrl:
@@ -46,6 +48,7 @@ Client:
       returns: Client
       arguments:
         client_id:
+        pinToHeader: '?'
         name: '?'
         logoImageUrl: '?'
         description: '?'

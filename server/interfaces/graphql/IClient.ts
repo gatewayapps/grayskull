@@ -10,6 +10,7 @@ export interface IClientFilter {
   client_id_endsWith?: string
   client_id_equals?: string
   client_id_notEquals?: string
+  client_id_in?: string[]
   name_contains?: string
   name_startsWith?: string
   name_endsWith?: string
@@ -49,6 +50,8 @@ export interface IClientFilter {
   public_notEquals?: boolean
   isActive_equals?: boolean
   isActive_notEquals?: boolean
+  pinToHeader_equals?: boolean
+  pinToHeader_notEquals?: boolean
   createdBy_in?: [string]
   createdBy_equals?: string
   createdBy_notEquals?: string

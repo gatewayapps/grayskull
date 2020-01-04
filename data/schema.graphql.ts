@@ -75,6 +75,7 @@ type Client {
   redirectUris: String!
   scopes: String!
   public: Boolean
+  pinToHeader: Boolean
   isActive: Boolean!
   createdBy: ID
   createdAt: Date!
@@ -90,6 +91,7 @@ input CreateClientArgs {
   logoImageUrl: String
   description: String
   public: Boolean
+  pinToHeader: Boolean
   secret: String!
   baseUrl: String!
   homePageUrl: String
@@ -104,6 +106,7 @@ input UpdateClientArgs {
   logoImageUrl: String
   description: String
   public: Boolean
+  pinToHeader: Boolean
   baseUrl: String
   homePageUrl: String
   redirectUris: String

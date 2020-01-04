@@ -19,7 +19,7 @@ const Header = () => {
 
   return (
     <RequireConfiguration>
-      {(configuration: IConfiguration) => {
+      {(configuration: IConfiguration & { HeaderItems: any }) => {
         return (
           <div
             className="pt-2 mb-2 w-100"
@@ -41,6 +41,13 @@ const Header = () => {
                 className="nav nav-tabs flex-no-wrap"
                 style={{ whiteSpace: 'nowrap', textOverflow: 'nowrap', flexWrap: 'nowrap', fontSize: '1.05rem' }}
                 role="navigation">
+                {configuration.HeaderItems && configuration.HeaderItems.length > 0 ? (
+                  <li className="nav-item">
+                    <a className="nav-link" href={configuration.HeaderItems[0].baseUrl}>
+                      {configuration.HeaderItems[0].name}
+                    </a>
+                  </li>
+                ) : null}
                 <li className="nav-item">
                   <ActiveLink activeClassName="active" href="/personal-info" as="/personal-info">
                     <a className="nav-link">Personal Info</a>

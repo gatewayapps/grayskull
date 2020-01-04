@@ -12,12 +12,26 @@ import ClientRepository from '../../data/repositories/ClientRepository'
 import { UserClient } from '../../data/models/IUserClient'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import { ScopeMap } from './ScopeService'
-import { WhereAttributeHash } from 'sequelize/types'
+import { WhereAttributeHash, default as Sequelize } from 'sequelize'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
   pendingScopes?: string[]
   userClientId?: string
+}
+
+export async function getClientsForUser(userAccountId: string) {
+  const userClients = await UserClient.findAll({
+    where: {
+      userAccountId: userAccountId,
+      revoked: {
+        [Sequelize.Op.ne]: true
+      }
+    }
+  })
+
+  const userClientIds = userClients.map((uc) => uc.client_id)
+  return await ClientRepository.getClients({ client_id_in: userClientIds }, { userContext: null })
 }
 
 class UserClientService {

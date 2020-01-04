@@ -265,12 +265,28 @@ class ClientForm extends PureComponent {
                   type="checkbox"
                   id="public"
                   name="public"
-                  value={this.props.client.public}
+                  checked={this.props.client.public}
                   onChange={(e) => this.handleChange(e, validate)}
                   readOnly={this.props.readOnly}
                 />
                 <label className="form-check-label" htmlFor="public">
                   Publicly visible
+                </label>
+              </div>
+            </div>
+            <div className="form-group">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="pinToHeader"
+                  name="pinToHeader"
+                  checked={this.props.client.pinToHeader}
+                  onChange={(e) => this.handleChange(e, validate)}
+                  readOnly={this.props.readOnly}
+                />
+                <label className="form-check-label" htmlFor="pinToHeader">
+                  Pin to Header
                 </label>
               </div>
             </div>
@@ -294,7 +310,8 @@ ClientForm.propTypes = {
       })
     ).isRequired,
     description: PropTypes.string.isRequired,
-    public: PropTypes.bool.isRequired
+    public: PropTypes.bool,
+    pinToHeader: PropTypes.bool
   }).isRequired,
   onChange: PropTypes.func.isRequired,
   onValidated: PropTypes.func,
