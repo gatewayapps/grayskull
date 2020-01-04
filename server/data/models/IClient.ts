@@ -7,6 +7,7 @@ export class Client extends Model {
   public description: string | null = this.description
   public secret: string = this.secret
   public baseUrl: string = this.baseUrl
+  public pinToHeader: boolean | null = this.pinToHeader
   public homePageUrl: string | null = this.homePageUrl
   public redirectUris: string = this.redirectUris
   public scopes: string = this.scopes

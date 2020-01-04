@@ -42,6 +42,10 @@ function ClientFactory(sequelize: Sequelize.Sequelize) {
         allowNull: false,
         type: Sequelize.STRING(1000)
       },
+      pinToHeader: {
+        allowNull: true,
+        type: Sequelize.BOOLEAN
+      },
       public: {
         allowNull: true,
         type: Sequelize.BOOLEAN
