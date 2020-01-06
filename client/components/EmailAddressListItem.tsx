@@ -12,8 +12,8 @@ const SET_PRIMARY_MUTATION = gql`
 `
 
 const RESEND_VERIFICATION = gql`
-  mutation RESEND_VERIFICATION($emailAddressId: String!) {
-    sendVerification(data: { emailAddressId: $emailAddressId }) {
+  mutation RESEND_VERIFICATION($emailAddress: String!) {
+    sendVerification(data: { emailAddress: $emailAddress }) {
       success
       message
     }
@@ -64,7 +64,7 @@ export default class EmailAddressListItem extends React.Component<
         {!e.verified && !this.state.verificationSent && (
           <MutationButton
             mutation={RESEND_VERIFICATION}
-            variables={{ emailAddressId: e.emailAddressId }}
+            variables={{ emailAddress: e.emailAddress }}
             onSuccess={() => {
               this.setState({ verificationSent: true })
             }}
