@@ -74,7 +74,7 @@ export default {
       }
 
       const emailAddress = await EmailAddressRepository.getEmailAddress(
-        { emailAddressId: args.emailAddressId },
+        { emailAddress: args.data.emailAddress },
         { userContext: context.user }
       )
       if (emailAddress && !emailAddress.verified) {
