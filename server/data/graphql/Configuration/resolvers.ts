@@ -73,6 +73,13 @@ export default {
           if (!!data.Mail.username) {
             await SettingsService.saveStringSetting(SettingsKeys.MAIL_USER, data.Mail.username!, 'Mail')
           }
+          if (!!data.Mail.sendgridApiKey && data.Mail.sendgridApiKey !== PASSWORD_PLACEHOLDER) {
+            await SettingsService.saveStringSetting(
+              SettingsKeys.MAIL_SENDGRID_API_KEY,
+              encrypt(data.Mail.sendgridApiKey!),
+              'Mail'
+            )
+          }
         }
 
         if (data.Security) {

@@ -15,14 +15,13 @@ class ConfigurationManager {
   private expiresAt?: number
 
   public async loadConfigurationAsync() {
-
     if (this.expiresAt && this.expiresAt > new Date().getTime() && this.currentConfig.Server) {
       return this.currentConfig
     }
 
-    let mailConfig: IMailConfiguration = {}
-    let serverConfig: IServerConfiguration = {}
-    let securityConfig: ISecurityConfiguration = {}
+    const mailConfig: IMailConfiguration = {}
+    const serverConfig: IServerConfiguration = {}
+    const securityConfig: ISecurityConfiguration = {}
 
     await SettingsService.refreshSettings()
 
@@ -31,6 +30,10 @@ class ConfigurationManager {
     mailConfig.password = await SettingsService.getStringSetting(SettingsKeys.MAIL_PASSWORD)
     if (mailConfig.password) {
       mailConfig.password = decrypt(mailConfig.password)
+    }
+    mailConfig.sendgridApiKey = await SettingsService.getStringSetting(SettingsKeys.MAIL_SENDGRID_API_KEY)
+    if (mailConfig.sendgridApiKey) {
+      mailConfig.sendgridApiKey = decrypt(mailConfig.sendgridApiKey)
     }
     mailConfig.port = await SettingsService.getNumberSetting(SettingsKeys.MAIL_PORT)
     mailConfig.tlsSslRequired = await SettingsService.getBooleanSetting(SettingsKeys.MAIL_SSL)
@@ -80,16 +83,20 @@ class ConfigurationManager {
       Server: serverConfig
     }
 
-    this.expiresAt = moment().add(5, 'seconds').toDate().getTime()
+    this.expiresAt = moment()
+      .add(5, 'seconds')
+      .toDate()
+      .getTime()
 
     return this.currentConfig
   }
 
-  public async GetCurrentConfiguration(maskSensitive: boolean = true): Promise<IConfiguration> {
+  public async GetCurrentConfiguration(maskSensitive = true): Promise<IConfiguration> {
     const config = await this.loadConfigurationAsync()
 
     if (maskSensitive) {
       config.Mail!.password = PASSWORD_PLACEHOLDER
+      config.Mail!.sendgridApiKey = PASSWORD_PLACEHOLDER
     }
 
     return config

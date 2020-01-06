@@ -90,6 +90,16 @@ const MailConfigurationForm = ({ data, onValidated, onConfigurationChanged }: IM
               onChange={(e) => handleChange(e, validate)}
             />
             <ResponsiveValidatingInput
+              label="Sendgrid API Key"
+              validationErrors={validationErrors}
+              autoComplete="new-password"
+              type="password"
+              name="sendgridApiKey"
+              placeholder="Optional"
+              value={data.sendgridApiKey}
+              onChange={(e) => handleChange(e, validate)}
+            />
+            <ResponsiveValidatingInput
               label="From Address"
               validationErrors={validationErrors}
               autoComplete="off"
