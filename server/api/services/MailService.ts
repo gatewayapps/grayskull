@@ -49,7 +49,7 @@ class MailService {
 
     if (sendgridApiKeyEncrypted) {
       const sendgridApiKey = decrypt(sendgridApiKeyEncrypted)
-      sgMail.setApiKey(sendgridApiKey)
+      sgMail.setApiKey(sendgridApiKey!)
       try {
         const msg = {
           from: mailConfig.fromAddress!,
