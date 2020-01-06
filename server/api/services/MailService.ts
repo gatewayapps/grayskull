@@ -5,6 +5,7 @@ import SettingsService from './SettingService'
 import ConfigurationManager from '../../config/ConfigurationManager'
 import { SettingsKeys } from '../../config/KnownSettings'
 import { decrypt } from '../../utils/cipher'
+import { resultKeyNameFromField } from 'apollo-utilities'
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
 const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default
@@ -58,7 +59,12 @@ class MailService {
           text: textBody,
           html: htmlBody
         }
-        sgMail.send(msg)
+        let attemptCount = 0
+        let result: any
+        do {
+          result = await sgMail.send(msg)
+        } while (result[0].statusCode !== 202 && attemptCount++ < 3)
+
         return { success: true }
       } catch (err) {
         console.error(err)

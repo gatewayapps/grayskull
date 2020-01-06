@@ -281,8 +281,6 @@ export default {
     resetPassword: async (obj, args, context, info) => {
       // insert your resetPassword implementation here
 
-      const fileNames = readdirSync(join(process.cwd(), '.next/serverless'))
-
       const options: IQueryOptions = { userContext: context.user || null }
       try {
         await UserAccountService.resetPassword(args.data.emailAddress, options)
@@ -436,7 +434,7 @@ export default {
               success: false,
               message: `${
                 config.Server!.realmName
-              } security policy requires you to have an Authenticator App configured`
+                } security policy requires you to have an Authenticator App configured`
             }
           }
 
