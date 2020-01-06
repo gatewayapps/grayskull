@@ -1,8 +1,34 @@
 import { getContext } from '../../data/context'
-import { Setting } from '../../data/models/ISetting'
+import { DataContext } from '../../../context/getDataContext'
+import { Setting } from '../../data/models/Setting'
 type CategoryKeys = 'Server' | 'Security' | 'Mail'
 
-let settings: Setting[] = []
+const settings: Setting[] = []
+
+export async function refreshSettings(db: DataContext) {
+  const settingRecords = await db.Setting.findAll()
+  settings.splice(0, settings.length)
+  settings.push(...settingRecords)
+}
+
+export async function saveStringSetting(db: DataContext, key: string, value: string, category: CategoryKeys) {
+  await db.Setting.upsert({ key, value, type: 'String', category, createdAt: new Date(), updatedAt: new Date() })
+}
+
+export async function saveNumberSetting(db: DataContext, key: string, value: number, category: CategoryKeys) {
+  await db.Setting.upsert({ key, value, type: 'Number', category, createdAt: new Date(), updatedAt: new Date() })
+}
+
+export async function saveBooleanSetting(db: DataContext, key: string, value: boolean, category: CategoryKeys) {
+  await db.Setting.upsert({
+    key,
+    value: value.toString(),
+    type: 'Boolean',
+    category,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  })
+}
 
 class SettingsService {
   private settings: Setting[] = []
@@ -24,22 +50,33 @@ class SettingsService {
   }
 
   public async saveStringSetting(key: string, value: string, category: CategoryKeys) {
-    await getContext()
-    await Setting.upsert({ key, value, type: 'String', category })
+    await Setting.upsert({ key, value, type: 'String', category, createdAt: new Date(), updatedAt: new Date() })
 
     this.settings = []
   }
 
   public async saveNumberSetting(key: string, value: number, category: CategoryKeys) {
-    await getContext()
-    await Setting.upsert({ key, value: value.toString(), type: 'Number', category })
+    await Setting.upsert({
+      key,
+      value: value.toString(),
+      type: 'Number',
+      category,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })
     this.settings = []
   }
 
   public async saveBooleanSetting(key: string, value: boolean, category: CategoryKeys) {
-    const db = await getContext()
-    await Setting.upsert({ key, value: value.toString(), type: 'Boolean', category })
-    this.settings.splice(0, settings.length)
+    await Setting.upsert({
+      key,
+      value: value.toString(),
+      type: 'Boolean',
+      category,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    })
+
     this.settings = []
   }
 

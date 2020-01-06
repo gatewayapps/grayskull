@@ -3,9 +3,9 @@ import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
 import { getContext } from '../../data/context'
-import { Client } from '../../data/models/IClient'
-import { EmailAddress } from '../../data/models/IEmailAddress'
-import { UserAccount } from '../../data/models/IUserAccount'
+import { Client } from '../../data/models/Client'
+import { EmailAddress } from '../../data/models/EmailAddress'
+import { UserAccount } from '../../data/models/UserAccount'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 import uuid from 'uuid/v4'
@@ -206,7 +206,7 @@ class UserAccountService {
 
       const resetPasswordLink = `${
         config.Server!.baseUrl
-      }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+        }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'resetPasswordTemplate',
         emailAddress,

@@ -5,7 +5,7 @@ import { IConfiguration } from '../data/models/IConfiguration'
 
 import { SettingsKeys } from './KnownSettings'
 import SettingsService from '../api/services/SettingService'
-import { decrypt } from '../utils/cipher'
+import { decrypt, encrypt } from '../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../constants'
 
 import moment from 'moment'

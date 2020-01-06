@@ -1,4 +1,4 @@
-import { KeyValueCache } from '../../data/models/IKeyValueCache'
+import { KeyValueCache } from '../../data/models/KeyValueCache'
 import Sequelize from 'sequelize'
 import { decrypt, encrypt } from '../../utils/cipher'
 import moment from 'moment'

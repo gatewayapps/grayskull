@@ -1,10 +1,15 @@
 import { SettingsKeys } from '../../../config/KnownSettings'
 import { IConfiguration } from '../../models/IConfiguration'
-import SettingsService from '../../../api/services/SettingService'
+import SettingsService, {
+  refreshSettings,
+  saveStringSetting,
+  saveNumberSetting,
+  saveBooleanSetting
+} from '../../../api/services/SettingService'
 import ConfigurationManager from '../../../config/ConfigurationManager'
 import { encrypt } from '../../../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../../../constants'
-import { UserAccount } from '../../models/IUserAccount'
+import { UserAccount } from '../../models/UserAccount'
 import { Permissions } from '../../../utils/permissions'
 import { ForbiddenError } from 'apollo-server'
 
@@ -35,18 +40,33 @@ export default {
         // we need to write all the configuration properties to the database
         const data = args.data as IConfiguration
 
+        if (context.dataContext) {
+          refreshSettings(context.dataContext)
+        }
+
         if (data.Server) {
           if (!!data.Server.baseUrl) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_BASE_URL, data.Server!.baseUrl!, 'Server')
+            await saveStringSetting(context.dataContext, SettingsKeys.SERVER_BASE_URL, data.Server!.baseUrl!, 'Server')
           }
           if (!!data.Server.realmLogo) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_REALM_LOGO, data.Server!.realmLogo!, 'Server')
+            await saveStringSetting(
+              context.dataContext,
+              SettingsKeys.SERVER_REALM_LOGO,
+              data.Server!.realmLogo!,
+              'Server'
+            )
           }
           if (!!data.Server.realmName) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_REALM_NAME, data.Server!.realmName!, 'Server')
+            await saveStringSetting(
+              context.dataContext,
+              SettingsKeys.SERVER_REALM_NAME,
+              data.Server!.realmName!,
+              'Server'
+            )
           }
           if (!!data.Server.realmBackground) {
-            await SettingsService.saveStringSetting(
+            await saveStringSetting(
+              context.dataContext,
               SettingsKeys.SERVER_BACKGROUND_IMAGE,
               data.Server!.realmBackground!,
               'Server'
@@ -56,22 +76,27 @@ export default {
 
         if (data.Mail) {
           if (!!data.Mail.fromAddress) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress!, 'Mail')
+            await saveStringSetting(context.dataContext, SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress!, 'Mail')
           }
           if (!!data.Mail.password && data.Mail.password !== PASSWORD_PLACEHOLDER) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_PASSWORD, encrypt(data.Mail.password!), 'Mail')
+            await saveStringSetting(
+              context.dataContext,
+              SettingsKeys.MAIL_PASSWORD,
+              encrypt(data.Mail.password!),
+              'Mail'
+            )
           }
           if (!!data.Mail.port) {
-            await SettingsService.saveNumberSetting(SettingsKeys.MAIL_PORT, data.Mail.port!, 'Mail')
+            await saveNumberSetting(context.dataContext, SettingsKeys.MAIL_PORT, data.Mail.port!, 'Mail')
           }
           if (!!data.Mail.serverAddress) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_HOST, data.Mail.serverAddress!, 'Mail')
+            await saveStringSetting(context.dataContext, SettingsKeys.MAIL_HOST, data.Mail.serverAddress!, 'Mail')
           }
           if (data.Mail.tlsSslRequired !== undefined && data.Mail.tlsSslRequired !== null) {
-            await SettingsService.saveBooleanSetting(SettingsKeys.MAIL_SSL, !!data.Mail.tlsSslRequired!, 'Mail')
+            await saveBooleanSetting(context.dataContext, SettingsKeys.MAIL_SSL, !!data.Mail.tlsSslRequired!, 'Mail')
           }
           if (!!data.Mail.username) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_USER, data.Mail.username!, 'Mail')
+            await saveStringSetting(context.dataContext, SettingsKeys.MAIL_USER, data.Mail.username!, 'Mail')
           }
           if (!!data.Mail.sendgridApiKey && data.Mail.sendgridApiKey !== PASSWORD_PLACEHOLDER) {
             await SettingsService.saveStringSetting(
@@ -84,21 +109,24 @@ export default {
 
         if (data.Security) {
           if (!!data.Security.accessTokenExpirationSeconds) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS,
               data.Security.accessTokenExpirationSeconds!,
               'Security'
             )
           }
           if (data.Security.allowSignup !== undefined && data.Security.allowSignup !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_ALLOW_USER_SIGNUP,
               !!data.Security.allowSignup,
               'Security'
             )
           }
           if (data.Security.domainWhitelist !== undefined && data.Security.domainWhitelist !== null) {
-            await SettingsService.saveStringSetting(
+            await saveStringSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_DOMAIN_WHITELIST,
               data.Security.domainWhitelist,
               'Security'
@@ -108,7 +136,8 @@ export default {
             data.Security.invitationExpirationSeconds !== undefined &&
             data.Security.invitationExpirationSeconds !== null
           ) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_ACTIVATION_EXPIRES_IN_MINUTES,
               data.Security.invitationExpirationSeconds!,
               'Security'
@@ -118,28 +147,32 @@ export default {
             data.Security.maxLoginAttemptsPerMinute !== undefined &&
             data.Security.maxLoginAttemptsPerMinute !== null
           ) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE,
               data.Security.maxLoginAttemptsPerMinute,
               'Security'
             )
           }
           if (data.Security.maxPasswordAge !== undefined && data.Security.maxPasswordAge !== null) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_PASSWORD_EXPIRES_DAYS,
               data.Security.maxPasswordAge,
               'Security'
             )
           }
           if (data.Security.multifactorRequired !== undefined && data.Security.multifactorRequired !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED,
               !!data.Security.multifactorRequired,
               'Security'
             )
           }
           if (data.Security.passwordMinimumLength !== undefined && data.Security.passwordMinimumLength !== null) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_PASSWORD_MINIMUM_LENGTH,
               data.Security.passwordMinimumLength,
               'Security'
@@ -149,7 +182,8 @@ export default {
             data.Security.passwordRequiresLowercase !== undefined &&
             data.Security.passwordRequiresLowercase !== null
           ) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_LOWERCASE,
               !!data.Security.passwordRequiresLowercase,
               'Security'
@@ -159,21 +193,24 @@ export default {
             data.Security.passwordRequiresUppercase !== undefined &&
             data.Security.passwordRequiresUppercase !== null
           ) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_UPPERCASE,
               !!data.Security.passwordRequiresUppercase,
               'Security'
             )
           }
           if (data.Security.passwordRequiresSymbol !== undefined && data.Security.passwordRequiresSymbol !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_SYMBOL,
               !!data.Security.passwordRequiresSymbol,
               'Security'
             )
           }
           if (data.Security.passwordRequiresNumber !== undefined && data.Security.passwordRequiresNumber !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
+              context.dataContext,
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER,
               !!data.Security.passwordRequiresNumber,
               'Security'
@@ -181,7 +218,7 @@ export default {
           }
         }
 
-        await SettingsService.saveBooleanSetting(SettingsKeys.SERVER_CONFIGURED, true, 'Server')
+        await saveBooleanSetting(context.dataContext, SettingsKeys.SERVER_CONFIGURED, true, 'Server')
 
         return {
           success: true

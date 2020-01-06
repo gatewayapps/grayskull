@@ -5,8 +5,8 @@ import {
   RequestContext,
   ResponseContext
 } from '../utils/authentication'
-import { Session } from '../data/models/ISession'
-import { UserAccount } from '../data/models/IUserAccount'
+import { Session } from '../data/models/Session'
+import { UserAccount } from '../data/models/UserAccount'
 import SessionService from '../api/services/SessionService'
 import UserAccountService from '../api/services/UserAccountService'
 import UserAccountRepository from '../data/repositories/UserAccountRepository'

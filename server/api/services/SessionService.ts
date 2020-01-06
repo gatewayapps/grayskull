@@ -1,4 +1,4 @@
-import { Session } from '../../data/models/ISession'
+import { Session } from '../../data/models/Session'
 
 import bcrypt from 'bcrypt'
 import moment from 'moment'

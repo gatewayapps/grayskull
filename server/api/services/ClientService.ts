@@ -1,4 +1,4 @@
-import { Client } from '../../data/models/IClient'
+import { Client } from '../../data/models/Client'
 
 import crypto from 'crypto'
 import uuid from 'uuid/v4'

@@ -33,6 +33,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
     '@typescript-eslint/camelcase': ['warn', { properties: 'always' }],
+    '@typescript-eslint/interface-name-prefix': ['off'],
     '@typescript-eslint/explicit-function-return-type': ['off'],
     'no-console': 'error',
     'no-var': 'error',

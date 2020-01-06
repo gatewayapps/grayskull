@@ -1,9 +1,9 @@
-import { Session } from '../data/models/ISession'
+import { Session } from '../data/models/Session'
 import originalUrl from 'original-url'
 
 import Cookies from 'cookies'
 import SessionService from '../api/services/SessionService'
-import { UserAccount } from '../data/models/IUserAccount'
+import { UserAccount } from '../data/models/UserAccount'
 import { getUserContext } from '../middleware/authentication'
 import ClientRepository from '../data/repositories/ClientRepository'
 import { NextApiRequest, NextApiResponse } from 'next'

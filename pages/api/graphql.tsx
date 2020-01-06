@@ -3,6 +3,8 @@ import { getContext } from '../../server/data/context'
 import { addMiddleware } from 'graphql-add-middleware'
 import { buildContext } from '../../server/utils/authentication'
 import { schema } from '../../server/data/graphql/graphql'
+import { getCacheContext } from '../../context/getCacheContext'
+import { getDataContextFromConnectionString } from '../../context/getDataContext'
 
 const checkAnonymous = async (root, args, context, info, next) => {
   if (info.parentType && info.parentType._fields && info.parentType._fields[info.fieldName]) {
@@ -25,9 +27,10 @@ const apolloServer = new ApolloServer({
 
   context: async (args, moreArgs) => {
     const { req, res } = args
-
+    const cacheContext = getCacheContext()
+    const dataContext = await getDataContextFromConnectionString(process.env.GRAYSKULL_DB_CONNECTION_STRING)
     const { requestContext, responseContext } = await buildContext(req, res)
-    return { req: requestContext, res: responseContext, user: requestContext.user }
+    return { req: requestContext, res: responseContext, user: requestContext.user, cacheContext, dataContext }
   }
 })
 

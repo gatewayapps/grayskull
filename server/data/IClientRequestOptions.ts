@@ -1,5 +1,5 @@
-import { UserAccount } from './models/IUserAccount'
-import { Client } from './models/IClient'
+import { UserAccount } from './models/UserAccount'
+import { Client } from './models/Client'
 import { IAccessToken } from '../api/services/TokenService'
 
 export interface IClientRequestOptions {

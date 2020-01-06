@@ -5,7 +5,7 @@ import {
 } from '../../interfaces/graphql/IEmailAddress'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 import { getContext } from '../../data/context'
-import { EmailAddress } from '../../data/models/IEmailAddress'
+import { EmailAddress } from '../../data/models/EmailAddress'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'

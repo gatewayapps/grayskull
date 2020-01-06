@@ -4,7 +4,7 @@ import {
   IEmailAddressUniqueFilter
 } from '../../interfaces/graphql/IEmailAddress'
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { EmailAddress } from '../../data/models/IEmailAddress'
+import { EmailAddress } from '../../data/models/EmailAddress'
 import _ from 'lodash'
 
 import { hasPermission } from '../../decorators/permissionDecorator'
@@ -69,7 +69,7 @@ class EmailAddressService {
           user: userAccount,
           verificationLink: `${config.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${
             data.verificationSecret
-          }`
+            }`
         }
       )
     } else {

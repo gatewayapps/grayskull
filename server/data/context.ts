@@ -77,9 +77,9 @@ function getSequelizeConnection() {
     }
   }
 
-  let options: Sequelize.Options = {
+  const options: Sequelize.Options = {
     dialect: dialect!,
-    logging: false,
+
     host: server,
     dialectModule: dialectModule,
     database: databaseName,

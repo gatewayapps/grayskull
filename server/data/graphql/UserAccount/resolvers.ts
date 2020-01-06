@@ -13,7 +13,7 @@ import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
 import { IOperationResponse } from '../../../data/models/IOperationResponse'
-import { UserAccount } from '../../../data/models/IUserAccount'
+import { UserAccount } from '../../../data/models/UserAccount'
 import UserAccountRepository from '../../../data/repositories/UserAccountRepository'
 import TokenService from '../../../api/services/TokenService'
 import ClientRepository from '../../../data/repositories/ClientRepository'
@@ -432,7 +432,7 @@ export default {
               success: false,
               message: `${
                 config.Server!.realmName
-              } security policy requires you to have an Authenticator App configured`
+                } security policy requires you to have an Authenticator App configured`
             }
           }
 
