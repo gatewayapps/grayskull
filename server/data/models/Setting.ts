@@ -21,9 +21,23 @@ function SettingFactory(sequelize: Sequelize.Sequelize) {
       category: {
         allowNull: false,
         type: Sequelize.STRING
+      },
+      createdAt: {
+        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      deletedAt: {
+        allowNull: true,
+        type: Sequelize.DATE
       }
     },
-    { sequelize, timestamps: false, paranoid: false, tableName: 'Settings' }
+    { sequelize, timestamps: true, paranoid: false, tableName: 'Settings' }
   )
   return Setting
 }
