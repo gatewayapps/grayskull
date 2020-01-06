@@ -1,8 +1,10 @@
 import nodemailer, { SendMailOptions, TransportOptions } from 'nodemailer'
-
+import sgMail from '@sendgrid/mail'
 import handlebars from 'handlebars'
-
+import SettingsService from './SettingService'
 import ConfigurationManager from '../../config/ConfigurationManager'
+import { SettingsKeys } from '../../config/KnownSettings'
+import { decrypt } from '../../utils/cipher'
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
 const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default
@@ -39,37 +41,60 @@ const TEMPLATE_PATH = './server/templates'
 
 class MailService {
   public async sendMail(to: string, subject: string, textBody: string, htmlBody: string): Promise<any> {
-    const config = await ConfigurationManager.GetCurrentConfiguration(false)
-    const mailConfig = config.Mail!
-    const hostAddress = mailConfig.serverAddress!
+    const sendgridApiKeyEncrypted = await SettingsService.getStringSetting(SettingsKeys.MAIL_SENDGRID_API_KEY)
 
-    const options: any = {
-      host: hostAddress,
-      port: mailConfig.port,
-      secure: mailConfig.tlsSslRequired,
-      auth: mailConfig.username
-        ? {
+    const config = await ConfigurationManager.GetCurrentConfiguration(false)
+
+    const mailConfig = config.Mail!
+
+    if (sendgridApiKeyEncrypted) {
+      const sendgridApiKey = decrypt(sendgridApiKeyEncrypted)
+      sgMail.setApiKey(sendgridApiKey)
+      try {
+        const msg = {
+          from: mailConfig.fromAddress!,
+          to: to,
+          subject: subject,
+          text: textBody,
+          html: htmlBody
+        }
+        sgMail.send(msg)
+        return { success: true }
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
+    } else {
+      const hostAddress = mailConfig.serverAddress!
+
+      const options: any = {
+        host: hostAddress,
+        port: mailConfig.port,
+        secure: mailConfig.tlsSslRequired,
+        auth: mailConfig.username
+          ? {
             user: mailConfig.username,
             pass: mailConfig.password
           }
-        : undefined
-    }
+          : undefined
+      }
 
-    const transport = nodemailer.createTransport(options)
+      const transport = nodemailer.createTransport(options)
 
-    const messageOptions: SendMailOptions = {
-      from: mailConfig.fromAddress!,
-      to: to,
-      subject: subject,
-      text: textBody,
-      html: htmlBody
-    }
-    try {
-      const mailResult = await transport.sendMail(messageOptions)
-      return mailResult
-    } catch (err) {
-      console.error(err)
-      throw err
+      const messageOptions: SendMailOptions = {
+        from: mailConfig.fromAddress!,
+        to: to,
+        subject: subject,
+        text: textBody,
+        html: htmlBody
+      }
+      try {
+        const mailResult = await transport.sendMail(messageOptions)
+        return mailResult
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
     }
   }
 
