@@ -299,7 +299,7 @@ class AuthenticationService {
     const backupCode = otplib.authenticator.generate(otpSecret)
 
     const cacheKey = `${CACHE_PREFIX}${emailAddress}`
-    await cacheValue(cacheKey, backupCode, 16 * 16, true)
+    await cacheValue(cacheKey, backupCode, 30 * 60, true)
 
     await MailService.sendEmailTemplate('backupCodeTemplate', emailAddress, `${config.Server!.realmName} Backup Code`, {
       realmName: config.Server!.realmName,
