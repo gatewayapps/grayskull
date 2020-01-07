@@ -22,8 +22,6 @@ import { ScopeMap } from '../../../api/services/ScopeService'
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
 import { encrypt } from '../../../utils/cipher'
 import { Permissions } from '../../../utils/permissions'
-import { readdirSync } from 'fs'
-import { join } from 'path'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -434,7 +432,7 @@ export default {
               success: false,
               message: `${
                 config.Server!.realmName
-                } security policy requires you to have an Authenticator App configured`
+              } security policy requires you to have an Authenticator App configured`
             }
           }
 
