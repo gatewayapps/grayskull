@@ -17,7 +17,7 @@
   "[jsonc]": {
     "editor.formatOnSave": false
   },
-  "eslint.autoFixOnSave": true,
+  
   "files.insertFinalNewline": true,
   "files.exclude": {
     "**/.git": true,
@@ -35,7 +35,5 @@
     ".prettierignore": true
   },
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
+
 }

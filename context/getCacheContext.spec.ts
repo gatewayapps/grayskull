@@ -6,12 +6,10 @@ describe('getCacheContext', () => {
     cacheContext.setValue('TEST_VALID_CACHE', 'valid', 30)
 
     expect(cacheContext.getValue('TEST_VALID_CACHE')).toEqual('valid')
-
   })
   it('should not return expired entries', () => {
     const cacheContext = getCacheContext()
     cacheContext.setValue('TEST_EXPIRED_CACHE', 'invalid', -30)
     expect(cacheContext.getValue('TEST_EXPIRED_CACHE')).toBeUndefined()
   })
-
 })

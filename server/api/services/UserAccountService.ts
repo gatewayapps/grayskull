@@ -3,7 +3,7 @@ import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
 import { getContext } from '../../data/context'
-import { Client } from '../../data/models/Client'
+
 import { EmailAddress } from '../../data/models/EmailAddress'
 import { UserAccount } from '../../data/models/UserAccount'
 import bcrypt from 'bcrypt'
@@ -45,13 +45,13 @@ class UserAccountService {
         resetPasswordTokenExpiresAt: null
       }
 
-      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId! }, updates, options)
+      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, updates, options)
 
       await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verified: true }, options)
 
-      await options.transaction!.commit()
+      await options.transaction.commit()
     } catch (err) {
-      await options.transaction!.rollback()
+      await options.transaction.rollback()
       throw err
     }
   }
@@ -70,6 +70,9 @@ class UserAccountService {
       )
     }
     const config = await ConfigurationManager.GetCurrentConfiguration()
+    if (!config.Server) {
+      throw new Error('Failed to load Server configuration')
+    }
 
     options.transaction = await (await getContext()).sequelize.transaction()
 
@@ -86,31 +89,31 @@ class UserAccountService {
       const user = await UserAccountRepository.createUserAccount(data, options)
 
       const emailAddressData: Partial<EmailAddress> = {
-        userAccountId: user.userAccountId!,
+        userAccountId: user.userAccountId,
         emailAddress: emailAddress,
         primary: true,
         verificationSecret: ''
       }
       await EmailAddressRepository.createEmailAddress(emailAddressData as EmailAddress, options)
 
-      const activateLink = `${config.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
+      const activateLink = `${config.Server.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'activateAccountTemplate',
         emailAddress,
-        `Activate Your ${config.Server!.realmName} Account`,
+        `Activate Your ${config.Server.realmName} Account`,
         {
           activateLink,
-          realmName: config.Server!.realmName,
+          realmName: config.Server.realmName,
           user: user,
           createdBy: options.userContext
         }
       )
 
-      await options.transaction!.commit()
+      await options.transaction.commit()
 
       return user
     } catch (err) {
-      await options.transaction!.rollback()
+      await options.transaction.rollback()
       throw err
     }
   }
@@ -193,6 +196,9 @@ class UserAccountService {
 
   public async resetPassword(emailAddress: string, options: IQueryOptions) {
     const config = await ConfigurationManager.GetCurrentConfiguration()
+    if (!config.Server) {
+      throw new Error('Failed to load Server configuration')
+    }
     const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
     if (userAccount) {
       const resetToken = randomBytes(16).toString('hex')
@@ -204,16 +210,14 @@ class UserAccountService {
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
 
-      const resetPasswordLink = `${
-        config.Server!.baseUrl
-        }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      const resetPasswordLink = `${config.Server.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'resetPasswordTemplate',
         emailAddress,
-        `${config.Server!.realmName} Password Reset`,
+        `${config.Server.realmName} Password Reset`,
         {
           resetLink: resetPasswordLink,
-          realmName: config.Server!.realmName,
+          realmName: config.Server.realmName,
           user: userAccount
         }
       )
@@ -260,7 +264,7 @@ class UserAccountService {
 
       // 4. Create the user account email
       const emailAddressData: Partial<EmailAddress> = {
-        userAccountId: user.userAccountId!,
+        userAccountId: user.userAccountId,
         emailAddress: emailAddress,
         primary: true,
         verificationSecret: '',
@@ -270,11 +274,11 @@ class UserAccountService {
 
       // 5. Commit the transaction
 
-      await newOptions.transaction!.commit()
+      await newOptions.transaction.commit()
 
       return user
     } catch (err) {
-      await newOptions.transaction!.rollback()
+      await newOptions.transaction.rollback()
       throw err
     }
   }

@@ -1,11 +1,10 @@
-import nodemailer, { SendMailOptions, TransportOptions } from 'nodemailer'
+import nodemailer, { SendMailOptions } from 'nodemailer'
 import sgMail from '@sendgrid/mail'
 import handlebars from 'handlebars'
 import SettingsService from './SettingService'
 import ConfigurationManager from '../../config/ConfigurationManager'
 import { SettingsKeys } from '../../config/KnownSettings'
 import { decrypt } from '../../utils/cipher'
-import { resultKeyNameFromField } from 'apollo-utilities'
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
 const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default
@@ -38,28 +37,40 @@ const KNOWN_TEMPLATES = {
   }
 }
 
-const TEMPLATE_PATH = './server/templates'
-
 class MailService {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async sendMail(to: string, subject: string, textBody: string, htmlBody: string): Promise<any> {
     const sendgridApiKeyEncrypted = await SettingsService.getStringSetting(SettingsKeys.MAIL_SENDGRID_API_KEY)
 
     const config = await ConfigurationManager.GetCurrentConfiguration(false)
 
-    const mailConfig = config.Mail!
+    if (!config.Mail) {
+      throw new Error('Failed to load Mail configuration')
+    }
+
+    const mailConfig = config.Mail
+
+    if (!mailConfig.fromAddress) {
+      throw new Error('From address missing from mail configuration')
+    }
 
     if (sendgridApiKeyEncrypted) {
       const sendgridApiKey = decrypt(sendgridApiKeyEncrypted)
-      sgMail.setApiKey(sendgridApiKey!)
+      if (!sendgridApiKey) {
+        throw new Error('Invalid sendgrid key')
+      }
+
+      sgMail.setApiKey(sendgridApiKey)
       try {
         const msg = {
-          from: mailConfig.fromAddress!,
+          from: mailConfig.fromAddress.toString(),
           to: to,
           subject: subject,
           text: textBody,
           html: htmlBody
         }
         let attemptCount = 0
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let result: any
         do {
           result = await sgMail.send(msg)
@@ -71,24 +82,29 @@ class MailService {
         throw err
       }
     } else {
-      const hostAddress = mailConfig.serverAddress!
+      const hostAddress = mailConfig.serverAddress
 
+      if (!hostAddress) {
+        throw new Error('You must provide a mail server host if using SMTP')
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const options: any = {
         host: hostAddress,
         port: mailConfig.port,
         secure: mailConfig.tlsSslRequired,
         auth: mailConfig.username
           ? {
-            user: mailConfig.username,
-            pass: mailConfig.password
-          }
+              user: mailConfig.username,
+              pass: mailConfig.password
+            }
           : undefined
       }
 
       const transport = nodemailer.createTransport(options)
 
       const messageOptions: SendMailOptions = {
-        from: mailConfig.fromAddress!,
+        from: mailConfig.fromAddress,
         to: to,
         subject: subject,
         text: textBody,
@@ -104,6 +120,7 @@ class MailService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public sendEmailTemplate(templateName: string, to: string, subject: string, context: object): Promise<any> {
     if (!KNOWN_TEMPLATES[templateName]) {
       throw new Error('Invalid template name: ' + templateName)

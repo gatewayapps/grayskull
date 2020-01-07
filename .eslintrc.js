@@ -32,10 +32,37 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
+    '@typescript-eslint/member-delimiter-style': [
+      'warn',
+      {
+        multiline: {
+          delimiter: 'comma',
+          requireLast: false
+        },
+        singleline: {
+          delimiter: 'comma',
+          requireLast: false
+        },
+        overrides: {
+          interface: {
+            multiline: {
+              delimiter: 'none',
+              requireLast: false
+            }
+          },
+          typeLiteral: {
+            multiline: {
+              delimiter: 'none',
+              requireLast: false
+            }
+          }
+        }
+      }
+    ],
     '@typescript-eslint/camelcase': ['warn', { properties: 'always' }],
     '@typescript-eslint/interface-name-prefix': ['off'],
     '@typescript-eslint/explicit-function-return-type': ['off'],
-    'no-console': 'error',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-var': 'error',
     'prettier/prettier': [
       'error',
@@ -43,6 +70,7 @@ module.exports = {
         extends: 'prettier.config.js'
       }
     ],
+
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'sort-imports': [

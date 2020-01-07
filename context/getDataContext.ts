@@ -14,15 +14,15 @@ import { Setting, default as SettingFactory } from '../server/data/models/Settin
 
 export interface DataContext {
   sequelize: Sequelize.Sequelize
-  Client: Client
-  EmailAddress: EmailAddress
-  UserAccount: UserAccount
-  KeyValueCache: KeyValueCache
-  UserClient: UserClient
-  Session: Session
-  RefreshToken: RefreshToken
-  PhoneNumber: PhoneNumber
-  Setting: Setting
+  Client: typeof Client
+  EmailAddress: typeof EmailAddress
+  UserAccount: typeof UserAccount
+  KeyValueCache: typeof KeyValueCache
+  UserClient: typeof UserClient
+  Session: typeof Session
+  RefreshToken: typeof RefreshToken
+  PhoneNumber: typeof PhoneNumber
+  Setting: typeof Setting
 }
 
 export async function getDataContext(options: Sequelize.Options): Promise<DataContext> {
@@ -35,10 +35,13 @@ export async function getDataContext(options: Sequelize.Options): Promise<DataCo
     }
   }
 
-  const sequelize = new Sequelize.Sequelize(options.database, options.username, options.password, options)
-  await sequelize.sync()
+  if (!options.database) {
+    throw new Error('You must provide a database name')
+  }
 
-  return {
+  const sequelize = new Sequelize.Sequelize(options.database, options.username || 'username', options.password, options)
+
+  const retVal = {
     sequelize,
     UserAccount: UserAccountFactory(sequelize),
     Client: ClientFactory(sequelize),
@@ -50,19 +53,23 @@ export async function getDataContext(options: Sequelize.Options): Promise<DataCo
     PhoneNumber: PhoneNumberFactory(sequelize),
     Setting: SettingFactory(sequelize)
   }
+
+  await retVal.sequelize.sync()
+
+  return retVal
 }
 
 export async function getDataContextFromConnectionString(connectionString: string): Promise<DataContext> {
   const connectionUrl = new URL(connectionString)
   let storage: string | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let dialectModule: any
   let dialect = connectionUrl.protocol.substr(0, connectionUrl.protocol.length - 1) as
     | 'mysql'
     | 'sqlite'
     | 'postgres'
     | 'mssql'
-    | undefined
-  switch (dialect?.toString()) {
+  switch (dialect.toString()) {
     case 'mysql':
     case 'jdbc:mysql':
       dialect = 'mysql'
@@ -80,9 +87,9 @@ export async function getDataContextFromConnectionString(connectionString: strin
     case 'jdbc:sqlserver':
       dialect = 'mssql'
       break
-    default: {
-      throw new Error('Unsupported dialect: ' + dialect)
-    }
+  }
+  if (!dialect) {
+    throw new Error('Unsupported dialect: ' + dialect)
   }
 
   const user = connectionUrl.username
@@ -90,7 +97,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
   const server = connectionUrl.host
   const databaseName = connectionUrl.pathname.substr(1)
   return getDataContext({
-    dialect: dialect!,
+    dialect: dialect,
     logging: process.env.NODE_ENV !== 'production',
     username: user,
     password: password,

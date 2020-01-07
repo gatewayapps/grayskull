@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Session } from '../data/models/Session'
 import originalUrl from 'original-url'
 
@@ -5,7 +6,7 @@ import Cookies from 'cookies'
 import SessionService from '../api/services/SessionService'
 import { UserAccount } from '../data/models/UserAccount'
 import { getUserContext } from '../middleware/authentication'
-import ClientRepository from '../data/repositories/ClientRepository'
+
 import { NextApiRequest, NextApiResponse } from 'next'
 import TokenService from '../api/services/TokenService'
 
@@ -27,8 +28,10 @@ export type ResponseContext = NextApiResponse & {
 
 export async function getClientRequestOptionsFromRequest(req: RequestContext) {
   try {
-    const auth = req.headers.authorization!
-
+    const auth = req.headers.authorization
+    if (!auth) {
+      throw new Error('Missing authorization header')
+    }
     const authParts = auth.split(' ')
     const accessToken = authParts[1]
     return await TokenService.validateAndDecodeAccessToken(accessToken)
@@ -82,7 +85,7 @@ export function decodeState(state: string | undefined): IAuthState | null {
 }
 
 export function setAuthCookies(res: ResponseContext, session: Session) {
-  res.cookies.set(SESSION_ID_COOKIE_NAME, session.sessionId!, { httpOnly: true, expires: session.expiresAt })
+  res.cookies.set(SESSION_ID_COOKIE_NAME, session.sessionId, { httpOnly: true, expires: session.expiresAt })
 }
 
 export function getAuthCookies(req: RequestContext) {
@@ -90,6 +93,9 @@ export function getAuthCookies(req: RequestContext) {
   return {
     sessionId
   }
+}
+export function clearAuthCookies(res: ResponseContext) {
+  res.cookies.set(SESSION_ID_COOKIE_NAME, undefined)
 }
 
 export async function doLogout(req: RequestContext, res: ResponseContext) {
@@ -103,8 +109,8 @@ export async function doLogout(req: RequestContext, res: ResponseContext) {
   }
   clearAuthCookies(res)
 
-  const state = req.parsedUrl.searchParams.get('state')
-  const clientId = req.parsedUrl.searchParams.get('client_id')
+  // const state = req.parsedUrl.searchParams.get('state')
+  // const clientId = req.parsedUrl.searchParams.get('client_id')
 
   // let redirectUrl = `/login${state ? `?state=${encodeURIComponent(state)}` : ''}`
 
@@ -114,10 +120,6 @@ export async function doLogout(req: RequestContext, res: ResponseContext) {
   //     redirectUrl = client.homePageUrl
   //   }
   // }
-}
-
-export function clearAuthCookies(res: ResponseContext) {
-  res.cookies.set(SESSION_ID_COOKIE_NAME, undefined)
 }
 
 export async function buildContext(req: NextApiRequest, res: NextApiResponse) {
