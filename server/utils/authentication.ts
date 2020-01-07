@@ -106,14 +106,14 @@ export async function doLogout(req: RequestContext, res: ResponseContext) {
   const state = req.parsedUrl.searchParams.get('state')
   const clientId = req.parsedUrl.searchParams.get('client_id')
 
-  let redirectUrl = `/login${state ? `?state=${encodeURIComponent(state)}` : ''}`
+  // let redirectUrl = `/login${state ? `?state=${encodeURIComponent(state)}` : ''}`
 
-  if (clientId) {
-    const client = await ClientRepository.getClient({ client_id: clientId }, { userContext: null })
-    if (client && client.homePageUrl) {
-      redirectUrl = client.homePageUrl
-    }
-  }
+  // if (clientId) {
+  //   const client = await ClientRepository.getClient({ client_id: clientId }, { userContext: null })
+  //   if (client && client.homePageUrl) {
+  //     redirectUrl = client.homePageUrl
+  //   }
+  // }
 }
 
 export function clearAuthCookies(res: ResponseContext) {

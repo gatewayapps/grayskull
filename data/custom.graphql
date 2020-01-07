@@ -43,7 +43,7 @@ type Query {
 
 type Mutation {
   uploadFile(file: Upload!): UploadFileResponse
-  logout: OperationResponse
+  logout: OperationResponse @anonymous
   saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
 }
 

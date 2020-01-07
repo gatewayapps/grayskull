@@ -1,14 +1,21 @@
 import 'core-js'
-import { ApolloProvider, Query } from 'react-apollo'
+import { ApolloProvider } from 'react-apollo'
 import App from 'next/app'
-import ConfigurationContext from '../client/contexts/ConfigurationContext'
+
 import Head from 'next/head'
 import React from 'react'
 
-import UserContext from '../client/contexts/UserContext'
 import createApolloClient from '../client/utils/createApolloClient'
-import { WithInitialization } from '../client/components/WithInitialization'
+
 import ApplicationInitializer from '../client/components/ApplicationInitializer'
+
+import LogRocket from 'logrocket'
+import setupLogRocketReact from 'logrocket-react'
+
+if (process.browser) {
+  LogRocket.init('LOGROCKET KEY')
+  setupLogRocketReact(LogRocket)
+}
 
 const apolloClient = createApolloClient()
 
