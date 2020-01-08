@@ -9,7 +9,7 @@ import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { ScopeMap } from '../../api/services/ScopeService'
 import UserClientService from './UserClientService'
 import { ForbiddenError } from 'apollo-server'
-import ConfigurationManager from '../../config/ConfigurationManager'
+
 import jwt from 'jsonwebtoken'
 import ClientRepository from '../../data/repositories/ClientRepository'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
@@ -17,6 +17,7 @@ import UserAccountRepository from '../../data/repositories/UserAccountRepository
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 
 import { IClientRequestOptions } from '../../data/IClientRequestOptions'
+import { IConfiguration } from '../../../data/types'
 
 export interface IAccessToken {
   id?: string
@@ -103,11 +104,11 @@ class TokenService {
     userAccount: UserAccount,
     nonce: string | undefined,
     accessToken: string | undefined,
+    configuration: IConfiguration,
     options: IQueryOptions
   ): Promise<string> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-    const security = config.Security!
-    const serverConfig = config.Server!
+    const security = configuration.Security!
+    const serverConfig = configuration.Server!
 
     const profile = await this.getUserProfileForClient(client, userAccount, options)
     let at_hash: string | undefined = undefined
@@ -211,7 +212,12 @@ class TokenService {
     return result
   }
 
-  public async refreshAccessToken(refreshToken: string, client_id: string, options: IQueryOptions): Promise<string> {
+  public async refreshAccessToken(
+    refreshToken: string,
+    client_id: string,
+    configuration: IConfiguration,
+    options: IQueryOptions
+  ): Promise<string> {
     const client = await ClientRepository.getClientWithSensitiveData({ client_id }, options)
     if (!client) {
       throw new Error('Invalid client_id')
@@ -238,7 +244,7 @@ class TokenService {
         options
       )
 
-      return await this.createAccessToken(client!, userAccount!, token, options)
+      return await this.createAccessToken(client!, userAccount!, token, configuration, options)
     }
 
     throw new Error('Failed refreshing access token')
@@ -248,10 +254,9 @@ class TokenService {
     client: Client,
     userAccount: UserAccount,
     refreshToken: RefreshToken | null,
+    configuration: IConfiguration,
     options: IQueryOptions
   ): Promise<string> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-
     const userClient = await UserClientRepository.getUserClient(
       { client_id: client.client_id, userAccountId: userAccount.userAccountId! },
       options
@@ -262,7 +267,7 @@ class TokenService {
         sub: userClient.userClientId!,
         scopes: allowedScopes,
         exp: moment()
-          .add(config.Security!.accessTokenExpirationSeconds || 300, 'seconds')
+          .add(configuration.Security!.accessTokenExpirationSeconds || 300, 'seconds')
           .unix()
       }
       if (refreshToken) {

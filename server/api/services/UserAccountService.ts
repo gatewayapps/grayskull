@@ -1,8 +1,6 @@
-import ConfigurationManager from '../../config/ConfigurationManager'
 import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
-import { getContext } from '../../data/context'
 
 import { EmailAddress } from '../../data/models/EmailAddress'
 import { UserAccount } from '../../data/models/UserAccount'
@@ -18,6 +16,7 @@ import EmailAddressRepository from '../../data/repositories/EmailAddressReposito
 import { randomBytes } from 'crypto'
 import { ForbiddenError } from 'apollo-server'
 import { hasPermission } from '../../decorators/permissionDecorator'
+import { IConfiguration } from '../../../data/types'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -60,6 +59,7 @@ class UserAccountService {
   public async createUserAccount(
     data: UserAccount,
     emailAddress: string,
+    configuration: IConfiguration,
     options: IQueryOptions
   ): Promise<UserAccount> {
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
@@ -69,8 +69,8 @@ class UserAccountService {
         'The email address has already been registered'
       )
     }
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-    if (!config.Server) {
+
+    if (!configuration.Server) {
       throw new Error('Failed to load Server configuration')
     }
 
@@ -96,17 +96,18 @@ class UserAccountService {
       }
       await EmailAddressRepository.createEmailAddress(emailAddressData as EmailAddress, options)
 
-      const activateLink = `${config.Server.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
+      const activateLink = `${configuration.Server.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'activateAccountTemplate',
         emailAddress,
-        `Activate Your ${config.Server.realmName} Account`,
+        `Activate Your ${configuration.Server.realmName} Account`,
         {
           activateLink,
-          realmName: config.Server.realmName,
+          realmName: configuration.Server.realmName,
           user: user,
           createdBy: options.userContext
-        }
+        },
+        configuration
       )
 
       await options.transaction.commit()
@@ -194,9 +195,8 @@ class UserAccountService {
     return true
   }
 
-  public async resetPassword(emailAddress: string, options: IQueryOptions) {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-    if (!config.Server) {
+  public async resetPassword(emailAddress: string, configuration: IConfiguration, options: IQueryOptions) {
+    if (!configuration.Server) {
       throw new Error('Failed to load Server configuration')
     }
     const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
@@ -210,16 +210,17 @@ class UserAccountService {
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
 
-      const resetPasswordLink = `${config.Server.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      const resetPasswordLink = `${configuration.Server.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'resetPasswordTemplate',
         emailAddress,
-        `${config.Server.realmName} Password Reset`,
+        `${configuration.Server.realmName} Password Reset`,
         {
           resetLink: resetPasswordLink,
-          realmName: config.Server.realmName,
+          realmName: configuration.Server.realmName,
           user: userAccount
-        }
+        },
+        configuration
       )
     }
 
@@ -230,9 +231,10 @@ class UserAccountService {
     data: UserAccount,
     emailAddress: string,
     password: string,
+    configuration: IConfiguration,
     options: IQueryOptions
   ): Promise<UserAccount> {
-    if ((await EmailAddressService.isDomainAllowed(emailAddress)) === false) {
+    if ((await EmailAddressService.isDomainAllowed(emailAddress, configuration)) === false) {
       throw new ForbiddenError(`Self registration is not permitted for your email domain`)
     }
 
@@ -270,7 +272,7 @@ class UserAccountService {
         verificationSecret: '',
         verified: userMeta.count === 0 // First user account gets verified
       }
-      await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
+      await EmailAddressService.createEmailAddress(emailAddressData, configuration, newOptions)
 
       // 5. Commit the transaction
 

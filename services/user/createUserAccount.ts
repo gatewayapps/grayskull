@@ -34,7 +34,5 @@ export async function createUserAccount(data: Partial<UserAccount>, password: st
   data.createdAt = new Date()
   data.updatedAt = new Date()
 
-  const uc = new UserAccount(data)
-  await uc.save()
-  return uc
+  return await new dataContext.UserAccount(data).save()
 }

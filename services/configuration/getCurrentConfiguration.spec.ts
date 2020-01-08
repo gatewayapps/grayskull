@@ -1,5 +1,5 @@
+import { getCurrentConfiguration } from './getCurrentConfiguration'
+
 describe('getCurrentConfiguration', () => {
-  it('Should return a valid configuration', () => {
-    return {}
-  })
+  it('Should return a valid configuration', () => {})
 })

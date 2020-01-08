@@ -3,7 +3,7 @@ import { CacheContext } from '../../context/getCacheContext'
 import { UserAccount } from '../../server/data/models/UserAccount'
 
 export async function getUserAccount(
-  userAccountId: number,
+  userAccountId: string,
   dataContext: DataContext,
   cacheContext: CacheContext,
   includeSensitive = false

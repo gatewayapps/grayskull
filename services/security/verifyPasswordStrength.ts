@@ -10,8 +10,8 @@ export interface IVerifyPasswordStrengthResult {
   validationErrors?: string[]
 }
 
-export function isPasswordLongEnough(password: string, minimumLength: number | null) {
-  return password.length >= minimumLength || 8
+export function isPasswordLongEnough(password: string, minimumLength = 8) {
+  return password.length >= minimumLength
 }
 
 export function doesPasswordContainUppercase(password: string) {
@@ -34,7 +34,7 @@ export function verifyPasswordStrength(
 ): IVerifyPasswordStrengthResult {
   let valid = true
   const validationErrors: string[] = []
-  if (!isPasswordLongEnough(password, securityConfiguration.passwordMinimumLength)) {
+  if (!isPasswordLongEnough(password, securityConfiguration.passwordMinimumLength || undefined)) {
     valid = false
     validationErrors.push(`Password must have at least ${securityConfiguration.passwordMinimumLength} characters`)
   }

@@ -36,6 +36,8 @@
     "dotenv": false,
     "crypto": false,
     "cookies": false,
+    "@sendgrid": false,
+    "@sendgrid/mail": false,
     "url": false,
     "original-url": false,
     "http": false,

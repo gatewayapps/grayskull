@@ -1,10 +1,9 @@
 import nodemailer, { SendMailOptions } from 'nodemailer'
 import sgMail from '@sendgrid/mail'
 import handlebars from 'handlebars'
-import SettingsService from './SettingService'
-import ConfigurationManager from '../../config/ConfigurationManager'
-import { SettingsKeys } from '../../config/KnownSettings'
+
 import { decrypt } from '../../utils/cipher'
+import { IConfiguration } from '../../../data/types'
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
 const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default
@@ -39,16 +38,19 @@ const KNOWN_TEMPLATES = {
 
 class MailService {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public async sendMail(to: string, subject: string, textBody: string, htmlBody: string): Promise<any> {
-    const sendgridApiKeyEncrypted = await SettingsService.getStringSetting(SettingsKeys.MAIL_SENDGRID_API_KEY)
-
-    const config = await ConfigurationManager.GetCurrentConfiguration(false)
-
-    if (!config.Mail) {
+  public async sendMail(
+    to: string,
+    subject: string,
+    textBody: string,
+    htmlBody: string,
+    configuration: IConfiguration
+  ): Promise<any> {
+    if (!configuration.Mail) {
       throw new Error('Failed to load Mail configuration')
     }
+    const sendgridApiKeyEncrypted = configuration.Mail.sendgridApiKey
 
-    const mailConfig = config.Mail
+    const mailConfig = configuration.Mail
 
     if (!mailConfig.fromAddress) {
       throw new Error('From address missing from mail configuration')
@@ -121,7 +123,13 @@ class MailService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public sendEmailTemplate(templateName: string, to: string, subject: string, context: object): Promise<any> {
+  public sendEmailTemplate(
+    templateName: string,
+    to: string,
+    subject: string,
+    context: object,
+    configuration: IConfiguration
+  ): Promise<any> {
     if (!KNOWN_TEMPLATES[templateName]) {
       throw new Error('Invalid template name: ' + templateName)
     }
@@ -130,7 +138,7 @@ class MailService {
 
     const htmlBody = this.processTemplateWithContext(KNOWN_TEMPLATES[templateName].html, context)
 
-    return this.sendMail(to, subject, textBody, htmlBody)
+    return this.sendMail(to, subject, textBody, htmlBody, configuration)
   }
 
   private processTemplateWithContext(templateContents: string, context: object): string {

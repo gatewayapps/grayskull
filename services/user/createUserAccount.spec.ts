@@ -5,28 +5,32 @@ import { createUserAccount } from './createUserAccount'
 
 let dataContext: DataContext
 
-beforeAll(async () => {
-  dataContext = await getInMemoryContext()
-})
+const TEST_USER_DATA: Partial<UserAccount> = {
+  firstName: 'Test',
+  lastName: 'User',
+  permissions: 0,
+  otpEnabled: false,
+  isActive: true
+}
+
+export async function createTestUserAccount(dataContext: DataContext) {
+  return await createUserAccount(TEST_USER_DATA, 'password', dataContext)
+}
 
 describe('createUserAccount', () => {
-  it('Should correctly create a user account', async () => {
-    const userData: Partial<UserAccount> = {
-      firstName: 'Test',
-      lastName: 'User',
-      permissions: 0,
-      otpEnabled: false,
-      isActive: true
-    }
+  beforeAll(async () => {
+    dataContext = await getInMemoryContext()
+  })
 
-    const createdUser = await createUserAccount(userData, 'password', dataContext)
+  it('Should correctly create a user account', async () => {
+    const createdUser = await createTestUserAccount(dataContext)
     expect(createdUser).toBeDefined()
     const userFromData = await dataContext.UserAccount.findOne({ where: { userAccountId: createdUser.userAccountId } })
 
     expect(userFromData).toBeDefined()
     if (userFromData) {
-      expect(userFromData.firstName).toEqual(userData.firstName)
-      expect(userFromData.lastName).toEqual(userData.lastName)
+      expect(userFromData.firstName).toEqual(TEST_USER_DATA.firstName)
+      expect(userFromData.lastName).toEqual(TEST_USER_DATA.lastName)
     }
   })
 })

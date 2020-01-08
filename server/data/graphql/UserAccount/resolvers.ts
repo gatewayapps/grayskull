@@ -8,7 +8,7 @@ import UserAccountService from '../../../api/services/UserAccountService'
 import { setAuthCookies, doLogout } from '../../../utils/authentication'
 import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
-import ConfigurationManager from '../../../config/ConfigurationManager'
+
 import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
@@ -22,6 +22,7 @@ import { ScopeMap } from '../../../api/services/ScopeService'
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
 import { encrypt } from '../../../utils/cipher'
 import { Permissions } from '../../../utils/permissions'
+import { IRequestContext } from '../../../../context/prepareContext'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -35,7 +36,7 @@ function isValidDate(d: any) {
 
 export default {
   Query: {
-    userAccounts: async (obj, args, context, info) => {
+    userAccounts: async (obj, args, context: IRequestContext, info) => {
       // insert your userAccounts implementation here
       if (!context.user) {
         throw new Error('You must be signed in to do that')
@@ -53,7 +54,7 @@ export default {
         }
       }
     },
-    userAccountsMeta: async (obj, args, context, info) => {
+    userAccountsMeta: async (obj, args, context: IRequestContext, info) => {
       // insert your userAccountsMeta implementation here
 
       if (context.user?.permissions === Permissions.Admin) {
@@ -62,11 +63,11 @@ export default {
         throw new Error('You must be an administrator to do that')
       }
     },
-    userAccount: (obj, args, context, info) => {
+    userAccount: (obj, args, context: IRequestContext, info) => {
       // insert your userAccount implementation here
       throw new Error('userAccount is not implemented')
     },
-    me: (obj, args, context, info) => {
+    me: (obj, args, context: IRequestContext, info) => {
       if (context.user && context.user.birthday && !isValidDate(context.user.birthday)) {
         delete context.user.birthday
       }
@@ -74,7 +75,7 @@ export default {
     }
   },
   Mutation: {
-    login: async (obj, args, context, info): Promise<ILoginResponse> => {
+    login: async (obj, args, context: IRequestContext, info): Promise<ILoginResponse> => {
       const { emailAddress, password, otpToken, fingerprint, extendedSession } = args.data
       try {
         if (!fingerprint) {
@@ -110,7 +111,7 @@ export default {
         return { success: false, message: err.message }
       }
     },
-    validateResetPasswordToken: async (obj, args, context, info): Promise<IOperationResponse> => {
+    validateResetPasswordToken: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       const token = args.data.token
       const emailAddress = args.data.emailAddress
       const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
@@ -125,7 +126,7 @@ export default {
         }
       }
     },
-    authorizeClient: async (obj, args, context, info): Promise<IAuthorizeClientResponse> => {
+    authorizeClient: async (obj, args, context: IRequestContext, info): Promise<IAuthorizeClientResponse> => {
       try {
         if (!context.user) {
           throw new Error('You must be logged in')
@@ -178,9 +179,15 @@ export default {
           )
         }
         if (responseTypes.includes('token')) {
-          const config = await ConfigurationManager.GetCurrentConfiguration()
+          const config = context.configuration
 
-          queryParts.token = await TokenService.createAccessToken(client, context.user, null, serviceOptions)
+          queryParts.token = await TokenService.createAccessToken(
+            client,
+            context.user,
+            null,
+            context.configuration,
+            serviceOptions
+          )
           queryParts.token_type = 'Bearer'
           queryParts.expires_in = config.Security!.accessTokenExpirationSeconds
         }
@@ -190,6 +197,7 @@ export default {
             context.user,
             nonce,
             queryParts.token,
+            context.configuration,
             serviceOptions
           )
         }
@@ -210,7 +218,7 @@ export default {
         throw err
       }
     },
-    updateClientScopes: async (obj, args, context, info) => {
+    updateClientScopes: async (obj, args, context: IRequestContext, info) => {
       if (!context.user) {
         throw new Error('You must be logged in!')
       }
@@ -219,11 +227,11 @@ export default {
       await UserClientService.updateScopes(context.user, client_id, allowedScopes, deniedScopes, serviceOptions)
       return true
     },
-    validatePassword: (obj, args, context, info) => {
+    validatePassword: (obj, args, context: IRequestContext, info) => {
       // insert your validatePassword implementation here
       throw new Error('validatePassword is not implemented')
     },
-    changePassword: async (obj, args, context, info) => {
+    changePassword: async (obj, args, context: IRequestContext, info) => {
       // insert your changePassword implementation here
       let result: IOperationResponse
       const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data
@@ -241,9 +249,14 @@ export default {
         }
       } else {
         try {
-          const passwordValid = await AuthenticationService.validatePassword(newPassword, confirmPassword, {
-            userContext
-          })
+          const passwordValid = await AuthenticationService.validatePassword(
+            newPassword,
+            confirmPassword,
+            context.configuration,
+            {
+              userContext
+            }
+          )
           if (!userContext) {
             const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, { userContext })
 
@@ -276,19 +289,19 @@ export default {
       }
       return result
     },
-    resetPassword: async (obj, args, context, info) => {
+    resetPassword: async (obj, args, context: IRequestContext, info) => {
       // insert your resetPassword implementation here
 
       const options: IQueryOptions = { userContext: context.user || null }
       try {
-        await UserAccountService.resetPassword(args.data.emailAddress, options)
+        await UserAccountService.resetPassword(args.data.emailAddress, context.configuration, options)
         return true
       } catch (err) {
         console.error(err)
         return false
       }
     },
-    createUser: async (obj, args, context, info): Promise<IOperationResponse> => {
+    createUser: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       const userAccount = context.user
       let result: IOperationResponse
       if (!userAccount) {
@@ -306,11 +319,13 @@ export default {
       }
 
       const { emailAddress, ...userData } = args.data
-      await UserAccountService.createUserAccount(userData, emailAddress, { userContext: userAccount })
+      await UserAccountService.createUserAccount(userData, emailAddress, context.configuration, {
+        userContext: userAccount
+      })
 
       return { success: true }
     },
-    update: async (obj, args, context, info): Promise<IOperationResponse> => {
+    update: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       const userAccount = context.user
       let result: IOperationResponse
       if (!userAccount) {
@@ -347,7 +362,7 @@ export default {
       }
       return result
     },
-    verifyAuthorizationRequest: async (obj, args, context, info): Promise<IOperationResponse> => {
+    verifyAuthorizationRequest: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       const validRequest = await AuthenticationService.validateRedirectUri(
         args.data.client_id,
         args.data.redirect_uri,
@@ -364,7 +379,7 @@ export default {
         }
       }
     },
-    verifyEmailAddress: async (obj, args, context, info): Promise<IOperationResponse> => {
+    verifyEmailAddress: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       try {
         await EmailAddressService.verifyEmailAddress(args.data.emailAddress, args.data.code, { userContext: null })
         return {
@@ -377,12 +392,18 @@ export default {
         }
       }
     },
-    registerUser: async (obj, args, context, info): Promise<IRegisterUserResponse> => {
+    registerUser: async (obj, args, context: IRequestContext, info): Promise<IRegisterUserResponse> => {
       try {
         const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
         const serviceOptions = { userContext: context.user || null }
-        await AuthenticationService.validatePassword(password, confirm, serviceOptions)
-        const userAccount = await UserAccountService.registerUser(userInfo, emailAddress, password, serviceOptions)
+        await AuthenticationService.validatePassword(password, confirm, context.configuration, serviceOptions)
+        const userAccount = await UserAccountService.registerUser(
+          userInfo,
+          emailAddress,
+          password,
+          context.configuration,
+          serviceOptions
+        )
 
         const fingerprint = context.req.headers['x-fingerprint'].toString()
         if (fingerprint) {
@@ -408,12 +429,12 @@ export default {
         return { success: false, message: err.message }
       }
     },
-    setOtpSecret: async (obj, args, context, info) => {
+    setOtpSecret: async (obj, args, context: IRequestContext, info) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       } else {
         try {
-          const config = await ConfigurationManager.GetCurrentConfiguration()
+          const config = context.configuration
 
           const passwordValid = await AuthenticationService.verifyPassword(
             context.user.userAccountId,
@@ -432,7 +453,7 @@ export default {
               success: false,
               message: `${
                 config.Server!.realmName
-                } security policy requires you to have an Authenticator App configured`
+              } security policy requires you to have an Authenticator App configured`
             }
           }
 
@@ -456,34 +477,36 @@ export default {
         }
       }
     },
-    generateMfaKey: (obj, args, context, info) => {
-      return AuthenticationService.generateOtpSecret(args.data.emailAddress)
+    generateMfaKey: (obj, args, context: IRequestContext, info) => {
+      return AuthenticationService.generateOtpSecret(args.data.emailAddress, context.configuration)
     },
-    verifyMfaKey: (obj, args, context, info) => {
+    verifyMfaKey: (obj, args, context: IRequestContext, info) => {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token, {
         userContext: context.user || null
       })
     },
-    resendVerification: async (obj, args, context, info) => {
-      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, {
+    resendVerification: async (obj, args, context: IRequestContext, info) => {
+      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, context.configuration, {
         userContext: context.user || null
       })
       return !!result
     },
-    resendAllVerificationEmails: async (obj, args, context, info) => {
+    resendAllVerificationEmails: async (obj, args, context: IRequestContext, info) => {
       const unverifiedEmails = await EmailAddressRepository.getEmailAddresses(
         { primary_equals: true, verified_equals: false },
         { userContext: context.user || null }
       )
       await Promise.all(
         unverifiedEmails.map(async (e) => {
-          await EmailAddressService.sendVerificationEmail(e.emailAddress, { userContext: context.user || null })
+          await EmailAddressService.sendVerificationEmail(e.emailAddress, context.configuration, {
+            userContext: context.user || null
+          })
         })
       )
 
       return true
     },
-    deleteAccount: async (obj, args, context, info) => {
+    deleteAccount: async (obj, args, context: IRequestContext, info) => {
       const userAccount = context.user
       let result: IOperationResponse
       if (!userAccount) {
@@ -521,10 +544,12 @@ export default {
         }
       }
     },
-    sendBackupCode: async (obj, args, context, info) => {
-      return await AuthenticationService.sendBackupCode(args.data.emailAddress, { userContext: context.user || null })
+    sendBackupCode: async (obj, args, context: IRequestContext, info) => {
+      return await AuthenticationService.sendBackupCode(args.data.emailAddress, context.configuration, {
+        userContext: context.user || null
+      })
     },
-    activateAccount: async (obj, args, context, info): Promise<IOperationResponse> => {
+    activateAccount: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       const { emailAddress, token, password, confirmPassword, otpSecret } = args.data
       if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null }))) {
         return {
@@ -533,7 +558,11 @@ export default {
         }
       }
 
-      if (!(await AuthenticationService.validatePassword(password, confirmPassword, { userContext: null }))) {
+      if (
+        !(await AuthenticationService.validatePassword(password, confirmPassword, context.configuration, {
+          userContext: null
+        }))
+      ) {
         return {
           success: false,
           message: 'Password does not meet complexity requirements or password and confirm password do not match'
@@ -546,7 +575,7 @@ export default {
         success: true
       }
     },
-    logout: async (obj, args, context, info): Promise<IOperationResponse> => {
+    logout: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       try {
         await doLogout(context.req, context.res)
         return {
@@ -561,7 +590,7 @@ export default {
     }
   },
   UserProfile: {
-    emailAddress: async (obj, args, context, info) => {
+    emailAddress: async (obj, args, context: IRequestContext, info) => {
       const result = await EmailAddressRepository.getEmailAddresses(
         { primary_equals: true, userAccountId_equals: obj.userAccountId },
         { userContext: context.user || null }
@@ -574,13 +603,13 @@ export default {
     }
   },
   UserAccount: {
-    emailAddresses: async (obj, args, context, info) => {
+    emailAddresses: async (obj, args, context: IRequestContext, info) => {
       return await EmailAddressService.getEmailAddresses(
         { userAccountId_equals: obj.userAccountId },
         { userContext: context.user || null }
       )
     },
-    emailAddress: async (obj, args, context, info) => {
+    emailAddress: async (obj, args, context: IRequestContext, info) => {
       const result = await EmailAddressRepository.getEmailAddresses(
         { primary_equals: true, userAccountId_equals: obj.userAccountId },
         { userContext: context.user || null }

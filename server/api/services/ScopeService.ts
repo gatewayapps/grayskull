@@ -53,7 +53,7 @@ export const ScopeMap = {
   // }
 }
 
-export const Scopes: Partial<Scope>[] = [
+export const Scopes: Array<Partial<Scope>> = [
   ScopeMap.openid,
   ScopeMap.offline_access,
   ScopeMap.profile,

@@ -1,6 +1,6 @@
 import { IClientMeta, IClientFilter, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import { getContext } from '../../data/context'
+
 import { Client } from '../../data/models/Client'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'

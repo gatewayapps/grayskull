@@ -74,5 +74,5 @@ input ServerConfigurationInput {
   realmName: String!
   realmLogo: String!
   realmBackground: String!
-  realmFavicon: String!
+  realmFavicon: String
 }

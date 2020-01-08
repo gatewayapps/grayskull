@@ -53,8 +53,14 @@ export async function getDataContext(options: Sequelize.Options): Promise<DataCo
     PhoneNumber: PhoneNumberFactory(sequelize),
     Setting: SettingFactory(sequelize)
   }
-
-  await retVal.sequelize.sync()
+  try {
+    const records = await sequelize.query(`SELECT * FROM Settings`)
+    if (records[0].length === 0) {
+      await retVal.sequelize.sync()
+    }
+  } catch {
+    await retVal.sequelize.sync()
+  }
 
   return retVal
 }
@@ -98,8 +104,8 @@ export async function getDataContextFromConnectionString(connectionString: strin
   const databaseName = connectionUrl.pathname.substr(1)
   return getDataContext({
     dialect: dialect,
-    logging: process.env.NODE_ENV !== 'production',
     username: user,
+    logging: false,
     password: password,
     host: server,
     dialectModule: dialectModule,

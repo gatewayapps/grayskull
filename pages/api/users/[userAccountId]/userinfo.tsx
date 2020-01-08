@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { buildContext, getClientRequestOptionsFromRequest } from '../../../../server/utils/authentication'
+import { getClientRequestOptionsFromRequest } from '../../../../server/utils/authentication'
 import UserClientService from '../../../../server/api/services/UserClientService'
 import { ScopeMap } from '../../../../server/api/services/ScopeService'
 import { UserAccount } from '../../../../server/data/models/UserAccount'
@@ -7,9 +7,12 @@ import UserAccountRepository from '../../../../server/data/repositories/UserAcco
 import TokenService from '../../../../server/api/services/TokenService'
 import { Permissions } from '../../../../server/utils/permissions'
 import { ensureScope } from '../../../../server/utils/ensureScope'
+import { prepareContext } from '../../../../context/prepareContext'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { requestContext } = await buildContext(req, res)
+  const context = await prepareContext(req, res)
+  const requestContext = context.req
+
   const fullPath = requestContext.parsedUrl.pathname
   const targetUserAccountId = fullPath.replace('/users/', '').replace('/userinfo', '')
   if (!targetUserAccountId) {

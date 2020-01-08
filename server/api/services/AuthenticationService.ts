@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { decrypt } from '../../utils/cipher'
 
 import { Session } from '../../data/models/Session'
@@ -25,7 +26,8 @@ import { ScopeMap } from './ScopeService'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
-import ConfigurationManager from '../../config/ConfigurationManager'
+
+import { IConfiguration } from '../../../data/types'
 
 const CACHE_PREFIX = 'BACKUP_CODE_'
 
@@ -155,13 +157,11 @@ class AuthenticationService {
     }
   }
 
-  public async generateOtpSecret(emailAddress: string): Promise<string> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-
+  public async generateOtpSecret(emailAddress: string, configuration: IConfiguration): Promise<string> {
     const secret = otplib.authenticator.generateSecret()
     const result = otplib.authenticator.keyuri(
       encodeURIComponent(emailAddress),
-      encodeURIComponent(config.Server!.realmName!),
+      encodeURIComponent(configuration.Server!.realmName!),
       secret
     )
     return result
@@ -173,9 +173,9 @@ class AuthenticationService {
     client_secret: string,
     code: string | null,
     refresh_token: string | null,
+    configuration: IConfiguration,
     options: IQueryOptions
   ): Promise<IAccessTokenResponse> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
     const client = await ClientService.validateClient(client_id, client_secret, options)
     if (!client) {
       throw new Error(`Invalid client_id or client_secret`)
@@ -216,6 +216,7 @@ class AuthenticationService {
             userAccount,
             authCodeCacheResult.nonce,
             undefined,
+            configuration,
             options
           )
         }
@@ -249,7 +250,7 @@ class AuthenticationService {
         userAccount = await UserAccountRepository.getUserAccount({ userAccountId: userClient.userAccountId }, options)
 
         if (userAccount && UserClientService.UserClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-          id_token = await TokenService.createIDToken(client, userAccount, undefined, undefined, options)
+          id_token = await TokenService.createIDToken(client, userAccount, undefined, undefined, configuration, options)
         }
         break
       }
@@ -272,20 +273,22 @@ class AuthenticationService {
     }
 
     const access_token = finalRefreshToken
-      ? await TokenService.refreshAccessToken(finalRefreshToken.token, client.client_id, options)
-      : await TokenService.createAccessToken(client, userAccount, finalRefreshToken, options)
+      ? await TokenService.refreshAccessToken(finalRefreshToken.token, client.client_id, configuration, options)
+      : await TokenService.createAccessToken(client, userAccount, finalRefreshToken, configuration, options)
     return {
       access_token,
       id_token,
-      expires_in: config.Security!.accessTokenExpirationSeconds || 300,
+      expires_in: configuration.Security!.accessTokenExpirationSeconds || 300,
       refresh_token: finalRefreshToken ? finalRefreshToken.token : undefined,
       token_type: 'Bearer'
     }
   }
 
-  public async sendBackupCode(emailAddress: string, options: IQueryOptions): Promise<boolean> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-
+  public async sendBackupCode(
+    emailAddress: string,
+    configuration: IConfiguration,
+    options: IQueryOptions
+  ): Promise<boolean> {
     const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
     if (!user || !user.otpEnabled || !user.otpSecret) {
       return false
@@ -301,23 +304,32 @@ class AuthenticationService {
     const cacheKey = `${CACHE_PREFIX}${emailAddress}`
     await cacheValue(cacheKey, backupCode, 30 * 60, true)
 
-    await MailService.sendEmailTemplate('backupCodeTemplate', emailAddress, `${config.Server!.realmName} Backup Code`, {
-      realmName: config.Server!.realmName,
-      user,
-      backupCode
-    })
+    await MailService.sendEmailTemplate(
+      'backupCodeTemplate',
+      emailAddress,
+      `${configuration.Server!.realmName} Backup Code`,
+      {
+        realmName: configuration.Server!.realmName,
+        user,
+        backupCode
+      },
+      configuration
+    )
 
     return true
   }
 
-  public async shouldUserChangePassword(emailAddress: string, options: IQueryOptions): Promise<boolean> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-    if (config.Security!.maxPasswordAge && config.Security!.maxPasswordAge > 0) {
+  public async shouldUserChangePassword(
+    emailAddress: string,
+    configuration: IConfiguration,
+    options: IQueryOptions
+  ): Promise<boolean> {
+    if (configuration.Security!.maxPasswordAge && configuration.Security!.maxPasswordAge > 0) {
       const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, options)
       if (userAccount) {
         const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
         const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
-        if (daysSincePasswordChange >= config.Security!.maxPasswordAge) {
+        if (daysSincePasswordChange >= configuration.Security!.maxPasswordAge) {
           return true
         }
       }
@@ -339,20 +351,23 @@ class AuthenticationService {
     }
   }
 
-  public async validatePassword(password: string, confirm: string, options: IQueryOptions): Promise<boolean> {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-
+  public async validatePassword(
+    password: string,
+    confirm: string,
+    configuration: IConfiguration,
+    options: IQueryOptions
+  ): Promise<boolean> {
     const requiredParts: string[] = []
-    if (config.Security!.passwordRequiresLowercase) {
+    if (configuration.Security!.passwordRequiresLowercase) {
       requiredParts.push('lowercase letter (a-z)')
     }
-    if (config.Security!.passwordRequiresUppercase) {
+    if (configuration.Security!.passwordRequiresUppercase) {
       requiredParts.push('uppercase letter (A-Z)')
     }
-    if (config.Security!.passwordRequiresNumber) {
+    if (configuration.Security!.passwordRequiresNumber) {
       requiredParts.push('number (0-9)')
     }
-    if (config.Security!.passwordRequiresSymbol) {
+    if (configuration.Security!.passwordRequiresSymbol) {
       requiredParts.push('symbol (!, #, @, etc...)')
     }
 
@@ -364,20 +379,20 @@ class AuthenticationService {
       throw new Error('Passwords do not match.  Please re-enter your passwords')
     }
 
-    if (config.Security!.passwordRequiresLowercase && LOWERCASE_REGEX.test(password) === false) {
+    if (configuration.Security!.passwordRequiresLowercase && LOWERCASE_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (config.Security!.passwordRequiresUppercase && UPPERCASE_REGEX.test(password) === false) {
+    if (configuration.Security!.passwordRequiresUppercase && UPPERCASE_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (config.Security!.passwordRequiresNumber && NUMBER_REGEX.test(password) === false) {
+    if (configuration.Security!.passwordRequiresNumber && NUMBER_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (config.Security!.passwordRequiresSymbol && SYMBOL_REGEX.test(password) === false) {
+    if (configuration.Security!.passwordRequiresSymbol && SYMBOL_REGEX.test(password) === false) {
       throw new Error(PasswordValidationError)
     }
-    if (password.length < (config.Security!.passwordMinimumLength || 8)) {
-      throw new Error(`Password must be at least ${config.Security!.passwordMinimumLength} characters long`)
+    if (password.length < (configuration.Security!.passwordMinimumLength || 8)) {
+      throw new Error(`Password must be at least ${configuration.Security!.passwordMinimumLength} characters long`)
     }
     return true
   }

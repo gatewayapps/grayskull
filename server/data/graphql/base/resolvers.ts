@@ -1,10 +1,9 @@
-import ConfigurationManager from '../../../config/ConfigurationManager'
 import { GraphQLUpload } from 'apollo-server-micro'
-import { GraphQLEnumType, GraphQLScalarType, Kind } from 'graphql'
+import { GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../utils/permissions'
 import UploadService from '../../../api/services/UploadService'
-import SettingsService from '../../../api/services/SettingService'
-import { SettingsKeys } from '../../../config/KnownSettings'
+
+import { IRequestContext } from '../../../../context/prepareContext'
 
 export default {
   Upload: GraphQLUpload,
@@ -30,8 +29,8 @@ export default {
     }
   }),
   Query: {
-    securityConfiguration: async (obj, args, context, info) => {
-      const config = await ConfigurationManager.GetCurrentConfiguration()
+    securityConfiguration: async (obj, args, context: IRequestContext, info) => {
+      const config = context.configuration
 
       return {
         multifactorRequired: config.Security!.multifactorRequired,
@@ -43,12 +42,12 @@ export default {
         allowSignup: config.Security!.allowSignup
       }
     },
-    serverConfiguration: async (obj, args, context, info) => {
-      const config = await ConfigurationManager.GetCurrentConfiguration()
+    serverConfiguration: async (obj, args, context: IRequestContext, info) => {
+      const config = context.configuration
       return config.Server
     },
-    isOobe: async (obj, args, context, info) => {
-      const isServerConfigured = await SettingsService.getBooleanSetting(SettingsKeys.SERVER_CONFIGURED)
+    isOobe: async (obj, args, context: IRequestContext, info) => {
+      const isServerConfigured = !!context.configuration.Server.baseUrl
       return !isServerConfigured
     }
   },

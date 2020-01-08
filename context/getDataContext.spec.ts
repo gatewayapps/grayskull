@@ -4,7 +4,8 @@ import { getDataContext } from './getDataContext'
 export async function getInMemoryContext() {
   const options: Sequelize.Options = {
     database: 'grayskull',
-    dialect: 'sqlite'
+    dialect: 'sqlite',
+    logging: false
   }
 
   return await getDataContext(options)

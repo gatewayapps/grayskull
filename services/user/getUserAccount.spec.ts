@@ -5,10 +5,10 @@ import { getCacheContext } from '../../context/getCacheContext'
 
 let dataContext: DataContext
 
-beforeAll(async () => {
-  dataContext = await getInMemoryContext()
-})
-
 describe('getUserContext', () => {
+  beforeAll(async () => {
+    dataContext = await getInMemoryContext()
+  })
+
   it('Should correctly return a user from the data context', async () => {})
 })
