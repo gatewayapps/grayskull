@@ -24,7 +24,7 @@ module.exports = withSass(
         return [
           { source: '/token', destination: '/api/token' },
           { source: '/userinfo', destination: '/api/userinfo' },
-          { source: '/users/[userAccountId]/userinfo', destination: '/api/users/[userAccountId]/userinfo' }
+          { source: '/users/:userAccountId/userinfo', destination: '/api/users/:userAccountId/userinfo' }
         ]
       }
     },
