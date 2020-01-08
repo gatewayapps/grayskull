@@ -10,6 +10,13 @@ import { ensureScope } from '../../../../server/utils/ensureScope'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { requestContext } = await buildContext(req, res)
+  const fullPath = requestContext.parsedUrl.pathname
+  const targetUserAccountId = fullPath.replace('/users/', '').replace('/userinfo', '')
+  if (!targetUserAccountId) {
+    res.json({ success: false, message: 'Missing user account id' })
+    return
+  }
+
   const clientOptions = await getClientRequestOptionsFromRequest(requestContext)
 
   const isClientAuthorized = await ensureScope(ScopeMap['admin-profile:write'].id, requestContext)
@@ -38,7 +45,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
           // We need to get the UserClient for the target user
           const targetUserClient = await UserClientService.getUserClient(
-            { client_id: clientOptions.client.client_id, userClientId: req.query['userAccountId'].toString() },
+            { client_id: clientOptions.client.client_id, userClientId: targetUserAccountId },
             { userContext: clientOptions.userAccount }
           )
 
