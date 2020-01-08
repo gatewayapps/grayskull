@@ -319,7 +319,7 @@ export default {
       }
 
       const { emailAddress, ...userData } = args.data
-      await UserAccountService.createUserAccount(userData, emailAddress, context.configuration, {
+      await UserAccountService.createUserAccount(userData, emailAddress, context.configuration, context.dataContext, {
         userContext: userAccount
       })
 
@@ -402,6 +402,7 @@ export default {
           emailAddress,
           password,
           context.configuration,
+          context.dataContext,
           serviceOptions
         )
 
@@ -569,7 +570,7 @@ export default {
         }
       }
 
-      await UserAccountService.activateAccount(emailAddress, password, otpSecret)
+      await UserAccountService.activateAccount(emailAddress, password, context.dataContext, otpSecret)
 
       return {
         success: true

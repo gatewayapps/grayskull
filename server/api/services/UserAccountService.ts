@@ -17,11 +17,17 @@ import { randomBytes } from 'crypto'
 import { ForbiddenError } from 'apollo-server'
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { IConfiguration } from '../../../data/types'
+import { DataContext } from '../../../context/getDataContext'
 
 const INVITATION_EXPIRES_IN = 3600
 
 class UserAccountService {
-  public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
+  public async activateAccount(
+    emailAddress: string,
+    password: string,
+    dataContext: DataContext,
+    otpSecret?: string
+  ): Promise<void> {
     const options: IQueryOptions = {
       userContext: null
     }
@@ -31,7 +37,7 @@ class UserAccountService {
       throw new Error('Unable to find a user with that email address')
     }
 
-    options.transaction = await (await getContext()).sequelize.transaction()
+    options.transaction = await dataContext.sequelize.transaction()
 
     try {
       const passwordHash = await this.hashPassword(password)
@@ -60,6 +66,7 @@ class UserAccountService {
     data: UserAccount,
     emailAddress: string,
     configuration: IConfiguration,
+    dataContext: DataContext,
     options: IQueryOptions
   ): Promise<UserAccount> {
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
@@ -74,7 +81,7 @@ class UserAccountService {
       throw new Error('Failed to load Server configuration')
     }
 
-    options.transaction = await (await getContext()).sequelize.transaction()
+    options.transaction = await dataContext.sequelize.transaction()
 
     try {
       data.userAccountId = uuid()
@@ -232,6 +239,7 @@ class UserAccountService {
     emailAddress: string,
     password: string,
     configuration: IConfiguration,
+    dataContext: DataContext,
     options: IQueryOptions
   ): Promise<UserAccount> {
     if ((await EmailAddressService.isDomainAllowed(emailAddress, configuration)) === false) {
@@ -254,7 +262,7 @@ class UserAccountService {
     }
 
     // 2. Start a transaction
-    newOptions.transaction = await (await getContext()).sequelize.transaction()
+    newOptions.transaction = await dataContext.sequelize.transaction()
 
     try {
       // First user is always an administrator
