@@ -1,7 +1,7 @@
 import { IUserClientMeta, IUserClientFilter, IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { UserClient } from '../../data/models/IUserClient'
+import { UserClient } from '../../data/models/UserClient'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'

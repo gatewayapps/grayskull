@@ -1,22 +1,24 @@
 import TokenService from '../../server/api/services/TokenService'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { buildContext, getClientRequestOptionsFromRequest, RequestContext } from '../../server/utils/authentication'
+import { getClientRequestOptionsFromRequest, RequestContext } from '../../server/utils/authentication'
 import { ScopeMap } from '../../server/api/services/ScopeService'
 import { ensureScope } from '../../server/utils/ensureScope'
 import { IClientRequestOptions } from '../../server/data/IClientRequestOptions'
-import { UserAccount } from '../../server/data/models/IUserAccount'
+import { UserAccount } from '../../server/data/models/UserAccount'
 import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
+import { prepareContext } from '../../context/prepareContext'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { requestContext } = await buildContext(req, res)
-  const clientOptions = await getClientRequestOptionsFromRequest(requestContext)
+  const context = await prepareContext(req, res)
+
+  const clientOptions = await getClientRequestOptionsFromRequest(context.req)
   switch (req.method) {
     case 'GET': {
-      getUserProfile(clientOptions, requestContext, res)
+      getUserProfile(clientOptions, context.req, res)
       break
     }
     case 'POST': {
-      postUserProfile(clientOptions, requestContext, res)
+      postUserProfile(clientOptions, context.req, res)
       break
     }
     default: {

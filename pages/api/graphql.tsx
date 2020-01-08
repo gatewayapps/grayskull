@@ -1,8 +1,10 @@
 import { ApolloServer, AuthenticationError } from 'apollo-server-micro'
-import { getContext } from '../../server/data/context'
+
 import { addMiddleware } from 'graphql-add-middleware'
-import { buildContext } from '../../server/utils/authentication'
+
 import { schema } from '../../server/data/graphql/graphql'
+
+import { prepareContext } from '../../context/prepareContext'
 
 const checkAnonymous = async (root, args, context, info, next) => {
   if (info.parentType && info.parentType._fields && info.parentType._fields[info.fieldName]) {
@@ -14,7 +16,6 @@ const checkAnonymous = async (root, args, context, info, next) => {
   return next()
 }
 addMiddleware(schema, async (root, args, context, info, next) => {
-  await getContext()
   return next()
 })
 addMiddleware(schema, 'Mutation', checkAnonymous)
@@ -23,11 +24,8 @@ addMiddleware(schema, 'Query', checkAnonymous)
 const apolloServer = new ApolloServer({
   schema,
 
-  context: async (args, moreArgs) => {
-    const { req, res } = args
-
-    const { requestContext, responseContext } = await buildContext(req, res)
-    return { req: requestContext, res: responseContext, user: requestContext.user }
+  context: async (args) => {
+    return await prepareContext(args.req, args.res)
   }
 })
 

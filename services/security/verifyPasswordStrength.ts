@@ -10,10 +10,31 @@ export interface IVerifyPasswordStrengthResult {
   validationErrors?: string[]
 }
 
-export function verifyPasswordStrength(password: string, securityConfiguration: ISecurityConfiguration): IVerifyPasswordStrengthResult {
+export function isPasswordLongEnough(password: string, minimumLength = 8) {
+  return password.length >= minimumLength
+}
+
+export function doesPasswordContainUppercase(password: string) {
+  return UPPERCASE_REGEX.test(password)
+}
+
+export function doesPasswordContainLowercase(password: string) {
+  return LOWERCASE_REGEX.test(password)
+}
+export function doesPasswordContainNumber(password: string) {
+  return NUMBER_REGEX.test(password)
+}
+export function doesPasswordContainSymbol(password: string) {
+  return SYMBOL_REGEX.test(password)
+}
+
+export function verifyPasswordStrength(
+  password: string,
+  securityConfiguration: ISecurityConfiguration
+): IVerifyPasswordStrengthResult {
   let valid = true
-  let validationErrors: string[] = []
-  if (!isPasswordLongEnough(password, securityConfiguration.passwordMinimumLength!)) {
+  const validationErrors: string[] = []
+  if (!isPasswordLongEnough(password, securityConfiguration.passwordMinimumLength || undefined)) {
     valid = false
     validationErrors.push(`Password must have at least ${securityConfiguration.passwordMinimumLength} characters`)
   }
@@ -42,22 +63,4 @@ export function verifyPasswordStrength(password: string, securityConfiguration: 
     success: valid,
     validationErrors: validationErrors.length > 0 ? validationErrors : undefined
   }
-}
-
-export function isPasswordLongEnough(password: string, minimumLength: number) {
-  return password.length >= minimumLength
-}
-
-export function doesPasswordContainUppercase(password: string) {
-  return UPPERCASE_REGEX.test(password)
-}
-
-export function doesPasswordContainLowercase(password: string) {
-  return LOWERCASE_REGEX.test(password)
-}
-export function doesPasswordContainNumber(password: string) {
-  return NUMBER_REGEX.test(password)
-}
-export function doesPasswordContainSymbol(password: string) {
-  return SYMBOL_REGEX.test(password)
 }

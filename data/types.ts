@@ -66,6 +66,7 @@ export interface IMailConfiguration {
   tlsSslRequired: boolean | null
   port: number | null
   fromAddress: string | null
+  sendgridApiKey: string | null
 }
 
 export interface ISecurityConfiguration {
@@ -90,6 +91,7 @@ export interface IConfiguration {
   Security: ISecurityConfiguration
   Mail: IMailConfiguration
   Server: IServerConfiguration
+  HeaderItems?: any
 }
 export interface SaveConfigurationOperationArgs {
   Security: ISecurityConfiguration

@@ -4,7 +4,7 @@ import {
   IEmailAddressUniqueFilter
 } from '../../interfaces/graphql/IEmailAddress'
 import { IQueryOptions } from '../../data/IQueryOptions'
-import { EmailAddress } from '../../data/models/IEmailAddress'
+import { EmailAddress } from '../../data/models/EmailAddress'
 import _ from 'lodash'
 
 import { hasPermission } from '../../decorators/permissionDecorator'
@@ -12,12 +12,12 @@ import { Permissions } from '../../utils/permissions'
 
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
-import ConfigurationManager from '../../config/ConfigurationManager'
 
 import { randomBytes } from 'crypto'
 
 import MailService from './MailService'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
+import { IConfiguration } from '../../../data/types'
 
 class EmailAddressService {
   @hasPermission(Permissions.User)
@@ -34,27 +34,26 @@ class EmailAddressService {
     return existingEmail === null
   }
 
-  public async isDomainAllowed(emailAddress: string): Promise<boolean> {
+  public async isDomainAllowed(emailAddress: string, configuration: IConfiguration): Promise<boolean> {
     const domain = emailAddress.split('@')[1].toLowerCase()
-    const config = await ConfigurationManager.GetCurrentConfiguration()
-    if (config.Security!.domainWhitelist) {
-      const allowedDomains = _.compact(config.Security!.domainWhitelist.toLowerCase().split(';'))
+
+    if (configuration.Security!.domainWhitelist) {
+      const allowedDomains = _.compact(configuration.Security!.domainWhitelist.toLowerCase().split(';'))
 
       return allowedDomains.length === 0 || allowedDomains.includes(domain)
     }
     return true
   }
 
-  public async createEmailAddress(data: Partial<EmailAddress>, options: IQueryOptions) {
+  public async createEmailAddress(data: Partial<EmailAddress>, configuration: IConfiguration, options: IQueryOptions) {
     data.verificationSecret = '' // sendVerificationEmail will set this correctly
     const result = await EmailAddressRepository.createEmailAddress(data as EmailAddress, options)
     if (!data.verified) {
-      await this.sendVerificationEmail(data.emailAddress!, options)
+      await this.sendVerificationEmail(data.emailAddress!, configuration, options)
     }
   }
 
-  public async sendVerificationEmail(emailAddress: string, options: IQueryOptions) {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
+  public async sendVerificationEmail(emailAddress: string, configuration: IConfiguration, options: IQueryOptions) {
     const verificationSecret = randomBytes(16).toString('hex')
 
     const data = await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verificationSecret }, options)
@@ -65,12 +64,13 @@ class EmailAddressService {
         data.emailAddress,
         'E-mail Address Verification',
         {
-          realmName: config.Server!.realmName,
+          realmName: configuration.Server!.realmName,
           user: userAccount,
-          verificationLink: `${config.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${
+          verificationLink: `${configuration.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${
             data.verificationSecret
           }`
-        }
+        },
+        configuration
       )
     } else {
       if (data && data.verified) {

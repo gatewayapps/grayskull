@@ -1,7 +1,8 @@
 import AuthenticationService from '../../server/api/services/AuthenticationService'
-import { buildContext } from '../../server/utils/authentication'
-import { getContext } from '../../server/data/context'
+
+
 import { NextApiRequest, NextApiResponse } from 'next'
+import { prepareContext } from '../../context/prepareContext'
 
 const getClientCredentialsFromRequest = (
   req: NextApiRequest
@@ -28,14 +29,14 @@ const getClientCredentialsFromRequest = (
 }
 
 const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
+  const context = await prepareContext(req, res)
+
   if (req.method !== 'POST') {
     res.status(405).json({ success: false, message: 'Method not allowed' })
     return
   }
   try {
-    await getContext()
-    const { requestContext, responseContext } = await buildContext(req, res)
-    const clientCredentials = getClientCredentialsFromRequest(req)
+    const clientCredentials = getClientCredentialsFromRequest(context.req)
 
     if (!req.body) {
       res.status(400).json({ success: false, message: 'Invalid request body' })
@@ -55,8 +56,9 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
       clientCredentials.client_secret,
       body.code,
       body.refresh_token,
+      context.configuration,
       {
-        userContext: requestContext.user || null
+        userContext: context.user || null
       }
     )
     res.json(accessTokenResponse)

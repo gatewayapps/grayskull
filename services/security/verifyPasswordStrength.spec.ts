@@ -2,23 +2,26 @@ import { verifyPasswordStrength } from './verifyPasswordStrength'
 import { ISecurityConfiguration } from '../../data/types'
 
 function applySettingsToDefaultConfiguration(settings: Partial<ISecurityConfiguration>): ISecurityConfiguration {
-  return Object.assign({
-    accessTokenExpirationSeconds: 300,
-    allowSignup: true,
-    domainWhitelist: '',
-    invitationExpirationSeconds: 300,
-    maxLoginAttemptsPerMinute: 5,
-    maxPasswordAge: 60,
-    multifactorRequired: false,
-    passwordHistoryCount: 0,
-    passwordHistoryEnabled: false,
-    passwordMinimumLength: 8,
-    passwordRequiresLowercase: false,
-    passwordRequiresNumber: false,
-    passwordRequiresSymbol: false,
-    passwordRequiresUppercase: false,
-    requireEmailAddressVerification: true
-  }, settings)
+  return Object.assign(
+    {
+      accessTokenExpirationSeconds: 300,
+      allowSignup: true,
+      domainWhitelist: '',
+      invitationExpirationSeconds: 300,
+      maxLoginAttemptsPerMinute: 5,
+      maxPasswordAge: 60,
+      multifactorRequired: false,
+      passwordHistoryCount: 0,
+      passwordHistoryEnabled: false,
+      passwordMinimumLength: 8,
+      passwordRequiresLowercase: false,
+      passwordRequiresNumber: false,
+      passwordRequiresSymbol: false,
+      passwordRequiresUppercase: false,
+      requireEmailAddressVerification: true
+    },
+    settings
+  )
 }
 
 describe('security::verifyPasswordStrength', () => {
@@ -41,7 +44,6 @@ describe('security::verifyPasswordStrength', () => {
     const validationResult = verifyPasswordStrength('password1', config)
     expect(validationResult.success).toEqual(false)
     expect(validationResult.validationErrors).toContain('Password must contain an uppercase letter (A-Z)')
-
   })
 
   it('Should not fail if a password does have an uppercase letter when required', () => {
@@ -70,7 +72,6 @@ describe('security::verifyPasswordStrength', () => {
     const validationResult = verifyPasswordStrength('PASSWORD1', config)
     expect(validationResult.success).toEqual(false)
     expect(validationResult.validationErrors).toContain('Password must contain a symbol (!, #, @, etc...)')
-
   })
 
   it('Should not fail if a password does have a symbol when required', () => {
@@ -85,7 +86,6 @@ describe('security::verifyPasswordStrength', () => {
     const validationResult = verifyPasswordStrength('PASSWORD', config)
     expect(validationResult.success).toEqual(false)
     expect(validationResult.validationErrors).toContain('Password must contain a number (0-9)')
-
   })
 
   it('Should not fail if a password does have a number when required', () => {
@@ -94,8 +94,4 @@ describe('security::verifyPasswordStrength', () => {
     expect(validationResult.success).toEqual(true)
     expect(validationResult.validationErrors).toBeUndefined()
   })
-
-
-
-
 })

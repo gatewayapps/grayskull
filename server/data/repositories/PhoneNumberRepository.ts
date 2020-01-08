@@ -1,7 +1,7 @@
 import { IPhoneNumberMeta, IPhoneNumberFilter, IPhoneNumberUniqueFilter } from '../../interfaces/graphql/IPhoneNumber'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
-import { getContext } from '../../data/context'
-import { PhoneNumber } from '../../data/models/IPhoneNumber'
+
+import { PhoneNumber } from '../../data/models/PhoneNumber'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'

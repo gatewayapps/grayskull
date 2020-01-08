@@ -3,6 +3,7 @@ import { hasPermission } from '../../../decorators/permissionDecorator'
 import { userInfo } from 'os'
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
 import { Permissions } from '../../../utils/permissions'
+import { IRequestContext } from '../../../../context/prepareContext'
 
 class EmailAddressResolver {
   public getEmailAddresses(obj, args, context, info) {
@@ -39,7 +40,7 @@ export default {
     }
   },
   Mutation: {
-    addEmailAddress: async (obj, args, context, info) => {
+    addEmailAddress: async (obj, args, context: IRequestContext, info) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
@@ -56,6 +57,7 @@ export default {
       try {
         await EmailAddressService.createEmailAddress(
           { emailAddress: args.data.emailAddress, userAccountId: context.user.userAccountId, verificationSecret: '' },
+          context.configuration,
           { userContext: context.user }
         )
         return {
@@ -68,7 +70,7 @@ export default {
         }
       }
     },
-    sendVerification: async (obj, args, context, info) => {
+    sendVerification: async (obj, args, context: IRequestContext, info) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
@@ -78,7 +80,9 @@ export default {
         { userContext: context.user }
       )
       if (emailAddress && !emailAddress.verified) {
-        await EmailAddressService.sendVerificationEmail(emailAddress.emailAddress, { userContext: context.user })
+        await EmailAddressService.sendVerificationEmail(emailAddress.emailAddress, context.configuration, {
+          userContext: context.user
+        })
         return {
           success: true
         }

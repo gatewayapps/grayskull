@@ -1,25 +1,22 @@
 import { SettingsKeys } from '../../../config/KnownSettings'
 import { IConfiguration } from '../../models/IConfiguration'
-import SettingsService from '../../../api/services/SettingService'
-import ConfigurationManager from '../../../config/ConfigurationManager'
+import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../api/services/SettingService'
+
 import { encrypt } from '../../../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../../../constants'
-import { UserAccount } from '../../models/IUserAccount'
+import { UserAccount } from '../../models/UserAccount'
 import { Permissions } from '../../../utils/permissions'
 import { ForbiddenError } from 'apollo-server'
+import { IRequestContext } from '../../../../context/prepareContext'
+import { clearConfigurationFromCache } from '../../../../services/configuration/getCurrentConfiguration'
 
 export default {
   Query: {
-    configuration: async (obj, args, context, info) => {
-      const serverConfigured = await SettingsService.getBooleanSetting(SettingsKeys.SERVER_CONFIGURED)
-      if (!serverConfigured) {
-        throw new ForbiddenError('Cannot load configuration before server is configured')
-      }
-
+    configuration: async (obj, args, context: IRequestContext, info) => {
       const user: UserAccount | null | undefined = context.user
       const loadMail = user && user.permissions === Permissions.Admin
 
-      const configuration = await ConfigurationManager.GetCurrentConfiguration(!loadMail)
+      const configuration = context.configuration
 
       return {
         Server: configuration.Server,
@@ -29,7 +26,7 @@ export default {
     }
   },
   Mutation: {
-    saveConfiguration: async (obj, args, context, info) => {
+    saveConfiguration: async (obj, args, context: IRequestContext, info) => {
       // Insert your saveConfiguration implementation here
       try {
         // we need to write all the configuration properties to the database
@@ -37,151 +34,181 @@ export default {
 
         if (data.Server) {
           if (!!data.Server.baseUrl) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_BASE_URL, data.Server!.baseUrl!, 'Server')
+            await saveStringSetting(SettingsKeys.SERVER_BASE_URL, data.Server!.baseUrl!, 'Server', context.dataContext)
           }
           if (!!data.Server.realmLogo) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_REALM_LOGO, data.Server!.realmLogo!, 'Server')
+            await saveStringSetting(
+              SettingsKeys.SERVER_REALM_LOGO,
+              data.Server!.realmLogo!,
+              'Server',
+              context.dataContext
+            )
           }
           if (!!data.Server.realmName) {
-            await SettingsService.saveStringSetting(SettingsKeys.SERVER_REALM_NAME, data.Server!.realmName!, 'Server')
+            await saveStringSetting(
+              SettingsKeys.SERVER_REALM_NAME,
+              data.Server!.realmName!,
+              'Server',
+              context.dataContext
+            )
           }
           if (!!data.Server.realmBackground) {
-            await SettingsService.saveStringSetting(
+            await saveStringSetting(
               SettingsKeys.SERVER_BACKGROUND_IMAGE,
               data.Server!.realmBackground!,
-              'Server'
+              'Server',
+              context.dataContext
             )
           }
         }
 
         if (data.Mail) {
           if (!!data.Mail.fromAddress) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress!, 'Mail')
+            await saveStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress!, 'Mail', context.dataContext)
           }
           if (!!data.Mail.password && data.Mail.password !== PASSWORD_PLACEHOLDER) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_PASSWORD, encrypt(data.Mail.password!), 'Mail')
+            await saveStringSetting(
+              SettingsKeys.MAIL_PASSWORD,
+              encrypt(data.Mail.password!),
+              'Mail',
+              context.dataContext
+            )
           }
           if (!!data.Mail.port) {
-            await SettingsService.saveNumberSetting(SettingsKeys.MAIL_PORT, data.Mail.port!, 'Mail')
+            await saveNumberSetting(SettingsKeys.MAIL_PORT, data.Mail.port!, 'Mail', context.dataContext)
           }
           if (!!data.Mail.serverAddress) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_HOST, data.Mail.serverAddress!, 'Mail')
+            await saveStringSetting(SettingsKeys.MAIL_HOST, data.Mail.serverAddress!, 'Mail', context.dataContext)
           }
           if (data.Mail.tlsSslRequired !== undefined && data.Mail.tlsSslRequired !== null) {
-            await SettingsService.saveBooleanSetting(SettingsKeys.MAIL_SSL, !!data.Mail.tlsSslRequired!, 'Mail')
+            await saveBooleanSetting(SettingsKeys.MAIL_SSL, !!data.Mail.tlsSslRequired!, 'Mail', context.dataContext)
           }
           if (!!data.Mail.username) {
-            await SettingsService.saveStringSetting(SettingsKeys.MAIL_USER, data.Mail.username!, 'Mail')
+            await saveStringSetting(SettingsKeys.MAIL_USER, data.Mail.username!, 'Mail', context.dataContext)
           }
           if (!!data.Mail.sendgridApiKey && data.Mail.sendgridApiKey !== PASSWORD_PLACEHOLDER) {
-            await SettingsService.saveStringSetting(
+            await saveStringSetting(
               SettingsKeys.MAIL_SENDGRID_API_KEY,
               encrypt(data.Mail.sendgridApiKey!),
-              'Mail'
+              'Mail',
+              context.dataContext
             )
           }
         }
 
         if (data.Security) {
           if (!!data.Security.accessTokenExpirationSeconds) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
               SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS,
               data.Security.accessTokenExpirationSeconds!,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.allowSignup !== undefined && data.Security.allowSignup !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
               SettingsKeys.SECURITY_ALLOW_USER_SIGNUP,
               !!data.Security.allowSignup,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.domainWhitelist !== undefined && data.Security.domainWhitelist !== null) {
-            await SettingsService.saveStringSetting(
+            await saveStringSetting(
               SettingsKeys.SECURITY_DOMAIN_WHITELIST,
               data.Security.domainWhitelist,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (
             data.Security.invitationExpirationSeconds !== undefined &&
             data.Security.invitationExpirationSeconds !== null
           ) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
               SettingsKeys.SECURITY_ACTIVATION_EXPIRES_IN_MINUTES,
               data.Security.invitationExpirationSeconds!,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (
             data.Security.maxLoginAttemptsPerMinute !== undefined &&
             data.Security.maxLoginAttemptsPerMinute !== null
           ) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
               SettingsKeys.SECURITY_MAX_LOGIN_ATTEMPTS_PER_MINUTE,
               data.Security.maxLoginAttemptsPerMinute,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.maxPasswordAge !== undefined && data.Security.maxPasswordAge !== null) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
               SettingsKeys.SECURITY_PASSWORD_EXPIRES_DAYS,
               data.Security.maxPasswordAge,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.multifactorRequired !== undefined && data.Security.multifactorRequired !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
               SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED,
               !!data.Security.multifactorRequired,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.passwordMinimumLength !== undefined && data.Security.passwordMinimumLength !== null) {
-            await SettingsService.saveNumberSetting(
+            await saveNumberSetting(
               SettingsKeys.SECURITY_PASSWORD_MINIMUM_LENGTH,
               data.Security.passwordMinimumLength,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (
             data.Security.passwordRequiresLowercase !== undefined &&
             data.Security.passwordRequiresLowercase !== null
           ) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_LOWERCASE,
               !!data.Security.passwordRequiresLowercase,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (
             data.Security.passwordRequiresUppercase !== undefined &&
             data.Security.passwordRequiresUppercase !== null
           ) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_UPPERCASE,
               !!data.Security.passwordRequiresUppercase,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.passwordRequiresSymbol !== undefined && data.Security.passwordRequiresSymbol !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_SYMBOL,
               !!data.Security.passwordRequiresSymbol,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
           if (data.Security.passwordRequiresNumber !== undefined && data.Security.passwordRequiresNumber !== null) {
-            await SettingsService.saveBooleanSetting(
+            await saveBooleanSetting(
               SettingsKeys.SECURITY_PASSWORD_REQUIRES_NUMBER,
               !!data.Security.passwordRequiresNumber,
-              'Security'
+              'Security',
+              context.dataContext
             )
           }
         }
 
-        await SettingsService.saveBooleanSetting(SettingsKeys.SERVER_CONFIGURED, true, 'Server')
+        await saveBooleanSetting(SettingsKeys.SERVER_CONFIGURED, true, 'Server', context.dataContext)
+        clearConfigurationFromCache(context.cacheContext)
 
         return {
           success: true

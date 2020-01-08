@@ -13,8 +13,8 @@ import LogRocket from 'logrocket'
 import setupLogRocketReact from 'logrocket-react'
 
 if (process.browser) {
-  LogRocket.init('LOGROCKET KEY')
-  setupLogRocketReact(LogRocket)
+  //LogRocket.init('LOGROCKET KEY')
+  //setupLogRocketReact(LogRocket)
 }
 
 const apolloClient = createApolloClient()
@@ -29,11 +29,12 @@ class MyApp extends App<any> {
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {}
     let configuration: any
-    if (ctx.req) {
-      const configManager = await import('../server/config/ConfigurationManager')
-
-      configuration = await configManager.default.GetCurrentConfiguration(true)
+    if (ctx.req && ctx.res) {
+      const prepareContext = (await import('../context/prepareContext')).prepareContext
+      const context = await prepareContext(ctx.req, ctx.res)
+      configuration = context.configuration
     }
+
     if (Component && Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx)
     }

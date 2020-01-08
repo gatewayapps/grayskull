@@ -5,7 +5,7 @@ import {
 } from '../../interfaces/graphql/IRefreshToken'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { RefreshToken } from '../../data/models/IRefreshToken'
+import { RefreshToken } from '../../data/models/RefreshToken'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'

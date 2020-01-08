@@ -1,6 +1,12 @@
-import Sequelize from 'sequelize'
+// @ts-nocheck
+import { default as Sequelize, Model } from 'sequelize'
 
-import { Setting } from './ISetting'
+export class Setting extends Model {
+  public key: string = this.key
+  public value: string = this.value
+  public type: string = this.type
+  public category: string = this.category
+}
 
 function SettingFactory(sequelize: Sequelize.Sequelize) {
   Setting.init(

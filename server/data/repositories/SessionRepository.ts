@@ -1,7 +1,7 @@
 import { SessionMeta, SessionFilter, SessionUniqueFilter } from '../../interfaces/graphql/ISession'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { Session } from '../../data/models/ISession'
+import { Session } from '../../data/models/Session'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'

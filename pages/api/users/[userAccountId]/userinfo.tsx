@@ -1,15 +1,25 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { buildContext, getClientRequestOptionsFromRequest } from '../../../../server/utils/authentication'
+import { getClientRequestOptionsFromRequest } from '../../../../server/utils/authentication'
 import UserClientService from '../../../../server/api/services/UserClientService'
 import { ScopeMap } from '../../../../server/api/services/ScopeService'
-import { UserAccount } from '../../../../server/data/models/IUserAccount'
+import { UserAccount } from '../../../../server/data/models/UserAccount'
 import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
 import TokenService from '../../../../server/api/services/TokenService'
 import { Permissions } from '../../../../server/utils/permissions'
 import { ensureScope } from '../../../../server/utils/ensureScope'
+import { prepareContext } from '../../../../context/prepareContext'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { requestContext } = await buildContext(req, res)
+  const context = await prepareContext(req, res)
+  const requestContext = context.req
+
+  const fullPath = requestContext.parsedUrl.pathname
+  const targetUserAccountId = fullPath.replace('/users/', '').replace('/userinfo', '')
+  if (!targetUserAccountId) {
+    res.json({ success: false, message: 'Missing user account id' })
+    return
+  }
+
   const clientOptions = await getClientRequestOptionsFromRequest(requestContext)
 
   const isClientAuthorized = await ensureScope(ScopeMap['admin-profile:write'].id, requestContext)
@@ -38,7 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
           // We need to get the UserClient for the target user
           const targetUserClient = await UserClientService.getUserClient(
-            { client_id: clientOptions.client.client_id, userClientId: req.query['userAccountId'].toString() },
+            { client_id: clientOptions.client.client_id, userClientId: targetUserAccountId },
             { userContext: clientOptions.userAccount }
           )
 

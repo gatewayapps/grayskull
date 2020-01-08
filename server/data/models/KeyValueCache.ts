@@ -1,6 +1,11 @@
-import Sequelize from 'sequelize'
+// @ts-nocheck
+import { default as Sequelize, Model } from 'sequelize'
 
-import { KeyValueCache } from './IKeyValueCache'
+export class KeyValueCache extends Model {
+  public key: string = this.key
+  public value: string = this.value
+  public expires: Date = this.expires
+}
 
 function KeyValueCacheFactory(sequelize: Sequelize.Sequelize) {
   KeyValueCache.init(

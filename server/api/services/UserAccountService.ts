@@ -1,11 +1,9 @@
-import ConfigurationManager from '../../config/ConfigurationManager'
 import { GrayskullError, GrayskullErrorCode } from '../../GrayskullError'
 import { Permissions } from '../../utils/permissions'
 import { encrypt } from '../../utils/cipher'
-import { getContext } from '../../data/context'
-import { Client } from '../../data/models/IClient'
-import { EmailAddress } from '../../data/models/IEmailAddress'
-import { UserAccount } from '../../data/models/IUserAccount'
+
+import { EmailAddress } from '../../data/models/EmailAddress'
+import { UserAccount } from '../../data/models/UserAccount'
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 import uuid from 'uuid/v4'
@@ -18,11 +16,18 @@ import EmailAddressRepository from '../../data/repositories/EmailAddressReposito
 import { randomBytes } from 'crypto'
 import { ForbiddenError } from 'apollo-server'
 import { hasPermission } from '../../decorators/permissionDecorator'
+import { IConfiguration } from '../../../data/types'
+import { DataContext } from '../../../context/getDataContext'
 
 const INVITATION_EXPIRES_IN = 3600
 
 class UserAccountService {
-  public async activateAccount(emailAddress: string, password: string, otpSecret?: string): Promise<void> {
+  public async activateAccount(
+    emailAddress: string,
+    password: string,
+    dataContext: DataContext,
+    otpSecret?: string
+  ): Promise<void> {
     const options: IQueryOptions = {
       userContext: null
     }
@@ -32,7 +37,7 @@ class UserAccountService {
       throw new Error('Unable to find a user with that email address')
     }
 
-    options.transaction = await (await getContext()).sequelize.transaction()
+    options.transaction = await dataContext.sequelize.transaction()
 
     try {
       const passwordHash = await this.hashPassword(password)
@@ -45,13 +50,13 @@ class UserAccountService {
         resetPasswordTokenExpiresAt: null
       }
 
-      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId! }, updates, options)
+      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, updates, options)
 
       await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verified: true }, options)
 
-      await options.transaction!.commit()
+      await options.transaction.commit()
     } catch (err) {
-      await options.transaction!.rollback()
+      await options.transaction.rollback()
       throw err
     }
   }
@@ -60,6 +65,8 @@ class UserAccountService {
   public async createUserAccount(
     data: UserAccount,
     emailAddress: string,
+    configuration: IConfiguration,
+    dataContext: DataContext,
     options: IQueryOptions
   ): Promise<UserAccount> {
     const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
@@ -69,9 +76,12 @@ class UserAccountService {
         'The email address has already been registered'
       )
     }
-    const config = await ConfigurationManager.GetCurrentConfiguration()
 
-    options.transaction = await (await getContext()).sequelize.transaction()
+    if (!configuration.Server) {
+      throw new Error('Failed to load Server configuration')
+    }
+
+    options.transaction = await dataContext.sequelize.transaction()
 
     try {
       data.userAccountId = uuid()
@@ -86,31 +96,32 @@ class UserAccountService {
       const user = await UserAccountRepository.createUserAccount(data, options)
 
       const emailAddressData: Partial<EmailAddress> = {
-        userAccountId: user.userAccountId!,
+        userAccountId: user.userAccountId,
         emailAddress: emailAddress,
         primary: true,
         verificationSecret: ''
       }
       await EmailAddressRepository.createEmailAddress(emailAddressData as EmailAddress, options)
 
-      const activateLink = `${config.Server!.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
+      const activateLink = `${configuration.Server.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'activateAccountTemplate',
         emailAddress,
-        `Activate Your ${config.Server!.realmName} Account`,
+        `Activate Your ${configuration.Server.realmName} Account`,
         {
           activateLink,
-          realmName: config.Server!.realmName,
+          realmName: configuration.Server.realmName,
           user: user,
           createdBy: options.userContext
-        }
+        },
+        configuration
       )
 
-      await options.transaction!.commit()
+      await options.transaction.commit()
 
       return user
     } catch (err) {
-      await options.transaction!.rollback()
+      await options.transaction.rollback()
       throw err
     }
   }
@@ -191,8 +202,10 @@ class UserAccountService {
     return true
   }
 
-  public async resetPassword(emailAddress: string, options: IQueryOptions) {
-    const config = await ConfigurationManager.GetCurrentConfiguration()
+  public async resetPassword(emailAddress: string, configuration: IConfiguration, options: IQueryOptions) {
+    if (!configuration.Server) {
+      throw new Error('Failed to load Server configuration')
+    }
     const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
     if (userAccount) {
       const resetToken = randomBytes(16).toString('hex')
@@ -204,18 +217,17 @@ class UserAccountService {
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
 
-      const resetPasswordLink = `${
-        config.Server!.baseUrl
-      }/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
+      const resetPasswordLink = `${configuration.Server.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
       await MailService.sendEmailTemplate(
         'resetPasswordTemplate',
         emailAddress,
-        `${config.Server!.realmName} Password Reset`,
+        `${configuration.Server.realmName} Password Reset`,
         {
           resetLink: resetPasswordLink,
-          realmName: config.Server!.realmName,
+          realmName: configuration.Server.realmName,
           user: userAccount
-        }
+        },
+        configuration
       )
     }
 
@@ -226,9 +238,11 @@ class UserAccountService {
     data: UserAccount,
     emailAddress: string,
     password: string,
+    configuration: IConfiguration,
+    dataContext: DataContext,
     options: IQueryOptions
   ): Promise<UserAccount> {
-    if ((await EmailAddressService.isDomainAllowed(emailAddress)) === false) {
+    if ((await EmailAddressService.isDomainAllowed(emailAddress, configuration)) === false) {
       throw new ForbiddenError(`Self registration is not permitted for your email domain`)
     }
 
@@ -248,7 +262,7 @@ class UserAccountService {
     }
 
     // 2. Start a transaction
-    newOptions.transaction = await (await getContext()).sequelize.transaction()
+    newOptions.transaction = await dataContext.sequelize.transaction()
 
     try {
       // First user is always an administrator
@@ -260,21 +274,21 @@ class UserAccountService {
 
       // 4. Create the user account email
       const emailAddressData: Partial<EmailAddress> = {
-        userAccountId: user.userAccountId!,
+        userAccountId: user.userAccountId,
         emailAddress: emailAddress,
         primary: true,
         verificationSecret: '',
         verified: userMeta.count === 0 // First user account gets verified
       }
-      await EmailAddressService.createEmailAddress(emailAddressData, newOptions)
+      await EmailAddressService.createEmailAddress(emailAddressData, configuration, newOptions)
 
       // 5. Commit the transaction
 
-      await newOptions.transaction!.commit()
+      await newOptions.transaction.commit()
 
       return user
     } catch (err) {
-      await newOptions.transaction!.rollback()
+      await newOptions.transaction.rollback()
       throw err
     }
   }

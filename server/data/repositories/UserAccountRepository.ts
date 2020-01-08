@@ -1,7 +1,7 @@
 import { UserAccountMeta, UserAccountFilter, UserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { UserAccount } from '../../data/models/IUserAccount'
+import { UserAccount } from '../../data/models/UserAccount'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
 import { IQueryOptions } from '../../data/IQueryOptions'
