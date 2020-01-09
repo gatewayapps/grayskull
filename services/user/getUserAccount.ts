@@ -27,6 +27,8 @@ export async function getUserAccount(
 
   if (user) {
     cacheContext.setValue(cacheKey, user, 30)
+  } else {
+    throw new Error(`User with userAccountId=${userAccountId} does not exist`)
   }
 
   return user

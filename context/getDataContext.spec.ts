@@ -5,6 +5,7 @@ export async function getInMemoryContext() {
   const options: Sequelize.Options = {
     database: 'grayskull',
     dialect: 'sqlite',
+    storage: ':memory:',
     logging: false
   }
 

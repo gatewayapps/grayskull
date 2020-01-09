@@ -8,7 +8,8 @@ import UserAccountService from '../../../api/services/UserAccountService'
 import { setAuthCookies, doLogout } from '../../../utils/authentication'
 import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
-
+import { verifyPassword } from '../../../../services/security/verifyPassword'
+import { setUserAccountPassword } from '../../../../services/user/setUserAccountPassword'
 import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
@@ -267,13 +268,21 @@ export default {
               throw new Error('New password cannot be the same as the old password')
             }
 
-            const passwordVerified = await AuthenticationService.verifyPassword(
-              userContext.userAccountId!,
+            const passwordVerified = await verifyPassword(
+              userContext.userAccountId,
               oldPassword,
-              { userContext }
+              context.dataContext,
+              context.cacheContext
             )
+
             if (passwordVerified) {
-              await UserAccountService.changeUserPassword(userContext.userAccountId!, newPassword, { userContext })
+              await setUserAccountPassword(
+                userContext.userAccountId,
+                newPassword,
+                context.dataContext,
+                context.cacheContext
+              )
+
               result = { success: true }
             } else {
               throw new Error('Current password is not correct')
