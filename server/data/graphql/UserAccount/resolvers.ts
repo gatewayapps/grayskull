@@ -10,6 +10,7 @@ import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
 import { verifyPassword } from '../../../../services/security/verifyPassword'
 import { setUserAccountPassword } from '../../../../services/user/setUserAccountPassword'
+import { getUserAccountByEmailAddress } from '../../../../services/user/getUserAccountByEmailAddress'
 import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
@@ -259,9 +260,22 @@ export default {
             }
           )
           if (!userContext) {
-            const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, { userContext })
+            const userAccount = await getUserAccountByEmailAddress(
+              emailAddress,
+              context.dataContext,
+              context.cacheContext
+            )
 
-            await UserAccountService.changeUserPassword(userAccount!.userAccountId!, newPassword, { userContext })
+            if (!userAccount) {
+              throw new Error('No user account with that user account id')
+            }
+
+            await setUserAccountPassword(
+              userAccount.userAccountId,
+              newPassword,
+              context.dataContext,
+              context.cacheContext
+            )
             result = { success: true }
           } else {
             if (newPassword === oldPassword) {
@@ -446,10 +460,11 @@ export default {
         try {
           const config = context.configuration
 
-          const passwordValid = await AuthenticationService.verifyPassword(
+          const passwordValid = await verifyPassword(
             context.user.userAccountId,
             args.data.password,
-            { userContext: context.user }
+            context.dataContext,
+            context.cacheContext
           )
           if (!passwordValid) {
             return {

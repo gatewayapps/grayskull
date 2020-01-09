@@ -74,15 +74,6 @@ otplib.authenticator.options = {
 }
 
 class AuthenticationService {
-  public async verifyPassword(userAccountId: string, password: string, options: IQueryOptions) {
-    const user = await UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId }, options)
-    if (user) {
-      return await bcrypt.compare(password, user.passwordHash)
-    } else {
-      return false
-    }
-  }
-
   public async authenticateUser(
     emailAddress: string,
     password: string,
