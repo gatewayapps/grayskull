@@ -10,9 +10,5 @@ export async function verifyPassword(
   cacheContext: CacheContext
 ): Promise<boolean> {
   const userAccount = await getUserAccount(userAccountId, dataContext, cacheContext, true)
-  if (!userAccount) {
-    return false
-  } else {
-    return await compare(password, userAccount.passwordHash)
-  }
+  return await compare(password, userAccount.passwordHash)
 }

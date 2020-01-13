@@ -60,3 +60,8 @@ typings/
 # next.js build output
 .next
 public/uploads
+
+reports/mutation/html
+
+# stryker temp files
+.stryker-tmp

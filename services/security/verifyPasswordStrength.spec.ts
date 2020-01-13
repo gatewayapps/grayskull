@@ -34,7 +34,7 @@ describe('security::verifyPasswordStrength', () => {
 
   it('Should not fail if a password does meet the minimum length', () => {
     const config = applySettingsToDefaultConfiguration({ passwordMinimumLength: 6 })
-    const validationResult = verifyPasswordStrength('test123', config)
+    const validationResult = verifyPasswordStrength('test12', config)
     expect(validationResult.success).toEqual(true)
     expect(validationResult.validationErrors).toBeUndefined()
   })

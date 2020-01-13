@@ -12,7 +12,9 @@ describe('shouldUserChangePassword', () => {
   })
 
   it('Should return false if maxPasswordAge is 10 and lastPasswordChange is 20 days ago', () => {
-    const shouldChangePassword = shouldUserChangePassword(addDays(new Date(), -20), 10)
+    const minDate = addDays(new Date(), -10)
+
+    const shouldChangePassword = shouldUserChangePassword(minDate, 10)
     expect(shouldChangePassword).toEqual(true)
   })
 })

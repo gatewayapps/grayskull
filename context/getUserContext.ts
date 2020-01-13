@@ -19,18 +19,18 @@ export async function getUserContext(
 ): Promise<UserContext | undefined> {
   if (!sessionId) {
     return undefined
-  }
-  const session = await verifyAndUseSession(sessionId, fingerprint, dataContext, cacheContext)
-  if (!session) {
-    return undefined
-  }
+  } else {
+    const session = await verifyAndUseSession(sessionId, fingerprint, dataContext, cacheContext)
+    if (!session) {
+      return undefined
+    } else {
+      const userAccount = await getUserAccount(session.userAccountId, dataContext, cacheContext, false)
 
-  const userAccount = await getUserAccount(session.userAccountId, dataContext, cacheContext, false)
-  if (userAccount) {
-    const primaryEmailAddress = await getPrimaryEmailAddress(userAccount.userAccountId, dataContext, cacheContext)
-    return {
-      userAccount,
-      primaryEmailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : ''
+      const primaryEmailAddress = await getPrimaryEmailAddress(userAccount.userAccountId, dataContext, cacheContext)
+      return {
+        userAccount,
+        primaryEmailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : ''
+      }
     }
   }
 }

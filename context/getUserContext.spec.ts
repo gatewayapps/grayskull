@@ -28,6 +28,7 @@ describe('getUserContext', () => {
       dataContext
     )
   })
+
   it('Should correctly return a user from a session id and fingerprint', async () => {
     const userContext = await getUserContext(testSession.sessionId, 'xyz789', dataContext, cacheContext)
 
@@ -36,6 +37,13 @@ describe('getUserContext', () => {
       expect(userContext.userAccount.firstName).toEqual(testUser.firstName)
       expect(userContext.userAccount.lastName).toEqual(testUser.lastName)
       expect(userContext.userAccount.userAccountId).toEqual(testUser.userAccountId)
+      expect(userContext.primaryEmailAddress).toEqual('')
+      expect(userContext.userAccount.passwordHash).toBeUndefined()
     }
+  })
+
+  it('Should return undefined for invalid session id', async () => {
+    const userContext = await getUserContext('abc123', 'xyz789', dataContext, cacheContext)
+    expect(userContext).toBeUndefined()
   })
 })
