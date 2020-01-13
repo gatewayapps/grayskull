@@ -6,11 +6,12 @@ import { getUserAccount } from './getUserAccount'
 export async function getUserAccountByEmailAddress(
   emailAddress: string,
   dataContext: DataContext,
-  cacheContext: CacheContext
+  cacheContext: CacheContext,
+  includeSensitive = false
 ) {
   const emailAddressRecord = await getEmailAddressByEmailAddress(emailAddress, dataContext)
   if (emailAddressRecord) {
-    return await getUserAccount(emailAddressRecord.userAccountId, dataContext, cacheContext)
+    return await getUserAccount(emailAddressRecord.userAccountId, dataContext, cacheContext, includeSensitive)
   }
 
   return null

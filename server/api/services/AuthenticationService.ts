@@ -7,7 +7,6 @@ import ClientService from '../../api/services/ClientService'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
-import moment from 'moment'
 
 import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
@@ -31,11 +30,6 @@ import { IConfiguration } from '../../../data/types'
 
 const CACHE_PREFIX = 'BACKUP_CODE_'
 
-const LOWERCASE_REGEX = /[a-z]/
-const UPPERCASE_REGEX = /[A-Z]/
-const NUMBER_REGEX = /\d/
-const SYMBOL_REGEX = /[-!@#$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/
-
 type GrantType = 'authorization_code' | 'refresh_token'
 
 interface IAccessTokenResponse {
@@ -47,26 +41,12 @@ interface IAccessTokenResponse {
   session_id?: string
 }
 
-interface IAuthenticationCodeCacheResult {
-  clientId: string
-  scope: string[]
-  userAccount: UserAccount
-  userClientId: string
-  nonce: string | undefined
-}
-
 interface IAuthenticateUserResult {
   success: boolean
   session?: Session
   message?: string
   otpRequired?: boolean
   emailVerificationRequired?: boolean
-}
-
-interface IRefreshTokenPayload {
-  client_id: string
-  session_id: string
-  userAccountId: string
 }
 
 otplib.authenticator.options = {
@@ -310,24 +290,6 @@ class AuthenticationService {
     return true
   }
 
-  public async shouldUserChangePassword(
-    emailAddress: string,
-    configuration: IConfiguration,
-    options: IQueryOptions
-  ): Promise<boolean> {
-    if (configuration.Security!.maxPasswordAge && configuration.Security!.maxPasswordAge > 0) {
-      const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, options)
-      if (userAccount) {
-        const lastPasswordChange = userAccount.lastPasswordChange || userAccount.createdAt!
-        const daysSincePasswordChange = Math.abs(moment().diff(lastPasswordChange, 'days'))
-        if (daysSincePasswordChange >= configuration.Security!.maxPasswordAge) {
-          return true
-        }
-      }
-    }
-    return false
-  }
-
   public async validateRedirectUri(client_id: string, redirectUri: string, options: IQueryOptions): Promise<boolean> {
     const client = await ClientRepository.getClient({ client_id }, options)
     if (client) {
@@ -340,52 +302,6 @@ class AuthenticationService {
     } else {
       return false
     }
-  }
-
-  public async validatePassword(
-    password: string,
-    confirm: string,
-    configuration: IConfiguration,
-    options: IQueryOptions
-  ): Promise<boolean> {
-    const requiredParts: string[] = []
-    if (configuration.Security!.passwordRequiresLowercase) {
-      requiredParts.push('lowercase letter (a-z)')
-    }
-    if (configuration.Security!.passwordRequiresUppercase) {
-      requiredParts.push('uppercase letter (A-Z)')
-    }
-    if (configuration.Security!.passwordRequiresNumber) {
-      requiredParts.push('number (0-9)')
-    }
-    if (configuration.Security!.passwordRequiresSymbol) {
-      requiredParts.push('symbol (!, #, @, etc...)')
-    }
-
-    const PasswordValidationError = `Password must contain at least one each of the following: ${requiredParts.join(
-      ', '
-    )}`
-
-    if (password !== confirm) {
-      throw new Error('Passwords do not match.  Please re-enter your passwords')
-    }
-
-    if (configuration.Security!.passwordRequiresLowercase && LOWERCASE_REGEX.test(password) === false) {
-      throw new Error(PasswordValidationError)
-    }
-    if (configuration.Security!.passwordRequiresUppercase && UPPERCASE_REGEX.test(password) === false) {
-      throw new Error(PasswordValidationError)
-    }
-    if (configuration.Security!.passwordRequiresNumber && NUMBER_REGEX.test(password) === false) {
-      throw new Error(PasswordValidationError)
-    }
-    if (configuration.Security!.passwordRequiresSymbol && SYMBOL_REGEX.test(password) === false) {
-      throw new Error(PasswordValidationError)
-    }
-    if (password.length < (configuration.Security!.passwordMinimumLength || 8)) {
-      throw new Error(`Password must be at least ${configuration.Security!.passwordMinimumLength} characters long`)
-    }
-    return true
   }
 
   public verifyOtpToken(secret: string | null, token: string | null, options: IQueryOptions): boolean {
