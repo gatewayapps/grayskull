@@ -11,9 +11,17 @@ export interface CacheContext {
 
 export function getCacheContext(): CacheContext {
   return {
-    setValue: (key, value, ttlSeconds) =>
-      (cache[key] = { expiresAt: addSeconds(new Date(), ttlSeconds).getTime(), value }),
+    setValue: (key, value, ttlSeconds) => {
+      if (key === '') {
+        throw new Error('Invalid cache key')
+      } else {
+        cache[key] = { expiresAt: addSeconds(new Date(), ttlSeconds).getTime(), value }
+      }
+    },
     getValue: <T = any>(key) => {
+      if (key === '') {
+        throw new Error('Invalid cache key')
+      }
       if (!cache[key]) {
         return undefined
       }

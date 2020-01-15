@@ -5,8 +5,8 @@ export async function createEmailAddress(
   emailAddress: string,
   userAccountId: string,
   dataContext: DataContext,
-  primary = false,
-  verified = false
+  primary,
+  verified
 ) {
   return new dataContext.EmailAddress({
     emailAddress,
