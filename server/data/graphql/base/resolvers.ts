@@ -51,23 +51,23 @@ export default {
     isOobe: async (obj, args, context: IRequestContext) => {
       const isServerConfigured = !!context.configuration.Server.baseUrl
       return !isServerConfigured
-    }
-  },
-  Mutation: {
-    uploadFile: async (obj, args) => {
-      return UploadService.createUpload(args.file)
     },
     backupConfiguration: async (obj, args, context: IRequestContext) => {
       if (!context.user || context.user.permissions !== Permissions.Admin) {
         return { success: false }
       } else {
         const backupDownloadCode = randomBytes(32).toString('hex')
-        await cacheValue('BACKUP_DOWNLOAD_CODE', backupDownloadCode, 30, context.dataContext)
+        await cacheValue('BACKUP_DOWNLOAD_CODE', backupDownloadCode, 300, context.dataContext)
         return {
           success: true,
           downloadUrl: `/api/backup?code=${backupDownloadCode}`
         }
       }
+    }
+  },
+  Mutation: {
+    uploadFile: async (obj, args) => {
+      return UploadService.createUpload(args.file)
     },
     restoreConfiguration: async (obj, args, context: IRequestContext) => {
       return {}

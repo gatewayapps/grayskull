@@ -44,13 +44,14 @@ type Query {
   emailAddressAvailable(emailAddress: String!): Boolean @anonymous
   myEmailAddresses: [EmailAddress!]!
   me: UserProfile
+  backupConfiguration: BackupResponse
 }
 
 type Mutation {
   uploadFile(file: Upload!): UploadFileResponse
   logout: OperationResponse @anonymous
   saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
-  backupConfiguration: BackupResponse
+
   restoreConfiguration(file: Upload!): OperationResponse
 }
 

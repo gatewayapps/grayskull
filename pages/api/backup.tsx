@@ -3,6 +3,7 @@ import { prepareContext } from '../../context/prepareContext'
 
 import { backup } from '../../services/backup/backup'
 import { getValue } from '../../services/persistentCache/getValue'
+import { clearValue } from '../../services/persistentCache/clearValue'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
@@ -18,6 +19,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(403)
       return
     }
+
+    await clearValue('BACKUP_DOWNLOAD_CODE', context.dataContext)
 
     const encryptedBackup = await backup(context.dataContext)
     res.status(200)
