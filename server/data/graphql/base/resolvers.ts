@@ -4,6 +4,8 @@ import { Permissions } from '../../../utils/permissions'
 import UploadService from '../../../api/services/UploadService'
 
 import { IRequestContext } from '../../../../context/prepareContext'
+import { randomBytes } from 'crypto'
+import { cacheValue } from '../../../../services/persistentCache/cacheValue'
 
 export default {
   Upload: GraphQLUpload,
@@ -29,31 +31,46 @@ export default {
     }
   }),
   Query: {
-    securityConfiguration: async (obj, args, context: IRequestContext, info) => {
+    securityConfiguration: async (obj, args, context: IRequestContext) => {
       const config = context.configuration
 
       return {
-        multifactorRequired: config.Security!.multifactorRequired,
-        passwordRequiresLowercase: config.Security!.passwordRequiresLowercase,
-        passwordRequiresUppercase: config.Security!.passwordRequiresUppercase,
-        passwordRequiresNumber: config.Security!.passwordRequiresNumber,
-        passwordRequiresSymbol: config.Security!.passwordRequiresSymbol,
-        passwordMinimumLength: config.Security!.passwordMinimumLength,
-        allowSignup: config.Security!.allowSignup
+        multifactorRequired: config.Security.multifactorRequired,
+        passwordRequiresLowercase: config.Security.passwordRequiresLowercase,
+        passwordRequiresUppercase: config.Security.passwordRequiresUppercase,
+        passwordRequiresNumber: config.Security.passwordRequiresNumber,
+        passwordRequiresSymbol: config.Security.passwordRequiresSymbol,
+        passwordMinimumLength: config.Security.passwordMinimumLength,
+        allowSignup: config.Security.allowSignup
       }
     },
-    serverConfiguration: async (obj, args, context: IRequestContext, info) => {
+    serverConfiguration: async (obj, args, context: IRequestContext) => {
       const config = context.configuration
       return config.Server
     },
-    isOobe: async (obj, args, context: IRequestContext, info) => {
+    isOobe: async (obj, args, context: IRequestContext) => {
       const isServerConfigured = !!context.configuration.Server.baseUrl
       return !isServerConfigured
     }
   },
   Mutation: {
-    uploadFile: async (obj, args, context, info) => {
+    uploadFile: async (obj, args) => {
       return UploadService.createUpload(args.file)
+    },
+    backupConfiguration: async (obj, args, context: IRequestContext) => {
+      if (!context.user || context.user.permissions !== Permissions.Admin) {
+        return { success: false }
+      } else {
+        const backupDownloadCode = randomBytes(32).toString('hex')
+        await cacheValue('BACKUP_DOWNLOAD_CODE', backupDownloadCode, 30, context.dataContext)
+        return {
+          success: true,
+          downloadUrl: `/api/backup?code=${backupDownloadCode}`
+        }
+      }
+    },
+    restoreConfiguration: async (obj, args, context: IRequestContext) => {
+      return {}
     }
   }
 }

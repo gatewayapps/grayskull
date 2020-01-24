@@ -24,6 +24,11 @@ extend type UserAccount {
   emailAddress: String
 }
 
+type BackupResponse {
+  success: Boolean!
+  downloadUrl: String
+}
+
 directive @anonymous on QUERY | MUTATION | FIELD_DEFINITION
 
 directive @auth(requires: Role) on OBJECT | FIELD_DEFINITION
@@ -45,6 +50,8 @@ type Mutation {
   uploadFile(file: Upload!): UploadFileResponse
   logout: OperationResponse @anonymous
   saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
+  backupConfiguration: BackupResponse
+  restoreConfiguration(file: Upload!): OperationResponse
 }
 
 input SecurityConfigurationInput {
