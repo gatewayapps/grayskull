@@ -1,9 +1,6 @@
 import { ApolloServer, AuthenticationError } from 'apollo-server-micro'
-
 import { addMiddleware } from 'graphql-add-middleware'
-
 import { schema } from '../../server/data/graphql/graphql'
-
 import { prepareContext } from '../../context/prepareContext'
 
 const checkAnonymous = async (root, args, context, info, next) => {
@@ -15,9 +12,7 @@ const checkAnonymous = async (root, args, context, info, next) => {
 
   return next()
 }
-addMiddleware(schema, async (root, args, context, info, next) => {
-  return next()
-})
+
 addMiddleware(schema, 'Mutation', checkAnonymous)
 addMiddleware(schema, 'Query', checkAnonymous)
 

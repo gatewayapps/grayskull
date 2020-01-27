@@ -11,6 +11,12 @@ export async function getUserAccount(
   const cacheKey = `USER_${userAccountId}`
   const cachedUser = cacheContext.getValue<UserAccount>(cacheKey)
   if (cachedUser) {
+    if (!includeSensitive) {
+      delete cachedUser.otpSecret
+      delete cachedUser.passwordHash
+      delete cachedUser.resetPasswordToken
+      delete cachedUser.resetPasswordTokenExpiresAt
+    }
     return cachedUser
   }
 
@@ -27,6 +33,8 @@ export async function getUserAccount(
 
   if (user) {
     cacheContext.setValue(cacheKey, user, 30)
+  } else {
+    throw new Error(`User with userAccountId=${userAccountId} does not exist`)
   }
 
   return user

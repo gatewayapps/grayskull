@@ -21,6 +21,12 @@ describe('getPrimaryEmailAddress', () => {
       expect(primaryEmail.emailAddress).toEqual('test@test.com')
       expect(primaryEmail.userAccountId).toEqual('abc123')
       expect(primaryEmail.primary).toEqual(true)
+      expect(cacheContext.getValue(`PRIMARY_EMAIL_abc123`)).toBeDefined()
     }
+  })
+
+  it('Should return undefined if given an invalid user account id', async () => {
+    const emailAddress = await getPrimaryEmailAddress('xyz123', dataContext, cacheContext)
+    expect(emailAddress).toBeNull()
   })
 })

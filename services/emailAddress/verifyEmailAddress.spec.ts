@@ -21,8 +21,29 @@ describe('verifyEmailAddress', () => {
       expect(verifiedRecord.verified).toEqual(true)
     }
   })
+  it('Should throw an error when passed an email address thats already verified', async () => {
+    const emailRecord = await createEmailAddress('unverified2@test.com', 'abc123', dataContext, true, false)
+    await verifyEmailAddress(emailRecord.emailAddress, emailRecord.verificationSecret, dataContext)
+    let failed = false
+    try {
+      await verifyEmailAddress('unverified2@test.com', emailRecord.verificationSecret, dataContext)
+    } catch (err) {
+      failed = true
+      expect(err.message).toEqual('E-mail address is already verified')
+      expect(err.code).toEqual('E_ADDRESS_VERIFIED')
+    }
+    expect(failed).toEqual(true)
+  })
   it('Should throw an error when passed an invalid verification code', async () => {
     await createEmailAddress('unverified_fail@test.com', 'abc123', dataContext, true, false)
-    expect(verifyEmailAddress('unverified@test.com', 'NEVER GOING TO MATCH', dataContext)).rejects.toThrow()
+    let failed = false
+    try {
+      await verifyEmailAddress('unverified@test.com', 'NEVER GOING TO MATCH', dataContext)
+    } catch (err) {
+      expect(err.message).toEqual('Invalid e-mail address or verification secret')
+      expect(err.code).toEqual('E_UNKNOWN_ADDRESS')
+      failed = true
+    }
+    expect(failed).toEqual(true)
   })
 })

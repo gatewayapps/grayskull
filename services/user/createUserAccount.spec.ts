@@ -5,7 +5,7 @@ import { createUserAccount } from './createUserAccount'
 
 let dataContext: DataContext
 
-const TEST_USER_DATA: Partial<UserAccount> = {
+export const TEST_USER_DATA: Partial<UserAccount> = {
   firstName: 'Test',
   lastName: 'User',
   permissions: 0,

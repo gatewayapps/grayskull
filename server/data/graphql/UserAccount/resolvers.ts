@@ -8,7 +8,10 @@ import UserAccountService from '../../../api/services/UserAccountService'
 import { setAuthCookies, doLogout } from '../../../utils/authentication'
 import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
-
+import { verifyPassword } from '../../../../services/security/verifyPassword'
+import { verifyPasswordStrength } from '../../../../services/security/verifyPasswordStrength'
+import { setUserAccountPassword } from '../../../../services/user/setUserAccountPassword'
+import { getUserAccountByEmailAddress } from '../../../../services/user/getUserAccountByEmailAddress'
 import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
@@ -233,7 +236,7 @@ export default {
     },
     changePassword: async (obj, args, context: IRequestContext, info) => {
       // insert your changePassword implementation here
-      let result: IOperationResponse
+
       const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data
       const userContext: UserAccount = context.user || null
 
@@ -243,51 +246,79 @@ export default {
           ? await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext })
           : true
       if (!isTokenValid) {
-        result = {
+        return {
           success: false,
           message: 'Invalid email address or token'
         }
       } else {
         try {
-          const passwordValid = await AuthenticationService.validatePassword(
-            newPassword,
-            confirmPassword,
-            context.configuration,
-            {
-              userContext
+          if (newPassword !== confirmPassword) {
+            return {
+              success: false,
+              message: 'Passwords do not match'
             }
-          )
-          if (!userContext) {
-            const userAccount = await UserAccountService.getUserAccountByEmailAddress(emailAddress, { userContext })
+          }
 
-            await UserAccountService.changeUserPassword(userAccount!.userAccountId!, newPassword, { userContext })
-            result = { success: true }
+          const passwordValid = await verifyPasswordStrength(newPassword, context.configuration.Security)
+          if (!passwordValid.success) {
+            return {
+              success: false,
+              error: passwordValid.validationErrors?.join('\n'),
+              message: passwordValid.validationErrors?.join('\n')
+            }
           } else {
-            if (newPassword === oldPassword) {
-              throw new Error('New password cannot be the same as the old password')
-            }
+            if (!userContext) {
+              const userAccount = await getUserAccountByEmailAddress(
+                emailAddress,
+                context.dataContext,
+                context.cacheContext
+              )
 
-            const passwordVerified = await AuthenticationService.verifyPassword(
-              userContext.userAccountId!,
-              oldPassword,
-              { userContext }
-            )
-            if (passwordVerified) {
-              await UserAccountService.changeUserPassword(userContext.userAccountId!, newPassword, { userContext })
-              result = { success: true }
+              if (!userAccount) {
+                throw new Error('No user account with that user account id')
+              }
+
+              await setUserAccountPassword(
+                userAccount.userAccountId,
+                newPassword,
+                context.dataContext,
+                context.cacheContext
+              )
+              return { success: true }
             } else {
-              throw new Error('Current password is not correct')
+              if (newPassword === oldPassword) {
+                throw new Error('New password cannot be the same as the old password')
+              }
+
+              const passwordVerified = await verifyPassword(
+                userContext.userAccountId,
+                oldPassword,
+                context.dataContext,
+                context.cacheContext
+              )
+
+              if (passwordVerified) {
+                await setUserAccountPassword(
+                  userContext.userAccountId,
+                  newPassword,
+                  context.dataContext,
+                  context.cacheContext
+                )
+
+                return { success: true }
+              } else {
+                throw new Error('Current password is not correct')
+              }
             }
           }
         } catch (err) {
-          result = {
+          return {
             success: false,
             error: err.message,
             message: err.message
           }
         }
       }
-      return result
     },
     resetPassword: async (obj, args, context: IRequestContext, info) => {
       // insert your resetPassword implementation here
@@ -396,7 +427,15 @@ export default {
       try {
         const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
         const serviceOptions = { userContext: context.user || null }
-        await AuthenticationService.validatePassword(password, confirm, context.configuration, serviceOptions)
+
+        const validatePasswordResult = await verifyPasswordStrength(password, context.configuration.Security)
+        if (!validatePasswordResult.success) {
+          return {
+            success: false,
+            message: validatePasswordResult.validationErrors?.join('\n')
+          }
+        }
+
         const userAccount = await UserAccountService.registerUser(
           userInfo,
           emailAddress,
@@ -437,10 +476,11 @@ export default {
         try {
           const config = context.configuration
 
-          const passwordValid = await AuthenticationService.verifyPassword(
+          const passwordValid = await verifyPassword(
             context.user.userAccountId,
             args.data.password,
-            { userContext: context.user }
+            context.dataContext,
+            context.cacheContext
           )
           if (!passwordValid) {
             return {
@@ -558,22 +598,23 @@ export default {
           message: 'Invalid email address or token'
         }
       }
-
-      if (
-        !(await AuthenticationService.validatePassword(password, confirmPassword, context.configuration, {
-          userContext: null
-        }))
-      ) {
+      if (password !== confirmPassword) {
         return {
           success: false,
-          message: 'Password does not meet complexity requirements or password and confirm password do not match'
+          message: 'Password does not match confirm password'
         }
-      }
-
-      await UserAccountService.activateAccount(emailAddress, password, context.dataContext, otpSecret)
-
-      return {
-        success: true
+      } else {
+        const validationResult = await verifyPasswordStrength(password, context.configuration.Security)
+        if (validationResult.success) {
+          return {
+            success: true
+          }
+        } else {
+          return {
+            success: false,
+            message: validationResult.validationErrors?.join('\n')
+          }
+        }
       }
     },
     logout: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
