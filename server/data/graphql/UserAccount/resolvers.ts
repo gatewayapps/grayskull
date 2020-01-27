@@ -8,10 +8,10 @@ import UserAccountService from '../../../api/services/UserAccountService'
 import { setAuthCookies, doLogout } from '../../../utils/authentication'
 import UserClientService from '../../../api/services/UserClientService'
 import SessionService from '../../../api/services/SessionService'
-import { verifyPassword } from '../../../../services/security/verifyPassword'
-import { verifyPasswordStrength } from '../../../../services/security/verifyPasswordStrength'
-import { setUserAccountPassword } from '../../../../services/user/setUserAccountPassword'
-import { getUserAccountByEmailAddress } from '../../../../services/user/getUserAccountByEmailAddress'
+import { verifyPassword } from '../../../../operations/data/userAccount/verifyPassword'
+import { verifyPasswordStrength } from '../../../../operations/logic/verifyPasswordStrength'
+import { setUserAccountPassword } from '../../../../operations/data/userAccount/setUserAccountPassword'
+import { getUserAccountByEmailAddress } from '../../../../operations/data/userAccount/getUserAccountByEmailAddress'
 import _ from 'lodash'
 
 import { IQueryOptions } from '../../../data/IQueryOptions'
@@ -278,12 +278,7 @@ export default {
                 throw new Error('No user account with that user account id')
               }
 
-              await setUserAccountPassword(
-                userAccount.userAccountId,
-                newPassword,
-                context.dataContext,
-                context.cacheContext
-              )
+              await setUserAccountPassword(userAccount, newPassword, context.dataContext, context.cacheContext)
               return { success: true }
             } else {
               if (newPassword === oldPassword) {
@@ -298,12 +293,7 @@ export default {
               )
 
               if (passwordVerified) {
-                await setUserAccountPassword(
-                  userContext.userAccountId,
-                  newPassword,
-                  context.dataContext,
-                  context.cacheContext
-                )
+                await setUserAccountPassword(userContext, newPassword, context.dataContext, context.cacheContext)
 
                 return { success: true }
               } else {

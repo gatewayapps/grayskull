@@ -8,7 +8,7 @@ import { UserAccount } from '../../models/UserAccount'
 import { Permissions } from '../../../utils/permissions'
 import { ForbiddenError } from 'apollo-server'
 import { IRequestContext } from '../../../../context/prepareContext'
-import { clearConfigurationFromCache } from '../../../../services/configuration/getCurrentConfiguration'
+import { clearConfigurationFromCache } from '../../../../operations/data/configuration/getCurrentConfiguration'
 
 export default {
   Query: {

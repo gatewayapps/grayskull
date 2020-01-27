@@ -3,7 +3,7 @@ import { getCacheContext, CacheContext } from './getCacheContext'
 import { getDataContextFromConnectionString, DataContext } from './getDataContext'
 import { SESSION_ID_COOKIE_NAME } from '../server/utils/authentication'
 import { getUserContext } from './getUserContext'
-import { getCurrentConfiguration } from '../services/configuration/getCurrentConfiguration'
+import { getCurrentConfiguration } from '../operations/data/configuration/getCurrentConfiguration'
 import { IConfiguration } from '../data/types'
 
 export interface IRequestContext {

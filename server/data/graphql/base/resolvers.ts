@@ -5,7 +5,7 @@ import UploadService from '../../../api/services/UploadService'
 
 import { IRequestContext } from '../../../../context/prepareContext'
 import { randomBytes } from 'crypto'
-import { cacheValue } from '../../../../services/persistentCache/cacheValue'
+import { cacheValue } from '../../../../operations/data/persistentCache/cacheValue'
 
 export default {
   Upload: GraphQLUpload,

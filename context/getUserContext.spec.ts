@@ -2,8 +2,8 @@ import { getUserContext } from './getUserContext'
 import { getCacheContext, CacheContext } from './getCacheContext'
 import { DataContext } from './getDataContext'
 
-import { createTestUserAccount } from '../services/user/createUserAccount.spec'
-import { createSession } from '../services/session/createSession'
+import { createTestUserAccount } from '../operations/data/user/createUserAccount.spec'
+import { createSession } from '../operations/data/session/createSession'
 import { getInMemoryContext } from './getDataContext.spec'
 
 import { UserAccount } from '../server/data/models/UserAccount'

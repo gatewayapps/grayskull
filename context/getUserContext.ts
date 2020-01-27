@@ -1,10 +1,10 @@
 import { DataContext } from './getDataContext'
 import { CacheContext } from './getCacheContext'
 
-import { getUserAccount } from '../services/user/getUserAccount'
-import { verifyAndUseSession } from '../services/session/verifyAndUseSession'
+import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
+import { verifyAndUseSession } from '../operations/data/session/verifyAndUseSession'
 import { UserAccount } from '../server/data/models/UserAccount'
-import { getPrimaryEmailAddress } from '../services/emailAddress/getPrimaryEmailAddress'
+import { getPrimaryEmailAddress } from '../operations/data/emailAddress/getPrimaryEmailAddress'
 
 export interface UserContext {
   userAccount: UserAccount
