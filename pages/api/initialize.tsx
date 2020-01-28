@@ -8,8 +8,7 @@ import { PASSWORD_PLACEHOLDER } from '../../server/constants'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
-  const requestContext = context.req
-  const responseContext = context.res
+
   const configuration = context.configuration
 
   configuration.Mail.password = PASSWORD_PLACEHOLDER
@@ -18,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const pinnedClients = await ClientRepository.getClients({ pinToHeader_equals: true }, { userContext: null })
 
   configuration.HeaderItems = pinnedClients
-  const needsConfiguration = configuration.Server?.baseUrl !== undefined ? undefined : true
+  const needsConfiguration = !configuration.Server?.baseUrl
 
   const needsAdmin = (await (await UserAccountRepository.userAccountsMeta({}, { userContext: null })).count) === 0
 
