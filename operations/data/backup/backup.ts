@@ -1,5 +1,5 @@
-import { DataContext } from '../../context/getDataContext'
-import { encrypt } from '../../server/utils/cipher'
+import { DataContext } from '../../../context/getDataContext'
+import { encrypt } from '../../../server/utils/cipher'
 
 const BIG_LIMIT = 999999999
 

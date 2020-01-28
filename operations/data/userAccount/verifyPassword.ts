@@ -1,5 +1,5 @@
 import { DataContext } from '../../../context/getDataContext'
-import { getUserAccount } from '../userAccount/getUserAccount'
+import { getUserAccount } from './getUserAccount'
 import { CacheContext } from '../../../context/getCacheContext'
 import { compare } from 'bcrypt'
 

@@ -1,5 +1,5 @@
-import { decrypt } from '../../server/utils/cipher'
-import { DataContext } from '../../context/getDataContext'
+import { decrypt } from '../../../server/utils/cipher'
+import { DataContext } from '../../../context/getDataContext'
 
 export const restore = async (encryptedData: string, dataContext: DataContext) => {
   const decrypted = decrypt(encryptedData)

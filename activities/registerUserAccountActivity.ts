@@ -1,5 +1,5 @@
 import { RegisterUserOperationArgs } from '../data/types'
-import { getUserAccountByEmailAddress } from '../operations/data/user/getUserAccountByEmailAddress'
+import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
 import { DataContext } from '../context/getDataContext'
 import { CacheContext } from '../context/getCacheContext'
 

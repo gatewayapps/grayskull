@@ -12,7 +12,7 @@ describe(registerUserAccountActivity, () => {
     cacheContext = getCacheContext()
   })
   it('Should throw an error if a user account exists with the given emailAddress', async () => {
-    jest.mock('../operations/data/user/getUserAccountByEmailAddress', () => ({
+    jest.mock('../operations/data/userAccount/getUserAccountByEmailAddress', () => ({
       getUserAccountByEmailAddress: () => true
     }))
     expect(

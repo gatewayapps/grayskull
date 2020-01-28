@@ -2,7 +2,7 @@ import { getUserContext } from './getUserContext'
 import { getCacheContext, CacheContext } from './getCacheContext'
 import { DataContext } from './getDataContext'
 
-import { createTestUserAccount } from '../operations/data/user/createUserAccount.spec'
+import { createTestUserAccount } from '../operations/data/userAccount/createUserAccount.spec'
 import { createSession } from '../operations/data/session/createSession'
 import { getInMemoryContext } from './getDataContext.spec'
 

@@ -1,9 +1,9 @@
 import { setUserAccountPassword } from './setUserAccountPassword'
 import { DataContext } from '../../../context/getDataContext'
 import { getInMemoryContext } from '../../../context/getDataContext.spec'
-import { createUserAccount } from '../userAccount/createUserAccount'
+import { createUserAccount } from './createUserAccount'
 import { CacheContext, getCacheContext } from '../../../context/getCacheContext'
-import { verifyPassword } from '../userAccount/verifyPassword'
+import { verifyPassword } from './verifyPassword'
 
 let dataContext: DataContext
 let cacheContext: CacheContext
