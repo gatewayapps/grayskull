@@ -1,7 +1,7 @@
 import React from 'react'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import { ISecurityConfiguration } from '../../server/data/models/ISecurityConfiguration'
+import { ISecurityConfiguration } from '../../foundation/models/ISecurityConfiguration'
 
 export interface ISecurityConfigurationFormProps {
   data: ISecurityConfiguration

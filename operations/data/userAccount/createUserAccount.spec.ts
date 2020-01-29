@@ -1,6 +1,6 @@
-import { DataContext } from '../../../context/getDataContext'
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
-import { UserAccount } from '../../../server/data/models/UserAccount'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
+import { UserAccount } from '../../../foundation/models/UserAccount'
 import { createUserAccount } from './createUserAccount'
 
 let dataContext: DataContext

@@ -1,6 +1,6 @@
-import { DataContext } from '../../../context/getDataContext'
-import { CacheContext } from '../../../context/getCacheContext'
-import { UserAccount } from '../../../server/data/models/UserAccount'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { CacheContext } from '../../../foundation/context/getCacheContext'
+import { UserAccount } from '../../../foundation/models/UserAccount'
 
 export async function getUserAccount(
   userAccountId: string,

@@ -1,4 +1,4 @@
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { restore } from './restore'
 import { TEST_USER_DATA } from '../userAccount/createUserAccount.spec'
 

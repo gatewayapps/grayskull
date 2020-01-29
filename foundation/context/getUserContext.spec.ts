@@ -2,12 +2,12 @@ import { getUserContext } from './getUserContext'
 import { getCacheContext, CacheContext } from './getCacheContext'
 import { DataContext } from './getDataContext'
 
-import { createTestUserAccount } from '../operations/data/userAccount/createUserAccount.spec'
-import { createSession } from '../operations/data/session/createSession'
+import { createTestUserAccount } from '../../operations/data/userAccount/createUserAccount.spec'
+import { createSession } from '../../operations/data/session/createSession'
 import { getInMemoryContext } from './getDataContext.spec'
 
-import { UserAccount } from '../server/data/models/UserAccount'
-import { Session } from '../server/data/models/Session'
+import { UserAccount } from '../models/UserAccount'
+import { Session } from '../models/Session'
 
 let dataContext: DataContext
 let testUser: UserAccount

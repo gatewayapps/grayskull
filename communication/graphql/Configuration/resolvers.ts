@@ -1,6 +1,6 @@
 import { SettingsKeys } from '../../../config/KnownSettings'
 import { IConfiguration } from '../../models/IConfiguration'
-import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../api/services/SettingService'
+import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../server/api/services/SettingService'
 
 import { encrypt } from '../../../utils/cipher'
 import { PASSWORD_PLACEHOLDER } from '../../../constants'
@@ -8,7 +8,7 @@ import { UserAccount } from '../../models/UserAccount'
 import { Permissions } from '../../../utils/permissions'
 import { ForbiddenError } from 'apollo-server'
 import { IRequestContext } from '../../../../context/prepareContext'
-import { clearConfigurationFromCache } from '../../../../operations/data/configuration/getCurrentConfiguration'
+import { clearConfigurationFromCache } from '../../../operations/data/configuration/getCurrentConfiguration'
 
 export default {
   Query: {

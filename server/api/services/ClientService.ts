@@ -1,13 +1,13 @@
-import { Client } from '../../data/models/Client'
+import { Client } from '../../../foundation/models/Client'
 
 import crypto from 'crypto'
 import uuid from 'uuid/v4'
 import { IClientFilter, IClientMeta, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
 
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 import { hasPermission } from '../../decorators/permissionDecorator'
-import { Permissions } from '../../utils/permissions'
+import { Permissions } from '../../../foundation/constants/permissions'
 import ClientRepository from '../../data/repositories/ClientRepository'
 
 class ClientService {

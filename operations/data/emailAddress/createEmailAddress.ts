@@ -1,4 +1,4 @@
-import { DataContext } from '../../../context/getDataContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { randomBytes } from 'crypto'
 
 export async function createEmailAddress(

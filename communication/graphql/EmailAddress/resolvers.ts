@@ -1,4 +1,4 @@
-import EmailAddressService from '../../../api/services/EmailAddressService'
+import EmailAddressService from '../../../server/api/services/EmailAddressService'
 import { hasPermission } from '../../../decorators/permissionDecorator'
 import { userInfo } from 'os'
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'

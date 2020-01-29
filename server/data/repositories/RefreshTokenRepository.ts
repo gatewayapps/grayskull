@@ -5,10 +5,10 @@ import {
 } from '../../interfaces/graphql/IRefreshToken'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { RefreshToken } from '../../data/models/RefreshToken'
+import { RefreshToken } from '../../../foundation/models/RefreshToken'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 class RefreshTokenRepository {
   public async refreshTokensMeta(

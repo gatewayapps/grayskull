@@ -1,6 +1,6 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { IConfiguration } from '../../server/data/models/IConfiguration'
+
+import { IConfiguration } from '../../foundation/models/IConfiguration'
 
 export class ConfirmConfiguration extends React.PureComponent<IConfirmConfigurationProps> {
   componentDidMount() {
@@ -28,7 +28,14 @@ export class ConfirmConfiguration extends React.PureComponent<IConfirmConfigurat
   }
 
   shouldRender(k) {
-    return !['provider', 'connectionVerified', 'verifyingConnection', 'connectionError', 'certificate', 'privateKey'].includes(k)
+    return ![
+      'provider',
+      'connectionVerified',
+      'verifyingConnection',
+      'connectionError',
+      'certificate',
+      'privateKey'
+    ].includes(k)
   }
 
   getValue(v) {
@@ -53,7 +60,9 @@ export class ConfirmConfiguration extends React.PureComponent<IConfirmConfigurat
         <div className="card-text">{this.renderConfigSection('Mail')}</div>
         <div className="card-text">{this.renderConfigSection('Security')}</div>
 
-        <p className="card-text mt-4">When you click Save, your configuration will be written to disk and Grayskull will restart.</p>
+        <p className="card-text mt-4">
+          When you click Save, your configuration will be written to disk and Grayskull will restart.
+        </p>
       </div>
     )
   }

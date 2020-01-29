@@ -1,8 +1,8 @@
 import { verifyPassword } from './verifyPassword'
-import { DataContext } from '../../../context/getDataContext'
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createUserAccount } from '../userAccount/createUserAccount'
-import { CacheContext, getCacheContext } from '../../../context/getCacheContext'
+import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
 let dataContext: DataContext
 let cacheContext: CacheContext
 

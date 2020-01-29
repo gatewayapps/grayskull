@@ -1,9 +1,9 @@
 import { verifyAndUseSession } from './verifyAndUseSession'
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
-import { Session } from '../../../server/data/models/Session'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
+import { Session } from '../../../foundation/models/Session'
 import { createSession, SESSION_EXPIRATION_SECONDS } from './createSession'
-import { getCacheContext, CacheContext } from '../../../context/getCacheContext'
-import { DataContext } from '../../../context/getDataContext'
+import { getCacheContext, CacheContext } from '../../../foundation/context/getCacheContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { addSeconds } from 'date-fns'
 
 let dataContext: DataContext

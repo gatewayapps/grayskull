@@ -1,5 +1,5 @@
 import { verifyPasswordStrength } from './verifyPasswordStrength'
-import { ISecurityConfiguration } from '../../data/types'
+import { ISecurityConfiguration } from '../../foundation/types/types'
 
 function applySettingsToDefaultConfiguration(settings: Partial<ISecurityConfiguration>): ISecurityConfiguration {
   return Object.assign(

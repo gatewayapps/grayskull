@@ -1,18 +1,18 @@
-import React, { useState, ComponentProps, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { useFetch } from '../utils/useFetch'
 import Router from 'next/router'
 import ConfigurationContext from '../contexts/ConfigurationContext'
 import UserContext from '../contexts/UserContext'
 import LoadingIndicator from './LoadingIndicator'
-import BackgroundCoverComponent from './BackgroundCover'
-import { IConfiguration } from '../../server/data/models/IConfiguration'
+
+import { IConfiguration } from '../../foundation/models/IConfiguration'
 import ActivityMessageContainerComponent from './ActivityMessageContainer'
 import LogRocket from 'logrocket'
 
 const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (props) => {
   const { response, isLoading, error, refetch } = useFetch(`/api/initialize`, { method: 'GET' })
 
-  let redirectUri: string = ''
+  let redirectUri = ''
   let content: ReactNode = props.children
 
   if (error) {

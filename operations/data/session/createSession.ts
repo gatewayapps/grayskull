@@ -1,6 +1,6 @@
-import { Session } from '../../../server/data/models/Session'
+import { Session } from '../../../foundation/models/Session'
 import { addSeconds } from 'date-fns'
-import { DataContext } from '../../../context/getDataContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { hash } from 'bcrypt'
 export const SESSION_EXPIRATION_SECONDS = 60 * 60
 

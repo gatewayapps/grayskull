@@ -1,7 +1,7 @@
 import React from 'react'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import { IServerConfiguration } from '../../server/data/models/IServerConfiguration'
+import { IServerConfiguration } from '../../foundation/models/IServerConfiguration'
 
 export interface IServerConfigurationFormProps {
   data: IServerConfiguration

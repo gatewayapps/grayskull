@@ -3,7 +3,7 @@ import sgMail from '@sendgrid/mail'
 import handlebars from 'handlebars'
 
 import { decrypt } from '../../utils/cipher'
-import { IConfiguration } from '../../../data/types'
+import { IConfiguration } from '../../../foundation/types/types'
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default
 const activateAccountTextTemplate = require('../../templates/activateAccountTemplate.text.handlebars').default

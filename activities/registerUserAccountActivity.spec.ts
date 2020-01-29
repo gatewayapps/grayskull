@@ -1,12 +1,12 @@
-import { getInMemoryContext } from '../context/getDataContext.spec'
+import { getInMemoryContext } from '../foundation/context/getDataContext.spec'
 
 import { registerUserAccountActivity } from './registerUserAccountActivity'
-import { DataContext } from '../context/getDataContext'
-import { CacheContext, getCacheContext } from '../context/getCacheContext'
+import { DataContext } from '../foundation/context/getDataContext'
+import { CacheContext, getCacheContext } from '../foundation/context/getCacheContext'
 let dataContext: DataContext
 let cacheContext: CacheContext
 
-describe(registerUserAccountActivity, () => {
+describe('registerUserAccountActivity', () => {
   beforeAll(async () => {
     dataContext = await getInMemoryContext()
     cacheContext = getCacheContext()

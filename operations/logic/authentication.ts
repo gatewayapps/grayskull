@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Session } from '../data/models/Session'
+import { Session } from '../../foundation/models/Session'
 
 import Cookies from 'cookies'
-import SessionService from '../api/services/SessionService'
-import { UserAccount } from '../data/models/UserAccount'
+import SessionService from '../../server/api/services/SessionService'
+import { UserAccount } from '../../foundation/models/UserAccount'
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import TokenService from '../api/services/TokenService'
+import TokenService from '../../server/api/services/TokenService'
 
 export type RequestContext = NextApiRequest & {
   cookies: any

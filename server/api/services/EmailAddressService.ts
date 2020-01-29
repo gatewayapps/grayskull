@@ -3,12 +3,12 @@ import {
   IEmailAddressMeta,
   IEmailAddressUniqueFilter
 } from '../../interfaces/graphql/IEmailAddress'
-import { IQueryOptions } from '../../data/IQueryOptions'
-import { EmailAddress } from '../../data/models/EmailAddress'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
+import { EmailAddress } from '../../../foundation/models/EmailAddress'
 import _ from 'lodash'
 
 import { hasPermission } from '../../decorators/permissionDecorator'
-import { Permissions } from '../../utils/permissions'
+import { Permissions } from '../../../foundation/constants/permissions'
 
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
@@ -17,7 +17,7 @@ import { randomBytes } from 'crypto'
 
 import MailService from './MailService'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
-import { IConfiguration } from '../../../data/types'
+import { IConfiguration } from '../../../foundation/types/types'
 
 class EmailAddressService {
   @hasPermission(Permissions.User)

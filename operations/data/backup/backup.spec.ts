@@ -1,4 +1,4 @@
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createTestUserAccount, TEST_USER_DATA } from '../userAccount/createUserAccount.spec'
 import { backup } from './backup'
 import { decrypt } from '../../../server/utils/cipher'

@@ -1,5 +1,5 @@
-import { CacheContext } from '../../../context/getCacheContext'
-import { DataContext } from '../../../context/getDataContext'
+import { CacheContext } from '../../../foundation/context/getCacheContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { getEmailAddressByEmailAddress } from '../emailAddress/getEmailAddressByEmailAddress'
 import { getUserAccount } from './getUserAccount'
 

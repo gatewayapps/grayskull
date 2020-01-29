@@ -1,4 +1,4 @@
-import { DataContext } from '../../../context/getDataContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { InvalidOperationError } from './errors'
 
 export async function verifyEmailAddress(emailAddress: string, verificationSecret: string, dataContext: DataContext) {

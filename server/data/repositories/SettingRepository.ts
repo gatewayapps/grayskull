@@ -1,10 +1,10 @@
 import { ISettingMeta, ISettingFilter, ISettingUniqueFilter } from '../../interfaces/graphql/ISetting'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { Setting } from '../../data/models/Setting'
+import { Setting } from '../../../foundation/models/Setting'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 class SettingRepository {
   public async settingsMeta(filter: ISettingFilter | null, options: IQueryOptions): Promise<ISettingMeta> {

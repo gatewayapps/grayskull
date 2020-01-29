@@ -1,4 +1,4 @@
-import { ISecurityConfiguration } from '../../data/types'
+import { ISecurityConfiguration } from '../../foundation/types/types'
 
 const LOWERCASE_REGEX = /[a-z]/
 const UPPERCASE_REGEX = /[A-Z]/

@@ -1,6 +1,6 @@
-import { DataContext } from '../../../context/getDataContext'
-import { CacheContext } from '../../../context/getCacheContext'
-import { EmailAddress } from '../../../server/data/models/EmailAddress'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { CacheContext } from '../../../foundation/context/getCacheContext'
+import { EmailAddress } from '../../../foundation/models/EmailAddress'
 
 export async function getPrimaryEmailAddress(
   userAccountId: string,

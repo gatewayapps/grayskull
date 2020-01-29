@@ -5,10 +5,10 @@ import {
 } from '../../interfaces/graphql/IEmailAddress'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { EmailAddress } from '../../data/models/EmailAddress'
+import { EmailAddress } from '../../../foundation/models/EmailAddress'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 class EmailAddressRepository {
   public async emailAddressesMeta(

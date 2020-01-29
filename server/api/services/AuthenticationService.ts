@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { decrypt } from '../../utils/cipher'
 
-import { Session } from '../../data/models/Session'
-import { UserAccount } from '../../data/models/UserAccount'
+import { Session } from '../../../foundation/models/Session'
+import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
@@ -13,20 +13,20 @@ import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
 import MailService from './MailService'
 import SessionService from './SessionService'
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import ClientRepository from '../../data/repositories/ClientRepository'
-import { Client } from '../../data/models/Client'
+import { Client } from '../../../foundation/models/Client'
 import TokenService from './TokenService'
-import { RefreshToken } from '../../data/models/RefreshToken'
+import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { ScopeMap } from './ScopeService'
 
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
 
-import { IConfiguration } from '../../../data/types'
+import { IConfiguration } from '../../../foundation/types/types'
 
 const CACHE_PREFIX = 'BACKUP_CODE_'
 

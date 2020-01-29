@@ -1,6 +1,6 @@
 import uuid from 'uuid'
-import { UserAccount } from '../../../server/data/models/UserAccount'
-import { DataContext } from '../../../context/getDataContext'
+import { UserAccount } from '../../../foundation/models/UserAccount'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import bcrypt from 'bcrypt'
 import { encrypt } from '../../../server/utils/cipher'
 

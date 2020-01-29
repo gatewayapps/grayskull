@@ -1,5 +1,5 @@
-import { Session } from '../data/models/Session'
-import { UserAccount } from '../data/models/UserAccount'
+import { Session } from '../../foundation/models/Session'
+import { UserAccount } from '../../foundation/models/UserAccount'
 
 const FIRST_USER_CREATED = false
 const MIN_TIME_TO_UPDATE_LAST_ACTIVE = 60 * 1000 // 1 minute

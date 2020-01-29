@@ -1,4 +1,4 @@
-import { UserAccount } from '../data/models/UserAccount'
+import { UserAccount } from './UserAccount'
 import { Transaction, Includeable } from 'sequelize'
 
 export interface IQueryOptions {

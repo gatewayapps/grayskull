@@ -1,4 +1,4 @@
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 
 import { cacheValue } from './cacheValue'
 import { getValue } from './getValue'

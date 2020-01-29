@@ -3,7 +3,7 @@ import fs, { ReadStream } from 'fs-extra'
 import { FileUpload } from '../../types/FileUpload'
 import path, { join } from 'path'
 import uuid from 'uuid/v4'
-import { IUploadFileResponse } from '../../data/models/IUploadFileResponse'
+import { IUploadFileResponse } from '../../../foundation/models/IUploadFileResponse'
 
 const UPLOAD_DIR = join(process.env.PROJECT_ROOT!, `public/uploads/`)
 

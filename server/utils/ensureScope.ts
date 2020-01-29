@@ -1,4 +1,4 @@
-import { RequestContext, getClientRequestOptionsFromRequest } from './authentication'
+import { RequestContext, getClientRequestOptionsFromRequest } from '../../operations/logic/authentication'
 
 export async function ensureScope(scopeId: string, req: RequestContext) {
   const clientOptions = await getClientRequestOptionsFromRequest(req)

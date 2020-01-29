@@ -1,7 +1,12 @@
-import { DataContext } from '../../../context/getDataContext'
-import { CacheContext } from '../../../context/getCacheContext'
-import { Setting } from '../../../server/data/models/Setting'
-import { IConfiguration, IMailConfiguration, IServerConfiguration, ISecurityConfiguration } from '../../../data/types'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { CacheContext } from '../../../foundation/context/getCacheContext'
+import { Setting } from '../../../foundation/models/Setting'
+import {
+  IConfiguration,
+  IMailConfiguration,
+  IServerConfiguration,
+  ISecurityConfiguration
+} from '../../../foundation/types/types'
 import { SettingsKeys } from '../../../server/config/KnownSettings'
 import { decrypt } from '../../../server/utils/cipher'
 const settingsCacheKey = `SETTINGS_RECORDS`

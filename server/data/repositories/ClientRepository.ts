@@ -1,10 +1,10 @@
 import { IClientMeta, IClientFilter, IClientUniqueFilter } from '../../interfaces/graphql/IClient'
 import { convertFilterToSequelizeWhere } from '../../utils/graphQLSequelizeConverter'
 
-import { Client } from '../../data/models/Client'
+import { Client } from '../../../foundation/models/Client'
 
 import { WhereOptions, WhereAttributeHash } from 'sequelize'
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 class ClientRepository {
   public async clientsMeta(filter: IClientFilter | null, options: IQueryOptions): Promise<IClientMeta> {

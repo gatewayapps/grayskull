@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { makeExecutableSchema } from 'apollo-server'
 import { mergeResolvers, mergeTypes } from 'merge-graphql-schemas'
 import { AuthorizationDirective } from './AuthorizationDirective'
 import { AnonymousDirective } from './AnonymousDirective'
 
-const graphqlSchema = require('../../../data/schema.graphql')
-const customSchema = require('../../../data/custom.graphql')
+const graphqlSchema = require('./schema.graphql')
+const customSchema = require('./custom.graphql')
 
 const typeDefs = mergeTypes([graphqlSchema, customSchema])
 import baseResolver from './base/resolvers'

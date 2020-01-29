@@ -1,10 +1,10 @@
 import Cookies from 'cookies'
 import { getCacheContext, CacheContext } from './getCacheContext'
 import { getDataContextFromConnectionString, DataContext } from './getDataContext'
-import { SESSION_ID_COOKIE_NAME } from '../server/utils/authentication'
+import { SESSION_ID_COOKIE_NAME } from '../../operations/logic/authentication'
 import { getUserContext } from './getUserContext'
-import { getCurrentConfiguration } from '../operations/data/configuration/getCurrentConfiguration'
-import { IConfiguration } from '../data/types'
+import { getCurrentConfiguration } from '../../operations/data/configuration/getCurrentConfiguration'
+import { IConfiguration } from '../types/types'
 
 export interface IRequestContext {
   req: any

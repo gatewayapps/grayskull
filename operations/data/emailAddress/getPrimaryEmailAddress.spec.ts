@@ -1,8 +1,8 @@
 import { getPrimaryEmailAddress } from './getPrimaryEmailAddress'
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
-import { DataContext } from '../../../context/getDataContext'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { createEmailAddress } from './createEmailAddress'
-import { getCacheContext, CacheContext } from '../../../context/getCacheContext'
+import { getCacheContext, CacheContext } from '../../../foundation/context/getCacheContext'
 
 let dataContext: DataContext
 let cacheContext: CacheContext

@@ -1,4 +1,4 @@
-import { IConfiguration } from '../../data/types'
+import { IConfiguration } from '../../foundation/types/types'
 
 import { addDays } from 'date-fns'
 

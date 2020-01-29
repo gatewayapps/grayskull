@@ -1,8 +1,8 @@
-import { DataContext } from '../../../context/getDataContext'
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 
 import { createSession } from './createSession'
-import { Session } from '../../../server/data/models/Session'
+import { Session } from '../../../foundation/models/Session'
 
 let dataContext: DataContext
 

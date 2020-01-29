@@ -1,4 +1,4 @@
-import { DataContext } from '../../../context/getDataContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { flushExpiredValues } from './flushExpiredValues'
 
 export async function getValue(key: string, dataContext: DataContext) {

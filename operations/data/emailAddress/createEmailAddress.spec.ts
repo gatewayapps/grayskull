@@ -1,6 +1,6 @@
 import { createEmailAddress } from './createEmailAddress'
-import { getInMemoryContext } from '../../../context/getDataContext.spec'
-import { DataContext } from '../../../context/getDataContext'
+import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
+import { DataContext } from '../../../foundation/context/getDataContext'
 
 let dataContext: DataContext
 

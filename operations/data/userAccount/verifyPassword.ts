@@ -1,6 +1,6 @@
-import { DataContext } from '../../../context/getDataContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 import { getUserAccount } from './getUserAccount'
-import { CacheContext } from '../../../context/getCacheContext'
+import { CacheContext } from '../../../foundation/context/getCacheContext'
 import { compare } from 'bcrypt'
 
 export async function verifyPassword(
