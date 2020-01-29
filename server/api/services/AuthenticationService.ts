@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { decrypt } from '../../utils/cipher'
+import { decrypt } from '../../../operations/logic/encryption'
 
 import { Session } from '../../../foundation/models/Session'
 import { UserAccount } from '../../../foundation/models/UserAccount'

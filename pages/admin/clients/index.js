@@ -3,11 +3,11 @@ import Link from 'next/link'
 import React from 'react'
 import { Query } from 'react-apollo'
 
-import ErrorMessage from '../../../client/components/ErrorMessage'
-import LoadingIndicator from '../../../client/components/LoadingIndicator'
-import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
-import Permissions from '../../../client/utils/permissions'
-import { RequirePermission, RequirePermissionModes } from '../../../client/components/RequirePermission'
+import ErrorMessage from '../../../presentation/components/ErrorMessage'
+import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
+import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
+import Permissions from '../../../presentation/utils/permissions'
+import { RequirePermission, RequirePermissionModes } from '../../../presentation/components/RequirePermission'
 
 const ALL_CLIENTS_QUERY = gql`
   query ALL_CLIENTS_QUERY {

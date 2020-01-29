@@ -1,13 +1,13 @@
-import { SettingsKeys } from '../../../config/KnownSettings'
-import { IConfiguration } from '../../models/IConfiguration'
+import { SettingsKeys } from '../../../server/config/KnownSettings'
+import { IConfiguration } from '../../../foundation/models/IConfiguration'
 import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../server/api/services/SettingService'
 
-import { encrypt } from '../../../utils/cipher'
-import { PASSWORD_PLACEHOLDER } from '../../../constants'
-import { UserAccount } from '../../models/UserAccount'
-import { Permissions } from '../../../utils/permissions'
-import { ForbiddenError } from 'apollo-server'
-import { IRequestContext } from '../../../../context/prepareContext'
+import { encrypt } from '../../../operations/logic/encryption'
+import { PASSWORD_PLACEHOLDER } from '../../../foundation/constants'
+import { UserAccount } from '../../../foundation/models/UserAccount'
+import { Permissions } from '../../../foundation/constants/permissions'
+
+import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { clearConfigurationFromCache } from '../../../operations/data/configuration/getCurrentConfiguration'
 
 export default {

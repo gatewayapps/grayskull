@@ -1,11 +1,11 @@
 import React from 'react'
 import { withRouter, default as Router } from 'next/router'
-import BackgroundCover from '../client/components/BackgroundCover'
+import BackgroundCover from '../presentation/components/BackgroundCover'
 
-import LoginForm from '../client/components/LoginForm'
-import Primary from '../client/layouts/primary'
-import { parseRoutingState } from '../client/utils/routing'
-import UserContext from '../client/contexts/UserContext'
+import LoginForm from '../presentation/components/LoginForm'
+import Primary from '../presentation/layouts/primary'
+import { parseRoutingState } from '../presentation/utils/routing'
+import UserContext from '../presentation/contexts/UserContext'
 
 class LoginPage extends React.PureComponent {
   static async getInitialProps({ req, query, res }) {

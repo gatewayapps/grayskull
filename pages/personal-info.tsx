@@ -1,8 +1,8 @@
 import React from 'react'
-import AuthenticatedRoute from '../client/layouts/authenticatedRoute'
-import EditableUserProfile from '../client/components/EditableUserProfile'
-import UserContext from '../client/contexts/UserContext'
-import EditableEmailList from '../client/components/EditableEmailList'
+import AuthenticatedRoute from '../presentation/layouts/authenticatedRoute'
+import EditableUserProfile from '../presentation/components/EditableUserProfile'
+import UserContext from '../presentation/contexts/UserContext'
+import EditableEmailList from '../presentation/components/EditableEmailList'
 const PersonalInformationPage = () => {
   return (
     <AuthenticatedRoute>

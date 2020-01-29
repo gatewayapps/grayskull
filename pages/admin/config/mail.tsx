@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { SAVE_CONFIGURATION } from '../../oobe'
 
-import RequireConfiguration from '../../../client/components/RequireConfiguration'
-import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
+import RequireConfiguration from '../../../presentation/components/RequireConfiguration'
+import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import { Permissions } from '../../../foundation/constants/permissions'
 import { IConfiguration } from '../../../foundation/models/IConfiguration'
-import MailConfigurationForm from '../../../client/components/MailConfigurationForm'
-import LoadingIndicator from '../../../client/components/LoadingIndicator'
-import MutationButton from '../../../client/components/MutationButton'
+import MailConfigurationForm from '../../../presentation/components/MailConfigurationForm'
+import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
+import MutationButton from '../../../presentation/components/MutationButton'
 
 const MailComponent = (props) => {
   const [localConfiguration, setLocalConfiguration] = useState<IConfiguration | undefined>()

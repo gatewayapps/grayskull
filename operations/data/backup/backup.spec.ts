@@ -1,7 +1,7 @@
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createTestUserAccount, TEST_USER_DATA } from '../userAccount/createUserAccount.spec'
 import { backup } from './backup'
-import { decrypt } from '../../../server/utils/cipher'
+import { decrypt } from '../../logic/encryption'
 
 describe('backup', () => {
   it('should return an encrypted JSON string of the data', async () => {

@@ -5,7 +5,7 @@ import { IRegisterUserResponse } from '../../../foundation/models/IRegisterUserR
 import AuthenticationService from '../../../server/api/services/AuthenticationService'
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
 import UserAccountService from '../../../server/api/services/UserAccountService'
-import { setAuthCookies, doLogout } from '../../../utils/authentication'
+import { setAuthCookies, doLogout } from '../../../operations/logic/authentication'
 import UserClientService from '../../../server/api/services/UserClientService'
 import SessionService from '../../../server/api/services/SessionService'
 import { verifyPassword } from '../../../operations/data/userAccount/verifyPassword'
@@ -22,9 +22,9 @@ import ClientRepository from '../../../data/repositories/ClientRepository'
 import { ScopeMap } from '../../../server/api/services/ScopeService'
 
 import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
-import { encrypt } from '../../../utils/cipher'
-import { Permissions } from '../../../utils/permissions'
-import { IRequestContext } from '../../../../context/prepareContext'
+import { encrypt } from '../../../operations/logic/encryption'
+import { Permissions } from '../../../foundation/constants/permissions'
+import { IRequestContext } from '../../../foundation/context/prepareContext'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 

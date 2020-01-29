@@ -1,4 +1,4 @@
-import { decrypt } from '../../../server/utils/cipher'
+import { decrypt } from '../../logic/encryption'
 import { DataContext } from '../../../foundation/context/getDataContext'
 
 export const restore = async (encryptedData: string, dataContext: DataContext) => {

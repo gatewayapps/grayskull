@@ -8,7 +8,7 @@ import {
   ISecurityConfiguration
 } from '../../../foundation/types/types'
 import { SettingsKeys } from '../../../server/config/KnownSettings'
-import { decrypt } from '../../../server/utils/cipher'
+import { decrypt } from '../../logic/encryption'
 const settingsCacheKey = `SETTINGS_RECORDS`
 function getNumericSetting(key: string, settings: Setting[]) {
   const record = settings.find((s) => s.key === key && s.type === 'Number')

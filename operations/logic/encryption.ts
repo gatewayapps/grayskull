@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { GRAYSKULL_GLOBAL_SECRET } from './environment'
+import { GRAYSKULL_GLOBAL_SECRET } from '../../server/utils/environment'
 
 const ALGORITHM = 'aes-256-cbc'
 const IV_LENGTH = 16

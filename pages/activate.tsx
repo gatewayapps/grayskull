@@ -1,8 +1,8 @@
 import { withRouter } from 'next/router'
 import React from 'react'
-import Primary from '../client/layouts/primary'
-import BackgroundCover from '../client/components/BackgroundCover'
-import AccountActivation from '../client/components/AccountActivation'
+import Primary from '../presentation/layouts/primary'
+import BackgroundCover from '../presentation/components/BackgroundCover'
+import AccountActivation from '../presentation/components/AccountActivation'
 
 interface ActivatePageProps {
   emailAddress: string

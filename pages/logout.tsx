@@ -1,14 +1,14 @@
 import React from 'react'
 import Router from 'next/router'
-import LoadingIndicator from '../client/components/LoadingIndicator'
+import LoadingIndicator from '../presentation/components/LoadingIndicator'
 import { NextPage } from 'next'
 import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import Jumbotron from 'reactstrap/lib/Jumbotron'
-import ErrorMessage from '../client/components/ErrorMessage'
-import BackgroundCoverComponent from '../client/components/BackgroundCover'
-import ActivityMessageContainerComponent from '../client/components/ActivityMessageContainer'
-import UserContext from '../client/contexts/UserContext'
+import ErrorMessage from '../presentation/components/ErrorMessage'
+import BackgroundCoverComponent from '../presentation/components/BackgroundCover'
+import ActivityMessageContainerComponent from '../presentation/components/ActivityMessageContainer'
+import UserContext from '../presentation/contexts/UserContext'
 
 const LOGOUT_MUTATION = gql`
   mutation LOGOUT_MUTATION {

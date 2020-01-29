@@ -5,9 +5,9 @@ import App from 'next/app'
 import Head from 'next/head'
 import React from 'react'
 
-import createApolloClient from '../client/utils/createApolloClient'
+import createApolloClient from '../presentation/utils/createApolloClient'
 
-import ApplicationInitializer from '../client/components/ApplicationInitializer'
+import ApplicationInitializer from '../presentation/components/ApplicationInitializer'
 
 import LogRocket from 'logrocket'
 import setupLogRocketReact from 'logrocket-react'

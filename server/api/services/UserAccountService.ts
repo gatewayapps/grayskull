@@ -1,6 +1,6 @@
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 import { Permissions } from '../../../foundation/constants/permissions'
-import { encrypt } from '../../utils/cipher'
+import { encrypt } from '../../../operations/logic/encryption'
 
 import { EmailAddress } from '../../../foundation/models/EmailAddress'
 import { UserAccount } from '../../../foundation/models/UserAccount'

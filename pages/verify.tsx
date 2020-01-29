@@ -3,13 +3,13 @@ import React, { useContext } from 'react'
 
 import gql from 'graphql-tag'
 import { useMutation } from 'react-apollo'
-import LoadingIndicator from '../client/components/LoadingIndicator'
-import ErrorMessage from '../client/components/ErrorMessage'
+import LoadingIndicator from '../presentation/components/LoadingIndicator'
+import ErrorMessage from '../presentation/components/ErrorMessage'
 import { Jumbotron } from 'reactstrap'
 
-import Primary from '../client/layouts/primary'
-import BackgroundCoverComponent from '../client/components/BackgroundCover'
-import UserContext from '../client/contexts/UserContext'
+import Primary from '../presentation/layouts/primary'
+import BackgroundCoverComponent from '../presentation/components/BackgroundCover'
+import UserContext from '../presentation/contexts/UserContext'
 
 const VERIFY_EMAIL_ADDRESS_MUTATION = gql`
   mutation VERIFY_EMAIL_ADDRESS_MUTATION($emailAddress: String!, $code: String!) {

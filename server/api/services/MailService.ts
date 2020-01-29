@@ -2,7 +2,7 @@ import nodemailer, { SendMailOptions } from 'nodemailer'
 import sgMail from '@sendgrid/mail'
 import handlebars from 'handlebars'
 
-import { decrypt } from '../../utils/cipher'
+import { decrypt } from '../../../operations/logic/encryption'
 import { IConfiguration } from '../../../foundation/types/types'
 
 const activateAccountHtmlTemplate = require('../../templates/activateAccountTemplate.html.handlebars').default

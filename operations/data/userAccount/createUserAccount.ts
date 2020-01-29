@@ -2,7 +2,7 @@ import uuid from 'uuid'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import bcrypt from 'bcrypt'
-import { encrypt } from '../../../server/utils/cipher'
+import { encrypt } from '../../logic/encryption'
 
 export async function createUserAccount(data: Partial<UserAccount>, password: string, dataContext: DataContext) {
   if (data.permissions === undefined) {

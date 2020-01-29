@@ -1,5 +1,5 @@
 import { DataContext } from '../../../foundation/context/getDataContext'
-import { encrypt } from '../../../server/utils/cipher'
+import { encrypt } from '../../logic/encryption'
 
 const BIG_LIMIT = 999999999
 

@@ -4,12 +4,12 @@ import { withRouter, Router } from 'next/router'
 import React, { useEffect } from 'react'
 import { Query, useMutation, useQuery } from 'react-apollo'
 
-import Primary from '../client/layouts/primary'
-import ErrorMessage from '../client/components/ErrorMessage'
-import ClientAuthorization from '../client/components/ClientAuthorization'
-import LoadingIndicator from '../client/components/LoadingIndicator'
-import RequireAuthentication from '../client/components/RequireAuthentication'
-import ActivityMessageContainerComponent from '../client/components/ActivityMessageContainer'
+import Primary from '../presentation/layouts/primary'
+import ErrorMessage from '../presentation/components/ErrorMessage'
+import ClientAuthorization from '../presentation/components/ClientAuthorization'
+import LoadingIndicator from '../presentation/components/LoadingIndicator'
+import RequireAuthentication from '../presentation/components/RequireAuthentication'
+import ActivityMessageContainerComponent from '../presentation/components/ActivityMessageContainer'
 
 const VERIFY_AUTHORIZATION_REQUEST_MUTATION = gql`
   mutation VERIFY_AUTHORIZATION_REQUEST_MUTATION($client_id: String!, $redirect_uri: String!) {

@@ -1,11 +1,11 @@
 import React from 'react'
-import Primary from '../client/layouts/primary'
-import ChangePasswordForm from '../client/components/ChangePasswordForm'
-import BackgroundCover from '../client/components/BackgroundCover'
+import Primary from '../presentation/layouts/primary'
+import ChangePasswordForm from '../presentation/components/ChangePasswordForm'
+import BackgroundCover from '../presentation/components/BackgroundCover'
 import gql from 'graphql-tag'
 import { useMutation } from 'react-apollo'
-import LoadingIndicator from '../client/components/LoadingIndicator'
-import ErrorMessage from '../client/components/ErrorMessage'
+import LoadingIndicator from '../presentation/components/LoadingIndicator'
+import ErrorMessage from '../presentation/components/ErrorMessage'
 
 const VALIDATE_RESET_PASSWORD_TOKEN_MUTATION = gql`
   mutation VALIDATE_RESET_PASSWORD_TOKEN_MUTATION($emailAddress: String!, $token: String!) {

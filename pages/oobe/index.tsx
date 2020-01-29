@@ -1,5 +1,5 @@
 import React from 'react'
-import Primary from '../../client/layouts/primary'
+import Primary from '../../presentation/layouts/primary'
 import { GettingStarted } from './GettingStarted'
 import { ServerConfiguration } from './ServerConfiguration'
 import { MailConfiguration } from './MailConfiguration'

@@ -1,6 +1,6 @@
 import { KeyValueCache } from '../../../foundation/models/KeyValueCache'
 import Sequelize from 'sequelize'
-import { decrypt, encrypt } from '../../utils/cipher'
+import { decrypt, encrypt } from '../../../operations/logic/encryption'
 import moment from 'moment'
 
 const deleteExpiredFromCache = async () => {
