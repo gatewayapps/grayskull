@@ -13,10 +13,13 @@ describe('registerUserAccountActivity', () => {
   })
   it('Should throw an error if a user account exists with the given emailAddress', async () => {
     jest.mock('../operations/data/userAccount/getUserAccountByEmailAddress', () => ({
+      ...jest.requireActual('../operations/data/userAccount/getUserAccountByEmailAddress').default,
       getUserAccountByEmailAddress: () => true
     }))
-    expect(
-      registerUserAccountActivity(
+
+    let failed = false
+    try {
+      await registerUserAccountActivity(
         {
           firstName: '',
           lastName: '',
@@ -29,6 +32,9 @@ describe('registerUserAccountActivity', () => {
         dataContext,
         cacheContext
       )
-    ).rejects.toThrowError()
+    } catch {
+      failed = true
+    }
+    expect(failed).toBeTruthy()
   })
 })
