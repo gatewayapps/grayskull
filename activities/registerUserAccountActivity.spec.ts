@@ -6,20 +6,18 @@ import { CacheContext, getCacheContext } from '../foundation/context/getCacheCon
 let dataContext: DataContext
 let cacheContext: CacheContext
 
+jest.mock('../operations/data/userAccount/getUserAccountByEmailAddress', () => ({
+  getUserAccountByEmailAddress: () => true
+}))
+
 describe('registerUserAccountActivity', () => {
   beforeAll(async () => {
     dataContext = await getInMemoryContext()
     cacheContext = getCacheContext()
   })
   it('Should throw an error if a user account exists with the given emailAddress', async () => {
-    jest.mock('../operations/data/userAccount/getUserAccountByEmailAddress', () => ({
-      ...jest.requireActual('../operations/data/userAccount/getUserAccountByEmailAddress').default,
-      getUserAccountByEmailAddress: () => true
-    }))
-
-    let failed = false
-    try {
-      await registerUserAccountActivity(
+    expect(
+      registerUserAccountActivity(
         {
           firstName: '',
           lastName: '',
@@ -32,9 +30,6 @@ describe('registerUserAccountActivity', () => {
         dataContext,
         cacheContext
       )
-    } catch {
-      failed = true
-    }
-    expect(failed).toBeTruthy()
+    ).rejects.toThrow()
   })
 })

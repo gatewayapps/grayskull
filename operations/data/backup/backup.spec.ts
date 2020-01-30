@@ -9,7 +9,7 @@ describe('backup', () => {
     await createTestUserAccount(dataContext)
     const backupString = await backup(dataContext)
     expect(backupString.length).toBeGreaterThan(0)
-
+    console.log(backupString)
     const decrypted = decrypt(backupString)
 
     expect(decrypted).toBeDefined()
