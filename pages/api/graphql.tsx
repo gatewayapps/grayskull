@@ -1,7 +1,7 @@
 import { ApolloServer, AuthenticationError } from 'apollo-server-micro'
 import { addMiddleware } from 'graphql-add-middleware'
 import { schema } from '../../communication/graphql/graphql'
-import { prepareContext } from '../../context/prepareContext'
+import { prepareContext } from '../../foundation/context/prepareContext'
 
 const checkAnonymous = async (root, args, context, info, next) => {
   if (info.parentType && info.parentType._fields && info.parentType._fields[info.fieldName]) {

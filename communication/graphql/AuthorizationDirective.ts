@@ -1,6 +1,6 @@
 import { SchemaDirectiveVisitor } from 'apollo-server'
 import { defaultFieldResolver } from 'graphql'
-import { Permissions } from '../../utils/permissions'
+import { Permissions } from '../../foundation/constants/permissions'
 
 export class AuthorizationDirective extends SchemaDirectiveVisitor {
   visitObject(type) {

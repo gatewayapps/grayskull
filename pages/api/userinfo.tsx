@@ -6,7 +6,7 @@ import { ensureScope } from '../../server/utils/ensureScope'
 import { IClientRequestOptions } from '../../foundation/models/IClientRequestOptions'
 import { UserAccount } from '../../foundation/models/UserAccount'
 import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
-import { prepareContext } from '../../context/prepareContext'
+import { prepareContext } from '../../foundation/context/prepareContext'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)

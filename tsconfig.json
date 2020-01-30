@@ -42,7 +42,7 @@
     "pages/**/*.ts",
     "client/**/*.ts",
     "public/**/*.ts",
-    "server/**/*.ts", "client/utils/useFetch.tsx", "foundation/constants/constants.ts", "operations/logic/cipher.ts"
+    "server/**/*.ts", "client/utils/useFetch.tsx", "foundation/**/*.ts", "operations/**/*.ts", "communication/**/*.ts", "activities/**/*.ts"
   ],
   "exclude": [
     "node_modules/**/*.*",

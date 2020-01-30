@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { prepareContext } from '../../context/prepareContext'
+import { prepareContext } from '../../foundation/context/prepareContext'
 
 import { backup } from '../../operations/data/backup/backup'
 import { getValue } from '../../operations/data/persistentCache/getValue'

@@ -1,9 +1,9 @@
 import { GraphQLUpload } from 'apollo-server-micro'
 import { GraphQLScalarType, Kind } from 'graphql'
-import { Permissions } from '../../../utils/permissions'
+import { Permissions } from '../../../foundation/constants/permissions'
 import UploadService from '../../../server/api/services/UploadService'
 
-import { IRequestContext } from '../../../../context/prepareContext'
+import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { randomBytes } from 'crypto'
 import { cacheValue } from '../../../operations/data/persistentCache/cacheValue'
 

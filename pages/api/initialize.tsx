@@ -3,8 +3,8 @@ import UserAccountRepository from '../../server/data/repositories/UserAccountRep
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import ClientRepository from '../../server/data/repositories/ClientRepository'
-import { prepareContext } from '../../context/prepareContext'
-import { PASSWORD_PLACEHOLDER } from '../../server/constants'
+import { prepareContext } from '../../foundation/context/prepareContext'
+import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)

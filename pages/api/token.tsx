@@ -1,8 +1,7 @@
 import AuthenticationService from '../../server/api/services/AuthenticationService'
 
-
 import { NextApiRequest, NextApiResponse } from 'next'
-import { prepareContext } from '../../context/prepareContext'
+import { prepareContext } from '../../foundation/context/prepareContext'
 
 const getClientCredentialsFromRequest = (
   req: NextApiRequest

@@ -1,9 +1,8 @@
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
-import { hasPermission } from '../../../decorators/permissionDecorator'
-import { userInfo } from 'os'
-import EmailAddressRepository from '../../../data/repositories/EmailAddressRepository'
-import { Permissions } from '../../../utils/permissions'
-import { IRequestContext } from '../../../../context/prepareContext'
+
+import EmailAddressRepository from '../../../server/data/repositories/EmailAddressRepository'
+import { Permissions } from '../../../foundation/constants/permissions'
+import { IRequestContext } from '../../../foundation/context/prepareContext'
 
 class EmailAddressResolver {
   public getEmailAddresses(obj, args, context, info) {

@@ -175,9 +175,9 @@ export default {
       Type: 'String'
     },
     {
-      Default: '/grayskull.svg',
+      Default: '/grayskull.png',
       Description: 'Logo for your Realm.  Should be your organization logo.',
-      Example: '/grayskull.svg',
+      Example: '/grayskull.png',
       Key: SettingsKeys.SERVER_REALM_LOGO,
       Label: 'Realm Logo',
       Type: 'File'
