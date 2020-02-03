@@ -1,7 +1,7 @@
-import { Permissions } from './permissions'
+import { Permissions } from '../../foundation/constants/permissions'
 
-import { UserAccount } from '../data/models/UserAccount'
-import { Setting } from '../data/models/Setting'
+import { UserAccount } from '../../foundation/models/UserAccount'
+import { Setting } from '../../foundation/models/Setting'
 
 export async function isOobe(): Promise<boolean> {
   const settingCount = await Setting.count()

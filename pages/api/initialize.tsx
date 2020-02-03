@@ -3,13 +3,12 @@ import UserAccountRepository from '../../server/data/repositories/UserAccountRep
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import ClientRepository from '../../server/data/repositories/ClientRepository'
-import { prepareContext } from '../../context/prepareContext'
-import { PASSWORD_PLACEHOLDER } from '../../server/constants'
+import { prepareContext } from '../../foundation/context/prepareContext'
+import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
-  const requestContext = context.req
-  const responseContext = context.res
+
   const configuration = context.configuration
 
   configuration.Mail.password = PASSWORD_PLACEHOLDER
@@ -18,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const pinnedClients = await ClientRepository.getClients({ pinToHeader_equals: true }, { userContext: null })
 
   configuration.HeaderItems = pinnedClients
-  const needsConfiguration = configuration.Server?.baseUrl !== undefined ? undefined : true
+  const needsConfiguration = !configuration.Server?.baseUrl
 
   const needsAdmin = (await (await UserAccountRepository.userAccountsMeta({}, { userContext: null })).count) === 0
 

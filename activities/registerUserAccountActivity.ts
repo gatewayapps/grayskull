@@ -1,11 +1,10 @@
-import { RegisterUserOperationArgs } from '../data/types'
-import { getUserAccountByEmailAddress } from '../services/user/getUserAccountByEmailAddress'
-import { DataContext } from '../context/getDataContext'
-import { CacheContext } from '../context/getCacheContext'
+import { RegisterUserOperationArgs } from '../foundation/types/types'
+import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
+import { DataContext } from '../foundation/context/getDataContext'
+import { CacheContext } from '../foundation/context/getCacheContext'
 
 export async function registerUserAccountActivity(
   userDetails: RegisterUserOperationArgs,
-
   dataContext: DataContext,
   cacheContext: CacheContext
 ) {

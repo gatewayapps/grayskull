@@ -1,9 +1,9 @@
 import React from 'react'
-import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
-import Permissions from '../../../client/utils/permissions'
+import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
+import Permissions from '../../../presentation/utils/permissions'
 import gql from 'graphql-tag'
 import { useQuery } from 'react-apollo'
-import LoadingIndicator from '../../../client/components/LoadingIndicator'
+import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 
 const BACKUP_CONFIGURATION_QUERY = gql`
   query BACKUP_CONFIGURATION_QUERY {

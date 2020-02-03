@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { SAVE_CONFIGURATION } from '../../oobe'
 
-import RequireConfiguration from '../../../client/components/RequireConfiguration'
-import AuthenticatedRoute from '../../../client/layouts/authenticatedRoute'
-import { Permissions } from '../../../server/utils/permissions'
-import { IConfiguration } from '../../../server/data/models/IConfiguration'
-import SecurityConfigurationForm from '../../../client/components/SecurityConfigurationForm'
-import LoadingIndicator from '../../../client/components/LoadingIndicator'
-import MutationButton from '../../../client/components/MutationButton'
+import RequireConfiguration from '../../../presentation/components/RequireConfiguration'
+import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
+import { Permissions } from '../../../foundation/constants/permissions'
+import { IConfiguration } from '../../../foundation/models/IConfiguration'
+import SecurityConfigurationForm from '../../../presentation/components/SecurityConfigurationForm'
+import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
+import MutationButton from '../../../presentation/components/MutationButton'
 
 const SecurityComponent = (props) => {
   const [localConfiguration, setLocalConfiguration] = useState<IConfiguration | undefined>()

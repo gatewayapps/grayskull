@@ -1,7 +1,25 @@
-import { KeyValueCache } from '../../data/models/KeyValueCache'
+import { KeyValueCache } from '../../../foundation/models/KeyValueCache'
 import Sequelize from 'sequelize'
-import { decrypt, encrypt } from '../../utils/cipher'
+import { decrypt, encrypt } from '../../../operations/logic/encryption'
 import moment from 'moment'
+
+const deleteExpiredFromCache = async () => {
+  await KeyValueCache.destroy({
+    where: {
+      expires: {
+        [Sequelize.Op.lte]: new Date()
+      }
+    }
+  })
+}
+
+export const deleteFromCache = async (key: string) => {
+  await KeyValueCache.destroy({
+    where: {
+      key
+    }
+  })
+}
 
 export const getValueFromCache = async (key: string, encrypted = false) => {
   await deleteExpiredFromCache()
@@ -33,22 +51,4 @@ export const cacheValue = async (key: string, value: string, ttlSeconds: number,
   })
 
   await newRecord.save()
-}
-
-export const deleteFromCache = async (key: string) => {
-  await KeyValueCache.destroy({
-    where: {
-      key
-    }
-  })
-}
-
-const deleteExpiredFromCache = async () => {
-  await KeyValueCache.destroy({
-    where: {
-      expires: {
-        [Sequelize.Op.lte]: new Date()
-      }
-    }
-  })
 }

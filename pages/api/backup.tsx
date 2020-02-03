@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { prepareContext } from '../../context/prepareContext'
+import { prepareContext } from '../../foundation/context/prepareContext'
 
-import { backup } from '../../services/backup/backup'
-import { getValue } from '../../services/persistentCache/getValue'
-import { clearValue } from '../../services/persistentCache/clearValue'
+import { backup } from '../../operations/data/backup/backup'
+import { getValue } from '../../operations/data/persistentCache/getValue'
+import { clearValue } from '../../operations/data/persistentCache/clearValue'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)

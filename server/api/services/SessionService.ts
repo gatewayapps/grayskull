@@ -1,9 +1,9 @@
-import { Session } from '../../data/models/Session'
+import { Session } from '../../../foundation/models/Session'
 
 import bcrypt from 'bcrypt'
 import moment from 'moment'
 
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import { SessionUniqueFilter } from '../../interfaces/graphql/ISession'
 import SessionRepository from '../../data/repositories/SessionRepository'
 

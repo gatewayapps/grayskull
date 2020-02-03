@@ -1,4 +1,4 @@
-import { DataContext } from '../../../context/getDataContext'
+import { DataContext } from '../../../foundation/context/getDataContext'
 
 type CategoryKeys = 'Server' | 'Security' | 'Mail'
 

@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getClientRequestOptionsFromRequest } from '../../../../server/utils/authentication'
+import { getClientRequestOptionsFromRequest } from '../../../../operations/logic/authentication'
 import UserClientService from '../../../../server/api/services/UserClientService'
 import { ScopeMap } from '../../../../server/api/services/ScopeService'
-import { UserAccount } from '../../../../server/data/models/UserAccount'
+import { UserAccount } from '../../../../foundation/models/UserAccount'
 import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
 import TokenService from '../../../../server/api/services/TokenService'
-import { Permissions } from '../../../../server/utils/permissions'
+import { Permissions } from '../../../../foundation/constants/permissions'
 import { ensureScope } from '../../../../server/utils/ensureScope'
-import { prepareContext } from '../../../../context/prepareContext'
+import { prepareContext } from '../../../../foundation/context/prepareContext'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)

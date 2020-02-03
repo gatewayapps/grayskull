@@ -6,13 +6,13 @@ emitters:
   # !!!!!!!  Disabled because cradle-graphql-emitter doesn't support directives yet
   # graphql:
   #   module: '@cradlejs/graphql-emitter'
-  #   output: './data/schema.graphql'
+  #   output: './communication/graphql/schema.graphql'
   #   options:
   #     overwrite: true
   #     formatting: 'prettier'
   typescript:
     module: '@cradlejs/typescript-emitter'
-    output: './data/types.ts'
+    output: './foundation/types/types.ts'
     options:
       overwrite: true
       formatting: 'prettier'

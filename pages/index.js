@@ -1,6 +1,6 @@
 import React from 'react'
-import AuthenticatedRoute from '../client/layouts/authenticatedRoute'
-import UserContext from '../client/contexts/UserContext'
+import AuthenticatedRoute from '../presentation/layouts/authenticatedRoute'
+import UserContext from '../presentation/contexts/UserContext'
 
 const HomePage = () => {
   return (

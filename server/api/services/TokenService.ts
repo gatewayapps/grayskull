@@ -1,9 +1,9 @@
-import { UserAccount } from '../../data/models/UserAccount'
+import { UserAccount } from '../../../foundation/models/UserAccount'
 import moment from 'moment'
-import { IQueryOptions } from '../../data/IQueryOptions'
+import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import RefreshTokenRepository from '../../data/repositories/RefreshTokenRepository'
-import { Client } from '../../data/models/Client'
-import { RefreshToken } from '../../data/models/RefreshToken'
+import { Client } from '../../../foundation/models/Client'
+import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { default as crypto, randomBytes } from 'crypto'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { ScopeMap } from '../../api/services/ScopeService'
@@ -16,8 +16,8 @@ import UserAccountRepository from '../../data/repositories/UserAccountRepository
 
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 
-import { IClientRequestOptions } from '../../data/IClientRequestOptions'
-import { IConfiguration } from '../../../data/types'
+import { IClientRequestOptions } from '../../../foundation/models/IClientRequestOptions'
+import { IConfiguration } from '../../../foundation/types/types'
 
 export interface IAccessToken {
   id?: string

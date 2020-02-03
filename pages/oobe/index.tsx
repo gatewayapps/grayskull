@@ -1,5 +1,5 @@
 import React from 'react'
-import Primary from '../../client/layouts/primary'
+import Primary from '../../presentation/layouts/primary'
 import { GettingStarted } from './GettingStarted'
 import { ServerConfiguration } from './ServerConfiguration'
 import { MailConfiguration } from './MailConfiguration'
@@ -46,7 +46,7 @@ class OobeIndex extends React.Component<any, any> {
       configuration: {
         Server: {
           realmName: 'Grayskull',
-          realmLogo: '/grayskull.svg',
+          realmLogo: '/grayskull.png',
           realmBackground: '/bg.jpg',
           realmFavicon: '/favicon.ico',
           baseUrl: 'http://127.0.0.1'

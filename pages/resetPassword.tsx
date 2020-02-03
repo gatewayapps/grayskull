@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Primary from '../client/layouts/primary'
+import Primary from '../presentation/layouts/primary'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import BackgroundCover from '../client/components/BackgroundCover'
-import ResponsiveForm from '../client/components/ResponsiveForm'
+import BackgroundCover from '../presentation/components/BackgroundCover'
+import ResponsiveForm from '../presentation/components/ResponsiveForm'
 
 const RESET_PASSWORD = gql`
   mutation RESET_PASSWORD($emailAddress: String!) {
