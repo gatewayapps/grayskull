@@ -51,7 +51,6 @@ type Mutation {
   uploadFile(file: Upload!): UploadFileResponse
   logout: OperationResponse @anonymous
   saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
-
   restoreConfiguration(file: Upload!): OperationResponse
 }
 

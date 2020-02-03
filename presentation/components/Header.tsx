@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Link from 'next/link'
 
 import { RequirePermission, RequirePermissionModes } from './RequirePermission'
 import Permissions from '../utils/permissions'
@@ -10,7 +9,6 @@ import DropdownItem from 'reactstrap/lib/DropdownItem'
 import { IConfiguration } from '../../foundation/models/IConfiguration'
 import RequireConfiguration from './RequireConfiguration'
 import ActiveLink from './ActiveLink'
-import NavLink from 'reactstrap/lib/NavLink'
 
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -83,6 +81,10 @@ const Header = () => {
                       </ActiveLink>
                       <ActiveLink href="/admin/config/mail" as="/admin/config/mail">
                         <DropdownItem className="py-2">Mail Configuration</DropdownItem>
+                      </ActiveLink>
+                      <DropdownItem divider />
+                      <ActiveLink href="/admin/config/backup" as="/admin/config/backup">
+                        <DropdownItem className="py-2">Backup & Restore</DropdownItem>
                       </ActiveLink>
                     </DropdownMenu>
                   </Dropdown>
