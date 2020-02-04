@@ -24,7 +24,7 @@ describe('setUserAccountPassword', () => {
     const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext, cacheContext)
     expect(passwordVerified).toEqual(true)
 
-    await setUserAccountPassword(createdUser, 'password2', dataContext, cacheContext)
+    await setUserAccountPassword(createdUser.userAccountId, 'password2', dataContext, cacheContext)
     expect(cacheContext.getValue(`USER_${createdUser.userAccountId}`)).toBeUndefined()
 
     const passwordVerified2 = await verifyPassword(createdUser.userAccountId, 'password1', dataContext, cacheContext)

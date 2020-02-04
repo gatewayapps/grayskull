@@ -1,17 +1,32 @@
 import { hash } from 'bcrypt'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
-
-import { UserAccount } from '../../../foundation/models/UserAccount'
+import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 
 export async function setUserAccountPassword(
-  userAccount: UserAccount,
+  userAccountId: string,
   newPassword: string,
   dataContext: DataContext,
   cacheContext: CacheContext
 ) {
-  userAccount.passwordHash = await hash(newPassword, 10)
-  await userAccount.save()
-  const cacheKey = `USER_${userAccount.userAccountId}`
-  cacheContext.clearValue(cacheKey)
+  const userAccount = await dataContext.UserAccount.findOne({
+    where: {
+      userAccountId
+    }
+  })
+  if (userAccount) {
+    const hashedPassword = await hash(newPassword, 10)
+    await dataContext.UserAccount.update(
+      { passwordHash: hashedPassword },
+      { where: { userAccountId }, validate: false }
+    )
+
+    const cacheKey = `USER_${userAccount.userAccountId}`
+    cacheContext.clearValue(cacheKey)
+  } else {
+    throw new GrayskullError(
+      GrayskullErrorCode.InvalidUserAccountId,
+      `Attempted to change the password for user ${userAccountId}, which does not exist`
+    )
+  }
 }
