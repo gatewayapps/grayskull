@@ -48,7 +48,7 @@ class MailService {
     if (!configuration.Mail) {
       throw new Error('Failed to load Mail configuration')
     }
-    const sendgridApiKeyEncrypted = configuration.Mail.sendgridApiKey
+    const sendgridApiKey = configuration.Mail.sendgridApiKey
 
     const mailConfig = configuration.Mail
 
@@ -56,12 +56,7 @@ class MailService {
       throw new Error('From address missing from mail configuration')
     }
 
-    if (sendgridApiKeyEncrypted) {
-      const sendgridApiKey = decrypt(sendgridApiKeyEncrypted)
-      if (!sendgridApiKey) {
-        throw new Error('Invalid sendgrid key')
-      }
-
+    if (sendgridApiKey) {
       sgMail.setApiKey(sendgridApiKey)
       try {
         const msg = {

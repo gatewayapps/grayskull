@@ -11,7 +11,7 @@ export const backup = async (dataContext: DataContext) => {
   const emailAddresses = await dataContext.EmailAddress.findAll({ limit: BIG_LIMIT })
   const refreshTokens = await dataContext.RefreshToken.findAll({ limit: BIG_LIMIT })
   const sessions = await dataContext.Session.findAll({ limit: BIG_LIMIT })
-  const phoneNumbers = await dataContext.Session.findAll({ limit: BIG_LIMIT })
+  const phoneNumbers = await dataContext.PhoneNumber.findAll({ limit: BIG_LIMIT })
 
   const json = JSON.stringify({
     userAccounts: userAccounts.map((x) => x.toJSON()),

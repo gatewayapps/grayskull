@@ -2,10 +2,11 @@ import { GraphQLUpload } from 'apollo-server-micro'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../foundation/constants/permissions'
 import UploadService from '../../../server/api/services/UploadService'
-
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { randomBytes } from 'crypto'
-import { cacheValue } from '../../../operations/data/persistentCache/cacheValue'
+import { generateBackupCode } from '../../../activities/generateBackupCode'
+import { streamToString } from '../../../operations/logic/streamToString'
+import { Stream } from 'stream'
+import { restoreConfiguration } from '../../../activities/restoreConfiguration'
 
 export default {
   Upload: GraphQLUpload,
@@ -33,7 +34,6 @@ export default {
   Query: {
     securityConfiguration: async (obj, args, context: IRequestContext) => {
       const config = context.configuration
-
       return {
         multifactorRequired: config.Security.multifactorRequired,
         passwordRequiresLowercase: config.Security.passwordRequiresLowercase,
@@ -53,15 +53,10 @@ export default {
       return !isServerConfigured
     },
     backupConfiguration: async (obj, args, context: IRequestContext) => {
-      if (!context.user || context.user.permissions !== Permissions.Admin) {
-        return { success: false }
-      } else {
-        const backupDownloadCode = randomBytes(32).toString('hex')
-        await cacheValue('BACKUP_DOWNLOAD_CODE', backupDownloadCode, 300, context.dataContext)
-        return {
-          success: true,
-          downloadUrl: `/api/backup?code=${backupDownloadCode}`
-        }
+      const backupDownloadCode = await generateBackupCode(context)
+      return {
+        success: true,
+        downloadUrl: `/api/backup?code=${backupDownloadCode}`
       }
     }
   },
@@ -70,7 +65,21 @@ export default {
       return UploadService.createUpload(args.file)
     },
     restoreConfiguration: async (obj, args, context: IRequestContext) => {
-      return {}
+      try {
+        const { createReadStream } = await args.file
+        const readStream: Stream = createReadStream()
+
+        const contents = await streamToString(readStream)
+        await restoreConfiguration(contents, context)
+        return { success: true }
+      } catch (err) {
+        console.error(err)
+        return {
+          success: false,
+          error: err.message,
+          message: err.message
+        }
+      }
     }
   }
 }
