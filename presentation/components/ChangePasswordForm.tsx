@@ -90,7 +90,10 @@ export default class ChangePasswordForm extends React.Component {
     return (
       <RequireConfiguration>
         {(configuration) => {
-          const { securityConfiguration } = configuration
+          const { Security: securityConfiguration } = configuration
+          if (!securityConfiguration || securityConfiguration === {}) {
+            return <div>Loading...</div>
+          }
           const validations = [
             new FormValidationRule('newPassword', 'isEmpty', false, 'New password is required'),
             new FormValidationRule(
