@@ -9,6 +9,18 @@ jobs:
   production_build:
     runs-on: ubuntu-latest
     steps:
+      - name: Git Checkout
+        uses: actions/checkout@v1
+      - name: Verify package version
+        uses: gatewayapps/verify-npm-package-version
+      - name: Install Package Dependencies
+        run: yarn install
+      - name: Lint
+        run: yarn eslint --quiet ./
+      - name: Tests
+        run: yarn test
+      - name: Compile
+        run: yarn next build
       - name: Publish Docker
         uses: elgohr/Publish-Docker-Github-Action@2.11
         with:
