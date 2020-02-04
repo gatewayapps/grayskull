@@ -1,6 +1,6 @@
 {
   "name": "grayskull",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "engines": {
@@ -134,6 +134,7 @@
     "cookie-parser": "^1.4.3",
     "cookies": "^0.8.0",
     "core-js": "^3.6.4",
+    "date-fns": "^2.9.0",
     "dotenv": "^8.2.0",
     "fs-extra": "^8.1.0",
     "graceful-fs": "4.2.2",
