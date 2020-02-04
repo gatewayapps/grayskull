@@ -10,12 +10,9 @@ import UserClientService from '../../../server/api/services/UserClientService'
 import SessionService from '../../../server/api/services/SessionService'
 import { verifyPassword } from '../../../operations/data/userAccount/verifyPassword'
 import { verifyPasswordStrength } from '../../../operations/logic/verifyPasswordStrength'
-import { setUserAccountPassword } from '../../../operations/data/userAccount/setUserAccountPassword'
-import { getUserAccountByEmailAddress } from '../../../operations/data/userAccount/getUserAccountByEmailAddress'
-import _ from 'lodash'
-import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
+
 import { IOperationResponse } from '../../../foundation/models/IOperationResponse'
-import { UserAccount } from '../../../foundation/models/UserAccount'
+
 import UserAccountRepository from '../../../server/data/repositories/UserAccountRepository'
 import TokenService from '../../../server/api/services/TokenService'
 import ClientRepository from '../../../server/data/repositories/ClientRepository'
@@ -25,6 +22,10 @@ import EmailAddressRepository from '../../../server/data/repositories/EmailAddre
 import { encrypt } from '../../../operations/logic/encryption'
 import { Permissions } from '../../../foundation/constants/permissions'
 import { IRequestContext } from '../../../foundation/context/prepareContext'
+import { sendResetPasswordEmail } from '../../../activities/sendResetPasswordEmail'
+import { changePasswordWithToken } from '../../../activities/changePasswordWithToken'
+import { changePasswordWithOldPassword } from '../../../activities/changePasswordWithOldPassword'
+import { validateResetPasswordToken } from '../../../activities/validateResetPasswordToken'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -116,7 +117,7 @@ export default {
     validateResetPasswordToken: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
       const token = args.data.token
       const emailAddress = args.data.emailAddress
-      const isValid = await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null })
+      const isValid = await validateResetPasswordToken(emailAddress, token, context)
       if (isValid) {
         return {
           success: true
@@ -237,88 +238,35 @@ export default {
       // insert your changePassword implementation here
 
       const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data
-      const userContext: UserAccount = context.user || null
-
-      //  only check token if user is not signed in
-      const isTokenValid =
-        userContext === null
-          ? await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext })
-          : true
-      if (!isTokenValid) {
+      try {
+        if (token) {
+          //reset password token flow
+          await changePasswordWithToken(emailAddress, token, newPassword, context)
+        } else {
+          //manually change password flow
+          await changePasswordWithOldPassword(oldPassword, newPassword, confirmPassword, context)
+        }
+        return {
+          success: true
+        }
+      } catch (err) {
+        console.error(err)
         return {
           success: false,
-          message: 'Invalid email address or token'
-        }
-      } else {
-        try {
-          if (newPassword !== confirmPassword) {
-            return {
-              success: false,
-              message: 'Passwords do not match'
-            }
-          }
-
-          const passwordValid = await verifyPasswordStrength(newPassword, context.configuration.Security)
-          if (!passwordValid.success) {
-            return {
-              success: false,
-              error: passwordValid.validationErrors?.join('\n'),
-              message: passwordValid.validationErrors?.join('\n')
-            }
-          } else {
-            if (!userContext) {
-              const userAccount = await getUserAccountByEmailAddress(
-                emailAddress,
-                context.dataContext,
-                context.cacheContext
-              )
-
-              if (!userAccount) {
-                throw new Error('No user account with that user account id')
-              }
-
-              await setUserAccountPassword(userAccount, newPassword, context.dataContext, context.cacheContext)
-              return { success: true }
-            } else {
-              if (newPassword === oldPassword) {
-                throw new Error('New password cannot be the same as the old password')
-              }
-
-              const passwordVerified = await verifyPassword(
-                userContext.userAccountId,
-                oldPassword,
-                context.dataContext,
-                context.cacheContext
-              )
-
-              if (passwordVerified) {
-                await setUserAccountPassword(userContext, newPassword, context.dataContext, context.cacheContext)
-
-                return { success: true }
-              } else {
-                throw new Error('Current password is not correct')
-              }
-            }
-          }
-        } catch (err) {
-          return {
-            success: false,
-            error: err.message,
-            message: err.message
-          }
+          error: err.message,
+          message: err.message
         }
       }
     },
     resetPassword: async (obj, args, context: IRequestContext, info) => {
       // insert your resetPassword implementation here
-
-      const options: IQueryOptions = { userContext: context.user || null }
       try {
-        await UserAccountService.resetPassword(args.data.emailAddress, context.configuration, options)
-        return true
+        await sendResetPasswordEmail(args.data.emailAddress, context)
       } catch (err) {
         console.error(err)
-        return false
+      } finally {
+        // We return true no matter what to prevent fishing for email addresses
+        return true
       }
     },
     createUser: async (obj, args, context: IRequestContext, info): Promise<IOperationResponse> => {
