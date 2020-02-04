@@ -19,4 +19,4 @@ jobs:
       - name: Compile
         run: yarn next build
       - name: Docker build
-        run: yarn docker build
+        uses: buildtool/build-action@v1
