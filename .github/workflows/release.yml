@@ -12,7 +12,7 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v1
       - name: Verify package version
-        uses: gatewayapps/verify-npm-package-version
+        uses: gatewayapps/verify-npm-package-version@v1
       - name: Install Package Dependencies
         run: yarn install
       - name: Lint
