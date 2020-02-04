@@ -1,0 +1,17 @@
+name: Production CI
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  production_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Docker
+        uses: elgohr/Publish-Docker-Github-Action@2.11
+        with:
+          name: gatewayapps/grayskull
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}

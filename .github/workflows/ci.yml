@@ -1,0 +1,22 @@
+name: Master CI
+
+on:
+  - push:
+      branches:
+        - master
+  - pull_request
+
+jobs:
+  master_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v1
+      - name: Install Package Dependencies
+        run: yarn install
+      - name: Lint
+        run: yarn eslint --quiet ./
+      - name: Compile
+        run: yarn next build
+      - name: Docker build
+        run: yarn docker build
