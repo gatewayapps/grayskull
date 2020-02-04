@@ -76,14 +76,14 @@ export default {
 
           const contents = await streamToString(readStream)
           await restoreConfiguration(contents, context)
-          return { success: true }
+          resolve({ success: true })
         } catch (err) {
           console.error(err)
-          return {
+          resolve({
             success: false,
             error: err.message,
             message: err.message
-          }
+          })
         }
       })
     }
