@@ -16,7 +16,7 @@ jobs:
         run: yarn install
       - name: Lint
         run: yarn eslint --quiet ./
+      - name: Tests
+        run: yarn test
       - name: Compile
         run: yarn next build
-      - name: Docker build
-        run: docker build .
