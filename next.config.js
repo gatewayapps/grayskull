@@ -28,7 +28,6 @@ module.exports = withSass(
         ]
       }
     },
-    target: 'serverless',
     env: {
       PROJECT_ROOT: __dirname
     }
