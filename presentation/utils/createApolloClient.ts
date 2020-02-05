@@ -5,7 +5,6 @@ import { onError } from 'apollo-link-error'
 import { ApolloLink, Observable } from 'apollo-link'
 import { createUploadLink } from 'apollo-upload-client'
 import generateFingerprint from '../utils/generateFingerprint'
-import LogRocket from 'logrocket'
 
 export default function createApolloClient() {
   const onErrorHandler = onError(({ graphQLErrors, networkError }) => {
@@ -14,7 +13,6 @@ export default function createApolloClient() {
         console.error(err)
 
         if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && window.location.pathname !== '/login') {
-          LogRocket.log('Redirecting to /login because UNAUTHENTICATED - from createApolloClient')
           window.location.replace('/login')
         }
         if (err.extensions && err.extensions.code === 'FORBIDDEN' && window.location.pathname !== '/oobe') {

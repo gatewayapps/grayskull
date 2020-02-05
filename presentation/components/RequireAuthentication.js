@@ -1,6 +1,6 @@
 import { withRouter, default as Router } from 'next/router'
 import React, { Component } from 'react'
-import LogRocket from 'logrocket'
+
 import UserContext from '../contexts/UserContext'
 import { generateRoutingState } from '../utils/routing'
 import LoadingIndicator from './LoadingIndicator'
@@ -16,7 +16,6 @@ class RequireAuthentication extends Component {
       <UserContext.Consumer>
         {({ user, hasInitialized }) => {
           if (!user && hasInitialized) {
-            LogRocket.log('Redirecting to login from RequireAuthentication')
             const state = generateRoutingState(this.props.router)
             Router.push(`/login?state=${state}`)
           } else {
