@@ -176,8 +176,7 @@ export default {
             client_id,
             userClientId!,
             approvedScopes!,
-            nonce,
-            serviceOptions
+            nonce
           )
         }
         if (responseTypes.includes('token')) {
@@ -191,7 +190,7 @@ export default {
             serviceOptions
           )
           queryParts.token_type = 'Bearer'
-          queryParts.expires_in = config.Security!.accessTokenExpirationSeconds
+          queryParts.expires_in = config.Security.accessTokenExpirationSeconds
         }
         if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
           queryParts.id_token = await TokenService.createIDToken(
@@ -434,10 +433,8 @@ export default {
     generateMfaKey: (obj, args, context: IRequestContext) => {
       return AuthenticationService.generateOtpSecret(args.data.emailAddress, context.configuration)
     },
-    verifyMfaKey: (obj, args, context: IRequestContext) => {
-      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token, {
-        userContext: context.user || null
-      })
+    verifyMfaKey: (obj, args) => {
+      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
       const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, context.configuration, {
