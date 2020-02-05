@@ -30,7 +30,9 @@ const Login = (props) => {
                     <div>
                       <div className="row">
                         <div className="col-12">
-                          <h6 className="card-subtitle mb-2 text-muted">Enter your email address and we will send you instructions for resetting your password.</h6>
+                          <h6 className="card-subtitle mb-2 text-muted">
+                            Enter your email address and we will send you instructions for resetting your password.
+                          </h6>
                         </div>
                       </div>
 
@@ -55,7 +57,9 @@ const Login = (props) => {
                       {emailSent && (
                         <div className="row">
                           <div className="col-12">
-                            <div className="alert alert-primary mx-4">An e-mail with instructions has been sent to {emailAddress}</div>
+                            <div className="alert alert-primary mx-4">
+                              An e-mail with instructions has been sent to {emailAddress}
+                            </div>
                           </div>
                         </div>
                       )}
@@ -68,10 +72,14 @@ const Login = (props) => {
                         className="btn btn-outline-primary"
                         type="button"
                         onClick={async () => {
-                          const result = await resetPassword()
+                          await resetPassword()
                           setEmailSent(true)
                         }}>
-                        {loading ? <i className="fa fa-spin fa-fw fa-spinner" /> : <i className="fa fa-fw fa-history" />}
+                        {loading ? (
+                          <i className="fa fa-spin fa-fw fa-spinner" />
+                        ) : (
+                          <i className="fa fa-fw fa-history" />
+                        )}
                         Reset Password
                       </button>
                     </div>

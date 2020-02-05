@@ -1,5 +1,3 @@
-import { IConfiguration } from '../../foundation/types/types'
-
 import { addDays } from 'date-fns'
 
 export function shouldUserChangePassword(lastPasswordChange: Date, maxPasswordAge: number) {

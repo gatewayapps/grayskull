@@ -1,5 +1,29 @@
 import { Op } from 'sequelize'
 
+const operatorMap = {
+  and: Op.and,
+  or: Op.or,
+  lessThan: Op.lt,
+  greaterThan: Op.gt,
+  equals: Op.eq,
+  notEquals: Op.ne,
+  contains: Op.like,
+  notContains: Op.notLike,
+  in: Op.in,
+  startsWith: Op.like,
+  endsWith: Op.like
+}
+
+function parseKey(key: string) {
+  const parts = key.split('_')
+  const operator = parts.pop()
+  const fieldName = parts.join('_')
+  return {
+    fieldName,
+    operator
+  }
+}
+
 export function convertFilterToSequelizeWhere(filter: any): any {
   if (!filter) {
     return {}
@@ -47,28 +71,4 @@ export function convertFilterToSequelizeWhere(filter: any): any {
   }, {})
 
   return finalWhere
-}
-
-const operatorMap = {
-  and: Op.and,
-  or: Op.or,
-  lessThan: Op.lt,
-  greaterThan: Op.gt,
-  equals: Op.eq,
-  notEquals: Op.ne,
-  contains: Op.like,
-  notContains: Op.notLike,
-  in: Op.in,
-  startsWith: Op.like,
-  endsWith: Op.like
-}
-
-function parseKey(key: string) {
-  const parts = key.split('_')
-  const operator = parts.pop()
-  const fieldName = parts.join('_')
-  return {
-    fieldName,
-    operator
-  }
 }

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 import Permissions from '../utils/permissions'
@@ -118,7 +118,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
     })
   }
 
-  handleOnError = (err, file, inputElem, reason) => {
+  handleOnError = (err) => {
     console.error(err)
   }
 
@@ -216,9 +216,9 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                           className="btn btn-outline-success"
                           type="button"
                           onClick={async () => {
-                            let successCount = []
+                            const successCount = []
                             let totalUsersToImport
-                            let failedImportToStateArray = []
+                            const failedImportToStateArray = []
                             if (this.state.importedCSVData) {
                               const CSVData = this.state.importedCSVData.data
                               totalUsersToImport = CSVData.length - 1
@@ -230,7 +230,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                 const item = CSVData[i]
                                 this.setState({ currentlyImportingUsers: true })
                                 if (item[0] !== 'Email') {
-                                  let payload = {
+                                  const payload = {
                                     emailAddress: item[0],
                                     firstName: item[1],
                                     lastName: item[2],
@@ -264,7 +264,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
                                     if (err) {
                                       failedImportToStateArray.push(false)
                                     }
-                                    let errMessage = err.message.substring(err.message.indexOf(':') + 1)
+                                    const errMessage = err.message.substring(err.message.indexOf(':') + 1)
                                     this.setState({
                                       errorMessage: `${errMessage}`,
                                       loadingMessage: '',

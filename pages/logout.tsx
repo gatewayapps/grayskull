@@ -4,11 +4,15 @@ import LoadingIndicator from '../presentation/components/LoadingIndicator'
 import { NextPage } from 'next'
 import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import Jumbotron from 'reactstrap/lib/Jumbotron'
+
 import ErrorMessage from '../presentation/components/ErrorMessage'
-import BackgroundCoverComponent from '../presentation/components/BackgroundCover'
+
 import ActivityMessageContainerComponent from '../presentation/components/ActivityMessageContainer'
 import UserContext from '../presentation/contexts/UserContext'
+
+function deleteCookie(name) {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+}
 
 const LOGOUT_MUTATION = gql`
   mutation LOGOUT_MUTATION {
@@ -20,7 +24,7 @@ const LOGOUT_MUTATION = gql`
   }
 `
 
-const Logout: NextPage = (props) => {
+const Logout: NextPage = () => {
   const [logout, { loading, data, error }] = useMutation(LOGOUT_MUTATION)
   if (!loading && !data) {
     logout()
@@ -58,10 +62,6 @@ const Logout: NextPage = (props) => {
       }}
     </UserContext.Consumer>
   )
-}
-
-function deleteCookie(name) {
-  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
 }
 
 export default Logout

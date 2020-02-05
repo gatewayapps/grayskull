@@ -5,12 +5,12 @@ import UserContext from '../presentation/contexts/UserContext'
 const HomePage = () => {
   return (
     <AuthenticatedRoute>
-      <UserContext.Consumer>{({ user }) => <div className="jumbotron">Redirecting...</div>}</UserContext.Consumer>
+      <UserContext.Consumer>{() => <div className="jumbotron">Redirecting...</div>}</UserContext.Consumer>
     </AuthenticatedRoute>
   )
 }
 
-HomePage.getInitialProps = (ctx) => {
+HomePage.getInitialProps = () => {
   // if (ctx.res) {
   //   ctx.res.writeHead(302, {
   //     Location: '/personal-info'

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import Cleave from 'cleave.js/react'
 import Select from 'react-select'
@@ -36,16 +36,14 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
     }
   }
 
-  private renderPhotoInput = (props: any, className: string | undefined) => {
+  private renderPhotoInput = (props: any) => {
     if (props.readOnly) {
-      const { style, ...renderProps } = props
-      return (
-
-        <img className="d-block" style={{ height: '150px' }} src={props.value} />
-
-      )
+      return <img className="d-block" style={{ height: '150px' }} src={props.value} />
     } else {
       const { style, className, ...restProps } = props
+
+      delete style
+      delete className
       return (
         <ImageDropArea
           {...restProps}
@@ -59,7 +57,9 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
     }
   }
 
-  private renderTextInput = (props: any, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
+  private renderTextInput = (props: any, className: string | undefined) => (
+    <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
+  )
 
   private renderTextAreaInput = (props: object, className: string | undefined) => (
     <textarea
@@ -115,7 +115,10 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
 
   private renderSelectInput = (props: any, className: string | undefined) => {
     if (props.readOnly) {
-      return this.renderTextInput({ name: props.name, defaultValue: props.value, readOnly: true, placeholder: 'Gender' }, className)
+      return this.renderTextInput(
+        { name: props.name, defaultValue: props.value, readOnly: true, placeholder: 'Gender' },
+        className
+      )
     }
     const { options, allowCustom, ...finalProps } = props
 

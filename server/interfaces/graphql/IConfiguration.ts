@@ -6,5 +6,3 @@ export interface IConfigurationFilter {
   or?: [IConfigurationFilter]
   and?: [IConfigurationFilter]
 }
-
-export interface IConfigurationUniqueFilter {}

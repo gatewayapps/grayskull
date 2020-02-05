@@ -48,15 +48,13 @@ const ALL_USERS_QUERY = gql`
   }
 `
 
-export interface UsersIndexPageProps {}
-
 export interface UsersIndexPageState {
   editingUser: any
   importingUser: any
 }
 
-class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPageState> {
-  constructor(props: UsersIndexPageProps) {
+class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
+  constructor(props) {
     super(props)
 
     this.state = {
@@ -160,7 +158,9 @@ class UsersIndexPage extends React.Component<UsersIndexPageProps, UsersIndexPage
                             <td>{moment(user.lastActive).fromNow()}</td>
                             <td>
                               {!emailAddress.verified && (
-                                <Mutation mutation={RESEND_VERIFICATION_MUTATION} variables={{ emailAddress: emailAddress.emailAddress }}>
+                                <Mutation
+                                  mutation={RESEND_VERIFICATION_MUTATION}
+                                  variables={{ emailAddress: emailAddress.emailAddress }}>
                                   {(resendVerification) => (
                                     <button className="btn btn-sm btn-outline-info" onClick={resendVerification}>
                                       Resend Activation

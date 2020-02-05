@@ -37,8 +37,8 @@ class EmailAddressService {
   public async isDomainAllowed(emailAddress: string, configuration: IConfiguration): Promise<boolean> {
     const domain = emailAddress.split('@')[1].toLowerCase()
 
-    if (configuration.Security!.domainWhitelist) {
-      const allowedDomains = _.compact(configuration.Security!.domainWhitelist.toLowerCase().split(';'))
+    if (configuration.Security.domainWhitelist) {
+      const allowedDomains = _.compact(configuration.Security.domainWhitelist.toLowerCase().split(';'))
 
       return allowedDomains.length === 0 || allowedDomains.includes(domain)
     }
@@ -47,9 +47,9 @@ class EmailAddressService {
 
   public async createEmailAddress(data: Partial<EmailAddress>, configuration: IConfiguration, options: IQueryOptions) {
     data.verificationSecret = '' // sendVerificationEmail will set this correctly
-    const result = await EmailAddressRepository.createEmailAddress(data as EmailAddress, options)
-    if (!data.verified) {
-      await this.sendVerificationEmail(data.emailAddress!, configuration, options)
+    await EmailAddressRepository.createEmailAddress(data as EmailAddress, options)
+    if (!data.verified && data.emailAddress) {
+      await this.sendVerificationEmail(data.emailAddress, configuration, options)
     }
   }
 
@@ -64,11 +64,9 @@ class EmailAddressService {
         data.emailAddress,
         'E-mail Address Verification',
         {
-          realmName: configuration.Server!.realmName,
+          realmName: configuration.Server.realmName,
           user: userAccount,
-          verificationLink: `${configuration.Server!.baseUrl}/verify?address=${data.emailAddress}&code=${
-            data.verificationSecret
-          }`
+          verificationLink: `${configuration.Server.baseUrl}/verify?address=${data.emailAddress}&code=${data.verificationSecret}`
         },
         configuration
       )

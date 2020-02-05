@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import MutationButton from './MutationButton'
 import gql from 'graphql-tag'
 
@@ -68,7 +68,6 @@ export default class EmailAddressListItem extends React.Component<
             onSuccess={() => {
               this.setState({ verificationSent: true })
             }}
-            onFail={() => {}}
             content={
               <span>
                 <i className="fa fa-fw fa-envelope" /> Re-send Verification
@@ -89,7 +88,6 @@ export default class EmailAddressListItem extends React.Component<
             onSuccess={() => {
               this.props.refetch()
             }}
-            onFail={() => {}}
             content={
               <span>
                 <i className="fa fa-fw fa-check" /> Set Primary

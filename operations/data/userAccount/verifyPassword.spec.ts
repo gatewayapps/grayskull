@@ -2,17 +2,15 @@ import { verifyPassword } from './verifyPassword'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createUserAccount } from '../userAccount/createUserAccount'
-import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
+
 let dataContext: DataContext
-let cacheContext: CacheContext
 
 describe('verifyPassword', () => {
   beforeAll(async () => {
     dataContext = await getInMemoryContext()
-    cacheContext = getCacheContext()
   })
   it('Should throw when given an invalid user account id', async () => {
-    expect(verifyPassword('abc123', 'testpass', dataContext, cacheContext)).rejects.toThrow()
+    expect(verifyPassword('abc123', 'testpass', dataContext)).rejects.toThrow()
   })
   it('Should return false when passed a valid user accountId and invalid password', async () => {
     const createdUser = await createUserAccount(
@@ -21,7 +19,7 @@ describe('verifyPassword', () => {
       dataContext
     )
 
-    const passwordVerified = await verifyPassword(createdUser.userAccountId, 'wrongPassword', dataContext, cacheContext)
+    const passwordVerified = await verifyPassword(createdUser.userAccountId, 'wrongPassword', dataContext)
     expect(passwordVerified).toEqual(false)
   })
   it('Should return true when passed a valid userAccountId and password', async () => {
@@ -31,7 +29,7 @@ describe('verifyPassword', () => {
       dataContext
     )
 
-    const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext, cacheContext)
+    const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
     expect(passwordVerified).toEqual(true)
   })
 })

@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 import { withRouter, Router } from 'next/router'
 
 import React, { useEffect } from 'react'
-import { Query, useMutation, useQuery } from 'react-apollo'
+import { useMutation, useQuery } from 'react-apollo'
 
 import Primary from '../presentation/layouts/primary'
 import ErrorMessage from '../presentation/components/ErrorMessage'
@@ -49,14 +49,14 @@ const AuthorizePage = (props: AuthorizePageProps) => {
     variables: { client_id: props.router.query.client_id, redirect_uri: props.router.query.redirect_uri }
   })
 
-  const { data, loading, error } = useQuery(LOAD_AUTHORIZE_QUERY, {
+  const { data, loading } = useQuery(LOAD_AUTHORIZE_QUERY, {
     variables: { client_id: props.router.query.client_id }
   })
 
   let content
   useEffect(() => {
     verifyAuthorizationRequest()
-  }, [props.router.query.client_id])
+  }, [props.router.query.client_id, verifyAuthorizationRequest])
   if (verificationError) {
     content = (
       <ActivityMessageContainerComponent>
@@ -125,7 +125,7 @@ const AuthorizePage = (props: AuthorizePageProps) => {
   )
 }
 
-AuthorizePage.getInitialProps = ({ req, query, res }) => {
+AuthorizePage.getInitialProps = ({ query, res }) => {
   const locals = res ? res.locals : {}
   return { query, ...locals }
 }

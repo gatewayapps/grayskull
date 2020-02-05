@@ -304,7 +304,7 @@ class AuthenticationService {
     }
   }
 
-  public verifyOtpToken(secret: string | null, token: string | null, options: IQueryOptions): boolean {
+  public verifyOtpToken(secret: string | null, token: string | null): boolean {
     if (!secret || !token) {
       return false
     }
@@ -316,8 +316,7 @@ class AuthenticationService {
     clientId: string,
     userClientId: string,
     scope: string[],
-    nonce: string | undefined,
-    options: IQueryOptions
+    nonce: string | undefined
   ): Promise<string> {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     await cacheValue(

@@ -9,9 +9,6 @@ import createApolloClient from '../presentation/utils/createApolloClient'
 
 import ApplicationInitializer from '../presentation/components/ApplicationInitializer'
 
-import LogRocket from 'logrocket'
-import setupLogRocketReact from 'logrocket-react'
-
 if (process.browser) {
   //LogRocket.init('LOGROCKET KEY')
   //setupLogRocketReact(LogRocket)

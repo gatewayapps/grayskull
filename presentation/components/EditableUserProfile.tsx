@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import gql from 'graphql-tag'
@@ -17,7 +17,16 @@ const DELETE_USER_MUTATION = gql`
 `
 
 const UPDATE_USER_MUTATION = gql`
-  mutation UPDATE_USER_MUTATION($firstName: String, $lastName: String, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $userAccountId: String, $permissions: Int) {
+  mutation UPDATE_USER_MUTATION(
+    $firstName: String
+    $lastName: String
+    $displayName: String
+    $gender: String
+    $birthday: Date
+    $profileImageUrl: String
+    $userAccountId: String
+    $permissions: Int
+  ) {
     update(
       data: {
         firstName: $firstName
@@ -37,7 +46,16 @@ const UPDATE_USER_MUTATION = gql`
 `
 
 const CREATE_USER_MUTATION = gql`
-  mutation CREATE_USER_MUTATION($firstName: String!, $lastName: String!, $displayName: String, $gender: String, $birthday: Date, $profileImageUrl: String, $permissions: Int!, $emailAddress: String!) {
+  mutation CREATE_USER_MUTATION(
+    $firstName: String!
+    $lastName: String!
+    $displayName: String
+    $gender: String
+    $birthday: Date
+    $profileImageUrl: String
+    $permissions: Int!
+    $emailAddress: String!
+  ) {
     createUser(
       data: {
         firstName: $firstName
@@ -168,7 +186,12 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                   name="profileImageUrl"
                   value={finalUser.profileImageUrl || '/profile-default.jpg'}
                   className="ml-auto mr-4"
-                  style={{ width: '100px', height: '100px', padding: '4px', border: this.state.editing ? '1px dashed black' : '0px none' }}
+                  style={{
+                    width: '100px',
+                    height: '100px',
+                    padding: '4px',
+                    border: this.state.editing ? '1px dashed black' : '0px none'
+                  }}
                 />
 
                 <ResponsiveValidatingInput
@@ -258,7 +281,9 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                   {this.state.editing ? (
                     <div className="ml-auto">
                       {finalUser.userAccountId && (
-                        <Mutation mutation={DELETE_USER_MUTATION} variables={{ userAccountId: finalUser.userAccountId }}>
+                        <Mutation
+                          mutation={DELETE_USER_MUTATION}
+                          variables={{ userAccountId: finalUser.userAccountId }}>
                           {(deleteAccount) => (
                             <button
                               className="btn btn-danger mr-2"
@@ -316,7 +341,12 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
                               }}
                               className="btn btn-outline-success"
                               type="button">
-                              {loading ? <i className="fal fa-fw fa-spin fa-spinner" /> : <i className="fal fa-fw fa-save" />} Save Info
+                              {loading ? (
+                                <i className="fal fa-fw fa-spin fa-spinner" />
+                              ) : (
+                                <i className="fal fa-fw fa-save" />
+                              )}{' '}
+                              Save Info
                             </button>
                           )
                         }}

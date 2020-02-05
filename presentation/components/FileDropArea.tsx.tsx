@@ -39,7 +39,6 @@ const DropArea = styled.div`
   }
 `
 const FileDropArea: React.FC<IFileDropAreaProps> = (props) => {
-  const [files, setFiles] = useState<File[]>([])
   const [message, setMessage] = useState('')
   const onDrop = (acceptedFiles: File[], rejectedFiles: File[]) => {
     rejectedFiles.forEach((file) => {
@@ -58,7 +57,7 @@ const FileDropArea: React.FC<IFileDropAreaProps> = (props) => {
     if (props.maxNumberFiles !== undefined && acceptedFiles.length > props.maxNumberFiles) {
       setMessage(`Only ${props.maxNumberFiles} file(s) are allowed.`)
     }
-    setFiles(acceptedFiles)
+
     if (props.onFilesChanged) {
       props.onFilesChanged(acceptedFiles)
     }

@@ -4,30 +4,24 @@ import EmailAddressRepository from '../../../server/data/repositories/EmailAddre
 import { Permissions } from '../../../foundation/constants/permissions'
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 
-class EmailAddressResolver {
-  public getEmailAddresses(obj, args, context, info) {
-    return EmailAddressService.getEmailAddresses(args.where, { userContext: context.user || null })
-  }
-}
-
 export default {
   Query: {
-    emailAddresses: (obj, args, context, info) => {
+    emailAddresses: (obj, args, context) => {
       return EmailAddressService.getEmailAddresses(args.where, { userContext: context.user || null })
     },
-    emailAddressesMeta: (obj, args, context, info) => {
+    emailAddressesMeta: (obj, args, context) => {
       return EmailAddressService.emailAddressesMeta(args.where, { userContext: context.user || null })
     },
-    emailAddress: async (obj, args, context, info) => {
+    emailAddress: async (obj, args, context) => {
       return EmailAddressService.getEmailAddress(args.where, { userContext: context.user || null })
     },
-    emailAddressAvailable: async (obj, args, context, info) => {
+    emailAddressAvailable: async (obj, args, context) => {
       const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, {
         userContext: context.user || null
       })
       return result
     },
-    myEmailAddresses: async (obj, args, context, info) => {
+    myEmailAddresses: async (obj, args, context) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       } else {
@@ -39,7 +33,7 @@ export default {
     }
   },
   Mutation: {
-    addEmailAddress: async (obj, args, context: IRequestContext, info) => {
+    addEmailAddress: async (obj, args, context: IRequestContext) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
@@ -69,7 +63,7 @@ export default {
         }
       }
     },
-    sendVerification: async (obj, args, context: IRequestContext, info) => {
+    sendVerification: async (obj, args, context: IRequestContext) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
@@ -92,7 +86,7 @@ export default {
         }
       }
     },
-    setEmailAddressPrimary: async (obj, args, context, info) => {
+    setEmailAddressPrimary: async (obj, args, context) => {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }

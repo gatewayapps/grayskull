@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import gql from 'graphql-tag'
 import { Query, QueryResult } from 'react-apollo'
 import LoadingIndicator from './LoadingIndicator'
@@ -86,7 +86,6 @@ export default class EditableEmailList extends React.Component<EditableEmailList
               refetch()
               this.setState({ isAdding: false, newEmailAddress: '', message: '', errorMessage: '' })
             }}
-            onFail={() => {}}
             content={
               <span>
                 <i className="fa fa-fw fa-save" /> Save E-Mail Address

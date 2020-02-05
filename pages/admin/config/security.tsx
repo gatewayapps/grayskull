@@ -9,7 +9,7 @@ import SecurityConfigurationForm from '../../../presentation/components/Security
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import MutationButton from '../../../presentation/components/MutationButton'
 
-const SecurityComponent = (props) => {
+const SecurityComponent = () => {
   const [localConfiguration, setLocalConfiguration] = useState<IConfiguration | undefined>()
   const [saveEnabled, setSaveEnabled] = useState(false)
 
@@ -35,7 +35,7 @@ const SecurityComponent = (props) => {
                           Security: data
                         })
                       }}
-                      onValidated={(isValid, errors) => {
+                      onValidated={(isValid) => {
                         setSaveEnabled(isValid)
                       }}
                     />

@@ -39,38 +39,27 @@ const UPDATE_CLIENT_SCOPES_MUTATION = gql`
   }
 `
 
-interface IClientAuthorizationState {
-  initialized: boolean
-  isSaving: boolean
-  pendingScopes: any[]
-  allowedScopes: any[]
-  deniedScopes: any[]
-}
-
 const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props) => {
   const [isSaving, setIsSaving] = useState(false)
   const [pendingScopes, setPendingScopes] = useState([])
   const [allowedScopes, setAllowedScopes] = useState([])
   const [deniedScopes, setDeniedScopes] = useState([])
 
-  const [
-    authorizeClient,
-    { data: authorizeClientData, loading: authorizeClientLoading, error: authorizeClientError }
-  ] = useMutation(AUTHORIZE_CLIENT_MUTATION, {
-    variables: {
-      client_id: props.client.client_id,
-      responseType: props.responseType,
-      redirectUri: props.redirectUri,
-      scope: props.scope,
-      state: props.state,
-      nonce: props.nonce
+  const [authorizeClient, { data: authorizeClientData, loading: authorizeClientLoading }] = useMutation(
+    AUTHORIZE_CLIENT_MUTATION,
+    {
+      variables: {
+        client_id: props.client.client_id,
+        responseType: props.responseType,
+        redirectUri: props.redirectUri,
+        scope: props.scope,
+        state: props.state,
+        nonce: props.nonce
+      }
     }
-  })
+  )
 
-  const [
-    updateScopes,
-    { data: updateScopesData, loading: updateScopesLoading, error: updateScopesError }
-  ] = useMutation(UPDATE_CLIENT_SCOPES_MUTATION, {
+  const [updateScopes, { data: updateScopesData }] = useMutation(UPDATE_CLIENT_SCOPES_MUTATION, {
     variables: {
       client_id: props.client.client_id,
       allowedScopes: allowedScopes,
@@ -101,7 +90,7 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
     if (updateScopesData && updateScopesData.updateClientScopes) {
       authorizeClient()
     }
-  }, [updateScopesData])
+  }, [authorizeClient, updateScopesData])
 
   const onDenyClicked = async () => {
     const query = ['error=consent_required']
@@ -120,7 +109,7 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
 
   useEffect(() => {
     authorizeClient()
-  }, [props.client.client_id])
+  }, [authorizeClient, props.client.client_id])
 
   if (authorizeClientData && authorizeClientData.authorizeClient) {
     if (isSaving) {
@@ -210,110 +199,6 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
     </UserContext.Consumer>
   )
 }
-
-// class ClientAuthorization extends React.Component<IClientAuthorizationProps, IClientAuthorizationState> {
-//   state = {
-//     initialized: false,
-//     isSaving: false,
-//     pendingScopes: [],
-//     allowedScopes: [],
-//     deniedScopes: []
-//   }
-//   apolloClient: any
-
-//   componentDidMount() {
-//     authorizeClient()
-//   }
-
-//   handleScopeCheckChanged = (e) => {
-//     const { name, checked } = e.target
-//     if (checked) {
-//       // add to allowed and remove from denied
-//       setState((prevState) => ({
-//         ...prevState,
-//         allowedScopes: prevallowedScopes.includes(name) ? prevallowedScopes : prevallowedScopes.concat([name]),
-//         deniedScopes: prevdeniedScopes.filter((denied) => denied !== name)
-//       }))
-//     } else {
-//       // add to denied and remove from allowed
-//       setState((prevState) => ({
-//         ...prevState,
-//         allowedScopes: prevallowedScopes.filter((allowed) => allowed !== name),
-//         deniedScopes: prevdeniedScopes.includes(name) ? prevdeniedScopes : prevdeniedScopes.concat([name])
-//       }))
-//     }
-//   }
-
-//   authorizeClient = async () => {
-//     const { data } = await apolloClient.mutate({
-//       mutation: AUTHORIZE_CLIENT_MUTATION,
-//       variables: {
-//         client_id: props.client.client_id,
-//         responseType: props.responseType,
-//         redirectUri: props.redirectUri,
-//         scope: props.scope,
-//         state: props.state,
-//         nonce: props.nonce
-//       }
-//     })
-//     if (data && data.authorizeClient) {
-//       if (data.authorizeClient.redirectUri) {
-//         window.location.replace(data.authorizeClient.redirectUri)
-//         return
-//       }
-//       if (data.authorizeClient.pendingScopes) {
-//         setState({
-//           initialized: true,
-//           allowedScopes: data.authorizeClient.pendingScopes,
-//           pendingScopes: data.authorizeClient.pendingScopes
-//         })
-//       }
-//     }
-//   }
-
-//   updateClientScopes = async () => {
-//     const { data } = await apolloClient.mutate({
-//       mutation: UPDATE_CLIENT_SCOPES_MUTATION,
-//       variables: {
-//         client_id: props.client.client_id,
-//         allowedScopes: allowedScopes,
-//         deniedScopes: deniedScopes
-//       }
-//     })
-//     if (data && data.updateClientScopes) {
-//       await authorizeClient()
-//     }
-//   }
-
-//   onDenyClicked = async () => {
-//     const query = ['error=consent_required']
-//     if (props.state) {
-//       query.push(`state=${encodeURIComponent(props.state)}`)
-//     }
-
-//     window.location.replace(`${props.redirectUri}?${query.join('&')}`)
-//   }
-
-//   onSubmit = async (e) => {
-//     e.preventDefault()
-//     setState({ isSaving: true })
-//     await updateClientScopes()
-//     setState({ isSaving: false })
-//   }
-
-//   render() {
-//     return (
-//       <ApolloConsumer>
-//         {(apolloClient) => {
-//           apolloClient = apolloClient
-//           if (!initialized) {
-//             return <LoadingIndicator />
-//           }
-//         }}
-//       </ApolloConsumer>
-//     )
-//   }
-// }
 
 export interface IClientAuthorizationProps {
   client: {
