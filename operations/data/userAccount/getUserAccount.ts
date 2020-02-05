@@ -10,13 +10,12 @@ export async function getUserAccount(
 ) {
   const cacheKey = `USER_${userAccountId}`
   const cachedUser = cacheContext.getValue<UserAccount>(cacheKey)
-  if (cachedUser) {
-    if (!includeSensitive) {
-      delete cachedUser.otpSecret
-      delete cachedUser.passwordHash
-      delete cachedUser.resetPasswordToken
-      delete cachedUser.resetPasswordTokenExpiresAt
-    }
+  if (cachedUser && !includeSensitive) {
+    delete cachedUser.otpSecret
+    delete cachedUser.passwordHash
+    delete cachedUser.resetPasswordToken
+    delete cachedUser.resetPasswordTokenExpiresAt
+
     return cachedUser
   }
 

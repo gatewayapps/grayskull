@@ -17,7 +17,7 @@ export async function setUserAccountPassword(
   if (userAccount) {
     const hashedPassword = await hash(newPassword, 10)
     await dataContext.UserAccount.update(
-      { passwordHash: hashedPassword },
+      { passwordHash: hashedPassword, lastPasswordChange: new Date() },
       { where: { userAccountId }, validate: false }
     )
 
