@@ -2,7 +2,7 @@ import Cookies from 'cookies'
 import { getCacheContext, CacheContext } from './getCacheContext'
 import { getDataContextFromConnectionString, DataContext } from './getDataContext'
 import { SESSION_ID_COOKIE_NAME } from '../../operations/logic/authentication'
-import { getUserContext } from './getUserContext'
+import { getUserContext, UserContext } from './getUserContext'
 import { getCurrentConfiguration } from '../../operations/data/configuration/getCurrentConfiguration'
 import { IConfiguration } from '../types/types'
 
@@ -10,7 +10,7 @@ export interface IRequestContext {
   req: any
   res: any
   configuration: IConfiguration
-  user: any
+  user?: UserContext
   cacheContext: CacheContext
   dataContext: DataContext
 }
@@ -35,18 +35,12 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
   const configuration = await getCurrentConfiguration(dataContext, cacheContext)
 
   const userContext = await getUserContext(sessionCookie, fingerprint, dataContext, cacheContext)
-  const finalUserContext = userContext
-    ? {
-        ...userContext.userAccount,
-        emailAddress: userContext.primaryEmailAddress
-      }
-    : undefined
 
   return {
     req,
     res,
     configuration,
-    user: finalUserContext,
+    user: userContext,
     cacheContext,
     dataContext
   }

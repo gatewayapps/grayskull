@@ -4,7 +4,7 @@ import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../
 
 import { encrypt } from '../../../operations/logic/encryption'
 import { PASSWORD_PLACEHOLDER } from '../../../foundation/constants'
-import { UserAccount } from '../../../foundation/models/UserAccount'
+
 import { Permissions } from '../../../foundation/constants/permissions'
 
 import { IRequestContext } from '../../../foundation/context/prepareContext'
@@ -13,7 +13,7 @@ import { clearConfigurationFromCache } from '../../../operations/data/configurat
 export default {
   Query: {
     configuration: async (obj, args, context: IRequestContext) => {
-      const user: UserAccount | null | undefined = context.user
+      const user = context.user
       const loadMail = user && user.permissions === Permissions.Admin
 
       const configuration = context.configuration

@@ -91,7 +91,7 @@ export default {
             otpToken,
             extendedSession,
             {
-              userContext: context.user || null
+              userContext: context.user
             }
           )
           if (authResult.session) {
@@ -134,7 +134,7 @@ export default {
           throw new Error('You must be logged in')
         }
 
-        const serviceOptions = { userContext: context.user || null }
+        const serviceOptions = { userContext: context.user }
 
         const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
 
@@ -223,7 +223,7 @@ export default {
       if (!context.user) {
         throw new Error('You must be logged in!')
       }
-      const serviceOptions = { userContext: context.user || null }
+      const serviceOptions = { userContext: context.user }
       const { client_id, allowedScopes, deniedScopes } = args.data
       await UserClientService.updateScopes(context.user, client_id, allowedScopes, deniedScopes, serviceOptions)
       return true
@@ -293,7 +293,7 @@ export default {
     update: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       const userAccount = context.user
       let result: IOperationResponse
-      if (!userAccount) {
+      if (!context.user) {
         result = {
           success: false,
           message: 'You must be signed in to do that'
@@ -346,7 +346,7 @@ export default {
     },
     verifyEmailAddress: async (obj, args): Promise<IOperationResponse> => {
       try {
-        await EmailAddressService.verifyEmailAddress(args.data.emailAddress, args.data.code, { userContext: null })
+        await EmailAddressService.verifyEmailAddress(args.data.emailAddress, args.data.code, {})
         return {
           success: true
         }
@@ -438,19 +438,19 @@ export default {
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
       const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, context.configuration, {
-        userContext: context.user || null
+        userContext: context.user
       })
       return !!result
     },
     resendAllVerificationEmails: async (obj, args, context: IRequestContext) => {
       const unverifiedEmails = await EmailAddressRepository.getEmailAddresses(
         { primary_equals: true, verified_equals: false },
-        { userContext: context.user || null }
+        { userContext: context.user }
       )
       await Promise.all(
         unverifiedEmails.map(async (e) => {
           await EmailAddressService.sendVerificationEmail(e.emailAddress, context.configuration, {
-            userContext: context.user || null
+            userContext: context.user
           })
         })
       )
@@ -496,12 +496,12 @@ export default {
     },
     sendBackupCode: async (obj, args, context: IRequestContext) => {
       return await AuthenticationService.sendBackupCode(args.data.emailAddress, context.configuration, {
-        userContext: context.user || null
+        userContext: context.user
       })
     },
     activateAccount: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       const { emailAddress, token, password, confirmPassword } = args.data
-      if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, { userContext: null }))) {
+      if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, context.dataContext))) {
         return {
           success: false,
           message: 'Invalid email address or token'
@@ -544,7 +544,7 @@ export default {
     emailAddress: async (obj, args, context: IRequestContext) => {
       const result = await EmailAddressRepository.getEmailAddresses(
         { primary_equals: true, userAccountId_equals: obj.userAccountId },
-        { userContext: context.user || null }
+        { userContext: context.user }
       )
       if (result.length > 0) {
         return result[0].emailAddress
@@ -557,13 +557,13 @@ export default {
     emailAddresses: async (obj, args, context: IRequestContext) => {
       return await EmailAddressService.getEmailAddresses(
         { userAccountId_equals: obj.userAccountId },
-        { userContext: context.user || null }
+        { userContext: context.user }
       )
     },
     emailAddress: async (obj, args, context: IRequestContext) => {
       const result = await EmailAddressRepository.getEmailAddresses(
         { primary_equals: true, userAccountId_equals: obj.userAccountId },
-        { userContext: context.user || null }
+        { userContext: context.user }
       )
       if (result.length > 0) {
         return result[0].emailAddress

@@ -227,8 +227,6 @@ export interface IUserAccount {
   permissions: number
   otpSecret: string | null
   otpEnabled: boolean
-  resetPasswordToken: string | null
-  resetPasswordTokenExpiresAt: Date | null
   isActive: boolean
   createdBy: string | null
   createdAt: Date
@@ -236,7 +234,7 @@ export interface IUserAccount {
   updatedAt: Date
   deletedBy: string | null
   deletedAt: Date | null
-  emailAddresses: IEmailAddress[]
+  emailAddresses?: IEmailAddress[]
 }
 export interface UpdateClientScopesOperationArgs {
   client_id: string

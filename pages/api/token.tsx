@@ -57,7 +57,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
       body.refresh_token,
       context.configuration,
       {
-        userContext: context.user || null
+        userContext: context.user
       }
     )
     res.json(accessTokenResponse)

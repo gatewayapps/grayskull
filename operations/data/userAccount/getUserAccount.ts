@@ -13,8 +13,6 @@ export async function getUserAccount(
   if (cachedUser && !includeSensitive) {
     delete cachedUser.otpSecret
     delete cachedUser.passwordHash
-    delete cachedUser.resetPasswordToken
-    delete cachedUser.resetPasswordTokenExpiresAt
 
     return cachedUser
   }

@@ -62,7 +62,7 @@ class SessionService {
           lastUsedAt: new Date(),
           expiresAt: expiry
         },
-        { userContext: null }
+        {}
       )
     } catch (err) {
       return null

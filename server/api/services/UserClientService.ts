@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { UserAccount } from '../../../foundation/models/UserAccount'
 
 import { IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
@@ -13,6 +12,7 @@ import { UserClient } from '../../../foundation/models/UserClient'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import { ScopeMap } from './ScopeService'
 import { WhereAttributeHash, default as Sequelize } from 'sequelize'
+import { IUserAccount } from '../../../foundation/types/types'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -31,7 +31,7 @@ export async function getClientsForUser(userAccountId: string) {
   })
 
   const userClientIds = userClients.map((uc) => uc.client_id)
-  return await ClientRepository.getClients({ client_id_in: userClientIds }, { userContext: null })
+  return await ClientRepository.getClients({ client_id_in: userClientIds }, {})
 }
 
 class UserClientService {
@@ -100,7 +100,7 @@ class UserClientService {
 
   @hasPermission(Permissions.User)
   async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClient | null> {
-    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+    if (options.userContext && !AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }
     return UserClientRepository.getUserClient(filter as WhereAttributeHash, options)
@@ -108,7 +108,7 @@ class UserClientService {
 
   @hasPermission(Permissions.User)
   public async updateScopes(
-    userAccount: UserAccount,
+    userAccount: IUserAccount,
     client_id: string,
     allowedScopes: string[],
     deniedScopes: string[],

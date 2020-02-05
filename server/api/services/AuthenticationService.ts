@@ -26,7 +26,7 @@ import EmailAddressRepository from '../../data/repositories/EmailAddressReposito
 import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
 
-import { IConfiguration } from '../../../foundation/types/types'
+import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
 
 const CACHE_PREFIX = 'BACKUP_CODE_'
 
@@ -312,7 +312,7 @@ class AuthenticationService {
   }
 
   public async generateAuthorizationCode(
-    userAccount: UserAccount,
+    userAccount: IUserAccount & { emailAddress: string },
     clientId: string,
     userClientId: string,
     scope: string[],

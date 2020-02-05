@@ -14,8 +14,7 @@ export class UserAccount extends Model {
   public permissions: number = this.permissions
   public otpSecret: string | null = this.otpSecret
   public otpEnabled: boolean = this.otpEnabled
-  public resetPasswordToken: string | null = this.resetPasswordToken
-  public resetPasswordTokenExpiresAt: Date | null = this.resetPasswordTokenExpiresAt
+
   public isActive: boolean = this.isActive
   public createdBy: string | null = this.createdBy
   public createdAt: Date = this.createdAt
@@ -84,14 +83,6 @@ function UserAccountFactory(sequelize: Sequelize.Sequelize) {
         defaultValue: false,
         allowNull: false,
         type: Sequelize.BOOLEAN
-      },
-      resetPasswordToken: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      resetPasswordTokenExpiresAt: {
-        allowNull: true,
-        type: Sequelize.DATE
       },
       isActive: {
         defaultValue: true,
