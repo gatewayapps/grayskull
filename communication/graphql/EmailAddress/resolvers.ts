@@ -7,17 +7,17 @@ import { IRequestContext } from '../../../foundation/context/prepareContext'
 export default {
   Query: {
     emailAddresses: (obj, args, context) => {
-      return EmailAddressService.getEmailAddresses(args.where, { userContext: context.user || null })
+      return EmailAddressService.getEmailAddresses(args.where, { userContext: context.user })
     },
     emailAddressesMeta: (obj, args, context) => {
-      return EmailAddressService.emailAddressesMeta(args.where, { userContext: context.user || null })
+      return EmailAddressService.emailAddressesMeta(args.where, { userContext: context.user })
     },
     emailAddress: async (obj, args, context) => {
-      return EmailAddressService.getEmailAddress(args.where, { userContext: context.user || null })
+      return EmailAddressService.getEmailAddress(args.where, { userContext: context.user })
     },
     emailAddressAvailable: async (obj, args, context) => {
       const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, {
-        userContext: context.user || null
+        userContext: context.user
       })
       return result
     },
