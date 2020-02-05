@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import Cleave from 'cleave.js/react'
 import Select from 'react-select'
@@ -30,25 +30,21 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
       case 'select':
         return this.renderSelectInput(props, className)
       case 'photo':
-        return this.renderPhotoInput(props, className)
+        return this.renderPhotoInput(props)
       default:
         return this.renderTextInput(props, className)
     }
   }
 
-  private renderPhotoInput = (props: any, className: string | undefined) => {
+  private renderPhotoInput = (props: any) => {
     if (props.readOnly) {
-      const { style, ...renderProps } = props
-      return (
-
-        <img className="d-block" style={{ height: '150px' }} src={props.value} />
-
-      )
+      return <img className="d-block" style={{ height: '150px' }} src={props.value} />
     } else {
-      const { style, className, ...restProps } = props
+      const finalProps = { ...props, style: undefined, className: undefined }
+
       return (
         <ImageDropArea
-          {...restProps}
+          {...finalProps}
           style={{ height: '150px', maxWidth: '400px', padding: '2px', border: '1px black dashed' }}
           src={props.value}
           onUploadComplete={(file) => {
@@ -59,7 +55,9 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
     }
   }
 
-  private renderTextInput = (props: any, className: string | undefined) => <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
+  private renderTextInput = (props: any, className: string | undefined) => (
+    <input className={`form-control ${className || ''}`} {...props} value={props.value || undefined} />
+  )
 
   private renderTextAreaInput = (props: object, className: string | undefined) => (
     <textarea
@@ -115,7 +113,10 @@ export default class AdaptiveInput extends React.Component<AdaptiveInputProps, a
 
   private renderSelectInput = (props: any, className: string | undefined) => {
     if (props.readOnly) {
-      return this.renderTextInput({ name: props.name, defaultValue: props.value, readOnly: true, placeholder: 'Gender' }, className)
+      return this.renderTextInput(
+        { name: props.name, defaultValue: props.value, readOnly: true, placeholder: 'Gender' },
+        className
+      )
     }
     const { options, allowCustom, ...finalProps } = props
 

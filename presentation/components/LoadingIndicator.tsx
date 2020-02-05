@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface ILoadingIndicatorProps {
-  message?: String
+  message?: string
 }
 
 const LoadingIndicator = ({ message = 'Loading' }: ILoadingIndicatorProps) => (

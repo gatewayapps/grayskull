@@ -21,12 +21,7 @@ export async function changePasswordWithOldPassword(
   if (!context.user) {
     throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `You must be signed in to change your password`)
   } else {
-    const oldPasswordVerified = await verifyPassword(
-      context.user.userAccountId,
-      oldPassword,
-      context.dataContext,
-      context.cacheContext
-    )
+    const oldPasswordVerified = await verifyPassword(context.user.userAccountId, oldPassword, context.dataContext)
     if (!oldPasswordVerified) {
       throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `The old password provided is not correct`)
     } else {

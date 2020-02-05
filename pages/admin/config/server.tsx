@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from 'react'
 import { SAVE_CONFIGURATION } from '../../oobe'
 
@@ -9,7 +10,7 @@ import ServerConfigurationForm from '../../../presentation/components/ServerConf
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import MutationButton from '../../../presentation/components/MutationButton'
 
-const serverComponent = (props) => {
+const serverComponent: React.FC = () => {
   const [localConfiguration, setLocalConfiguration] = useState<IConfiguration | undefined>()
   const [saveEnabled, setSaveEnabled] = useState(false)
 
@@ -35,7 +36,7 @@ const serverComponent = (props) => {
                           Server: data
                         })
                       }}
-                      onValidated={(isValid, errors) => {
+                      onValidated={(isValid) => {
                         setSaveEnabled(isValid)
                       }}
                     />

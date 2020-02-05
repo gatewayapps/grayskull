@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useContext } from 'react'
+import React from 'react'
 
 import gql from 'graphql-tag'
 import { useMutation } from 'react-apollo'
@@ -66,7 +66,7 @@ const VerifyEmailAddress = (props) => {
   )
 }
 
-VerifyEmailAddress.getInitialProps = ({ res, req, query }) => {
+VerifyEmailAddress.getInitialProps = ({ query }) => {
   return { query }
 }
 

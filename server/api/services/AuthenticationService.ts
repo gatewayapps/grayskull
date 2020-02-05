@@ -82,7 +82,7 @@ class AuthenticationService {
     }
 
     // 2b. Verify the email address has been verified
-    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
+    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, { userContext: options.userContext })
     if (email && !email.verified) {
       return {
         success: false,
@@ -97,7 +97,7 @@ class AuthenticationService {
       const otpSecret = decrypt(user.otpSecret)
       const cacheKey = `${CACHE_PREFIX}${emailAddress}`
       // 3a. Verify the OTP token
-      if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken, options)) {
+      if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken)) {
         const backupCode = await getValueFromCache(cacheKey, true)
 
         if (!backupCode || backupCode !== otpToken) {
@@ -304,7 +304,7 @@ class AuthenticationService {
     }
   }
 
-  public verifyOtpToken(secret: string | null, token: string | null, options: IQueryOptions): boolean {
+  public verifyOtpToken(secret: string | null, token: string | null): boolean {
     if (!secret || !token) {
       return false
     }
@@ -316,8 +316,7 @@ class AuthenticationService {
     clientId: string,
     userClientId: string,
     scope: string[],
-    nonce: string | undefined,
-    options: IQueryOptions
+    nonce: string | undefined
   ): Promise<string> {
     const authorizationCode = crypto.randomBytes(64).toString('hex')
     await cacheValue(

@@ -1,7 +1,7 @@
 import React from 'react'
 import Primary from '../presentation/layouts/primary'
 export default class Error extends React.Component {
-  static getInitialProps({ res, err }) {
+  static getInitialProps({ res }) {
     let error
     let statusCode
     if (res && res.locals) {

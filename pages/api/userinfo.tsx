@@ -8,25 +8,6 @@ import { UserAccount } from '../../foundation/models/UserAccount'
 import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
 import { prepareContext } from '../../foundation/context/prepareContext'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const context = await prepareContext(req, res)
-
-  const clientOptions = await getClientRequestOptionsFromRequest(context.req)
-  switch (req.method) {
-    case 'GET': {
-      getUserProfile(clientOptions, context.req, res)
-      break
-    }
-    case 'POST': {
-      postUserProfile(clientOptions, context.req, res)
-      break
-    }
-    default: {
-      res.status(405).json({ success: false, message: 'Method not allowed' })
-    }
-  }
-}
-
 async function getUserProfile(
   clientOptions: IClientRequestOptions,
   requestContext: RequestContext,
@@ -86,5 +67,24 @@ async function postUserProfile(
     }
   } catch (err) {
     res.json({ success: false, message: err.message })
+  }
+}
+
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const context = await prepareContext(req, res)
+
+  const clientOptions = await getClientRequestOptionsFromRequest(context.req)
+  switch (req.method) {
+    case 'GET': {
+      getUserProfile(clientOptions, context.req, res)
+      break
+    }
+    case 'POST': {
+      postUserProfile(clientOptions, context.req, res)
+      break
+    }
+    default: {
+      res.status(405).json({ success: false, message: 'Method not allowed' })
+    }
   }
 }

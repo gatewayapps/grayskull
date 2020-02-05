@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v4'
-import { isUrl, isUrlOrEmpty, isValidUrl } from '../utils/validationHelpers'
+import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import FormValidationMessage from './FormValidationMessage'
 import ImageDropArea from './ImageDropArea'

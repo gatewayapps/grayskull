@@ -4,6 +4,6 @@ export interface IMailConfiguration {
   password?: string | null
   tlsSslRequired?: boolean | null
   port?: number | null
-  fromAddress?: string | null;
+  fromAddress?: string | null
   sendgridApiKey?: string | null
 }

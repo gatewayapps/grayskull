@@ -14,8 +14,10 @@ jobs:
         uses: actions/checkout@v1
       - name: Install Package Dependencies
         run: yarn install
+      - name: Check formatting
+        run: yarn prettier --check '*/**/*.{js,ts,tsx}'
       - name: Lint
-        run: yarn eslint --quiet ./
+        run: yarn eslint --quiet '*/**/*.{js,ts,tsx}'
       - name: Tests
         run: yarn test
       - name: Compile

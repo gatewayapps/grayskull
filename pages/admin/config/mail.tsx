@@ -9,7 +9,7 @@ import MailConfigurationForm from '../../../presentation/components/MailConfigur
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import MutationButton from '../../../presentation/components/MutationButton'
 
-const MailComponent = (props) => {
+const MailComponent = () => {
   const [localConfiguration, setLocalConfiguration] = useState<IConfiguration | undefined>()
   const [saveEnabled, setSaveEnabled] = useState(false)
   return (
@@ -34,7 +34,7 @@ const MailComponent = (props) => {
                           Mail: data
                         })
                       }}
-                      onValidated={(isValid, errors) => {
+                      onValidated={(isValid) => {
                         setSaveEnabled(isValid)
                       }}
                     />

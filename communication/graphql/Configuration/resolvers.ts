@@ -12,7 +12,7 @@ import { clearConfigurationFromCache } from '../../../operations/data/configurat
 
 export default {
   Query: {
-    configuration: async (obj, args, context: IRequestContext, info) => {
+    configuration: async (obj, args, context: IRequestContext) => {
       const user: UserAccount | null | undefined = context.user
       const loadMail = user && user.permissions === Permissions.Admin
 
@@ -26,7 +26,7 @@ export default {
     }
   },
   Mutation: {
-    saveConfiguration: async (obj, args, context: IRequestContext, info) => {
+    saveConfiguration: async (obj, args, context: IRequestContext) => {
       // Insert your saveConfiguration implementation here
       try {
         // we need to write all the configuration properties to the database
@@ -34,12 +34,12 @@ export default {
 
         if (data.Server) {
           if (!!data.Server.baseUrl) {
-            await saveStringSetting(SettingsKeys.SERVER_BASE_URL, data.Server!.baseUrl!, 'Server', context.dataContext)
+            await saveStringSetting(SettingsKeys.SERVER_BASE_URL, data.Server.baseUrl, 'Server', context.dataContext)
           }
           if (!!data.Server.realmLogo) {
             await saveStringSetting(
               SettingsKeys.SERVER_REALM_LOGO,
-              data.Server!.realmLogo!,
+              data.Server.realmLogo,
               'Server',
               context.dataContext
             )
@@ -47,7 +47,7 @@ export default {
           if (!!data.Server.realmName) {
             await saveStringSetting(
               SettingsKeys.SERVER_REALM_NAME,
-              data.Server!.realmName!,
+              data.Server.realmName,
               'Server',
               context.dataContext
             )
@@ -55,7 +55,7 @@ export default {
           if (!!data.Server.realmBackground) {
             await saveStringSetting(
               SettingsKeys.SERVER_BACKGROUND_IMAGE,
-              data.Server!.realmBackground!,
+              data.Server.realmBackground,
               'Server',
               context.dataContext
             )
@@ -64,32 +64,32 @@ export default {
 
         if (data.Mail) {
           if (!!data.Mail.fromAddress) {
-            await saveStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress!, 'Mail', context.dataContext)
+            await saveStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, data.Mail.fromAddress, 'Mail', context.dataContext)
           }
           if (!!data.Mail.password && data.Mail.password !== PASSWORD_PLACEHOLDER) {
             await saveStringSetting(
               SettingsKeys.MAIL_PASSWORD,
-              encrypt(data.Mail.password!),
+              encrypt(data.Mail.password),
               'Mail',
               context.dataContext
             )
           }
           if (!!data.Mail.port) {
-            await saveNumberSetting(SettingsKeys.MAIL_PORT, data.Mail.port!, 'Mail', context.dataContext)
+            await saveNumberSetting(SettingsKeys.MAIL_PORT, data.Mail.port, 'Mail', context.dataContext)
           }
           if (!!data.Mail.serverAddress) {
-            await saveStringSetting(SettingsKeys.MAIL_HOST, data.Mail.serverAddress!, 'Mail', context.dataContext)
+            await saveStringSetting(SettingsKeys.MAIL_HOST, data.Mail.serverAddress, 'Mail', context.dataContext)
           }
           if (data.Mail.tlsSslRequired !== undefined && data.Mail.tlsSslRequired !== null) {
-            await saveBooleanSetting(SettingsKeys.MAIL_SSL, !!data.Mail.tlsSslRequired!, 'Mail', context.dataContext)
+            await saveBooleanSetting(SettingsKeys.MAIL_SSL, !!data.Mail.tlsSslRequired, 'Mail', context.dataContext)
           }
           if (!!data.Mail.username) {
-            await saveStringSetting(SettingsKeys.MAIL_USER, data.Mail.username!, 'Mail', context.dataContext)
+            await saveStringSetting(SettingsKeys.MAIL_USER, data.Mail.username, 'Mail', context.dataContext)
           }
           if (!!data.Mail.sendgridApiKey && data.Mail.sendgridApiKey !== PASSWORD_PLACEHOLDER) {
             await saveStringSetting(
               SettingsKeys.MAIL_SENDGRID_API_KEY,
-              encrypt(data.Mail.sendgridApiKey!),
+              encrypt(data.Mail.sendgridApiKey),
               'Mail',
               context.dataContext
             )
@@ -100,7 +100,7 @@ export default {
           if (!!data.Security.accessTokenExpirationSeconds) {
             await saveNumberSetting(
               SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS,
-              data.Security.accessTokenExpirationSeconds!,
+              data.Security.accessTokenExpirationSeconds,
               'Security',
               context.dataContext
             )
@@ -127,7 +127,7 @@ export default {
           ) {
             await saveNumberSetting(
               SettingsKeys.SECURITY_ACTIVATION_EXPIRES_IN_MINUTES,
-              data.Security.invitationExpirationSeconds!,
+              data.Security.invitationExpirationSeconds,
               'Security',
               context.dataContext
             )

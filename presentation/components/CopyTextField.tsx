@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { UncontrolledPopover, PopoverBody } from 'reactstrap'
 
@@ -25,7 +25,12 @@ export default class CopyTextField extends React.Component<CopyTextFieldProps, a
         </div>
         <CopyToClipboard text={this.props.text} onCopied={this.props.onCopied}>
           <div className="mb-3 mx-3">
-            <button role="button" id={`${this.props.id}-copy-button`} className="btn btn-outline-secondary" type="button" title="Copy to Clipboard">
+            <button
+              role="button"
+              id={`${this.props.id}-copy-button`}
+              className="btn btn-outline-secondary"
+              type="button"
+              title="Copy to Clipboard">
               <i className="fa fa-fw fa-copy" />
             </button>
             <UncontrolledPopover trigger="focus" placement="top" target={`${this.props.id}-copy-button`}>

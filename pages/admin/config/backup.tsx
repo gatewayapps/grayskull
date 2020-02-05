@@ -25,7 +25,7 @@ const RESTORE_CONFIGURATION_MUTATION = gql`
   }
 `
 
-const BackupPage = (props) => {
+const BackupPage = () => {
   const [backupFile, setBackupFile] = useState<File>(undefined)
 
   const [query, { data, loading }] = useLazyQuery(BACKUP_CONFIGURATION_QUERY, { fetchPolicy: 'network-only' })

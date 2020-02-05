@@ -1,5 +1,4 @@
 import { SchemaDirectiveVisitor } from 'apollo-server'
-import { GraphQLSchema } from 'graphql'
 
 export class AnonymousDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field, details) {

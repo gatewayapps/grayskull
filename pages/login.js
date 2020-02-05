@@ -8,7 +8,7 @@ import { parseRoutingState } from '../presentation/utils/routing'
 import UserContext from '../presentation/contexts/UserContext'
 
 class LoginPage extends React.PureComponent {
-  static async getInitialProps({ req, query, res }) {
+  static async getInitialProps({ query, res }) {
     const locals = res ? res.locals : {}
     return { query, ...locals }
   }

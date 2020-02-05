@@ -20,7 +20,7 @@ export default class ResponsiveInput extends React.PureComponent {
   }
 
   render = () => {
-    const { name, validationErrors, className, label, labelColumnWidth, ...props } = this.props
+    const { name, className, label, labelColumnWidth, ...props } = this.props
 
     const readOnlyClass = props.readOnly ? 'border-bottom-0' : ''
 

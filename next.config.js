@@ -4,7 +4,7 @@ const withCss = require('@zeit/next-css')
 
 module.exports = withSass(
   withCss({
-    webpack(config, options) {
+    webpack(config) {
       config.module.rules.push({
         test: /\.(graphql|gql)$/,
         exclude: /node_modules/,

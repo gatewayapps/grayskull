@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Mutation, MutationFunction, OperationVariables, MutationResult } from 'react-apollo'
 
 export interface MutationButtonProps {
@@ -16,13 +16,13 @@ class MutationButton extends React.Component<MutationButtonProps, any> {
   public render() {
     return (
       <Mutation mutation={this.props.mutation} variables={this.props.variables}>
-        {(MutationFunction: MutationFunction<any, OperationVariables>, result: MutationResult<any>) => (
+        {(mutation: MutationFunction<any, OperationVariables>, result: MutationResult<any>) => (
           <button
             disabled={this.props.disabled || result.loading}
             className={this.props.className}
             onClick={async () => {
               try {
-                const result = await MutationFunction()
+                const result = await mutation()
                 if (this.props.onSuccess) {
                   this.props.onSuccess(result)
                 }

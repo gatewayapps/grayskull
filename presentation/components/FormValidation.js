@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce'
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Validator from 'validator'
 

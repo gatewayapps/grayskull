@@ -1,5 +1,5 @@
 import moment from 'moment'
-import * as React from 'react'
+import React from 'react'
 import RequireConfiguration from './RequireConfiguration'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import { validatePassword } from '../utils/passwordComplexity'
@@ -34,7 +34,10 @@ export interface SecurityPasswordStatusState {
   message: string
 }
 
-export default class SecurityPasswordStatus extends React.Component<SecurityPasswordStatusProps, SecurityPasswordStatusState> {
+export default class SecurityPasswordStatus extends React.Component<
+  SecurityPasswordStatusProps,
+  SecurityPasswordStatusState
+> {
   constructor(props: SecurityPasswordStatusProps) {
     super(props)
 
@@ -63,7 +66,13 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
   private renderDefault = () => {
     return (
       <div>
-        <ResponsiveInput label="Last Changed" value={moment(this.props.user.lastPasswordChange).fromNow()} type="static" className="form-control form-control-static" readOnly />
+        <ResponsiveInput
+          label="Last Changed"
+          value={moment(this.props.user.lastPasswordChange).fromNow()}
+          type="static"
+          className="form-control form-control-static"
+          readOnly
+        />
         {this.state.passwordChanged && <div className="alert alert-success mx-4">Your password has been changed.</div>}
       </div>
     )
@@ -77,10 +86,24 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
           const validations = [
             new FormValidationRule('oldPassword', 'isEmpty', false, 'Current password is required'),
             new FormValidationRule('newPassword', 'isEmpty', false, 'New password is required'),
-            new FormValidationRule('newPassword', 'equals', false, 'New password cannot be the same as the current one', [this.state.oldPassword]),
-            new FormValidationRule('newPassword', validatePassword, true, 'New password does not meet complexity requirements', [securityConfiguration]),
+            new FormValidationRule(
+              'newPassword',
+              'equals',
+              false,
+              'New password cannot be the same as the current one',
+              [this.state.oldPassword]
+            ),
+            new FormValidationRule(
+              'newPassword',
+              validatePassword,
+              true,
+              'New password does not meet complexity requirements',
+              [securityConfiguration]
+            ),
             new FormValidationRule('confirmPassword', 'isEmpty', false, 'Confirm password is required'),
-            new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [this.state.newPassword])
+            new FormValidationRule('confirmPassword', 'equals', true, 'Confirm should match the password', [
+              this.state.newPassword
+            ])
           ]
           return (
             <FormValidation validations={validations} data={this.state} onValidated={this.onValidated}>
@@ -106,7 +129,9 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
                     onChange={(e) => this.handleChange(e, validate)}
                   />
 
-                  <div className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3" style={{ border: '1px solid' }}>
+                  <div
+                    className="alert alert-secondary border-secondary col-12 col-md-9 offset-md-3"
+                    style={{ border: '1px solid' }}>
                     <div className="alert-heading">Password requirements</div>
                     <div>
                       <PasswordComplexity configuration={securityConfiguration} password={this.state.newPassword} />
@@ -144,7 +169,14 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
             <button
               className="btn btn-secondary"
               onClick={() => {
-                this.setState({ changing: !this.state.changing, newPassword: '', oldPassword: '', confirmPassword: '', message: '', passwordChanged: false })
+                this.setState({
+                  changing: !this.state.changing,
+                  newPassword: '',
+                  oldPassword: '',
+                  confirmPassword: '',
+                  message: '',
+                  passwordChanged: false
+                })
               }}>
               {this.state.changing ? (
                 <span>
@@ -168,7 +200,13 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
                     if (this.props.refresh) {
                       this.props.refresh()
                     }
-                    this.setState({ passwordChanged: true, changing: false, newPassword: '', oldPassword: '', confirmPassword: '' })
+                    this.setState({
+                      passwordChanged: true,
+                      changing: false,
+                      newPassword: '',
+                      oldPassword: '',
+                      confirmPassword: ''
+                    })
                   } else {
                     this.setState({ message: result.message })
                   }
@@ -176,7 +214,11 @@ export default class SecurityPasswordStatus extends React.Component<SecurityPass
                 onFail={(err) => {
                   this.setState({ message: err.message })
                 }}
-                variables={{ newPassword: this.state.newPassword, oldPassword: this.state.oldPassword, confirmPassword: this.state.confirmPassword }}
+                variables={{
+                  newPassword: this.state.newPassword,
+                  oldPassword: this.state.oldPassword,
+                  confirmPassword: this.state.confirmPassword
+                }}
                 busyContent={
                   <span>
                     <i className="fa fa-spin fa-fw fa-spinner" /> Changing

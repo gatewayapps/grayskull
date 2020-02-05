@@ -2,30 +2,30 @@ import ClientService from '../../../server/api/services/ClientService'
 
 export default {
   Query: {
-    clients: (obj, args, context, info) => {
+    clients: (obj, args, context) => {
       if (context.user) {
         return ClientService.getClients(args.where, { userContext: context.user || null })
       } else {
         return ClientService.getPublicClients(args.where, { userContext: context.user || null })
       }
     },
-    clientsMeta: (obj, args, context, info) => {
+    clientsMeta: (obj, args, context) => {
       // Insert your clientsMeta implementation here
       return ClientService.clientsMeta(args.where, { userContext: context.user || null })
     },
-    client: async (obj, args, context, info) => {
+    client: async (obj, args, context) => {
       // Insert your client implementation here
       return ClientService.getClient(args.where, { userContext: context.user || null })
     }
   },
   Mutation: {
-    createClient: (obj, args, context, info) => {
+    createClient: (obj, args, context) => {
       if (!context.user) {
         throw new Error('You must be logged in to create a client')
       }
       return ClientService.createClient(args.data, { userContext: context.user || null })
     },
-    updateClient: (obj, args, context, info) => {
+    updateClient: (obj, args, context) => {
       if (!context.user) {
         throw new Error('You must be logged in to update a client')
       }
