@@ -9,11 +9,6 @@ import createApolloClient from '../presentation/utils/createApolloClient'
 
 import ApplicationInitializer from '../presentation/components/ApplicationInitializer'
 
-if (process.browser) {
-  //LogRocket.init('LOGROCKET KEY')
-  //setupLogRocketReact(LogRocket)
-}
-
 const apolloClient = createApolloClient()
 
 class MyApp extends App<any> {
