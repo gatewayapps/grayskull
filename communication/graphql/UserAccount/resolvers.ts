@@ -362,6 +362,8 @@ export default {
     },
     registerUser: async (obj, args, context: IRequestContext): Promise<IRegisterUserResponse> => {
       try {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line no-unused-vars
         const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
         const userAccount = await registerUser(userInfo, emailAddress, password, context)
 

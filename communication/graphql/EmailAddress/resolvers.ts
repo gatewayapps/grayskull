@@ -1,7 +1,7 @@
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
 
 import EmailAddressRepository from '../../../server/data/repositories/EmailAddressRepository'
-import { Permissions } from '../../../foundation/constants/permissions'
+
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
