@@ -12,7 +12,12 @@ export async function getUserAccountByEmailAddress(
 ) {
   const emailAddressRecord = await getEmailAddressByEmailAddress(emailAddress, dataContext)
   if (emailAddressRecord) {
-    const userAccount = getUserAccount(emailAddressRecord.userAccountId, dataContext, cacheContext, includeSensitive)
+    const userAccount = await getUserAccount(
+      emailAddressRecord.userAccountId,
+      dataContext,
+      cacheContext,
+      includeSensitive
+    )
     if (!userAccount) {
       throw new GrayskullError(
         GrayskullErrorCode.InvalidUserAccountId,
