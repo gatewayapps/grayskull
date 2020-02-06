@@ -4,14 +4,14 @@ import { decrypt } from '../../../operations/logic/encryption'
 import { Session } from '../../../foundation/models/Session'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
-import bcrypt from 'bcrypt'
+
 import crypto from 'crypto'
 
 import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
 import MailService from './MailService'
-import SessionService from './SessionService'
+
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
@@ -20,8 +20,6 @@ import ClientRepository from '../../data/repositories/ClientRepository'
 import TokenService from './TokenService'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { ScopeMap } from './ScopeService'
-
-import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
 
@@ -53,80 +51,6 @@ otplib.authenticator.options = {
 }
 
 class AuthenticationService {
-  public async authenticateUser(
-    emailAddress: string,
-    password: string,
-    fingerprint: string,
-    ipAddress: string,
-    otpToken: string | null,
-    extendedSession: boolean,
-    options: IQueryOptions
-  ): Promise<IAuthenticateUserResult> {
-    // 1. Find the user account for the email address
-
-    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
-
-    if (!user) {
-      throw new Error('Invalid email address/password combination')
-    }
-
-    if (!user.passwordHash || !user.isActive) {
-      throw new Error('Your account is not active. Contact your system administrator.')
-    }
-
-    // 2. Verify the password matches
-    const passwordMatch = await bcrypt.compare(password, user.passwordHash)
-    if (!passwordMatch) {
-      throw new Error('Invalid email address/password combination')
-    }
-
-    // 2b. Verify the email address has been verified
-    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, { userContext: options.userContext })
-    if (email && !email.verified) {
-      return {
-        success: false,
-        otpRequired: false,
-        emailVerificationRequired: true,
-        message: 'You must verify your e-mail address before signing in.'
-      }
-    }
-
-    // 3. Determine if the user requires a OTP to login
-    if (user.otpEnabled && user.otpSecret) {
-      const otpSecret = decrypt(user.otpSecret)
-      const cacheKey = `${CACHE_PREFIX}${emailAddress}`
-      // 3a. Verify the OTP token
-      if (otpSecret === null || !this.verifyOtpToken(otpSecret, otpToken)) {
-        const backupCode = await getValueFromCache(cacheKey, true)
-
-        if (!backupCode || backupCode !== otpToken) {
-          return {
-            success: false,
-            otpRequired: true,
-            message: otpToken !== null && otpToken.length > 0 ? 'Invalid multi-factor authentication code' : ''
-          }
-        }
-      }
-      await deleteFromCache(cacheKey)
-    }
-
-    // 4. Create a session for the user
-    const session = await SessionService.createSession(
-      {
-        fingerprint,
-        userAccountId: user.userAccountId!,
-        ipAddress
-      },
-      extendedSession,
-      options
-    )
-
-    return {
-      success: true,
-      session
-    }
-  }
-
   public async generateOtpSecret(emailAddress: string, configuration: IConfiguration): Promise<string> {
     const secret = otplib.authenticator.generateSecret()
     const result = otplib.authenticator.keyuri(
