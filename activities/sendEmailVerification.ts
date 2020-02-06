@@ -1,10 +1,9 @@
 import { IRequestContext } from '../foundation/context/prepareContext'
-import { randomBytes } from 'crypto'
-import { cacheValue } from '../operations/data/persistentCache/cacheValue'
 import MailService from '../server/api/services/MailService'
 import { getEmailAddressByEmailAddress } from '../operations/data/emailAddress/getEmailAddressByEmailAddress'
 import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
 import { Permissions } from '../foundation/constants/permissions'
+import { generateEmailAddressVerificationCode } from '../operations/data/emailAddress/generateEmailAddressVerificationCode'
 
 const INVITATION_EXPIRES_IN = 60 * 60 // 1 hour
 
@@ -34,8 +33,7 @@ export async function sendEmailVerification(
     )
   }
 
-  const verificationCode = randomBytes(32).toString('hex')
-  await cacheValue(`VERIFICATION:${emailAddress}`, verificationCode, INVITATION_EXPIRES_IN, dataContext)
+  const verificationCode = await generateEmailAddressVerificationCode(emailAddress, INVITATION_EXPIRES_IN, dataContext)
 
   await MailService.sendEmailTemplate(
     `verifyEmailTemplate`,

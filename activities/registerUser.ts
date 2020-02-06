@@ -8,6 +8,7 @@ import { createUserAccount } from '../operations/data/userAccount/createUserAcco
 import { verifyPasswordStrength } from '../operations/logic/verifyPasswordStrength'
 import { createEmailAddress } from '../operations/data/emailAddress/createEmailAddress'
 import { sendEmailVerification } from './sendEmailVerification'
+import { createSession } from '../operations/data/session/createSession'
 
 /*
     1.  Is the email address allowed
@@ -62,5 +63,21 @@ export async function registerUser(
   if (userCount > 0) {
     await sendEmailVerification(emailAddress, context)
   }
+
+  const fingerprint = context.req.headers['x-fingerprint'].toString()
+  if (fingerprint) {
+    await createSession(
+      {
+        fingerprint,
+        userAccountId: userAccount.userAccountId,
+        ipAddress: context.req.socket.remoteAddress
+      },
+      false,
+      context.dataContext
+    )
+
+    // setAuthCookies(context.res, session)
+  }
+
   return userAccount
 }

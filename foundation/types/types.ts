@@ -131,15 +131,15 @@ export interface IKeyValueCache {
 
 export interface ILoginResponse {
   success: boolean
-  message: string | null
-  otpRequired: boolean | null
-  emailVerificationRequired: boolean | null
+  message?: string
+  otpRequired?: boolean
+  emailVerificationRequired?: boolean
 }
 
 export interface IOperationResponse {
   success: boolean
-  error: string | null
-  message: string | null
+  error?: string
+  message?: string
 }
 
 export interface IPhoneNumber {
@@ -174,8 +174,8 @@ export interface IRefreshToken {
 
 export interface IRegisterUserResponse {
   success: boolean
-  error: string | null
-  message: string | null
+  error?: string
+  message?: string
 }
 
 export interface IScope {
