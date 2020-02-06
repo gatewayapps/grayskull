@@ -13,7 +13,10 @@
     "format": "prettier --check */**/*.{js,ts,tsx}",
     "lint": "eslint --quiet */**/*.{js,ts,tsx}",
     "test": "jest",
-    "ci": "yarn format && yarn lint && yarn test"
+    "test-resolvers": "jest --testPathPattern resolver.spec.ts",
+    "test-operations": "jest --testPathPattern operations",
+    "test-foundation": "jest --testPathPattern foundation",
+    "ci": "yarn format && yarn lint && yarn test-resolvers && yarn test-operations && yarn test-foundation"
   },
   "repository": {
     "type": "git",
