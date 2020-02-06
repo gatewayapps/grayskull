@@ -8,7 +8,7 @@ export async function validateResetPasswordTokenResolver(
   context: IRequestContext
 ): Promise<IOperationResponse> {
   const token = args.data.token
-  const emailAddress = args.data.emailAddress
+  const emailAddress = decodeURIComponent(args.data.emailAddress)
   const isValid = await validateResetPasswordToken(emailAddress, token, context)
   if (isValid) {
     return {
