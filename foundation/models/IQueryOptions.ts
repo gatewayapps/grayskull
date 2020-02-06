@@ -1,8 +1,9 @@
-import { UserAccount } from './UserAccount'
 import { Transaction, Includeable } from 'sequelize'
 
+import { UserContext } from '../context/getUserContext'
+
 export interface IQueryOptions {
-  userContext: UserAccount | null
+  userContext?: UserContext
   order?: any
   include?: Includeable[] | undefined
   limit?: number

@@ -3,13 +3,11 @@ import { CacheContext } from './getCacheContext'
 
 import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
 import { verifyAndUseSession } from '../../operations/data/session/verifyAndUseSession'
-import { UserAccount } from '../models/UserAccount'
-import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
 
-export interface UserContext {
-  userAccount: UserAccount
-  primaryEmailAddress: string
-}
+import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
+import { IUserAccount } from '../types/types'
+
+export type UserContext = IUserAccount & { emailAddress: string }
 
 export async function getUserContext(
   sessionId: string,
@@ -25,11 +23,29 @@ export async function getUserContext(
       return undefined
     } else {
       const userAccount = await getUserAccount(session.userAccountId, dataContext, cacheContext, false)
-
       const primaryEmailAddress = await getPrimaryEmailAddress(userAccount.userAccountId, dataContext, cacheContext)
       return {
-        userAccount,
-        primaryEmailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : ''
+        userAccountId: userAccount.userAccountId,
+        firstName: userAccount.firstName,
+        lastName: userAccount.lastName,
+        displayName: userAccount.displayName,
+        lastActive: userAccount.lastActive,
+        lastPasswordChange: userAccount.lastPasswordChange,
+        gender: userAccount.gender,
+        birthday: userAccount.birthday,
+        profileImageUrl: userAccount.profileImageUrl,
+        permissions: userAccount.permissions,
+        otpSecret: userAccount.otpSecret,
+        otpEnabled: userAccount.otpEnabled,
+        isActive: userAccount.isActive,
+        passwordHash: userAccount.passwordHash,
+        createdBy: userAccount.createdBy,
+        createdAt: userAccount.createdAt,
+        updatedBy: userAccount.updatedBy,
+        updatedAt: userAccount.updatedAt,
+        deletedBy: userAccount.deletedBy,
+        deletedAt: userAccount.deletedAt,
+        emailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : ''
       }
     }
   }

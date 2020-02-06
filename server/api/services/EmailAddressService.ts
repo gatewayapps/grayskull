@@ -22,7 +22,7 @@ import { IConfiguration } from '../../../foundation/types/types'
 class EmailAddressService {
   @hasPermission(Permissions.User)
   public async getEmailAddress(filter: IEmailAddressUniqueFilter, options: IQueryOptions) {
-    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+    if (options.userContext && !AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }
     return await EmailAddressRepository.getEmailAddress(filter, options)
@@ -94,7 +94,7 @@ class EmailAddressService {
     filter: IEmailAddressFilter | null,
     options: IQueryOptions
   ): Promise<IEmailAddressMeta> {
-    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+    if (options.userContext && !AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }
     return EmailAddressRepository.emailAddressesMeta(filter, options)
@@ -102,7 +102,7 @@ class EmailAddressService {
 
   @hasPermission(Permissions.User)
   public async getEmailAddresses(filter: IEmailAddressFilter | null, options: IQueryOptions): Promise<EmailAddress[]> {
-    if (!AuthorizationHelper.isAdmin(options.userContext)) {
+    if (options.userContext && !AuthorizationHelper.isAdmin(options.userContext)) {
       filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
     }
     return EmailAddressRepository.getEmailAddresses(filter, options)

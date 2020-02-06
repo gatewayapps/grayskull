@@ -2,6 +2,7 @@ import { Permissions } from '../../foundation/constants/permissions'
 
 import { UserAccount } from '../../foundation/models/UserAccount'
 import { Setting } from '../../foundation/models/Setting'
+import { UserContext } from '../../foundation/context/getUserContext'
 
 export async function isOobe(): Promise<boolean> {
   const settingCount = await Setting.count()
@@ -13,15 +14,15 @@ export async function needsFirstUser(): Promise<boolean> {
 }
 
 class AuthorizationHelper {
-  public isUser(userContext: UserAccount | null): boolean {
+  public isUser(userContext: UserContext): boolean {
     return userContext !== null && userContext.permissions !== undefined && userContext.permissions > Permissions.None
   }
-  public isAdmin(userContext: UserAccount | null): boolean {
+  public isAdmin(userContext: UserContext): boolean {
     return (
       userContext !== null && userContext.permissions !== undefined && userContext.permissions === Permissions.Admin
     )
   }
-  public isSelf(userContext: UserAccount | null, userAccountId: string): boolean {
+  public isSelf(userContext: UserContext, userAccountId: string): boolean {
     return userContext !== null && userContext.userAccountId !== null && userContext.userAccountId === userAccountId
   }
 }

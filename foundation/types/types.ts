@@ -131,15 +131,15 @@ export interface IKeyValueCache {
 
 export interface ILoginResponse {
   success: boolean
-  message: string | null
-  otpRequired: boolean | null
-  emailVerificationRequired: boolean | null
+  message?: string
+  otpRequired?: boolean
+  emailVerificationRequired?: boolean
 }
 
 export interface IOperationResponse {
   success: boolean
-  error: string | null
-  message: string | null
+  error?: string
+  message?: string
 }
 
 export interface IPhoneNumber {
@@ -174,8 +174,8 @@ export interface IRefreshToken {
 
 export interface IRegisterUserResponse {
   success: boolean
-  error: string | null
-  message: string | null
+  error?: string
+  message?: string
 }
 
 export interface IScope {
@@ -227,8 +227,6 @@ export interface IUserAccount {
   permissions: number
   otpSecret: string | null
   otpEnabled: boolean
-  resetPasswordToken: string | null
-  resetPasswordTokenExpiresAt: Date | null
   isActive: boolean
   createdBy: string | null
   createdAt: Date
@@ -236,7 +234,7 @@ export interface IUserAccount {
   updatedAt: Date
   deletedBy: string | null
   deletedAt: Date | null
-  emailAddresses: IEmailAddress[]
+  emailAddresses?: IEmailAddress[]
 }
 export interface UpdateClientScopesOperationArgs {
   client_id: string

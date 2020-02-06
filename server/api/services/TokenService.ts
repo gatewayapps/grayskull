@@ -17,7 +17,7 @@ import UserAccountRepository from '../../data/repositories/UserAccountRepository
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 
 import { IClientRequestOptions } from '../../../foundation/models/IClientRequestOptions'
-import { IConfiguration } from '../../../foundation/types/types'
+import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
 
 export interface IAccessToken {
   id?: string
@@ -101,7 +101,7 @@ class TokenService {
 
   public async createIDToken(
     client: Client,
-    userAccount: UserAccount,
+    userAccount: IUserAccount,
     nonce: string | undefined,
     accessToken: string | undefined,
     configuration: IConfiguration,
@@ -140,17 +140,14 @@ class TokenService {
   public async validateAndDecodeAccessToken(accessToken: string): Promise<IClientRequestOptions> {
     const decoded: IAccessToken | null = jwt.decode(accessToken) as IAccessToken
     if (decoded !== null) {
-      const userClient = await UserClientRepository.getUserClient({ userClientId: decoded.sub }, { userContext: null })
-      const client = await ClientRepository.getClientWithSensitiveData(
-        { client_id: userClient!.client_id },
-        { userContext: null }
-      )
+      const userClient = await UserClientRepository.getUserClient({ userClientId: decoded.sub }, {})
+      const client = await ClientRepository.getClientWithSensitiveData({ client_id: userClient!.client_id }, {})
       if (client && jwt.verify(accessToken, client.secret)) {
         const userAccount = await UserAccountRepository.getUserAccount(
           {
             userAccountId: userClient!.userAccountId
           },
-          { userContext: null }
+          {}
         )
         if (userAccount) {
           return {
@@ -166,7 +163,7 @@ class TokenService {
 
   public async getUserProfileForClient(
     client: Client,
-    userAccount: UserAccount,
+    userAccount: IUserAccount,
     options: IQueryOptions
   ): Promise<ISubject & IProfileClaim & IEmailClaim> {
     const userClient = await UserClientRepository.getUserClient(
@@ -252,7 +249,7 @@ class TokenService {
 
   public async createAccessToken(
     client: Client,
-    userAccount: UserAccount,
+    userAccount: IUserAccount,
     refreshToken: RefreshToken | null,
     configuration: IConfiguration,
     options: IQueryOptions

@@ -1,5 +1,4 @@
 import { DataContext } from '../../../foundation/context/getDataContext'
-import { randomBytes } from 'crypto'
 
 export async function createEmailAddress(
   emailAddress: string,
@@ -15,6 +14,6 @@ export async function createEmailAddress(
     primary,
     createdAt: new Date(),
     updatedAt: new Date(),
-    verificationSecret: verified ? '' : randomBytes(16).toString('hex')
+    verificationSecret: ''
   }).save()
 }

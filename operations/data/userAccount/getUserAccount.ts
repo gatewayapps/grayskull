@@ -5,20 +5,19 @@ import { UserAccount } from '../../../foundation/models/UserAccount'
 export async function getUserAccount(
   userAccountId: string,
   dataContext: DataContext,
-  cacheContext: CacheContext,
+  cacheContext?: CacheContext,
   includeSensitive = false
 ) {
   const cacheKey = `USER_${userAccountId}`
-  const cachedUser = cacheContext.getValue<UserAccount>(cacheKey)
-  if (cachedUser && !includeSensitive) {
-    delete cachedUser.otpSecret
-    delete cachedUser.passwordHash
-    delete cachedUser.resetPasswordToken
-    delete cachedUser.resetPasswordTokenExpiresAt
+  if (cacheContext) {
+    const cachedUser = cacheContext.getValue<UserAccount>(cacheKey)
+    if (cachedUser && !includeSensitive) {
+      delete cachedUser.otpSecret
+      delete cachedUser.passwordHash
 
-    return cachedUser
+      return cachedUser
+    }
   }
-
   const user = await dataContext.UserAccount.findOne({
     where: {
       userAccountId
@@ -30,7 +29,7 @@ export async function getUserAccount(
     }
   })
 
-  if (user) {
+  if (user && cacheContext) {
     cacheContext.setValue(cacheKey, user, 30)
   } else {
     throw new Error(`User with userAccountId=${userAccountId} does not exist`)

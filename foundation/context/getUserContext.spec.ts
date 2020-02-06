@@ -34,11 +34,11 @@ describe('getUserContext', () => {
 
     expect(userContext).toBeDefined()
     if (userContext) {
-      expect(userContext.userAccount.firstName).toEqual(testUser.firstName)
-      expect(userContext.userAccount.lastName).toEqual(testUser.lastName)
-      expect(userContext.userAccount.userAccountId).toEqual(testUser.userAccountId)
-      expect(userContext.primaryEmailAddress).toEqual('')
-      expect(userContext.userAccount.passwordHash).toBeUndefined()
+      expect(userContext.firstName).toEqual(testUser.firstName)
+      expect(userContext.lastName).toEqual(testUser.lastName)
+      expect(userContext.userAccountId).toEqual(testUser.userAccountId)
+      expect(userContext.emailAddress).toEqual('')
+      expect(userContext.passwordHash).toBeUndefined()
     }
   })
 

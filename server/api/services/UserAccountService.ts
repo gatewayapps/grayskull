@@ -5,7 +5,7 @@ import { encrypt } from '../../../operations/logic/encryption'
 import { EmailAddress } from '../../../foundation/models/EmailAddress'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import bcrypt from 'bcrypt'
-import moment from 'moment'
+
 import uuid from 'uuid/v4'
 import EmailAddressService from './EmailAddressService'
 import MailService from './MailService'
@@ -18,6 +18,8 @@ import { ForbiddenError } from 'apollo-server'
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { IConfiguration } from '../../../foundation/types/types'
 import { DataContext } from '../../../foundation/context/getDataContext'
+import { cacheValue } from '../../../operations/data/persistentCache/cacheValue'
+import { getValue } from '../../../operations/data/persistentCache/getValue'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -28,9 +30,7 @@ class UserAccountService {
     dataContext: DataContext,
     otpSecret?: string
   ): Promise<void> {
-    const options: IQueryOptions = {
-      userContext: null
-    }
+    const options: IQueryOptions = {}
 
     const userAccount = await this.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
     if (!userAccount) {
@@ -45,9 +45,7 @@ class UserAccountService {
       const updates: Partial<UserAccount> = {
         otpEnabled: !!otpSecret,
         otpSecret,
-        passwordHash,
-        resetPasswordToken: null,
-        resetPasswordTokenExpiresAt: null
+        passwordHash
       }
 
       await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, updates, options)
@@ -89,9 +87,7 @@ class UserAccountService {
       data.lastPasswordChange = new Date('1900-01-01')
 
       const resetToken = randomBytes(16).toString('hex')
-      const expirationTime = moment().add(INVITATION_EXPIRES_IN, 'seconds')
-      data.resetPasswordToken = resetToken
-      data.resetPasswordTokenExpiresAt = expirationTime.toDate()
+      await cacheValue(`${emailAddress}_verificiation`, resetToken, INVITATION_EXPIRES_IN, dataContext)
 
       const user = await UserAccountRepository.createUserAccount(data, options)
 
@@ -150,15 +146,6 @@ class UserAccountService {
     await UserAccountRepository.updateUserAccount({ userAccountId }, { lastActive: new Date() }, options)
   }
 
-  public async changeUserPassword(userAccountId: string, password: string, options: IQueryOptions) {
-    const passwordHash = await this.hashPassword(password)
-    await UserAccountRepository.updateUserAccount(
-      { userAccountId },
-      { passwordHash, lastPasswordChange: new Date(), resetPasswordToken: null, resetPasswordTokenExpiresAt: null },
-      options
-    )
-  }
-
   public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccount | null> {
     const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
 
@@ -191,48 +178,12 @@ class UserAccountService {
     return UserAccountRepository.getUserAccount(filter, options)
   }
 
-  public async validateResetPasswordToken(emailAddress: string, token: string, options: IQueryOptions) {
-    const userAccount = await this.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
-    if (!userAccount || !userAccount.resetPasswordToken || !userAccount.resetPasswordTokenExpiresAt) {
-      return false
-    }
-    if (userAccount.resetPasswordToken !== token || userAccount.resetPasswordTokenExpiresAt < new Date()) {
-      return false
-    }
-    return true
+  public async validateResetPasswordToken(emailAddress: string, token: string, dataContext: DataContext) {
+    const cachedValue = await getValue(`${emailAddress}_verification`, dataContext)
+    return cachedValue === token
   }
 
-  public async resetPassword(emailAddress: string, configuration: IConfiguration, options: IQueryOptions) {
-    if (!configuration.Server) {
-      throw new Error('Failed to load Server configuration')
-    }
-    const userAccount = await this.getUserAccountByEmailAddress(emailAddress, options)
-    if (userAccount) {
-      const resetToken = randomBytes(16).toString('hex')
-
-      const expirationTime = moment().add(INVITATION_EXPIRES_IN, 'seconds')
-
-      userAccount.resetPasswordToken = resetToken
-      userAccount.resetPasswordTokenExpiresAt = expirationTime.toDate()
-
-      await UserAccountRepository.updateUserAccount({ userAccountId: userAccount.userAccountId }, userAccount, options)
-
-      const resetPasswordLink = `${configuration.Server.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${resetToken}`
-      await MailService.sendEmailTemplate(
-        'resetPasswordTemplate',
-        emailAddress,
-        `${configuration.Server.realmName} Password Reset`,
-        {
-          resetLink: resetPasswordLink,
-          realmName: configuration.Server.realmName,
-          user: userAccount
-        },
-        configuration
-      )
-    }
-
-    //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
-  }
+  //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
 
   public async registerUser(
     data: UserAccount,
@@ -258,7 +209,7 @@ class UserAccountService {
     if (options.userContext) {
       newOptions = Object.assign({}, options)
     } else {
-      newOptions = { userContext: null }
+      newOptions = {}
     }
 
     // 2. Start a transaction
