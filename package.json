@@ -10,6 +10,8 @@
     "build": "next build",
     "debug": "next dev",
     "start": "next start",
+    "format": "prettier --check */**/*.{js,ts,tsx}",
+    "lint": "eslint --quiet */**/*.{js,ts,tsx}",
     "test": "jest"
   },
   "repository": {
