@@ -42,7 +42,9 @@ export async function sendEmailVerification(
     {
       realmName: configuration.Server.realmName,
       user,
-      verificationLink: `${configuration.Server.baseUrl}/verify?address=${emailAddress}&code=${verificationCode}`
+      verificationLink: `${configuration.Server.baseUrl}/verify?address=${encodeURIComponent(
+        emailAddress
+      )}&code=${verificationCode}`
     },
     configuration
   )

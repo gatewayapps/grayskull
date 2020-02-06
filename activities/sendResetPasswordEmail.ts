@@ -26,7 +26,9 @@ export async function sendResetPasswordEmail(emailAddress: string, context: IReq
 
     await cacheValue(cacheKey, cachedValue, cacheTTL, context.dataContext)
 
-    const resetPasswordLink = `${context.configuration.Server.baseUrl}/changePassword?emailAddress=${emailAddress}&token=${token}`
+    const resetPasswordLink = `${context.configuration.Server.baseUrl}/changePassword?emailAddress=${encodeURIComponent(
+      emailAddress
+    )}&token=${token}`
     await MailService.sendEmailTemplate(
       'resetPasswordTemplate',
       emailAddress,
