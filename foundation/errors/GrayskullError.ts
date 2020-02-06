@@ -1,5 +1,6 @@
 export enum GrayskullErrorCode {
   EmailAlreadyRegistered = 'email_already_registered',
+  EmailNotVerified = 'email_not_verified',
   InvalidBackupCode = 'invalid_backup_code',
   NotAuthorized = 'not_authorized',
   InvalidUserAccountId = 'invalid_user_account_id',
@@ -8,7 +9,10 @@ export enum GrayskullErrorCode {
   InvalidEmailVerificationCode = 'invalid_email_verification_code',
   ExpiredResetPasswordToken = 'expired_reset_password_token',
   PasswordFailsSecurityRequirements = 'password_fails_security_requirements',
-  IncorrectPassword = 'incorrect_password'
+  IncorrectPassword = 'incorrect_password',
+  MultifactorRequired = 'multifactor_required',
+  InvalidOTP = 'invalid_otp',
+  RequiresOTP = 'requires_otp'
 }
 
 export class GrayskullError extends Error {

@@ -6,7 +6,6 @@ import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
-import jwt from 'jsonwebtoken'
 
 import * as otplib from 'otplib'
 import UserAccountService from './UserAccountService'
@@ -17,13 +16,13 @@ import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import ClientRepository from '../../data/repositories/ClientRepository'
-import { Client } from '../../../foundation/models/Client'
+
 import TokenService from './TokenService'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { ScopeMap } from './ScopeService'
 
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
-import { GRAYSKULL_GLOBAL_SECRET } from '../../utils/environment'
+
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
 
 import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
@@ -327,18 +326,6 @@ class AuthenticationService {
     )
 
     return authorizationCode
-  }
-
-  private verifyRefreshToken(client: Client, token: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      jwt.verify(token, GRAYSKULL_GLOBAL_SECRET, (err, payload) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(payload)
-        }
-      })
-    })
   }
 }
 

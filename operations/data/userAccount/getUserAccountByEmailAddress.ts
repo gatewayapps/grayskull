@@ -6,7 +6,7 @@ import { getUserAccount } from './getUserAccount'
 export async function getUserAccountByEmailAddress(
   emailAddress: string,
   dataContext: DataContext,
-  cacheContext: CacheContext,
+  cacheContext?: CacheContext,
   includeSensitive = false
 ) {
   const emailAddressRecord = await getEmailAddressByEmailAddress(emailAddress, dataContext)
