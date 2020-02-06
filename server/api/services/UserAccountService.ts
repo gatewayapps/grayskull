@@ -14,7 +14,7 @@ import { UserAccountFilter, UserAccountMeta, UserAccountUniqueFilter } from '../
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { randomBytes } from 'crypto'
-import { ForbiddenError } from 'apollo-server'
+
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { IConfiguration } from '../../../foundation/types/types'
 import { DataContext } from '../../../foundation/context/getDataContext'
