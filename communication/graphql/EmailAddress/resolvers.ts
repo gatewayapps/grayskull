@@ -4,6 +4,7 @@ import EmailAddressRepository from '../../../server/data/repositories/EmailAddre
 import { Permissions } from '../../../foundation/constants/permissions'
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
+import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 
 export default {
   Query: {
@@ -69,21 +70,16 @@ export default {
         throw new Error('You must be signed in to do that')
       }
 
-      const emailAddress = await EmailAddressRepository.getEmailAddress(
-        { emailAddress: args.data.emailAddress },
-        { userContext: context.user }
-      )
-      if (emailAddress && !emailAddress.verified) {
-        await EmailAddressService.sendVerificationEmail(emailAddress.emailAddress, context.configuration, {
-          userContext: context.user
-        })
+      try {
+        await sendEmailVerification(args.data.emailAddress, context)
         return {
           success: true
         }
-      } else {
+      } catch (err) {
         return {
           success: false,
-          message: 'Something went wrong'
+          message: err.message,
+          error: err.message
         }
       }
     },

@@ -1,11 +1,10 @@
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { InvalidOperationError } from './errors'
 
-export async function verifyEmailAddress(emailAddress: string, verificationSecret: string, dataContext: DataContext) {
+export async function setEmailAddressVerified(emailAddress: string, dataContext: DataContext) {
   const emailRecord = await dataContext.EmailAddress.findOne({
     where: {
-      emailAddress,
-      verificationSecret
+      emailAddress
     }
   })
 

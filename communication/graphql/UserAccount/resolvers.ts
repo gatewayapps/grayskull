@@ -25,6 +25,9 @@ import { sendResetPasswordEmail } from '../../../activities/sendResetPasswordEma
 import { changePasswordWithToken } from '../../../activities/changePasswordWithToken'
 import { changePasswordWithOldPassword } from '../../../activities/changePasswordWithOldPassword'
 import { validateResetPasswordToken } from '../../../activities/validateResetPasswordToken'
+import { verifyEmailAddress } from '../../../activities/verifyEmailAddress'
+import { registerUser } from '../../../activities/registerUser'
+import SessionService from '../../../server/api/services/SessionService'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -344,9 +347,9 @@ export default {
         }
       }
     },
-    verifyEmailAddress: async (obj, args): Promise<IOperationResponse> => {
+    verifyEmailAddress: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       try {
-        await EmailAddressService.verifyEmailAddress(args.data.emailAddress, args.data.code, {})
+        await verifyEmailAddress(args.data.emailAddress, args.data.code, context)
         return {
           success: true
         }
@@ -359,18 +362,20 @@ export default {
     },
     registerUser: async (obj, args, context: IRequestContext): Promise<IRegisterUserResponse> => {
       try {
-        const { emailAddress, password } = args.data
-
-        const validatePasswordResult = await verifyPasswordStrength(password, context.configuration.Security)
-        if (!validatePasswordResult.success) {
-          return {
-            success: false,
-            message: validatePasswordResult.validationErrors?.join('\n')
-          }
-        }
+        const { client_id, confirm, emailAddress, password, ...userInfo } = args.data
+        const userAccount = await registerUser(userInfo, emailAddress, password, context)
 
         const fingerprint = context.req.headers['x-fingerprint'].toString()
         if (fingerprint) {
+          await SessionService.createSession(
+            {
+              fingerprint,
+              userAccountId: userAccount.userAccountId!,
+              ipAddress: context.req.socket.remoteAddress
+            },
+            false,
+            {}
+          )
           // setAuthCookies(context.res, session)
         }
         return {
