@@ -3,7 +3,7 @@ import MutationButton from './MutationButton'
 import gql from 'graphql-tag'
 
 const SET_PRIMARY_MUTATION = gql`
-  mutation SET_PRIMARY($emailAddressId: String!) {
+  mutation SET_PRIMARY($emailAddressId: ID!) {
     setEmailAddressPrimary(data: { emailAddressId: $emailAddressId }) {
       success
       message
