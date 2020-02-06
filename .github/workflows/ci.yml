@@ -15,10 +15,10 @@ jobs:
       - name: Install Package Dependencies
         run: yarn install
       - name: Check formatting
-        run: yarn prettier --check '*/**/*.{js,ts,tsx}'
+        run: yarn format
       - name: Lint
-        run: yarn eslint --quiet '*/**/*.{js,ts,tsx}'
+        run: yarn lint
       - name: Tests
         run: yarn test
       - name: Compile
-        run: yarn next build
+        run: yarn build

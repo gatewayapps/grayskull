@@ -149,7 +149,7 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
     return (
       <RequireConfiguration>
         {(configuration) => {
-          const { securityConfiguration, serverConfiguration } = configuration
+          const { Security: securityConfiguration, Server: serverConfiguration } = configuration
           const validations = [
             new FormValidationRule('password', 'isEmpty', false, 'New password is required'),
             new FormValidationRule(

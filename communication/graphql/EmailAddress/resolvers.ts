@@ -1,8 +1,10 @@
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
 
 import EmailAddressRepository from '../../../server/data/repositories/EmailAddressRepository'
-import { Permissions } from '../../../foundation/constants/permissions'
+
 import { IRequestContext } from '../../../foundation/context/prepareContext'
+import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
+import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 
 export default {
   Query: {
@@ -68,68 +70,26 @@ export default {
         throw new Error('You must be signed in to do that')
       }
 
-      const emailAddress = await EmailAddressRepository.getEmailAddress(
-        { emailAddress: args.data.emailAddress },
-        { userContext: context.user }
-      )
-      if (emailAddress && !emailAddress.verified) {
-        await EmailAddressService.sendVerificationEmail(emailAddress.emailAddress, context.configuration, {
-          userContext: context.user
-        })
+      try {
+        await sendEmailVerification(args.data.emailAddress, context)
         return {
           success: true
         }
-      } else {
+      } catch (err) {
         return {
           success: false,
-          message: 'Something went wrong'
+          message: err.message,
+          error: err.message
         }
       }
     },
-    setEmailAddressPrimary: async (obj, args, context) => {
-      if (!context.user) {
-        throw new Error('You must be signed in to do that')
-      }
-
-      const emailAddress = await EmailAddressRepository.getEmailAddress(
-        { emailAddressId: args.data.emailAddressId },
-        { userContext: context.user }
-      )
-      if (!emailAddress) {
-        throw new Error('Unable to find an email address with that id')
-      } else {
-        if (
-          emailAddress.userAccountId !== context.user.userAccountId &&
-          context.user.permissions !== Permissions.Admin
-        ) {
-          throw new Error('You do not have access to that')
-        }
-        if (!emailAddress.verified) {
-          return {
-            success: false,
-            message: 'Only verified email addresses can be set as primary'
-          }
-        } else {
-          const currentPrimaryEmailAddress = await EmailAddressRepository.getEmailAddresses(
-            { userAccountId_equals: emailAddress.userAccountId, primary_equals: true },
-            { userContext: context.user }
-          )
-          if (currentPrimaryEmailAddress.length === 1) {
-            await EmailAddressRepository.updateEmailAddress(
-              { emailAddressId: currentPrimaryEmailAddress[0].emailAddressId },
-              { primary: false },
-              { userContext: context.user }
-            )
-          }
-          await EmailAddressRepository.updateEmailAddress(
-            { emailAddressId: emailAddress.emailAddressId },
-            { primary: true },
-            { userContext: context.user }
-          )
-          return {
-            success: true
-          }
-        }
+    setEmailAddressPrimary: async (obj, args, context: IRequestContext) => {
+      try {
+        await setPrimaryEmailAddressForUser(args.data.emailAddressId, context)
+        return { success: true }
+      } catch (err) {
+        console.error(err)
+        throw err
       }
     }
   },
