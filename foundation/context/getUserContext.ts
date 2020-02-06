@@ -23,6 +23,9 @@ export async function getUserContext(
       return undefined
     } else {
       const userAccount = await getUserAccount(session.userAccountId, dataContext, cacheContext, false)
+      if (!userAccount) {
+        return undefined
+      }
       const primaryEmailAddress = await getPrimaryEmailAddress(userAccount.userAccountId, dataContext, cacheContext)
       return {
         userAccountId: userAccount.userAccountId,
