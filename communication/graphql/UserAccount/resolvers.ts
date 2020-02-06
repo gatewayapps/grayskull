@@ -1,10 +1,9 @@
 import { IAuthorizeClientResponse } from '../../../foundation/models/IAuthorizeClientResponse'
-import { ILoginResponse } from '../../../foundation/models/ILoginResponse'
 
 import AuthenticationService from '../../../server/api/services/AuthenticationService'
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
 import UserAccountService from '../../../server/api/services/UserAccountService'
-import { setAuthCookies, doLogout } from '../../../operations/logic/authentication'
+import { doLogout } from '../../../operations/logic/authentication'
 import UserClientService from '../../../server/api/services/UserClientService'
 import { verifyPassword } from '../../../operations/data/userAccount/verifyPassword'
 import { verifyPasswordStrength } from '../../../operations/logic/verifyPasswordStrength'
@@ -23,6 +22,7 @@ import { verifyEmailAddressResolver } from './verifyEmailAddressResolver'
 import { resetPasswordResolver } from './resetPasswordResolver'
 import { changePasswordResolver } from './changePasswordResolver'
 import { validateResetPasswordTokenResolver } from './validateResetPasswordTokenResolver'
+import { loginResolver } from './loginResolver'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -75,42 +75,7 @@ export default {
     }
   },
   Mutation: {
-    login: async (obj, args, context: IRequestContext): Promise<ILoginResponse> => {
-      const { emailAddress, password, otpToken, fingerprint, extendedSession } = args.data
-      try {
-        if (!fingerprint) {
-          throw new Error('Invalid login request')
-        } else {
-          const authResult = await AuthenticationService.authenticateUser(
-            emailAddress,
-            password,
-            fingerprint,
-            context.req.client.remoteAddress,
-            otpToken,
-            extendedSession,
-            {
-              userContext: context.user
-            }
-          )
-          if (authResult.session) {
-            setAuthCookies(context.res, authResult.session)
-
-            return {
-              success: true
-            }
-          } else {
-            return {
-              success: authResult.success,
-              message: authResult.message,
-              otpRequired: authResult.otpRequired,
-              emailVerificationRequired: authResult.emailVerificationRequired
-            }
-          }
-        }
-      } catch (err) {
-        return { success: false, message: err.message }
-      }
-    },
+    login: loginResolver,
     validateResetPasswordToken: validateResetPasswordTokenResolver,
     authorizeClient: async (obj, args, context: IRequestContext): Promise<IAuthorizeClientResponse> => {
       try {

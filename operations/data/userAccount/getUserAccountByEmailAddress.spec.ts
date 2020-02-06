@@ -28,7 +28,13 @@ describe('getUserAccountByEmailAddress', () => {
     expect(userFromEmail).toBeNull()
   })
   it('should throw if given a valid email address but no existing user account', async () => {
-    await createEmailAddress('test2@test.com', 'abc123', dataContext, true, true)
-    expect(getUserAccountByEmailAddress('test2@test.com', dataContext, cacheContext)).rejects.toThrow()
+    await createEmailAddress('test2@test.com', 'abc123456', dataContext, true, true)
+    let failed = false
+    try {
+      await getUserAccountByEmailAddress('test2@test.com', dataContext)
+    } catch {
+      failed = true
+    }
+    expect(failed).toBeTruthy()
   })
 })

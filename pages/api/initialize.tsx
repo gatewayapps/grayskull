@@ -33,6 +33,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           gender: context.user.gender,
           birthday: context.user.birthday,
           lastPasswordChange: context.user.lastPasswordChange,
+          emailAddress: context.user.emailAddress,
           permissions: context.user.permissions,
           otpEnabled: context.user.otpEnabled
         }

@@ -14,7 +14,7 @@ import { UserAccountFilter, UserAccountMeta, UserAccountUniqueFilter } from '../
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { randomBytes } from 'crypto'
-import { ForbiddenError } from 'apollo-server'
+
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { IConfiguration } from '../../../foundation/types/types'
 import { DataContext } from '../../../foundation/context/getDataContext'
@@ -184,65 +184,6 @@ class UserAccountService {
   }
 
   //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
-
-  public async registerUser(
-    data: UserAccount,
-    emailAddress: string,
-    password: string,
-    configuration: IConfiguration,
-    dataContext: DataContext,
-    options: IQueryOptions
-  ): Promise<UserAccount> {
-    if ((await EmailAddressService.isDomainAllowed(emailAddress, configuration)) === false) {
-      throw new ForbiddenError(`Self registration is not permitted for your email domain`)
-    }
-
-    // 1. Verify that a user has not already been registered with this email address
-    const emailAddressAvailable = await EmailAddressService.isEmailAddressAvailable(emailAddress, options)
-    if (!emailAddressAvailable) {
-      throw new GrayskullError(
-        GrayskullErrorCode.EmailAlreadyRegistered,
-        'The email address has already been registered'
-      )
-    }
-    let newOptions: IQueryOptions
-    if (options.userContext) {
-      newOptions = Object.assign({}, options)
-    } else {
-      newOptions = {}
-    }
-
-    // 2. Start a transaction
-    newOptions.transaction = await dataContext.sequelize.transaction()
-
-    try {
-      // First user is always an administrator
-      const userMeta = await UserAccountRepository.userAccountsMeta(null, newOptions)
-      data.permissions = userMeta.count === 0 ? Permissions.Admin : Permissions.User
-
-      // 3. Create the user account
-      const user = await this.createUserAccountWithPassword(data, password, newOptions)
-
-      // 4. Create the user account email
-      const emailAddressData: Partial<EmailAddress> = {
-        userAccountId: user.userAccountId,
-        emailAddress: emailAddress,
-        primary: true,
-        verificationSecret: '',
-        verified: userMeta.count === 0 // First user account gets verified
-      }
-      await EmailAddressService.createEmailAddress(emailAddressData, configuration, newOptions)
-
-      // 5. Commit the transaction
-
-      await newOptions.transaction.commit()
-
-      return user
-    } catch (err) {
-      await newOptions.transaction.rollback()
-      throw err
-    }
-  }
 
   private async hashPassword(password: string): Promise<string> {
     const PASSWORD_SALT_ROUNDS = 10

@@ -18,7 +18,11 @@ jobs:
         run: yarn format
       - name: Lint
         run: yarn lint
-      - name: Tests
-        run: yarn test
+      - name: Foundation tests
+        run: yarn test-foundation
+      - name: Operations tests
+        run: yarn test-operations
+      - name: Resolver tests
+        run: yarn test-resolvers
       - name: Compile
         run: yarn build

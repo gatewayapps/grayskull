@@ -42,6 +42,9 @@ export async function changePasswordWithOldPassword(
             context.cacheContext,
             true
           )
+          if (!userAccount) {
+            throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `Something is broken`)
+          }
 
           await setUserAccountPassword(
             userAccount.userAccountId,
