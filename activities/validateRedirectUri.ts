@@ -1,14 +1,11 @@
-import { IRequestContext } from "../foundation/context/prepareContext"
+import { IRequestContext } from '../foundation/context/prepareContext'
+import { getClient } from '../operations/data/client/getClient'
+import { isValidClientRedirectUri } from '../operations/logic/isValidClientRedirectUri'
 
 export async function validateRedirectUri(client_id: string, redirectUri: string, context: IRequestContext) {
-  const client = await ClientRepository.getClient({ client_id }, options)
+  const client = await getClient(client_id, context.dataContext)
   if (client) {
-    return (
-      !client.redirectUris ||
-      JSON.parse(client.redirectUris)
-        .map((r) => r.toLowerCase().trim())
-        .includes(redirectUri.toLowerCase().trim())
-    )
+    return isValidClientRedirectUri(client, redirectUri)
   } else {
     return false
   }

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { decrypt } from '../../../operations/logic/encryption'
-
 import { Session } from '../../../foundation/models/Session'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
@@ -8,9 +5,8 @@ import ClientService from '../../api/services/ClientService'
 import crypto from 'crypto'
 
 import * as otplib from 'otplib'
-import UserAccountService from './UserAccountService'
+
 import UserClientService from './UserClientService'
-import MailService from './MailService'
 
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
@@ -24,8 +20,6 @@ import { ScopeMap } from './ScopeService'
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
 
 import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
-
-const CACHE_PREFIX = 'BACKUP_CODE_'
 
 type GrantType = 'authorization_code' | 'refresh_token'
 

@@ -7,7 +7,7 @@ import { verifyAndUseSession } from '../../operations/data/session/verifyAndUseS
 import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
 import { IUserAccount } from '../types/types'
 
-export type UserContext = IUserAccount & { emailAddress: string }
+export type UserContext = IUserAccount & { emailAddress: string; emailAddressVerified: boolean }
 
 export async function getUserContext(
   sessionId: string,
@@ -48,7 +48,8 @@ export async function getUserContext(
         updatedAt: userAccount.updatedAt,
         deletedBy: userAccount.deletedBy,
         deletedAt: userAccount.deletedAt,
-        emailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : ''
+        emailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : '',
+        emailAddressVerified: primaryEmailAddress && primaryEmailAddress.verified ? true : false
       }
     }
   }

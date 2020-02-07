@@ -12,7 +12,9 @@ export enum GrayskullErrorCode {
   IncorrectPassword = 'incorrect_password',
   MultifactorRequired = 'multifactor_required',
   InvalidOTP = 'invalid_otp',
-  RequiresOTP = 'requires_otp'
+  RequiresOTP = 'requires_otp',
+  InvalidClientId = 'invalid_client_id',
+  InvalidResponseType = 'invalid_response_type'
 }
 
 export class GrayskullError extends Error {

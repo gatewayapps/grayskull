@@ -1,5 +1,5 @@
 jest.mock('../../../activities/generateOTPSecret', () => ({
-  generateOtpSecret: () => ('test')
+  generateOtpSecret: () => 'test'
 }))
 import { generateMfaKeyResolver } from './generateMfaKeyResolver'
 import { default as generateOTPSecretActivity } from '../../../activities/generateOTPSecret'
