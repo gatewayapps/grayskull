@@ -1,24 +1,17 @@
 import { Session } from '../../../foundation/models/Session'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
-
 import crypto from 'crypto'
-
 import * as otplib from 'otplib'
-
 import UserClientService from './UserClientService'
-
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import ClientRepository from '../../data/repositories/ClientRepository'
-
 import TokenService from './TokenService'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { ScopeMap } from './ScopeService'
-
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
-
 import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
 
 type GrantType = 'authorization_code' | 'refresh_token'
