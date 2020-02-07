@@ -23,6 +23,8 @@ import { resetPasswordResolver } from './resetPasswordResolver'
 import { changePasswordResolver } from './changePasswordResolver'
 import { validateResetPasswordTokenResolver } from './validateResetPasswordTokenResolver'
 import { loginResolver } from './loginResolver'
+import { generateMfaKeyResolver } from './generateMfaKeyResolver'
+import { sendBackupCodeResolver } from './sendBackupCodeResolver'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -308,9 +310,7 @@ export default {
         }
       }
     },
-    generateMfaKey: (obj, args, context: IRequestContext) => {
-      return AuthenticationService.generateOtpSecret(args.data.emailAddress, context.configuration)
-    },
+    generateMfaKey: generateMfaKeyResolver,
     verifyMfaKey: (obj, args) => {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
     },
@@ -372,11 +372,7 @@ export default {
         }
       }
     },
-    sendBackupCode: async (obj, args, context: IRequestContext) => {
-      return await AuthenticationService.sendBackupCode(args.data.emailAddress, context.configuration, {
-        userContext: context.user
-      })
-    },
+    sendBackupCode: sendBackupCodeResolver,
     activateAccount: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       const { emailAddress, token, password, confirmPassword } = args.data
       if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, context.dataContext))) {
