@@ -1,31 +1,18 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { decrypt } from '../../../operations/logic/encryption'
-
 import { Session } from '../../../foundation/models/Session'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
-
 import crypto from 'crypto'
-
 import * as otplib from 'otplib'
-import UserAccountService from './UserAccountService'
 import UserClientService from './UserClientService'
-import MailService from './MailService'
-
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import ClientRepository from '../../data/repositories/ClientRepository'
-
 import TokenService from './TokenService'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { ScopeMap } from './ScopeService'
-
 import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
-
 import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
-
-const CACHE_PREFIX = 'BACKUP_CODE_'
 
 type GrantType = 'authorization_code' | 'refresh_token'
 
@@ -51,16 +38,6 @@ otplib.authenticator.options = {
 }
 
 class AuthenticationService {
-  public async generateOtpSecret(emailAddress: string, configuration: IConfiguration): Promise<string> {
-    const secret = otplib.authenticator.generateSecret()
-    const result = otplib.authenticator.keyuri(
-      encodeURIComponent(emailAddress),
-      encodeURIComponent(configuration.Server!.realmName!),
-      secret
-    )
-    return result
-  }
-
   public async getAccessToken(
     grant_type: GrantType,
     client_id: string,
@@ -176,41 +153,6 @@ class AuthenticationService {
       refresh_token: finalRefreshToken ? finalRefreshToken.token : undefined,
       token_type: 'Bearer'
     }
-  }
-
-  public async sendBackupCode(
-    emailAddress: string,
-    configuration: IConfiguration,
-    options: IQueryOptions
-  ): Promise<boolean> {
-    const user = await UserAccountService.getUserAccountByEmailAddressWithSensitiveData(emailAddress, options)
-    if (!user || !user.otpEnabled || !user.otpSecret) {
-      return false
-    }
-
-    const otpSecret = decrypt(user.otpSecret)
-    if (!otpSecret) {
-      return false
-    }
-
-    const backupCode = otplib.authenticator.generate(otpSecret)
-
-    const cacheKey = `${CACHE_PREFIX}${emailAddress}`
-    await cacheValue(cacheKey, backupCode, 30 * 60, true)
-
-    await MailService.sendEmailTemplate(
-      'backupCodeTemplate',
-      emailAddress,
-      `${configuration.Server!.realmName} Backup Code`,
-      {
-        realmName: configuration.Server!.realmName,
-        user,
-        backupCode
-      },
-      configuration
-    )
-
-    return true
   }
 
   public async validateRedirectUri(client_id: string, redirectUri: string, options: IQueryOptions): Promise<boolean> {

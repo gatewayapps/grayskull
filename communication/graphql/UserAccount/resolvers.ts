@@ -1,5 +1,3 @@
-import { IAuthorizeClientResponse } from '../../../foundation/models/IAuthorizeClientResponse'
-
 import AuthenticationService from '../../../server/api/services/AuthenticationService'
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
 import UserAccountService from '../../../server/api/services/UserAccountService'
@@ -9,9 +7,7 @@ import { verifyPassword } from '../../../operations/data/userAccount/verifyPassw
 import { verifyPasswordStrength } from '../../../operations/logic/verifyPasswordStrength'
 import { IOperationResponse } from '../../../foundation/models/IOperationResponse'
 import UserAccountRepository from '../../../server/data/repositories/UserAccountRepository'
-import TokenService from '../../../server/api/services/TokenService'
-import ClientRepository from '../../../server/data/repositories/ClientRepository'
-import { ScopeMap } from '../../../server/api/services/ScopeService'
+
 import EmailAddressRepository from '../../../server/data/repositories/EmailAddressRepository'
 import { encrypt } from '../../../operations/logic/encryption'
 import { Permissions } from '../../../foundation/constants/permissions'
@@ -23,8 +19,11 @@ import { resetPasswordResolver } from './resetPasswordResolver'
 import { changePasswordResolver } from './changePasswordResolver'
 import { validateResetPasswordTokenResolver } from './validateResetPasswordTokenResolver'
 import { loginResolver } from './loginResolver'
+import { generateMfaKeyResolver } from './generateMfaKeyResolver'
+import { sendBackupCodeResolver } from './sendBackupCodeResolver'
+import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequestResolver'
 
-const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
+import { authorizeClientResolver } from './authorizeClientResolver'
 
 function isValidDate(d: any) {
   try {
@@ -77,97 +76,7 @@ export default {
   Mutation: {
     login: loginResolver,
     validateResetPasswordToken: validateResetPasswordTokenResolver,
-    authorizeClient: async (obj, args, context: IRequestContext): Promise<IAuthorizeClientResponse> => {
-      try {
-        if (!context.user) {
-          throw new Error('You must be logged in')
-        }
-
-        const serviceOptions = { userContext: context.user }
-
-        const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
-
-        if (await !AuthenticationService.validateRedirectUri(client_id, redirectUri, serviceOptions)) {
-          throw new Error('Invalid redirect uri')
-        }
-
-        const { approvedScopes, pendingScopes, userClientId } = await UserClientService.verifyScope(
-          context.user.userAccountId,
-          client_id,
-          scope,
-          serviceOptions
-        )
-        if (pendingScopes && pendingScopes.length > 0) {
-          return {
-            pendingScopes
-          }
-        }
-
-        const client = await ClientRepository.getClientWithSensitiveData({ client_id }, serviceOptions)
-        if (!client) {
-          throw new Error('Invalid client_id')
-        }
-        if (!approvedScopes || approvedScopes.length === 0) {
-          throw new Error('You have not approved any scopes')
-        }
-
-        const responseTypes: string[] = responseType.split(' ')
-
-        if (!responseTypes.every((rt) => VALID_RESPONSE_TYPES.includes(rt))) {
-          throw new Error('Invalid response type')
-        }
-
-        const queryParts: any = {}
-
-        if (responseTypes.includes('code')) {
-          queryParts.code = await AuthenticationService.generateAuthorizationCode(
-            context.user,
-            client_id,
-            userClientId!,
-            approvedScopes!,
-            nonce
-          )
-        }
-        if (responseTypes.includes('token')) {
-          const config = context.configuration
-
-          queryParts.token = await TokenService.createAccessToken(
-            client,
-            context.user,
-            null,
-            context.configuration,
-            serviceOptions
-          )
-          queryParts.token_type = 'Bearer'
-          queryParts.expires_in = config.Security.accessTokenExpirationSeconds
-        }
-        if (responseTypes.includes('id_token') && approvedScopes.includes(ScopeMap.openid.id)) {
-          queryParts.id_token = await TokenService.createIDToken(
-            client,
-            context.user,
-            nonce,
-            queryParts.token,
-            context.configuration,
-            serviceOptions
-          )
-        }
-
-        const query = Object.keys(queryParts).map((k) => `${k}=${encodeURIComponent(queryParts[k])}`)
-
-        if (state) {
-          query.push(`state=${encodeURIComponent(state)}`)
-        }
-
-        const result = {
-          redirectUri: `${redirectUri}${query.length > 0 ? '?' + query.join('&') : ''}`
-        }
-
-        return result
-      } catch (err) {
-        console.error(err)
-        throw err
-      }
-    },
+    authorizeClient: authorizeClientResolver,
     updateClientScopes: async (obj, args, context: IRequestContext) => {
       if (!context.user) {
         throw new Error('You must be logged in!')
@@ -243,23 +152,7 @@ export default {
       }
       return result
     },
-    verifyAuthorizationRequest: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
-      const validRequest = await AuthenticationService.validateRedirectUri(
-        args.data.client_id,
-        args.data.redirect_uri,
-        { userContext: context.user }
-      )
-      if (validRequest) {
-        return {
-          success: true
-        }
-      } else {
-        return {
-          success: false,
-          message: 'Invalid redirectUri'
-        }
-      }
-    },
+    verifyAuthorizationRequest: verifyAuthorizationRequestResolver,
     verifyEmailAddress: verifyEmailAddressResolver,
     registerUser: registerUserResolver,
     setOtpSecret: async (obj, args, context: IRequestContext) => {
@@ -308,9 +201,7 @@ export default {
         }
       }
     },
-    generateMfaKey: (obj, args, context: IRequestContext) => {
-      return AuthenticationService.generateOtpSecret(args.data.emailAddress, context.configuration)
-    },
+    generateMfaKey: generateMfaKeyResolver,
     verifyMfaKey: (obj, args) => {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
     },
@@ -372,11 +263,7 @@ export default {
         }
       }
     },
-    sendBackupCode: async (obj, args, context: IRequestContext) => {
-      return await AuthenticationService.sendBackupCode(args.data.emailAddress, context.configuration, {
-        userContext: context.user
-      })
-    },
+    sendBackupCode: sendBackupCodeResolver,
     activateAccount: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       const { emailAddress, token, password, confirmPassword } = args.data
       if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, context.dataContext))) {
