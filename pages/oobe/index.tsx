@@ -176,7 +176,7 @@ class OobeIndex extends React.Component<any, any> {
               <div className="row justify-content-center ">
                 <div className="col-sm-12 col-md-8 col-push-2">
                   <ApolloConsumer>
-                    {() => (
+                    {(apolloClient) => (
                       <form
                         autoComplete="nope"
                         onSubmit={(e) => {
@@ -227,6 +227,11 @@ class OobeIndex extends React.Component<any, any> {
                                     config.Security.accessTokenExpirationSeconds = parseInt(
                                       config.Security.accessTokenExpirationSeconds
                                     )
+
+                                    await apolloClient.mutate({
+                                      mutation: SAVE_CONFIGURATION,
+                                      variables: { configuration: config }
+                                    })
                                   }}
                                   className="btn btn-success">
                                   Save
