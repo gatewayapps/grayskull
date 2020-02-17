@@ -7,7 +7,8 @@ import { generateBackupCode } from '../../../activities/generateBackupCode'
 import { streamToString } from '../../../operations/logic/streamToString'
 import { Stream } from 'stream'
 import { restoreConfiguration } from '../../../activities/restoreConfiguration'
-import { uploadFile } from '../../../activities/uploadFile'
+
+import { uploadFileResolver } from './uploadFileResolver'
 
 export default {
   Upload: GraphQLUpload,
@@ -62,11 +63,7 @@ export default {
     }
   },
   Mutation: {
-    uploadFile: async (obj, args) => {
-      const { createReadStream, filename, mimetype } = await args.file
-      const fileStream = createReadStream()
-      return await uploadFile(fileStream, filename, mimetype)
-    },
+    uploadFile: uploadFileResolver,
     restoreConfiguration: async (obj, args, context: IRequestContext) => {
       try {
         const { createReadStream } = await args.file
