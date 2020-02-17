@@ -1,12 +1,14 @@
 import { GraphQLUpload } from 'apollo-server-micro'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../foundation/constants/permissions'
-import UploadService from '../../../server/api/services/UploadService'
+
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { generateBackupCode } from '../../../activities/generateBackupCode'
 import { streamToString } from '../../../operations/logic/streamToString'
 import { Stream } from 'stream'
 import { restoreConfiguration } from '../../../activities/restoreConfiguration'
+
+import { uploadFileResolver } from './uploadFileResolver'
 
 export default {
   Upload: GraphQLUpload,
@@ -61,9 +63,7 @@ export default {
     }
   },
   Mutation: {
-    uploadFile: async (obj, args) => {
-      return UploadService.createUpload(args.file)
-    },
+    uploadFile: uploadFileResolver,
     restoreConfiguration: async (obj, args, context: IRequestContext) => {
       try {
         const { createReadStream } = await args.file
