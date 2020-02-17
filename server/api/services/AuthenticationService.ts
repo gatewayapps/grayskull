@@ -10,12 +10,12 @@ import UserClientRepository from '../../data/repositories/UserClientRepository'
 import ClientRepository from '../../data/repositories/ClientRepository'
 import TokenService from './TokenService'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
-import { ScopeMap } from './ScopeService'
 
 import { IConfiguration } from '../../../foundation/types/types'
+import { ScopeMap } from '../../../foundation/constants/scopes'
 import { DataContext } from '../../../foundation/context/getDataContext'
-import { clearValue } from '../../../operations/data/persistentCache/clearValue'
 import { getValue } from '../../../operations/data/persistentCache/getValue'
+import { clearValue } from '../../../operations/data/persistentCache/clearValue'
 
 type GrantType = 'authorization_code' | 'refresh_token'
 

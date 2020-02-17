@@ -1,8 +1,10 @@
 import AuthenticationService from '../../server/api/services/AuthenticationService'
-
+import { getTokensFromAuthorizationCode } from '../../activities/getTokensFromAuthorizationCode'
+import { getTokensFromRefreshToken } from '../../activities/getTokensFromRefreshToken'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
-
+import { IAccessTokenResponse } from '../../foundation/types/tokens'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 const getClientCredentialsFromRequest = (
   req: NextApiRequest
 ): { client_id: string; client_secret: string } | undefined => {
@@ -49,18 +51,31 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
       return
     }
 
-    const accessTokenResponse = await AuthenticationService.getAccessToken(
-      body.grant_type,
-      clientCredentials.client_id,
-      clientCredentials.client_secret,
-      body.code,
-      body.refresh_token,
-      context.configuration,
-      {
-        userContext: context.user
-      },
-      context.dataContext
-    )
+    let accessTokenResponse: IAccessTokenResponse | undefined = undefined
+    switch (body.grant_type) {
+      case 'authorization_code': {
+        accessTokenResponse = await getTokensFromAuthorizationCode(
+          clientCredentials.client_id,
+          clientCredentials.client_secret,
+          body.code,
+          context
+        )
+        break
+      }
+      case 'refresh_token': {
+        accessTokenResponse = await getTokensFromRefreshToken(
+          clientCredentials.client_id,
+          clientCredentials.client_secret,
+          body.refresh_token,
+          context
+        )
+        break
+      }
+      default: {
+        throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid grant_type')
+      }
+    }
+
     res.json(accessTokenResponse)
   } catch (err) {
     res.status(400).json({ success: false, message: err.message })

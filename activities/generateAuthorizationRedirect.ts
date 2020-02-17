@@ -5,9 +5,10 @@ import { getUserClient } from '../operations/data/userClient/getUserClient'
 import { getClient } from '../operations/data/client/getClient'
 import { isValidClientRedirectUri } from '../operations/logic/isValidClientRedirectUri'
 import { createAccessToken } from '../operations/logic/createAccessToken'
-import { ScopeMap } from '../server/api/services/ScopeService'
+
 import { createIDToken } from '../operations/logic/createIDToken'
 import { generateAuthorizationCode } from '../operations/data/userAccount/generateAuthorizationCode'
+import { ScopeMap } from '../foundation/constants/scopes'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
@@ -26,7 +27,7 @@ export async function generateAuthorizationRedirect(
   if (!responseTypes.every((rt) => VALID_RESPONSE_TYPES.includes(rt))) {
     throw new GrayskullError(GrayskullErrorCode.InvalidResponseType, 'Invalid response type')
   }
-  const client = await getClient(clientId, context.dataContext)
+  const client = await getClient(clientId, context.dataContext, true)
   if (!client) {
     throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `No such client exists ${clientId}`)
   }

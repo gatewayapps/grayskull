@@ -1,8 +1,9 @@
 import { IRequestContext } from '../foundation/context/prepareContext'
 import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
 import { getClient } from '../operations/data/client/getClient'
-import { ScopeMap } from '../server/api/services/ScopeService'
+
 import { getUserClient } from '../operations/data/userClient/getUserClient'
+import { ScopeMap } from '../foundation/constants/scopes'
 
 export async function verifyUserScopesForClient(clientId: string, scope: string, context: IRequestContext) {
   if (!context.user) {

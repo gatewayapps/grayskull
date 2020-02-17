@@ -1,5 +1,6 @@
-import { Scope } from '../../../foundation/models/IScope'
-import { Permissions } from '../../../foundation/constants/permissions'
+import { Permissions } from './permissions'
+
+import { IScope } from '../types/types'
 
 export const ScopeMap = {
   openid: {
@@ -53,7 +54,7 @@ export const ScopeMap = {
   // }
 }
 
-export const Scopes: Array<Partial<Scope>> = [
+export const Scopes: IScope[] = [
   ScopeMap.openid,
   ScopeMap.offline_access,
   ScopeMap.profile,
@@ -62,10 +63,4 @@ export const Scopes: Array<Partial<Scope>> = [
   ScopeMap['admin-profile:write']
 ]
 
-class ScopeService {
-  getScopes() {
-    return Scopes.map((scope) => ({ ...scope }))
-  }
-}
-
-export default new ScopeService()
+export const getScopes = () => Scopes.map((scope) => ({ ...scope }))

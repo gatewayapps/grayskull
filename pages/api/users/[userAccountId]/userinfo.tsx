@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getClientRequestOptionsFromRequest } from '../../../../operations/logic/authentication'
 import UserClientService from '../../../../server/api/services/UserClientService'
-import { ScopeMap } from '../../../../server/api/services/ScopeService'
+import { ScopeMap } from '../../../../foundation/constants/scopes'
 import { UserAccount } from '../../../../foundation/models/UserAccount'
 import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
 import TokenService from '../../../../server/api/services/TokenService'

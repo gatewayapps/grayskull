@@ -6,7 +6,7 @@ import { Client } from '../../../foundation/models/Client'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { default as crypto, randomBytes } from 'crypto'
 import UserClientRepository from '../../data/repositories/UserClientRepository'
-import { ScopeMap } from '../../api/services/ScopeService'
+
 import UserClientService from './UserClientService'
 import { ForbiddenError } from 'apollo-server'
 
@@ -18,6 +18,7 @@ import EmailAddressRepository from '../../data/repositories/EmailAddressReposito
 
 import { IClientRequestOptions } from '../../../foundation/models/IClientRequestOptions'
 import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
+import { ScopeMap } from '../../../foundation/constants/scopes'
 
 export interface IAccessToken {
   id?: string
