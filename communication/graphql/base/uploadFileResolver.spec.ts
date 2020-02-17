@@ -19,9 +19,7 @@ describe('verifyEmailAddressResolver', () => {
     }
 
     const obj: any = {}
-
     const resolverSpy = jest.spyOn(uploadFileActivity, 'uploadFile')
-
     await uploadFileResolver(obj, args)
 
     expect(resolverSpy).toBeCalledTimes(1)
