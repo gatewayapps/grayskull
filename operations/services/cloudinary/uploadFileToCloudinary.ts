@@ -5,7 +5,7 @@ import { GrayskullErrorCode, GrayskullError } from '../../../foundation/errors/G
 
 export async function uploadFileToCloudinary(
   fileStream: ReadStream,
-  cloudinaryUrl: string
+  cloudinaryUrl: string | undefined
 ): Promise<IUploadFileResponse> {
   return new Promise((resolve, reject) => {
     if (!cloudinaryUrl) {

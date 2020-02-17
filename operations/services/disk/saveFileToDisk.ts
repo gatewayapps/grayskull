@@ -9,7 +9,7 @@ export async function saveFileToDisk(
   fileStream: ReadStream,
   fileName: string,
   mimeType: string,
-  localDirectory: string
+  localDirectory: string | undefined
 ): Promise<IUploadFileResponse> {
   if (!localDirectory) {
     throw new GrayskullError(

@@ -6,6 +6,6 @@ export async function uploadFile(fileStream: ReadStream, fileName: string, mimeT
   if (process.env.CLOUDINARY_URL) {
     return await uploadFileToCloudinary(fileStream, process.env.CLOUDINARY_URL)
   } else {
-    return await saveFileToDisk(fileStream, fileName, mimeType, process.env.PROJECT_ROOT!)
+    return await saveFileToDisk(fileStream, fileName, mimeType, process.env.PROJECT_ROOT)
   }
 }
