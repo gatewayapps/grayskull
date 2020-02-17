@@ -3,20 +3,29 @@ import fs from 'fs-extra'
 import uuid from 'uuid'
 import path from 'path'
 import { IUploadFileResponse } from '../../../foundation/types/types'
-const UPLOAD_DIR = path.join(process.env.PROJECT_ROOT!, `public/uploads/`)
+import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 
 export async function saveFileToDisk(
   fileStream: ReadStream,
   fileName: string,
-  mimeType: string
+  mimeType: string,
+  localDirectory: string
 ): Promise<IUploadFileResponse> {
+  if (!localDirectory) {
+    throw new GrayskullError(
+      GrayskullErrorCode.InvalidRuntimeEnvironment,
+      `Attempted to write file to disk in serverless environment.`
+    )
+  }
+
   const fileId = uuid().replace(/-/g, '')
   const extname = path.extname(fileName)
   const localFilename = `${fileId}${extname}`
-  const fullLocalPath = path.join(UPLOAD_DIR, localFilename)
+  const uploadDirectory = path.join(localDirectory, 'public/uploads/')
+  const fullLocalPath = path.join(uploadDirectory, localFilename)
   return new Promise((resolve, reject) => {
     try {
-      fs.ensureDirSync(UPLOAD_DIR)
+      fs.ensureDirSync(uploadDirectory)
       fileStream
         .on('error', (error) => reject(error))
         .pipe(fs.createWriteStream(fullLocalPath))

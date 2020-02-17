@@ -14,7 +14,8 @@ export enum GrayskullErrorCode {
   InvalidOTP = 'invalid_otp',
   RequiresOTP = 'requires_otp',
   InvalidClientId = 'invalid_client_id',
-  InvalidResponseType = 'invalid_response_type'
+  InvalidResponseType = 'invalid_response_type',
+  InvalidRuntimeEnvironment = 'invalid_runtime_environment'
 }
 
 export class GrayskullError extends Error {
