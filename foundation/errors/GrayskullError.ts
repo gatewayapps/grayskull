@@ -16,7 +16,8 @@ export enum GrayskullErrorCode {
   InvalidClientId = 'invalid_client_id',
   InvalidResponseType = 'invalid_response_type',
   InvalidRuntimeEnvironment = 'invalid_runtime_environment',
-  InvalidAuthorizeRequest = 'invalid_authorize_request'
+  InvalidAuthorizeRequest = 'invalid_authorize_request',
+  InvalidConfiguration = 'invalid_configuration'
 }
 
 export class GrayskullError extends Error {

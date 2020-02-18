@@ -3,7 +3,8 @@ import { IRequestContext } from '../foundation/context/prepareContext'
 import { GrayskullErrorCode, GrayskullError } from '../foundation/errors/GrayskullError'
 import { randomBytes } from 'crypto'
 import { cacheValue } from '../operations/data/persistentCache/cacheValue'
-import MailService from '../server/api/services/MailService'
+
+import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
 
 /*
  *  1. Verify a user with the given email address exists
@@ -29,7 +30,7 @@ export async function sendResetPasswordEmail(emailAddress: string, context: IReq
     const resetPasswordLink = `${context.configuration.Server.baseUrl}/changePassword?emailAddress=${encodeURIComponent(
       emailAddress
     )}&token=${token}`
-    await MailService.sendEmailTemplate(
+    await sendTemplatedEmail(
       'resetPasswordTemplate',
       emailAddress,
       `${context.configuration.Server.realmName} Password Reset`,

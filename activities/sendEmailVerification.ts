@@ -1,9 +1,10 @@
 import { IRequestContext } from '../foundation/context/prepareContext'
-import MailService from '../server/api/services/MailService'
+
 import { getEmailAddressByEmailAddress } from '../operations/data/emailAddress/getEmailAddressByEmailAddress'
 import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
 import { Permissions } from '../foundation/constants/permissions'
 import { generateEmailAddressVerificationCode } from '../operations/data/emailAddress/generateEmailAddressVerificationCode'
+import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
 
 const INVITATION_EXPIRES_IN = 60 * 60 // 1 hour
 
@@ -35,7 +36,7 @@ export async function sendEmailVerification(
 
   const verificationCode = await generateEmailAddressVerificationCode(emailAddress, INVITATION_EXPIRES_IN, dataContext)
 
-  await MailService.sendEmailTemplate(
+  await sendTemplatedEmail(
     `verifyEmailTemplate`,
     emailAddress,
     'E-mail Address Verification',
