@@ -56,7 +56,7 @@ type Mutation {
   setOtpSecret(data: SetOtpSecretArgs!): OperationResponse
   changePassword(data: ChangePasswordArgs!): OperationResponse @anonymous
   deleteAccount(data: DeleteAccountArgs!): OperationResponse
-  activateAccount(data: ActivateAccountArgs!): OperationResponse
+  activateAccount(data: ActivateAccountArgs!): OperationResponse @anonymous
   registerUser(data: RegisterUserArgs!): RegisterUserResponse @anonymous
 }
 
