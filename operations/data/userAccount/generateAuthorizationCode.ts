@@ -8,13 +8,13 @@ export async function generateAuthorizationCode(
   scope: string[],
   userClientId: string,
   nonce: string,
-  userContext: UserContext,
+  userAccount: UserContext,
   dataContext: DataContext
 ) {
   const authorizationCode = randomBytes(64).toString('hex')
   await cacheValue(
     authorizationCode,
-    JSON.stringify({ clientId, scope, userContext, userClientId, nonce }),
+    JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }),
     120,
     dataContext
   )

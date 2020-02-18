@@ -1,7 +1,7 @@
 import { Session } from '../../../foundation/models/Session'
 import { UserAccount } from '../../../foundation/models/UserAccount'
 import ClientService from '../../api/services/ClientService'
-import crypto from 'crypto'
+
 import * as otplib from 'otplib'
 import UserClientService from './UserClientService'
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
@@ -11,8 +11,11 @@ import ClientRepository from '../../data/repositories/ClientRepository'
 import TokenService from './TokenService'
 import { RefreshToken } from '../../../foundation/models/RefreshToken'
 import { ScopeMap } from './ScopeService'
-import { getValueFromCache, deleteFromCache, cacheValue } from './CacheService'
-import { IConfiguration, IUserAccount } from '../../../foundation/types/types'
+
+import { IConfiguration } from '../../../foundation/types/types'
+import { DataContext } from '../../../foundation/context/getDataContext'
+import { clearValue } from '../../../operations/data/persistentCache/clearValue'
+import { getValue } from '../../../operations/data/persistentCache/getValue'
 
 type GrantType = 'authorization_code' | 'refresh_token'
 
@@ -45,7 +48,8 @@ class AuthenticationService {
     code: string | null,
     refresh_token: string | null,
     configuration: IConfiguration,
-    options: IQueryOptions
+    options: IQueryOptions,
+    dataContext: DataContext
   ): Promise<IAccessTokenResponse> {
     const client = await ClientService.validateClient(client_id, client_secret, options)
     if (!client) {
@@ -61,13 +65,13 @@ class AuthenticationService {
           throw new Error(`code is missing`)
         }
 
-        const codeStringValue = await getValueFromCache(code, true)
+        const codeStringValue = await getValue(code, dataContext)
         if (!codeStringValue) {
           throw new Error(`authorization_code has expired`)
         }
 
         const authCodeCacheResult = JSON.parse(codeStringValue)
-        await deleteFromCache(code)
+        await clearValue(code, dataContext)
 
         if (!authCodeCacheResult) {
           throw new Error(`authorization_code has expired`)
@@ -174,24 +178,6 @@ class AuthenticationService {
       return false
     }
     return otplib.authenticator.check(token, secret)
-  }
-
-  public async generateAuthorizationCode(
-    userAccount: IUserAccount & { emailAddress: string },
-    clientId: string,
-    userClientId: string,
-    scope: string[],
-    nonce: string | undefined
-  ): Promise<string> {
-    const authorizationCode = crypto.randomBytes(64).toString('hex')
-    await cacheValue(
-      authorizationCode,
-      JSON.stringify({ clientId, scope, userAccount, userClientId, nonce }),
-      120,
-      true
-    )
-
-    return authorizationCode
   }
 }
 
