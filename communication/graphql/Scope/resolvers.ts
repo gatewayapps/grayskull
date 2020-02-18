@@ -1,7 +1,7 @@
-import ScopeService from '../../../server/api/services/ScopeService'
+import { getScopes } from '../../../foundation/constants/scopes'
 
 export default {
   Query: {
-    scopes: () => ScopeService.getScopes()
+    scopes: () => getScopes()
   }
 }

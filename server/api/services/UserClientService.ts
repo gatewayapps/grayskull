@@ -10,9 +10,10 @@ import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import ClientRepository from '../../data/repositories/ClientRepository'
 import { UserClient } from '../../../foundation/models/UserClient'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
-import { ScopeMap } from './ScopeService'
+
 import { WhereAttributeHash, default as Sequelize } from 'sequelize'
 import { IUserAccount } from '../../../foundation/types/types'
+import { ScopeMap } from '../../../foundation/constants/scopes'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]

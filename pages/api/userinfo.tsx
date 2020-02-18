@@ -1,7 +1,7 @@
 import TokenService from '../../server/api/services/TokenService'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getClientRequestOptionsFromRequest, RequestContext } from '../../operations/logic/authentication'
-import { ScopeMap } from '../../server/api/services/ScopeService'
+import { ScopeMap } from '../../foundation/constants/scopes'
 import { ensureScope } from '../../server/utils/ensureScope'
 import { IClientRequestOptions } from '../../foundation/models/IClientRequestOptions'
 import { UserAccount } from '../../foundation/models/UserAccount'
