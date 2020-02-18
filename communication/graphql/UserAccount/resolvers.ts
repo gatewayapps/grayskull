@@ -26,6 +26,7 @@ import { authorizeClientResolver } from './authorizeClientResolver'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 import { verifyOtpToken } from '../../../activities/verifyOtpToken'
 import { createUserAccount } from '../../../operations/data/userAccount/createUserAccount'
+import { createUserAccountActivity } from '../../../activities/createUserAccountActivity'
 
 function isValidDate(d: any) {
   try {
@@ -95,26 +96,9 @@ export default {
     changePassword: changePasswordResolver,
     resetPassword: resetPasswordResolver,
     createUser: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
-      const userAccount = context.user
-      if (!userAccount) {
-        return {
-          success: false,
-          message: 'You must be signed in to do that'
-        }
-      }
-
-      if (userAccount.permissions < Permissions.Admin) {
-        return {
-          success: false,
-          message: 'You must be an administrator to do that'
-        }
-      }
-
       const { emailAddress, ...userData } = args.data
 
-      await UserAccountService.createUserAccount(userData, emailAddress, context.configuration, context.dataContext, {
-        userContext: userAccount
-      })
+      await createUserAccountActivity(userData, emailAddress, context)
 
       return { success: true }
     },

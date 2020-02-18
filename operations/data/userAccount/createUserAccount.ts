@@ -4,6 +4,7 @@ import { DataContext } from '../../../foundation/context/getDataContext'
 import bcrypt from 'bcrypt'
 import { encrypt } from '../../logic/encryption'
 import { UserContext } from '../../../foundation/context/getUserContext'
+import { GrayskullErrorCode, GrayskullError } from '../../../foundation/errors/GrayskullError'
 
 export async function createUserAccount(
   data: Partial<UserAccount>,
@@ -45,5 +46,10 @@ export async function createUserAccount(
   data.createdAt = new Date()
   data.updatedAt = new Date()
 
-  return await new dataContext.UserAccount(data).save()
+  await new dataContext.UserAccount(data).save()
+  const userAccountRecord = await dataContext.UserAccount.findOne({ where: { userAccountId: data.userAccountId } })
+  if (!userAccountRecord) {
+    throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `Failed to create a user account`)
+  }
+  return userAccountRecord
 }

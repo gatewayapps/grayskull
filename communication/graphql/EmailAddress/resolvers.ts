@@ -7,6 +7,7 @@ import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEma
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 
 import { addEmailAddress } from '../../../activities/addEmailAddress'
+import { isEmailAddressAvailableActivity } from '../../../activities/isEmailAddressAvailableActivity'
 
 export default {
   Query: {
@@ -20,9 +21,7 @@ export default {
       return EmailAddressService.getEmailAddress(args.where, { userContext: context.user })
     },
     emailAddressAvailable: async (obj, args, context) => {
-      const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, {
-        userContext: context.user
-      })
+      const result = await isEmailAddressAvailableActivity(args.data.emailAddress, context)
       return result
     },
     myEmailAddresses: async (obj, args, context) => {
@@ -41,9 +40,7 @@ export default {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
-      const isAvailable = await EmailAddressService.isEmailAddressAvailable(args.data.emailAddress, {
-        userContext: context.user
-      })
+      const isAvailable = await isEmailAddressAvailableActivity(args.data.emailAddress, context)
       if (!isAvailable) {
         return {
           success: false,
