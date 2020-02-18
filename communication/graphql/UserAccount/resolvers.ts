@@ -24,6 +24,8 @@ import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequest
 
 import { authorizeClientResolver } from './authorizeClientResolver'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
+import { verifyOtpToken } from '../../../activities/verifyOtpToken'
+import { createUserAccount } from '../../../operations/data/userAccount/createUserAccount'
 
 function isValidDate(d: any) {
   try {
@@ -109,6 +111,7 @@ export default {
       }
 
       const { emailAddress, ...userData } = args.data
+
       await UserAccountService.createUserAccount(userData, emailAddress, context.configuration, context.dataContext, {
         userContext: userAccount
       })
@@ -202,10 +205,8 @@ export default {
       }
     },
     generateMfaKey: generateMfaKeyResolver,
-    verifyMfaKey: () => {
-      //TODO: Replace with verifyOtpToken activity
-      throw new Error('Broken in this build')
-      //return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
+    verifyMfaKey: async (obj, args) => {
+      return await verifyOtpToken(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
       await sendEmailVerification(args.data.emailAddress, context)
