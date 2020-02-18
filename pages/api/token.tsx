@@ -1,4 +1,3 @@
-import AuthenticationService from '../../server/api/services/AuthenticationService'
 import { getTokensFromAuthorizationCode } from '../../activities/getTokensFromAuthorizationCode'
 import { getTokensFromRefreshToken } from '../../activities/getTokensFromRefreshToken'
 import { NextApiRequest, NextApiResponse } from 'next'
