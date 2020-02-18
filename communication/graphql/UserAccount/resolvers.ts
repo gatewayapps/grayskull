@@ -24,6 +24,7 @@ import { sendBackupCodeResolver } from './sendBackupCodeResolver'
 import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequestResolver'
 
 import { authorizeClientResolver } from './authorizeClientResolver'
+import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 
 function isValidDate(d: any) {
   try {
@@ -206,10 +207,8 @@ export default {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
-      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, context.configuration, {
-        userContext: context.user
-      })
-      return !!result
+      await sendEmailVerification(args.data.emailAddress, context)
+      return true
     },
     resendAllVerificationEmails: async (obj, args, context: IRequestContext) => {
       const unverifiedEmails = await EmailAddressRepository.getEmailAddresses(
@@ -218,9 +217,7 @@ export default {
       )
       await Promise.all(
         unverifiedEmails.map(async (e) => {
-          await EmailAddressService.sendVerificationEmail(e.emailAddress, context.configuration, {
-            userContext: context.user
-          })
+          await sendEmailVerification(e.emailAddress, context)
         })
       )
 

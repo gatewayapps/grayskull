@@ -13,10 +13,6 @@ import { Permissions } from '../../../foundation/constants/permissions'
 import AuthorizationHelper from '../../utils/AuthorizationHelper'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 
-import { randomBytes } from 'crypto'
-
-import MailService from './MailService'
-import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import { IConfiguration } from '../../../foundation/types/types'
 
 class EmailAddressService {
@@ -43,50 +39,6 @@ class EmailAddressService {
       return allowedDomains.length === 0 || allowedDomains.includes(domain)
     }
     return true
-  }
-
-  public async createEmailAddress(data: Partial<EmailAddress>, configuration: IConfiguration, options: IQueryOptions) {
-    data.verificationSecret = '' // sendVerificationEmail will set this correctly
-    await EmailAddressRepository.createEmailAddress(data as EmailAddress, options)
-    if (!data.verified && data.emailAddress) {
-      await this.sendVerificationEmail(data.emailAddress, configuration, options)
-    }
-  }
-
-  public async sendVerificationEmail(emailAddress: string, configuration: IConfiguration, options: IQueryOptions) {
-    const verificationSecret = randomBytes(16).toString('hex')
-
-    const data = await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verificationSecret }, options)
-    if (data && !data.verified) {
-      const userAccount = await UserAccountRepository.getUserAccount({ userAccountId: data.userAccountId }, options)
-      return await MailService.sendEmailTemplate(
-        `verifyEmailTemplate`,
-        data.emailAddress,
-        'E-mail Address Verification',
-        {
-          realmName: configuration.Server.realmName,
-          user: userAccount,
-          verificationLink: `${configuration.Server.baseUrl}/verify?address=${data.emailAddress}&code=${data.verificationSecret}`
-        },
-        configuration
-      )
-    } else {
-      if (data && data.verified) {
-        throw new Error('E-mail address already verified')
-      } else {
-        throw new Error('Invalid e-mail address')
-      }
-    }
-  }
-
-  public async verifyEmailAddress(emailAddress: string, verificationCode: string, options: IQueryOptions) {
-    const result = await EmailAddressRepository.getEmailAddress({ emailAddress: emailAddress }, options)
-    if (result && result.verificationSecret === verificationCode) {
-      await EmailAddressRepository.updateEmailAddress({ emailAddress }, { verified: true }, options)
-    } else {
-      // Throw the same error no matter what
-      throw new Error(`Invalid verification code`)
-    }
   }
 
   @hasPermission(Permissions.User)
