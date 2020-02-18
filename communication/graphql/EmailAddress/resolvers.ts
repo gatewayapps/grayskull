@@ -5,6 +5,8 @@ import EmailAddressRepository from '../../../server/data/repositories/EmailAddre
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
+import { createEmailAddress } from '../../../operations/data/emailAddress/createEmailAddress'
+import { addEmailAddress } from '../../../activities/addEmailAddress'
 
 export default {
   Query: {
@@ -50,11 +52,8 @@ export default {
       }
 
       try {
-        await EmailAddressService.createEmailAddress(
-          { emailAddress: args.data.emailAddress, userAccountId: context.user.userAccountId, verificationSecret: '' },
-          context.configuration,
-          { userContext: context.user }
-        )
+        await addEmailAddress(args.data.emailAddress, context)
+
         return {
           success: true
         }
