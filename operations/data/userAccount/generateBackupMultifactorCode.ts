@@ -7,4 +7,5 @@ export async function generateBackupMultifactorCode(emailAddress: string, otpSec
   const backupCode = otplib.authenticator.generate(otpSecret)
 
   await cacheValue(cacheKey, backupCode, 30 * 60, dataContext)
+  return backupCode
 }
