@@ -1,24 +1,27 @@
 import { DataContext } from '../../../foundation/context/getDataContext'
-import { InvalidOperationError } from './errors'
+import { GrayskullErrorCode, GrayskullError } from '../../../foundation/errors/GrayskullError'
 
 export async function setEmailAddressVerified(emailAddress: string, dataContext: DataContext) {
-  const emailRecord = await dataContext.EmailAddress.findOne({
-    where: {
-      emailAddress
+  const resultSet = (await dataContext.EmailAddress.update(
+    {
+      verified: true,
+      updatedAt: new Date()
+    },
+    {
+      where: {
+        emailAddress,
+        verified: false
+      },
+      validate: false
     }
-  })
-
-  if (!emailRecord) {
-    throw new InvalidOperationError('Invalid e-mail address or verification secret', 'E_UNKNOWN_ADDRESS')
+  )) as number[]
+  if (resultSet[0] === 0) {
+    throw new GrayskullError(
+      GrayskullErrorCode.InvalidEmailVerificationCode,
+      `Unable to verify e-mail address '${emailAddress}'.  Either it is already verified, or it has not been added.`
+    )
   } else {
-    if (emailRecord.verified) {
-      throw new InvalidOperationError('E-mail address is already verified', 'E_ADDRESS_VERIFIED')
-    } else {
-      emailRecord.verified = true
-      emailRecord.updatedAt = new Date()
-      await emailRecord.save()
-
-      return emailRecord
-    }
+    const emailAddressRecord = await dataContext.EmailAddress.findOne({ where: { emailAddress } })
+    return emailAddressRecord
   }
 }
