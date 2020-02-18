@@ -38,6 +38,12 @@ describe('authorizeClientResolver', () => {
     const context: any = { user: true }
     const args: any = { data: { emailAddress: 'test@test.com', code: 'test', responseType: 'code' } }
     const obj: any = {}
-    expect(authorizeClientResolver(obj, args, context)).rejects.toThrow()
+    let failed = false
+    try {
+      await authorizeClientResolver(obj, args, context)
+    } catch {
+      failed = true
+    }
+    expect(failed).toBeTruthy()
   })
 })
