@@ -58,7 +58,8 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
       context.configuration,
       {
         userContext: context.user
-      }
+      },
+      context.dataContext
     )
     res.json(accessTokenResponse)
   } catch (err) {
