@@ -35,6 +35,6 @@
     ".prettierignore": true
   },
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "workbench.colorTheme": "Noctis Obscuro",
+  "workbench.colorTheme": "Noctis Bordo",
 
 }

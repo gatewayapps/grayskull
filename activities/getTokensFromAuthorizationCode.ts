@@ -60,7 +60,8 @@ export async function getTokensFromAuthorizationCode(
   const userContext = await createUserContextForUserId(
     userAccount.userAccountId,
     context.dataContext,
-    context.cacheContext
+    context.cacheContext,
+    context.configuration
   )
 
   if (!userContext) {
@@ -94,7 +95,7 @@ export async function getTokensFromAuthorizationCode(
     )
   }
 
-  if (authCodeCacheResult.scope.includes(ScopeMap.offline_access)) {
+  if (authCodeCacheResult.scope.includes(ScopeMap.offline_access.id)) {
     refresh_token = await createRefreshToken(client.secret, userClient.userClientId, undefined, context.dataContext)
   }
 

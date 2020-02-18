@@ -44,7 +44,8 @@ export async function getTokensFromRefreshToken(
   const userContext = await createUserContextForUserId(
     userClient.userAccountId,
     context.dataContext,
-    context.cacheContext
+    context.cacheContext,
+    context.configuration
   )
   if (!userContext) {
     throw new GrayskullError(

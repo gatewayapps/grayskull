@@ -34,7 +34,7 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 
   const configuration = await getCurrentConfiguration(dataContext, cacheContext)
 
-  const userContext = await getUserContext(sessionCookie, fingerprint, dataContext, cacheContext)
+  const userContext = await getUserContext(sessionCookie, fingerprint, dataContext, cacheContext, configuration)
 
   return {
     req,

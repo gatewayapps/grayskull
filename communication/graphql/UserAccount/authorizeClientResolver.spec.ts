@@ -18,7 +18,7 @@ import { authorizeClientResolver } from './authorizeClientResolver'
 describe('authorizeClientResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {
     const context: any = { user: true }
-    const args: any = { data: { emailAddress: 'test@test.com', code: 'test', responseType: 'code' } }
+    const args: any = { data: { emailAddress: 'test@test.com', code: 'test', responseType: 'code', scope: 'profile' } }
     const obj: any = {}
 
     const validateRedirectUriSpy = jest.spyOn(validateRedirectUriActivity, 'validateRedirectUri')
@@ -33,5 +33,11 @@ describe('authorizeClientResolver', () => {
     expect(validateRedirectUriSpy).toBeCalledTimes(1)
     expect(generateAuthorizationRedirectSpy).toBeCalledTimes(1)
     expect(verifyUserScopesForClientSpy).toBeCalledTimes(1)
+  })
+  it('should throw an error if not passed valid scopes', async () => {
+    const context: any = { user: true }
+    const args: any = { data: { emailAddress: 'test@test.com', code: 'test', responseType: 'code' } }
+    const obj: any = {}
+    expect(authorizeClientResolver(obj, args, context)).rejects.toThrow()
   })
 })

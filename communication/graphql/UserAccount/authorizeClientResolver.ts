@@ -3,6 +3,7 @@ import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { validateRedirectUri } from '../../../activities/validateRedirectUri'
 import { verifyUserScopesForClient } from '../../../activities/verifyUserScopesForClient'
 import { generateAuthorizationRedirect } from '../../../activities/generateAuthorizationRedirect'
+import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 
 export async function authorizeClientResolver(obj, args, context: IRequestContext) {
   try {
@@ -11,6 +12,10 @@ export async function authorizeClientResolver(obj, args, context: IRequestContex
     }
 
     const { client_id, responseType, redirectUri, scope, state, nonce } = args.data
+
+    if (!scope) {
+      throw new GrayskullError(GrayskullErrorCode.InvalidAuthorizeRequest, `You must provide a scope value`)
+    }
 
     if (await !validateRedirectUri(client_id, redirectUri, context)) {
       throw new Error('Invalid redirect uri')
