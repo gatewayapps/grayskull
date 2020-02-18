@@ -1,4 +1,3 @@
-import AuthenticationService from '../../../server/api/services/AuthenticationService'
 import EmailAddressService from '../../../server/api/services/EmailAddressService'
 import UserAccountService from '../../../server/api/services/UserAccountService'
 import { doLogout } from '../../../operations/logic/authentication'
@@ -203,8 +202,10 @@ export default {
       }
     },
     generateMfaKey: generateMfaKeyResolver,
-    verifyMfaKey: (obj, args) => {
-      return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
+    verifyMfaKey: () => {
+      //TODO: Replace with verifyOtpToken activity
+      throw new Error('Broken in this build')
+      //return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
       await sendEmailVerification(args.data.emailAddress, context)

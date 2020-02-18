@@ -1,6 +1,5 @@
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 import { Permissions } from '../../../foundation/constants/permissions'
-import { encrypt } from '../../../operations/logic/encryption'
 
 import { EmailAddress } from '../../../foundation/models/EmailAddress'
 import { UserAccount } from '../../../foundation/models/UserAccount'
@@ -8,9 +7,9 @@ import bcrypt from 'bcrypt'
 
 import uuid from 'uuid/v4'
 import EmailAddressService from './EmailAddressService'
-import MailService from './MailService'
+
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
-import { UserAccountFilter, UserAccountMeta, UserAccountUniqueFilter } from '../../interfaces/graphql/IUserAccount'
+import { UserAccountFilter, UserAccountMeta } from '../../interfaces/graphql/IUserAccount'
 import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 import EmailAddressRepository from '../../data/repositories/EmailAddressRepository'
 import { randomBytes } from 'crypto'
@@ -20,6 +19,7 @@ import { IConfiguration } from '../../../foundation/types/types'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { cacheValue } from '../../../operations/data/persistentCache/cacheValue'
 import { getValue } from '../../../operations/data/persistentCache/getValue'
+import { sendTemplatedEmail } from '../../../operations/services/mail/sendEmailTemplate'
 
 const INVITATION_EXPIRES_IN = 3600
 
@@ -100,7 +100,7 @@ class UserAccountService {
       await EmailAddressRepository.createEmailAddress(emailAddressData as EmailAddress, options)
 
       const activateLink = `${configuration.Server.baseUrl}/activate?emailAddress=${emailAddress}&token=${resetToken}`
-      await MailService.sendEmailTemplate(
+      await sendTemplatedEmail(
         'activateAccountTemplate',
         emailAddress,
         `Activate Your ${configuration.Server.realmName} Account`,
@@ -122,37 +122,8 @@ class UserAccountService {
     }
   }
 
-  /**
-   *
-   * @param data
-   * @param password
-   */
-  public async createUserAccountWithPassword(
-    data: UserAccount,
-    password: string,
-    options: IQueryOptions
-  ): Promise<UserAccount> {
-    data.userAccountId = uuid()
-    data.passwordHash = await this.hashPassword(password)
-    data.lastPasswordChange = new Date()
-    if (data.otpSecret && data.otpSecret.length > 0) {
-      data.otpSecret = encrypt(data.otpSecret)
-      data.otpEnabled = true
-    }
-    return UserAccountRepository.createUserAccount(data, options)
-  }
-
   public async updateUserActive(userAccountId: string, options: IQueryOptions) {
     await UserAccountRepository.updateUserAccount({ userAccountId }, { lastActive: new Date() }, options)
-  }
-
-  public async getUserAccountByEmailAddress(emailAddress: string, options: IQueryOptions): Promise<UserAccount | null> {
-    const email = await EmailAddressRepository.getEmailAddress({ emailAddress }, options)
-
-    if (!email) {
-      return null
-    }
-    return this.getUserAccount({ userAccountId: email.userAccountId }, options)
   }
 
   public async userAccountsMeta(filter: UserAccountFilter | null, options: IQueryOptions): Promise<UserAccountMeta> {
@@ -174,16 +145,10 @@ class UserAccountService {
     return UserAccountRepository.getUserAccountWithSensitiveData({ userAccountId: email.userAccountId }, options)
   }
 
-  public async getUserAccount(filter: UserAccountUniqueFilter, options: IQueryOptions): Promise<UserAccount | null> {
-    return UserAccountRepository.getUserAccount(filter, options)
-  }
-
   public async validateResetPasswordToken(emailAddress: string, token: string, dataContext: DataContext) {
     const cachedValue = await getValue(`${emailAddress}_verification`, dataContext)
     return cachedValue === token
   }
-
-  //MailService.sendMail(emailAddress, `Password Reset Instructions`, body)
 
   private async hashPassword(password: string): Promise<string> {
     const PASSWORD_SALT_ROUNDS = 10

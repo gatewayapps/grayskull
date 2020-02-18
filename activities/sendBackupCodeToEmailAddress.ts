@@ -4,7 +4,8 @@ import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/Graysku
 import { decrypt } from '../operations/logic/encryption'
 
 import { generateBackupMultifactorCode } from '../operations/data/userAccount/generateBackupMultifactorCode'
-import MailService from '../server/api/services/MailService'
+
+import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
 
 export async function sendBackupCodeToEmailAddress(emailAddress: string, context: IRequestContext) {
   const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext, true)
@@ -22,7 +23,7 @@ export async function sendBackupCodeToEmailAddress(emailAddress: string, context
 
   const backupCode = await generateBackupMultifactorCode(emailAddress, otpSecret, context.dataContext)
 
-  await MailService.sendEmailTemplate(
+  await sendTemplatedEmail(
     'backupCodeTemplate',
     emailAddress,
     `${context.configuration.Server.realmName} Backup Code`,
