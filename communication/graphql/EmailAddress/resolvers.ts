@@ -5,7 +5,7 @@ import EmailAddressRepository from '../../../server/data/repositories/EmailAddre
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
-import { createEmailAddress } from '../../../operations/data/emailAddress/createEmailAddress'
+
 import { addEmailAddress } from '../../../activities/addEmailAddress'
 
 export default {
