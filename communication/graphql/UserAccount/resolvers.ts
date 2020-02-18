@@ -207,10 +207,8 @@ export default {
       return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
-      const result = await EmailAddressService.sendVerificationEmail(args.data.emailAddress, context.configuration, {
-        userContext: context.user
-      })
-      return !!result
+      await sendEmailVerification(args.data.emailAddress, context)
+      return true
     },
     resendAllVerificationEmails: async (obj, args, context: IRequestContext) => {
       const unverifiedEmails = await EmailAddressRepository.getEmailAddresses(
