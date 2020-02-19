@@ -1,4 +1,3 @@
-../../../foundation/constants/KnownSettings
 import { IConfiguration } from '../../../foundation/models/IConfiguration'
 
 import { encrypt } from '../../../operations/logic/encryption'
