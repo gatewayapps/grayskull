@@ -10,7 +10,7 @@ export async function createUserAccount(
   data: Partial<UserAccount>,
   password: string | undefined,
   dataContext: DataContext,
-  userContext: UserContext | undefined
+  userContext?: UserContext
 ) {
   if (data.permissions === undefined) {
     throw new Error('Permissions must be specified when a user is created')
