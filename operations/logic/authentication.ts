@@ -2,13 +2,13 @@
 import { Session } from '../../foundation/models/Session'
 
 import Cookies from 'cookies'
-import SessionService from '../../server/api/services/SessionService'
 
 import { NextApiRequest, NextApiResponse } from 'next'
 
 import { UserContext } from '../../foundation/context/getUserContext'
 import { IRequestContext } from '../../foundation/context/prepareContext'
 import { validateAndDecodeAccessToken } from './validateAndDecodeAccessToken'
+import { deleteSession } from '../data/session/deleteSession'
 
 export type RequestContext = NextApiRequest & {
   cookies: any
@@ -79,14 +79,14 @@ export function clearAuthCookies(res: ResponseContext) {
   res.cookies.set(SESSION_ID_COOKIE_NAME, undefined)
 }
 
-export async function doLogout(req: RequestContext, res: ResponseContext) {
-  const cookies = new Cookies(req, res)
-  req.cookies = cookies
-  res.cookies = cookies
+export async function doLogout(context: IRequestContext) {
+  const cookies = new Cookies(context.req, context.res)
+  context.req.cookies = cookies
+  context.res.cookies = cookies
 
-  const { sessionId } = getAuthCookies(req)
+  const { sessionId } = getAuthCookies(context.req)
   if (sessionId) {
-    await SessionService.deleteSession({ sessionId }, { userContext: req.user || null })
+    await deleteSession(sessionId, context.dataContext)
   }
-  clearAuthCookies(res)
+  clearAuthCookies(context.res)
 }

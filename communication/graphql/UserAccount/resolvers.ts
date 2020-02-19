@@ -251,7 +251,7 @@ export default {
     activateAccount: activateAccountResolver,
     logout: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       try {
-        await doLogout(context.req, context.res)
+        await doLogout(context)
         return {
           success: true
         }

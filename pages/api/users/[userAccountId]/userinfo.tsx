@@ -1,14 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getClientRequestOptionsFromRequest } from '../../../../operations/logic/authentication'
-import UserClientService from '../../../../server/api/services/UserClientService'
+
 import { ScopeMap } from '../../../../foundation/constants/scopes'
 import { UserAccount } from '../../../../foundation/models/UserAccount'
 import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
-
+import { getUserClient } from '../../../../operations/data/userClient/getUserClient'
 import { Permissions } from '../../../../foundation/constants/permissions'
 import { ensureScope } from '../../../../server/utils/ensureScope'
 import { prepareContext } from '../../../../foundation/context/prepareContext'
 import { getUserProfileForClient } from '../../../../operations/logic/getUserProfileForClient'
+import { userClientHasAllowedScope } from '../../../../operations/logic/userClientHasAllowedScope'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
@@ -32,25 +33,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (clientOptions.userAccount.permissions! >= Permissions.Admin) {
     try {
       // Get the calling user's user client to check permissions
-      const callingUserClient = await UserClientService.getUserClient(
-        { client_id: clientOptions.client.client_id, userAccountId: clientOptions.userAccount.userAccountId },
-        { userContext: clientOptions.userAccount }
+      const callingUserClient = await getUserClient(
+        clientOptions.userAccount.userAccountId,
+        clientOptions.client.client_id,
+        context.dataContext
       )
 
       // Has the calling user granted admin-profile:write to the calling client
-      if (
-        callingUserClient &&
-        UserClientService.UserClientHasAllowedScope(callingUserClient, ScopeMap['admin-profile:write'].id)
-      ) {
+      if (callingUserClient && userClientHasAllowedScope(callingUserClient, ScopeMap['admin-profile:write'].id)) {
         const reqBody: UserAccount = req.body as UserAccount
 
         if (reqBody) {
           const { firstName, lastName, displayName, gender, birthday } = reqBody
 
           // We need to get the UserClient for the target user
-          const targetUserClient = await UserClientService.getUserClient(
-            { client_id: clientOptions.client.client_id, userClientId: targetUserAccountId },
-            { userContext: clientOptions.userAccount }
+          const targetUserClient = await getUserClient(
+            targetUserAccountId,
+            clientOptions.client.client_id,
+            context.dataContext
           )
 
           // Has the target user authorized the target client
