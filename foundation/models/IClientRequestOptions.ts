@@ -1,9 +1,9 @@
-import { UserAccount } from '../models/UserAccount'
-import { Client } from '../models/Client'
-import { IAccessToken } from '../../server/api/services/TokenService'
+import { IAccessToken } from '../types/tokens'
+import { UserContext } from '../context/getUserContext'
+import { IUserClient } from '../types/types'
 
 export interface IClientRequestOptions {
-  userAccount: UserAccount
-  client: Client
+  userAccount: UserContext
+  client: IUserClient
   accessToken: IAccessToken
 }

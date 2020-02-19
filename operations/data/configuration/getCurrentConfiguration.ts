@@ -7,7 +7,7 @@ import {
   IServerConfiguration,
   ISecurityConfiguration
 } from '../../../foundation/types/types'
-import { SettingsKeys } from '../../../server/config/KnownSettings'
+import { SettingsKeys } from '../../../foundation/constants/KnownSettings'
 import { decrypt } from '../../logic/encryption'
 const settingsCacheKey = `SETTINGS_RECORDS`
 function getNumericSetting(key: string, settings: Setting[]) {

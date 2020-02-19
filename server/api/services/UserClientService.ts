@@ -1,19 +1,16 @@
 import _ from 'lodash'
 
-import { IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { Permissions } from '../../../foundation/constants/permissions'
-import AuthorizationHelper from '../../utils/AuthorizationHelper'
+
 import ClientRepository from '../../data/repositories/ClientRepository'
 import { UserClient } from '../../../foundation/models/UserClient'
-import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 
-import { WhereAttributeHash, default as Sequelize } from 'sequelize'
+import { default as Sequelize } from 'sequelize'
 import { IUserAccount } from '../../../foundation/types/types'
-import { ScopeMap } from '../../../foundation/constants/scopes'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
@@ -36,77 +33,6 @@ export async function getClientsForUser(userAccountId: string) {
 }
 
 class UserClientService {
-  public async verifyScope(
-    userAccountId: string,
-    client_id: string,
-    scope: string | null,
-    options: IQueryOptions
-  ): Promise<IVerifyScopeResult> {
-    const client = await ClientRepository.getClient({ client_id }, options)
-    if (!client) {
-      throw new Error(`Unknown client: ${client_id}`)
-    }
-    const clientScopes = JSON.parse(client.scopes)
-    const userAccount = await UserAccountRepository.getUserAccount({ userAccountId }, options)
-
-    const requestedScopes: string[] = (scope ? scope.split(/[, ]/) : JSON.parse(client.scopes))
-      .filter((s) => clientScopes.includes(s))
-      .filter((rs) => ScopeMap[rs].permissionLevel <= userAccount!.permissions!)
-
-    const userClient = await UserClientRepository.getUserClient({ userAccountId, client_id }, options)
-
-    if (!userClient) {
-      return {
-        pendingScopes: requestedScopes
-      }
-    }
-
-    const allowedScopes: string[] = JSON.parse(userClient.allowedScopes)
-    const deniedScopes: string[] = JSON.parse(userClient.deniedScopes)
-    const pendingScopes = requestedScopes.filter(
-      (rs) =>
-        !allowedScopes.includes(rs) &&
-        !deniedScopes.includes(rs) &&
-        ScopeMap[rs].permissionLevel <= userAccount!.permissions!
-    )
-
-    if (pendingScopes.length > 0) {
-      return {
-        pendingScopes
-      }
-    }
-
-    return {
-      approvedScopes: allowedScopes.filter((allow) => requestedScopes.includes(allow)),
-      userClientId: userClient.userClientId
-    }
-  }
-
-  public UserClientHasAllowedScope(userClient: UserClient | null, scope: string) {
-    if (!userClient) {
-      return false
-    }
-
-    if (!userClient.allowedScopes) {
-      return false
-    }
-
-    try {
-      const allowedScopes: string[] = JSON.parse(userClient.allowedScopes)
-      return allowedScopes.includes(scope)
-    } catch (err) {
-      return false
-    }
-  }
-
-  @hasPermission(Permissions.User)
-  async getUserClient(filter: IUserClientUniqueFilter, options: IQueryOptions): Promise<UserClient | null> {
-    if (options.userContext && !AuthorizationHelper.isAdmin(options.userContext)) {
-      filter = Object.assign({ userAccountId: options.userContext!.userAccountId }, filter)
-    }
-    return UserClientRepository.getUserClient(filter as WhereAttributeHash, options)
-  }
-
   @hasPermission(Permissions.User)
   public async updateScopes(
     userAccount: IUserAccount,

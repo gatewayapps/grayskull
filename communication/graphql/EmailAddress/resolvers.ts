@@ -1,39 +1,28 @@
-import EmailAddressService from '../../../server/api/services/EmailAddressService'
-
-import EmailAddressRepository from '../../../server/data/repositories/EmailAddressRepository'
-
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 
 import { addEmailAddress } from '../../../activities/addEmailAddress'
+import { isEmailAddressAvailableActivity } from '../../../activities/isEmailAddressAvailableActivity'
+import { listUserAccountEmailAddresses } from '../../../activities/listUserAccountEmailAddresses'
 
 export default {
   Query: {
-    emailAddresses: (obj, args, context) => {
-      return EmailAddressService.getEmailAddresses(args.where, { userContext: context.user })
+    emailAddresses: () => {
+      throw new Error('Not implemented')
     },
-    emailAddressesMeta: (obj, args, context) => {
-      return EmailAddressService.emailAddressesMeta(args.where, { userContext: context.user })
+    emailAddressesMeta: () => {
+      throw new Error('Not implemented')
     },
-    emailAddress: async (obj, args, context) => {
-      return EmailAddressService.getEmailAddress(args.where, { userContext: context.user })
+    emailAddress: async () => {
+      throw new Error('Not implemented')
     },
     emailAddressAvailable: async (obj, args, context) => {
-      const result = await EmailAddressService.isEmailAddressAvailable(args.emailAddress, {
-        userContext: context.user
-      })
+      const result = await isEmailAddressAvailableActivity(args.data.emailAddress, context)
       return result
     },
     myEmailAddresses: async (obj, args, context) => {
-      if (!context.user) {
-        throw new Error('You must be signed in to do that')
-      } else {
-        return await EmailAddressRepository.getEmailAddresses(
-          { userAccountId_equals: context.user.userAccountId },
-          { userContext: context.user }
-        )
-      }
+      return listUserAccountEmailAddresses(context)
     }
   },
   Mutation: {
@@ -41,9 +30,7 @@ export default {
       if (!context.user) {
         throw new Error('You must be signed in to do that')
       }
-      const isAvailable = await EmailAddressService.isEmailAddressAvailable(args.data.emailAddress, {
-        userContext: context.user
-      })
+      const isAvailable = await isEmailAddressAvailableActivity(args.data.emailAddress, context)
       if (!isAvailable) {
         return {
           success: false,

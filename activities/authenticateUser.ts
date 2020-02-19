@@ -7,7 +7,8 @@ import { decrypt } from '../operations/logic/encryption'
 import * as otplib from 'otplib'
 import { verifyBackupMultifactorCode } from '../operations/data/userAccount/verifyBackupMultifactorCode'
 import { clearBackupMultifactorCode } from '../operations/data/userAccount/clearBackupMultifactorCode'
-import SessionService from '../server/api/services/SessionService'
+
+import { createSession } from '../operations/data/session/createSession'
 
 /*
   1. Find user by email address
@@ -85,13 +86,13 @@ export async function authenticateUser(
   }
 
   const fingerprint = context.req.headers ? context.req.headers['x-fingerprint']?.toString() : ''
-  return await SessionService.createSession(
+  return await createSession(
     {
       fingerprint,
       userAccountId: userAccount.userAccountId,
       ipAddress: context.req.socket.remoteAddress
     },
     extendedSession,
-    {}
+    context.dataContext
   )
 }

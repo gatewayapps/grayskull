@@ -5,4 +5,5 @@ export async function ensureAuthenticated(context: IRequestContext) {
   if (!context.user) {
     throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'You must be signed in to do that')
   }
+  return true
 }

@@ -2,11 +2,13 @@
 import { Session } from '../../foundation/models/Session'
 
 import Cookies from 'cookies'
-import SessionService from '../../server/api/services/SessionService'
-import { UserAccount } from '../../foundation/models/UserAccount'
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import TokenService from '../../server/api/services/TokenService'
+
+import { UserContext } from '../../foundation/context/getUserContext'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { validateAndDecodeAccessToken } from './validateAndDecodeAccessToken'
+import { deleteSession } from '../data/session/deleteSession'
 
 export type RequestContext = NextApiRequest & {
   cookies: any
@@ -18,21 +20,19 @@ export type RequestContext = NextApiRequest & {
 export type ResponseContext = NextApiResponse & {
   cookies: any
   session?: Session
-  user?: Partial<UserAccount> & {
-    emailAddress: string
-  }
+  user?: UserContext
   locals?: any
 }
 
-export async function getClientRequestOptionsFromRequest(req: RequestContext) {
+export async function getClientRequestOptionsFromRequest(context: IRequestContext) {
   try {
-    const auth = req.headers.authorization
+    const auth = context.req.headers.authorization
     if (!auth) {
       throw new Error('Missing authorization header')
     }
     const authParts = auth.split(' ')
     const accessToken = authParts[1]
-    return await TokenService.validateAndDecodeAccessToken(accessToken)
+    return await validateAndDecodeAccessToken(accessToken, context)
   } catch {
     return undefined
   }
@@ -79,14 +79,14 @@ export function clearAuthCookies(res: ResponseContext) {
   res.cookies.set(SESSION_ID_COOKIE_NAME, undefined)
 }
 
-export async function doLogout(req: RequestContext, res: ResponseContext) {
-  const cookies = new Cookies(req, res)
-  req.cookies = cookies
-  res.cookies = cookies
+export async function doLogout(context: IRequestContext) {
+  const cookies = new Cookies(context.req, context.res)
+  context.req.cookies = cookies
+  context.res.cookies = cookies
 
-  const { sessionId } = getAuthCookies(req)
+  const { sessionId } = getAuthCookies(context.req)
   if (sessionId) {
-    await SessionService.deleteSession({ sessionId }, { userContext: req.user || null })
+    await deleteSession(sessionId, context.dataContext)
   }
-  clearAuthCookies(res)
+  clearAuthCookies(context.res)
 }

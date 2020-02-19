@@ -1,9 +1,10 @@
 import { IUserClient, IConfiguration, IClient, IRefreshToken } from '../../foundation/types/types'
-import { IAccessToken } from '../../server/api/services/TokenService'
+
 import { addSeconds } from 'date-fns'
 
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 import jwt from 'jsonwebtoken'
+import { IAccessToken } from '../../foundation/types/tokens'
 
 export async function createAccessToken(
   client: IClient,

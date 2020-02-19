@@ -1,9 +1,7 @@
-import EmailAddressService from '../../../server/api/services/EmailAddressService'
-import UserAccountService from '../../../server/api/services/UserAccountService'
 import { doLogout } from '../../../operations/logic/authentication'
 import UserClientService from '../../../server/api/services/UserClientService'
 import { verifyPassword } from '../../../operations/data/userAccount/verifyPassword'
-import { verifyPasswordStrength } from '../../../operations/logic/verifyPasswordStrength'
+
 import { IOperationResponse } from '../../../foundation/models/IOperationResponse'
 import UserAccountRepository from '../../../server/data/repositories/UserAccountRepository'
 
@@ -24,6 +22,12 @@ import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequest
 
 import { authorizeClientResolver } from './authorizeClientResolver'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
+import { verifyOtpToken } from '../../../activities/verifyOtpToken'
+
+import { createUserAccountActivity } from '../../../activities/createUserAccountActivity'
+
+import { activateAccountResolver } from './activateAccountResolver'
+import { listUserAccountEmailAddresses } from '../../../activities/listUserAccountEmailAddresses'
 
 function isValidDate(d: any) {
   try {
@@ -93,25 +97,9 @@ export default {
     changePassword: changePasswordResolver,
     resetPassword: resetPasswordResolver,
     createUser: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
-      const userAccount = context.user
-      if (!userAccount) {
-        return {
-          success: false,
-          message: 'You must be signed in to do that'
-        }
-      }
-
-      if (userAccount.permissions < Permissions.Admin) {
-        return {
-          success: false,
-          message: 'You must be an administrator to do that'
-        }
-      }
-
       const { emailAddress, ...userData } = args.data
-      await UserAccountService.createUserAccount(userData, emailAddress, context.configuration, context.dataContext, {
-        userContext: userAccount
-      })
+
+      await createUserAccountActivity(userData, emailAddress, context)
 
       return { success: true }
     },
@@ -202,10 +190,8 @@ export default {
       }
     },
     generateMfaKey: generateMfaKeyResolver,
-    verifyMfaKey: () => {
-      //TODO: Replace with verifyOtpToken activity
-      throw new Error('Broken in this build')
-      //return AuthenticationService.verifyOtpToken(args.data.secret, args.data.token)
+    verifyMfaKey: async (obj, args) => {
+      return await verifyOtpToken(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
       await sendEmailVerification(args.data.emailAddress, context)
@@ -262,39 +248,10 @@ export default {
       }
     },
     sendBackupCode: sendBackupCodeResolver,
-    activateAccount: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
-      const { emailAddress, token, password, confirmPassword } = args.data
-      if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, context.dataContext))) {
-        return {
-          success: false,
-          message: 'Invalid email address or token'
-        }
-      }
-      if (password !== confirmPassword) {
-        return {
-          success: false,
-          message: 'Password does not match confirm password'
-        }
-      } else {
-        const validationResult = await verifyPasswordStrength(password, context.configuration.Security)
-        if (validationResult.success && !validationResult.validationErrors) {
-          return {
-            success: true
-          }
-        } else {
-          if (validationResult.validationErrors) {
-            return {
-              success: false,
-              message: validationResult.validationErrors.join('\n')
-            }
-          }
-        }
-      }
-      return { success: false }
-    },
+    activateAccount: activateAccountResolver,
     logout: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       try {
-        await doLogout(context.req, context.res)
+        await doLogout(context)
         return {
           success: true
         }
@@ -321,18 +278,11 @@ export default {
   },
   UserAccount: {
     emailAddresses: async (obj, args, context: IRequestContext) => {
-      return await EmailAddressService.getEmailAddresses(
-        { userAccountId_equals: obj.userAccountId },
-        { userContext: context.user }
-      )
+      return listUserAccountEmailAddresses(context)
     },
     emailAddress: async (obj, args, context: IRequestContext) => {
-      const result = await EmailAddressRepository.getEmailAddresses(
-        { primary_equals: true, userAccountId_equals: obj.userAccountId },
-        { userContext: context.user }
-      )
-      if (result.length > 0) {
-        return result[0].emailAddress
+      if (context.user) {
+        return context.user.emailAddress
       } else {
         return null
       }

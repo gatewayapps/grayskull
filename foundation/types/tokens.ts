@@ -1,3 +1,38 @@
+export interface IAccessToken {
+  id?: string
+  sub: string
+  scopes: string[]
+  exp: number
+}
+
+export interface ISubject {
+  sub: string
+}
+
+export interface IIDToken extends ISubject {
+  iss: string
+  at_hash: string | undefined
+  aud: string
+  exp: number
+  iat: number
+  nonce?: string
+}
+
+export interface IProfileClaim {
+  name?: string
+  given_name?: string
+  family_name?: string
+  nickname?: string | null
+  profile?: string
+  picture?: string | null
+  updated_at?: number
+}
+
+export interface IEmailClaim {
+  email?: string
+  email_verified?: boolean
+}
+
 export interface IAccessTokenResponse {
   token_type: 'Bearer'
   id_token?: string

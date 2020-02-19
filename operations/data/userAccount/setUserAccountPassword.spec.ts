@@ -18,7 +18,8 @@ describe('setUserAccountPassword', () => {
     const createdUser = await createUserAccount(
       { firstName: 'test', lastName: 'user', otpEnabled: false, isActive: true, permissions: 1 },
       'password1',
-      dataContext
+      dataContext,
+      undefined
     )
 
     const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)

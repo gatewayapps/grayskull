@@ -3,8 +3,15 @@ import { UserAccount } from '../../../foundation/models/UserAccount'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import bcrypt from 'bcrypt'
 import { encrypt } from '../../logic/encryption'
+import { UserContext } from '../../../foundation/context/getUserContext'
+import { GrayskullErrorCode, GrayskullError } from '../../../foundation/errors/GrayskullError'
 
-export async function createUserAccount(data: Partial<UserAccount>, password: string, dataContext: DataContext) {
+export async function createUserAccount(
+  data: Partial<UserAccount>,
+  password: string | undefined,
+  dataContext: DataContext,
+  userContext?: UserContext
+) {
   if (data.permissions === undefined) {
     throw new Error('Permissions must be specified when a user is created')
   }
@@ -22,7 +29,9 @@ export async function createUserAccount(data: Partial<UserAccount>, password: st
   }
 
   data.userAccountId = uuid()
-  data.passwordHash = await bcrypt.hash(password, 10)
+  if (password) {
+    data.passwordHash = await bcrypt.hash(password, 10)
+  }
   data.lastPasswordChange = new Date()
   data.lastActive = new Date()
 
@@ -30,9 +39,17 @@ export async function createUserAccount(data: Partial<UserAccount>, password: st
     data.otpSecret = encrypt(data.otpSecret)
     data.otpEnabled = true
   }
+  if (userContext) {
+    data.createdBy = userContext.userAccountId
+  }
 
   data.createdAt = new Date()
   data.updatedAt = new Date()
 
-  return await new dataContext.UserAccount(data).save()
+  await new dataContext.UserAccount(data).save()
+  const userAccountRecord = await dataContext.UserAccount.findOne({ where: { userAccountId: data.userAccountId } })
+  if (!userAccountRecord) {
+    throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `Failed to create a user account`)
+  }
+  return userAccountRecord
 }
