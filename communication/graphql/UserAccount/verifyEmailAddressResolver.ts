@@ -1,10 +1,10 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { IOperationResponse } from '../../../foundation/types/types'
-import { verifyEmailAddress } from '../../../activities/verifyEmailAddress'
+import { verifyEmailAddressActivity } from '../../../activities/verifyEmailAddressActivity'
 
 export async function verifyEmailAddressResolver(obj, args, context: IRequestContext): Promise<IOperationResponse> {
   try {
-    await verifyEmailAddress(decodeURIComponent(args.data.emailAddress), args.data.code, context)
+    await verifyEmailAddressActivity(decodeURIComponent(args.data.emailAddress), args.data.code, context)
     return {
       success: true
     }

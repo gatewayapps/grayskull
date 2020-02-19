@@ -3,10 +3,10 @@ import { GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../foundation/constants/permissions'
 
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { generateBackupCode } from '../../../activities/generateBackupCode'
+import { generateBackupCodeActivity } from '../../../activities/generateBackupCodeActivity'
 import { streamToString } from '../../../operations/logic/streamToString'
 import { Stream } from 'stream'
-import { restoreConfiguration } from '../../../activities/restoreConfiguration'
+import { restoreConfigurationActivity } from '../../../activities/restoreConfigurationActivity'
 
 import { uploadFileResolver } from './uploadFileResolver'
 
@@ -55,7 +55,7 @@ export default {
       return !isServerConfigured
     },
     backupConfiguration: async (obj, args, context: IRequestContext) => {
-      const backupDownloadCode = await generateBackupCode(context)
+      const backupDownloadCode = await generateBackupCodeActivity(context)
       return {
         success: true,
         downloadUrl: `/api/backup?code=${backupDownloadCode}`
@@ -70,7 +70,7 @@ export default {
         const readStream: Stream = createReadStream()
 
         const contents = await streamToString(readStream)
-        await restoreConfiguration(contents, context)
+        await restoreConfigurationActivity(contents, context)
         return { success: true }
       } catch (err) {
         console.error(err)

@@ -15,7 +15,7 @@ import { clearValue } from '../operations/data/persistentCache/clearValue'
  *  5. Remove the token from persistent cache
  */
 
-export async function changePasswordWithToken(
+export async function changePasswordWithTokenActivity(
   emailAddress: string,
   token: string,
   newPassword: string,

@@ -1,9 +1,9 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { sendBackupCodeToEmailAddress } from '../../../activities/sendBackupCodeToEmailAddress'
+import { sendBackupCodeToEmailAddressActivity } from '../../../activities/sendBackupCodeToEmailAddressActivity'
 
 export async function sendBackupCodeResolver(obj, args, context: IRequestContext) {
   try {
-    await sendBackupCodeToEmailAddress(args.data.emailAddress, context)
+    await sendBackupCodeToEmailAddressActivity(args.data.emailAddress, context)
     return true
   } catch (err) {
     console.error(err)

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
-import { backupConfiguration } from '../../activities/backupConfiguration'
+import { backupConfigurationActivity } from '../../activities/backupConfigurationActivity'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
@@ -10,7 +10,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     const code = req.query.code.toString()
     try {
-      const encryptedBackup = await backupConfiguration(code, context)
+      const encryptedBackup = await backupConfigurationActivity(code, context)
       res.status(200)
       res.setHeader('Content-Disposition', 'attachment; filename="backup.gsb"')
       res.setHeader('Content-Type', 'application/octet-stream; charset=utf-8')

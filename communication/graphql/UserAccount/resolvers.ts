@@ -21,13 +21,13 @@ import { sendBackupCodeResolver } from './sendBackupCodeResolver'
 import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequestResolver'
 
 import { authorizeClientResolver } from './authorizeClientResolver'
-import { sendEmailVerification } from '../../../activities/sendEmailVerification'
-import { verifyOtpToken } from '../../../activities/verifyOtpToken'
+import { sendEmailVerificationActivity } from '../../../activities/sendEmailVerificationActivity'
+import { verifyOtpTokenActivity } from '../../../activities/verifyOtpTokenActivity'
 
 import { createUserAccountActivity } from '../../../activities/createUserAccountActivity'
 
 import { activateAccountResolver } from './activateAccountResolver'
-import { listUserAccountEmailAddresses } from '../../../activities/listUserAccountEmailAddresses'
+import { listUserAccountEmailAddressesActivity } from '../../../activities/listUserAccountEmailAddressesActivity'
 
 function isValidDate(d: any) {
   try {
@@ -191,10 +191,10 @@ export default {
     },
     generateMfaKey: generateMfaKeyResolver,
     verifyMfaKey: async (obj, args) => {
-      return await verifyOtpToken(args.data.secret, args.data.token)
+      return await verifyOtpTokenActivity(args.data.secret, args.data.token)
     },
     resendVerification: async (obj, args, context: IRequestContext) => {
-      await sendEmailVerification(args.data.emailAddress, context)
+      await sendEmailVerificationActivity(args.data.emailAddress, context)
       return true
     },
     resendAllVerificationEmails: async (obj, args, context: IRequestContext) => {
@@ -204,7 +204,7 @@ export default {
       )
       await Promise.all(
         unverifiedEmails.map(async (e) => {
-          await sendEmailVerification(e.emailAddress, context)
+          await sendEmailVerificationActivity(e.emailAddress, context)
         })
       )
 
@@ -278,7 +278,7 @@ export default {
   },
   UserAccount: {
     emailAddresses: async (obj, args, context: IRequestContext) => {
-      return listUserAccountEmailAddresses(context)
+      return listUserAccountEmailAddressesActivity(context)
     },
     emailAddress: async (obj, args, context: IRequestContext) => {
       if (context.user) {

@@ -7,7 +7,11 @@ import { clearValue } from '../operations/data/persistentCache/clearValue'
 import { getCacheKeyForEmailVerification } from '../operations/logic/getCacheKeyForEmailVerification'
 import { getEmailAddressByEmailAddress } from '../operations/data/emailAddress/getEmailAddressByEmailAddress'
 
-export async function verifyEmailAddress(emailAddress: string, verificationCode: string, context: IRequestContext) {
+export async function verifyEmailAddressActivity(
+  emailAddress: string,
+  verificationCode: string,
+  context: IRequestContext
+) {
   const emailAddressRecord = await getEmailAddressByEmailAddress(emailAddress, context.dataContext)
   if (!emailAddressRecord) {
     throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `${emailAddress} is not a valid email address`)

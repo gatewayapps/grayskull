@@ -1,12 +1,12 @@
-jest.mock('../../../activities/validateRedirectUri', () => ({
-  validateRedirectUri: () => {
+jest.mock('../../../activities/validateRedirectUriActivity', () => ({
+  validateRedirectUriActivity: () => {
     return {
       userAccountId: 'abc'
     }
   }
 }))
 import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequestResolver'
-import { default as validateRedirectUriActivity } from '../../../activities/validateRedirectUri'
+import { default as validateRedirectUriActivity } from '../../../activities/validateRedirectUriActivity'
 
 describe('verifyAuthorizationRequestResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {
@@ -14,7 +14,7 @@ describe('verifyAuthorizationRequestResolver', () => {
     const args: any = { data: { emailAddress: 'test@test.com', code: 'test' } }
     const obj: any = {}
 
-    const resolverSpy = jest.spyOn(validateRedirectUriActivity, 'validateRedirectUri')
+    const resolverSpy = jest.spyOn(validateRedirectUriActivity, 'validateRedirectUriActivity')
 
     await verifyAuthorizationRequestResolver(obj, args, context)
 

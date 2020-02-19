@@ -1,8 +1,8 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 
-import { validateRedirectUri } from '../../../activities/validateRedirectUri'
-import { verifyUserScopesForClient } from '../../../activities/verifyUserScopesForClient'
-import { generateAuthorizationRedirect } from '../../../activities/generateAuthorizationRedirect'
+import { validateRedirectUriActivity } from '../../../activities/validateRedirectUriActivity'
+import { verifyUserScopesForClientActivity } from '../../../activities/verifyUserScopesForClientActivity'
+import { generateAuthorizationRedirectActivity } from '../../../activities/generateAuthorizationRedirectActivity'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 
 export async function authorizeClientResolver(obj, args, context: IRequestContext) {
@@ -16,11 +16,11 @@ export async function authorizeClientResolver(obj, args, context: IRequestContex
     throw new GrayskullError(GrayskullErrorCode.InvalidAuthorizeRequest, `You must provide a scope value`)
   }
 
-  if (await !validateRedirectUri(client_id, redirectUri, context)) {
+  if (await !validateRedirectUriActivity(client_id, redirectUri, context)) {
     throw new Error('Invalid redirect uri')
   }
 
-  const { pendingScopes } = await verifyUserScopesForClient(client_id, scope, context)
+  const { pendingScopes } = await verifyUserScopesForClientActivity(client_id, scope, context)
 
   if (pendingScopes && pendingScopes.length > 0) {
     return {
@@ -29,7 +29,7 @@ export async function authorizeClientResolver(obj, args, context: IRequestContex
   }
   const responseTypes: string[] = responseType.split(' ')
 
-  const authorizationUrl = await generateAuthorizationRedirect(
+  const authorizationUrl = await generateAuthorizationRedirectActivity(
     client_id,
     responseTypes,
     redirectUri,

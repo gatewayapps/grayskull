@@ -1,8 +1,8 @@
-jest.mock('../../../activities/uploadFile', () => ({
-  uploadFile: () => true
+jest.mock('../../../activities/uploadFileActivity', () => ({
+  uploadFileActivity: () => true
 }))
 import { uploadFileResolver } from './uploadFileResolver'
-import { default as uploadFileActivity } from '../../../activities/uploadFile'
+import { default as uploadFileActivity } from '../../../activities/uploadFileActivity'
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {
@@ -19,7 +19,7 @@ describe('verifyEmailAddressResolver', () => {
     }
 
     const obj: any = {}
-    const resolverSpy = jest.spyOn(uploadFileActivity, 'uploadFile')
+    const resolverSpy = jest.spyOn(uploadFileActivity, 'uploadFileActivity')
     await uploadFileResolver(obj, args)
 
     expect(resolverSpy).toBeCalledTimes(1)

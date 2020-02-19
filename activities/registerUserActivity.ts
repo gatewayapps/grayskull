@@ -7,7 +7,7 @@ import { Permissions } from '../foundation/constants/permissions'
 import { createUserAccount } from '../operations/data/userAccount/createUserAccount'
 import { verifyPasswordStrength } from '../operations/logic/verifyPasswordStrength'
 import { createEmailAddress } from '../operations/data/emailAddress/createEmailAddress'
-import { sendEmailVerification } from './sendEmailVerification'
+import { sendEmailVerificationActivity } from './sendEmailVerificationActivity'
 import { createSession } from '../operations/data/session/createSession'
 
 /*
@@ -19,7 +19,7 @@ import { createSession } from '../operations/data/session/createSession'
     6.  Send verification email
 */
 
-export async function registerUser(
+export async function registerUserActivity(
   data: IUserAccount,
   emailAddress: string,
   password: string,
@@ -61,7 +61,7 @@ export async function registerUser(
   const userAccount = await createUserAccount(data, password, dataContext)
   await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, userCount === 0)
   if (userCount > 0) {
-    await sendEmailVerification(emailAddress, context)
+    await sendEmailVerificationActivity(emailAddress, context)
   }
 
   const fingerprint = context.req.headers['x-fingerprint'].toString()

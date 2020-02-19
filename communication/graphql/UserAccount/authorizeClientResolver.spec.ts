@@ -1,17 +1,17 @@
-jest.mock('../../../activities/validateRedirectUri', () => ({
-  validateRedirectUri: () => true
+jest.mock('../../../activities/validateRedirectUriActivity', () => ({
+  validateRedirectUriActivity: () => true
 }))
 
-jest.mock('../../../activities/generateAuthorizationRedirect', () => ({
-  generateAuthorizationRedirect: () => 'test'
+jest.mock('../../../activities/generateAuthorizationRedirectActivity', () => ({
+  generateAuthorizationRedirectActivity: () => 'test'
 }))
 
-jest.mock('../../../activities/verifyUserScopesForClient', () => ({
-  verifyUserScopesForClient: () => 'test'
+jest.mock('../../../activities/verifyUserScopesForClientActivity', () => ({
+  verifyUserScopesForClientActivity: () => 'test'
 }))
-import { default as validateRedirectUriActivity } from '../../../activities/validateRedirectUri'
-import { default as generateAuthorizationRedirectActivity } from '../../../activities/generateAuthorizationRedirect'
-import { default as verifyUserScopesForClientActivity } from '../../../activities/verifyUserScopesForClient'
+import { default as validateRedirectUriActivity } from '../../../activities/validateRedirectUriActivity'
+import { default as generateAuthorizationRedirectActivity } from '../../../activities/generateAuthorizationRedirectActivity'
+import { default as verifyUserScopesForClientActivity } from '../../../activities/verifyUserScopesForClientActivity'
 
 import { authorizeClientResolver } from './authorizeClientResolver'
 
@@ -21,12 +21,15 @@ describe('authorizeClientResolver', () => {
     const args: any = { data: { emailAddress: 'test@test.com', code: 'test', responseType: 'code', scope: 'profile' } }
     const obj: any = {}
 
-    const validateRedirectUriSpy = jest.spyOn(validateRedirectUriActivity, 'validateRedirectUri')
+    const validateRedirectUriSpy = jest.spyOn(validateRedirectUriActivity, 'validateRedirectUriActivity')
     const generateAuthorizationRedirectSpy = jest.spyOn(
       generateAuthorizationRedirectActivity,
-      'generateAuthorizationRedirect'
+      'generateAuthorizationRedirectActivity'
     )
-    const verifyUserScopesForClientSpy = jest.spyOn(verifyUserScopesForClientActivity, 'verifyUserScopesForClient')
+    const verifyUserScopesForClientSpy = jest.spyOn(
+      verifyUserScopesForClientActivity,
+      'verifyUserScopesForClientActivity'
+    )
 
     await authorizeClientResolver(obj, args, context)
 

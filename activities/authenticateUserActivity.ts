@@ -19,7 +19,7 @@ import { createSession } from '../operations/data/session/createSession'
   6. Create a session and return it
 */
 
-export async function authenticateUser(
+export async function authenticateUserActivity(
   emailAddress: string,
   password: string,
   context: IRequestContext,

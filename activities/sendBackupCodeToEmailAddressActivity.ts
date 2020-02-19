@@ -7,7 +7,7 @@ import { generateBackupMultifactorCode } from '../operations/data/userAccount/ge
 
 import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
 
-export async function sendBackupCodeToEmailAddress(emailAddress: string, context: IRequestContext) {
+export async function sendBackupCodeToEmailAddressActivity(emailAddress: string, context: IRequestContext) {
   const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext, true)
   if (!userAccount || !userAccount.otpEnabled || !userAccount.otpSecret) {
     throw new GrayskullError(

@@ -1,6 +1,6 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { generateOtpSecret } from '../../../activities/generateOTPSecret'
+import { generateOtpSecretActivity } from '../../../activities/generateOTPSecretActivity'
 
 export async function generateMfaKeyResolver(obj, args, context: IRequestContext) {
-  return generateOtpSecret(args.data.emailAddress, context)
+  return generateOtpSecretActivity(args.data.emailAddress, context)
 }

@@ -3,7 +3,11 @@ import { getUserAccountByEmailAddress } from '../operations/data/userAccount/get
 
 import { getValue } from '../operations/data/persistentCache/getValue'
 
-export async function validateResetPasswordToken(emailAddress: string, token: string, context: IRequestContext) {
+export async function validateResetPasswordTokenActivity(
+  emailAddress: string,
+  token: string,
+  context: IRequestContext
+) {
   const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext, true)
   if (!userAccount) {
     return false

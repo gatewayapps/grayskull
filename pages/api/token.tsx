@@ -1,5 +1,5 @@
-import { getTokensFromAuthorizationCode } from '../../activities/getTokensFromAuthorizationCode'
-import { getTokensFromRefreshToken } from '../../activities/getTokensFromRefreshToken'
+import { getTokensFromAuthorizationCodeActivity } from '../../activities/getTokensFromAuthorizationCodeActivity'
+import { getTokensFromRefreshTokenActivity } from '../../activities/getTokensFromRefreshTokenActivity'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
@@ -53,7 +53,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
     let accessTokenResponse: IAccessTokenResponse | undefined = undefined
     switch (body.grant_type) {
       case 'authorization_code': {
-        accessTokenResponse = await getTokensFromAuthorizationCode(
+        accessTokenResponse = await getTokensFromAuthorizationCodeActivity(
           clientCredentials.client_id,
           clientCredentials.client_secret,
           body.code,
@@ -62,7 +62,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
         break
       }
       case 'refresh_token': {
-        accessTokenResponse = await getTokensFromRefreshToken(
+        accessTokenResponse = await getTokensFromRefreshTokenActivity(
           clientCredentials.client_id,
           clientCredentials.client_secret,
           body.refresh_token,

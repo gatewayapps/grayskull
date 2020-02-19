@@ -1,10 +1,10 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { setPrimaryEmailAddressForUser } from '../../../activities/setPrimaryEmailAddressForUser'
-import { sendEmailVerification } from '../../../activities/sendEmailVerification'
+import { setPrimaryEmailAddressForUserActivity } from '../../../activities/setPrimaryEmailAddressForUserActivity'
+import { sendEmailVerificationActivity } from '../../../activities/sendEmailVerificationActivity'
 
-import { addEmailAddress } from '../../../activities/addEmailAddress'
+import { addEmailAddressActivity } from '../../../activities/addEmailAddressActivity'
 import { isEmailAddressAvailableActivity } from '../../../activities/isEmailAddressAvailableActivity'
-import { listUserAccountEmailAddresses } from '../../../activities/listUserAccountEmailAddresses'
+import { listUserAccountEmailAddressesActivity } from '../../../activities/listUserAccountEmailAddressesActivity'
 
 export default {
   Query: {
@@ -18,11 +18,11 @@ export default {
       throw new Error('Not implemented')
     },
     emailAddressAvailable: async (obj, args, context) => {
-      const result = await isEmailAddressAvailableActivity(args.data.emailAddress, context)
+      const result = await isEmailAddressAvailableActivity(args.emailAddress, context)
       return result
     },
     myEmailAddresses: async (obj, args, context) => {
-      return listUserAccountEmailAddresses(context)
+      return listUserAccountEmailAddressesActivity(context)
     }
   },
   Mutation: {
@@ -39,7 +39,7 @@ export default {
       }
 
       try {
-        await addEmailAddress(args.data.emailAddress, context)
+        await addEmailAddressActivity(args.data.emailAddress, context)
 
         return {
           success: true
@@ -57,7 +57,7 @@ export default {
       }
 
       try {
-        await sendEmailVerification(args.data.emailAddress, context)
+        await sendEmailVerificationActivity(args.data.emailAddress, context)
         return {
           success: true
         }
@@ -71,7 +71,7 @@ export default {
     },
     setEmailAddressPrimary: async (obj, args, context: IRequestContext) => {
       try {
-        await setPrimaryEmailAddressForUser(args.data.emailAddressId, context)
+        await setPrimaryEmailAddressForUserActivity(args.data.emailAddressId, context)
         return { success: true }
       } catch (err) {
         console.error(err)

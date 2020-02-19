@@ -1,5 +1,5 @@
-jest.mock('../../../activities/registerUser', () => ({
-  registerUser: () => {
+jest.mock('../../../activities/registerUserActivity', () => ({
+  registerUserActivity: () => {
     return {
       userAccountId: 'abc'
     }
@@ -10,7 +10,7 @@ import { registerUserResolver } from './registerUserResolver'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-import { default as registerUserActivity } from '../../../activities/registerUser'
+import { default as registerUserActivity } from '../../../activities/registerUserActivity'
 let dataContext: DataContext
 let cacheContext: CacheContext
 
@@ -24,7 +24,7 @@ describe('registerUserResolver', () => {
     const configuration: any = {}
 
     const userContext: any = { permissions: 1 }
-    const registerUserSpy = jest.spyOn(registerUserActivity, 'registerUser')
+    const registerUserSpy = jest.spyOn(registerUserActivity, 'registerUserActivity')
     await registerUserResolver(
       {},
       { data: {} },

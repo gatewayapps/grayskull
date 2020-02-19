@@ -12,7 +12,7 @@ import { ScopeMap } from '../foundation/constants/scopes'
 
 const VALID_RESPONSE_TYPES = ['code', 'token', 'id_token', 'none']
 
-export async function generateAuthorizationRedirect(
+export async function generateAuthorizationRedirectActivity(
   clientId: string,
   responseTypes: string[],
   redirectUri: string,

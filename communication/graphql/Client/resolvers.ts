@@ -1,31 +1,31 @@
-import { listClients } from '../../../activities/listClients'
-import { getClientsMeta } from '../../../activities/getClientsMeta'
+import { listClientsActivity } from '../../../activities/listClientsActivity'
+import { getClientsMetaActivity } from '../../../activities/getClientsMetaActivity'
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { getClientById } from '../../../activities/getClientById'
-import { createClient } from '../../../activities/createClientActivity'
-import { updateClientById } from '../../../activities/updateClientById'
+import { getClientByIdActivity } from '../../../activities/getClientByIdActivity'
+import { createClientActivity } from '../../../activities/createClientActivity'
+import { updateClientByIdActivity } from '../../../activities/updateClientByIdActivity'
 
 export default {
   Query: {
     clients: (obj, args, context: IRequestContext) => {
-      return listClients(args.filter, args.offset || 0, args.limit || 100, context)
+      return listClientsActivity(args.filter, args.offset || 0, args.limit || 100, context)
     },
     clientsMeta: (obj, args, context: IRequestContext) => {
-      return getClientsMeta(args.filter, context)
+      return getClientsMetaActivity(args.filter, context)
     },
     client: async (obj, args, context: IRequestContext) => {
       const clientId = args.where.client_id
-      return getClientById(clientId, context)
+      return getClientByIdActivity(clientId, context)
     }
   },
   Mutation: {
     createClient: (obj, args, context: IRequestContext) => {
-      return createClient(args.data, context)
+      return createClientActivity(args.data, context)
     },
     updateClient: async (obj, args, context: IRequestContext) => {
       const { client_id, ...data } = args.data
-      await updateClientById(client_id, data, context)
-      return getClientById(client_id, context)
+      await updateClientByIdActivity(client_id, data, context)
+      return getClientByIdActivity(client_id, context)
     }
   },
   Client: {}
