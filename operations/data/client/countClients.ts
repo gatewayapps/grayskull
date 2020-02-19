@@ -1,6 +1,6 @@
 import { IClientFilter } from '../../../foundation/types/filterTypes'
 import { DataContext } from '../../../foundation/context/getDataContext'
-import { convertFilterToSequelizeWhere } from '../../../server/utils/graphQLSequelizeConverter'
+import { convertFilterToSequelizeWhere } from '../../logic/graphQLSequelizeConverter'
 
 export async function countClients(filter: IClientFilter, dataContext: DataContext) {
   const convertedFilter = convertFilterToSequelizeWhere(filter)

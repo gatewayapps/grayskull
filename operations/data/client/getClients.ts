@@ -1,4 +1,4 @@
-import { convertFilterToSequelizeWhere } from '../../../server/utils/graphQLSequelizeConverter'
+import { convertFilterToSequelizeWhere } from '../../logic/graphQLSequelizeConverter'
 import { IClientFilter } from '../../../foundation/types/filterTypes'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { OrderItem } from 'sequelize/types'

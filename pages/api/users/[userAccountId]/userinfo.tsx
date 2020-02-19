@@ -3,13 +3,14 @@ import { getClientRequestOptionsFromRequest } from '../../../../operations/logic
 
 import { ScopeMap } from '../../../../foundation/constants/scopes'
 import { UserAccount } from '../../../../foundation/models/UserAccount'
-import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
+
 import { getUserClient } from '../../../../operations/data/userClient/getUserClient'
 import { Permissions } from '../../../../foundation/constants/permissions'
-import { ensureScope } from '../../../../server/utils/ensureScope'
+import { ensureScope } from '../../../../operations/logic/ensureScope'
 import { prepareContext } from '../../../../foundation/context/prepareContext'
 import { getUserProfileForClient } from '../../../../operations/logic/getUserProfileForClient'
 import { userClientHasAllowedScope } from '../../../../operations/logic/userClientHasAllowedScope'
+import { updateUserAccountActivity } from '../../../../activities/updateUserAccountActivity'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
@@ -55,27 +56,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
           // Has the target user authorized the target client
           if (targetUserClient) {
-            const result = await UserAccountRepository.updateUserAccount(
-              {
-                userAccountId: targetUserClient.userAccountId
-              },
+            await updateUserAccountActivity(
+              targetUserAccountId,
               {
                 firstName,
                 lastName,
                 displayName,
                 gender,
                 birthday
-              },
-              { userContext: clientOptions.userAccount }
+              } as any,
+              context
             )
 
-            if (result) {
-              const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
-              res.json({ success: true, profile: response })
-              return
-            } else {
-              res.json({ success: false, message: 'Something went wrong' })
-            }
+            const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
+            res.json({ success: true, profile: response })
+            return
           } else {
             res.json({ success: false, message: 'Unable to find a user with that id' })
           }
