@@ -1,4 +1,4 @@
-import { SettingsKeys } from '../../../server/config/KnownSettings'
+../../../foundation/constants/KnownSettings
 import { IConfiguration } from '../../../foundation/models/IConfiguration'
 
 import { encrypt } from '../../../operations/logic/encryption'
@@ -9,6 +9,7 @@ import { Permissions } from '../../../foundation/constants/permissions'
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { clearConfigurationFromCache } from '../../../operations/data/configuration/getCurrentConfiguration'
 import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../operations/data/setting/saveSetting'
+import { SettingsKeys } from '../../../foundation/constants/KnownSettings'
 
 export default {
   Query: {
