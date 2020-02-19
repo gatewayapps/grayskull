@@ -5,7 +5,7 @@ import { getClient } from '../operations/data/client/getClient'
 import { getUserClient } from '../operations/data/userClient/getUserClient'
 import { ScopeMap } from '../foundation/constants/scopes'
 
-export async function verifyUserScopesForClient(clientId: string, scope: string, context: IRequestContext) {
+export async function verifyUserScopesForClientActivity(clientId: string, scope: string, context: IRequestContext) {
   if (!context.user) {
     throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'You must be signed in to do that')
   }

@@ -1,4 +1,4 @@
-import { validateClientSecret } from './validateClientSecret'
+import { validateClientSecretActivity } from './validateClientSecretActivity'
 import { IRequestContext } from '../foundation/context/prepareContext'
 import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
 import { getRefreshTokenFromRawToken } from '../operations/data/refreshToken/getRefreshTokenFromRawToken'
@@ -12,14 +12,14 @@ import { createAccessToken } from '../operations/logic/createAccessToken'
 import { updateRefreshTokenActiveAt } from '../operations/data/refreshToken/refreshAccessToken'
 import { IAccessTokenResponse } from '../foundation/types/tokens'
 
-export async function getTokensFromRefreshToken(
+export async function getTokensFromRefreshTokenActivity(
   clientId: string,
   clientSecret: string,
   refreshToken: string,
   context: IRequestContext
 ): Promise<IAccessTokenResponse> {
   let id_token: string | undefined = undefined
-  if (!(await validateClientSecret(clientId, clientSecret, context))) {
+  if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
     throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
   }
 

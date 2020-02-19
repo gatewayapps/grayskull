@@ -8,7 +8,7 @@ import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplat
 
 const INVITATION_EXPIRES_IN = 60 * 60 // 1 hour
 
-export async function sendEmailVerification(
+export async function sendEmailVerificationActivity(
   emailAddress: string,
   { dataContext, configuration, user }: IRequestContext
 ) {

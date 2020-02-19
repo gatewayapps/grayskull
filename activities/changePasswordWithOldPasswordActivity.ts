@@ -12,7 +12,7 @@ import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
  * 4.  Set the password
  */
 
-export async function changePasswordWithOldPassword(
+export async function changePasswordWithOldPasswordActivity(
   oldPassword: string,
   newPassword: string,
   confirmPassword: string,

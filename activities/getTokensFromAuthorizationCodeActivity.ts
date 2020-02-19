@@ -6,7 +6,7 @@ import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
 import { ScopeMap } from '../foundation/constants/scopes'
 import { IAccessTokenResponse } from '../foundation/types/tokens'
 
-import { validateClientSecret } from './validateClientSecret'
+import { validateClientSecretActivity } from './validateClientSecretActivity'
 import { getClient } from '../operations/data/client/getClient'
 import { createIDToken } from '../operations/logic/createIDToken'
 import { createUserContextForUserId } from '../foundation/context/getUserContext'
@@ -25,7 +25,7 @@ import { IRefreshToken } from '../foundation/types/types'
  * 6. If offline_access is allowed, create refresh_token
  * 7. Create an access_token
  */
-export async function getTokensFromAuthorizationCode(
+export async function getTokensFromAuthorizationCodeActivity(
   clientId: string,
   clientSecret: string,
   code: string,
@@ -34,7 +34,7 @@ export async function getTokensFromAuthorizationCode(
   let id_token: string | undefined = undefined
   let refresh_token: IRefreshToken | undefined = undefined
 
-  if (!(await validateClientSecret(clientId, clientSecret, context))) {
+  if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
     throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
   }
 

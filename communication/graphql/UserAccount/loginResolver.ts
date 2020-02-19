@@ -1,5 +1,5 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { authenticateUser } from '../../../activities/authenticateUser'
+import { authenticateUserActivity } from '../../../activities/authenticateUserActivity'
 import { setAuthCookies } from '../../../operations/logic/authentication'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 
@@ -7,7 +7,7 @@ export async function loginResolver(obj, args, context: IRequestContext) {
   const { emailAddress, password, otpToken, extendedSession } = args.data
 
   try {
-    const session = await authenticateUser(emailAddress, password, context, otpToken, extendedSession)
+    const session = await authenticateUserActivity(emailAddress, password, context, otpToken, extendedSession)
     setAuthCookies(context.res, session)
     return {
       success: true

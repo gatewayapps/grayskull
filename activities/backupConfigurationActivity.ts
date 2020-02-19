@@ -5,7 +5,7 @@ import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/Graysku
 import { clearValue } from '../operations/data/persistentCache/clearValue'
 import { IRequestContext } from '../foundation/context/prepareContext'
 
-export async function backupConfiguration(code: string, context: IRequestContext) {
+export async function backupConfigurationActivity(code: string, context: IRequestContext) {
   /*
    * 1. Verify backup code is valid
    * 2. Clear backup code from cache

@@ -1,12 +1,12 @@
-jest.mock('../../../activities/sendBackupCodeToEmailAddress', () => ({
-  sendBackupCodeToEmailAddress: () => {
+jest.mock('../../../activities/sendBackupCodeToEmailAddressActivity', () => ({
+  sendBackupCodeToEmailAddressActivity: () => {
     return {
       userAccountId: 'abc'
     }
   }
 }))
 import { sendBackupCodeResolver } from './sendBackupCodeResolver'
-import { default as sendBackupCodeToEmailAddressActivity } from '../../../activities/sendBackupCodeToEmailAddress'
+import { default as sendBackupCodeToEmailAddressActivity } from '../../../activities/sendBackupCodeToEmailAddressActivity'
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {
@@ -14,7 +14,7 @@ describe('verifyEmailAddressResolver', () => {
     const args: any = { data: { emailAddress: 'test@test.com' } }
     const obj: any = {}
 
-    const resolverSpy = jest.spyOn(sendBackupCodeToEmailAddressActivity, 'sendBackupCodeToEmailAddress')
+    const resolverSpy = jest.spyOn(sendBackupCodeToEmailAddressActivity, 'sendBackupCodeToEmailAddressActivity')
 
     await sendBackupCodeResolver(obj, args, context)
 

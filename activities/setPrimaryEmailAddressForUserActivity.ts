@@ -3,7 +3,10 @@ import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/Graysku
 import { getEmailAddressById } from '../operations/data/emailAddress/getEmailAddressById'
 import { setPrimaryEmailAddress } from '../operations/data/emailAddress/setPrimaryEmailAddress'
 
-export async function setPrimaryEmailAddressForUser(emailAddressId: string, { dataContext, user }: IRequestContext) {
+export async function setPrimaryEmailAddressForUserActivity(
+  emailAddressId: string,
+  { dataContext, user }: IRequestContext
+) {
   if (!user) {
     throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'You must be signed in to do that')
   } else {

@@ -1,8 +1,8 @@
-jest.mock('../../../activities/validateResetPasswordToken', () => ({
-  validateResetPasswordToken: () => true
+jest.mock('../../../activities/validateResetPasswordTokenActivity', () => ({
+  validateResetPasswordTokenActivity: () => true
 }))
 import { validateResetPasswordTokenResolver } from './validateResetPasswordTokenResolver'
-import { default as validateResetPasswordTokenActivity } from '../../../activities/validateResetPasswordToken'
+import { default as validateResetPasswordTokenActivity } from '../../../activities/validateResetPasswordTokenActivity'
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the validateResetPasswordToken activity', async () => {
@@ -10,7 +10,7 @@ describe('verifyEmailAddressResolver', () => {
     const args: any = { data: { emailAddress: 'test@test.com', token: 'test' } }
     const obj: any = {}
 
-    const resolverSpy = jest.spyOn(validateResetPasswordTokenActivity, 'validateResetPasswordToken')
+    const resolverSpy = jest.spyOn(validateResetPasswordTokenActivity, 'validateResetPasswordTokenActivity')
 
     await validateResetPasswordTokenResolver(obj, args, context)
 

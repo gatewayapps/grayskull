@@ -12,7 +12,7 @@ import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplat
  *  3. Send the email
  */
 
-export async function sendResetPasswordEmail(emailAddress: string, context: IRequestContext) {
+export async function sendResetPasswordEmailActivity(emailAddress: string, context: IRequestContext) {
   const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext)
   if (!userAccount) {
     throw new GrayskullError(

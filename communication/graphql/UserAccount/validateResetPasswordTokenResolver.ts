@@ -1,6 +1,6 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { IOperationResponse } from '../../../foundation/types/types'
-import { validateResetPasswordToken } from '../../../activities/validateResetPasswordToken'
+import { validateResetPasswordTokenActivity } from '../../../activities/validateResetPasswordTokenActivity'
 
 export async function validateResetPasswordTokenResolver(
   obj,
@@ -9,7 +9,7 @@ export async function validateResetPasswordTokenResolver(
 ): Promise<IOperationResponse> {
   const token = args.data.token
   const emailAddress = decodeURIComponent(args.data.emailAddress)
-  const isValid = await validateResetPasswordToken(emailAddress, token, context)
+  const isValid = await validateResetPasswordTokenActivity(emailAddress, token, context)
   if (isValid) {
     return {
       success: true
