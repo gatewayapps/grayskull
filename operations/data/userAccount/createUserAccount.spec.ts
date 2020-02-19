@@ -14,7 +14,7 @@ export const TEST_USER_DATA: Partial<UserAccount> = {
 }
 
 export async function createTestUserAccount(dataContext: DataContext) {
-  return await createUserAccount(TEST_USER_DATA, 'password', dataContext)
+  return await createUserAccount(TEST_USER_DATA, 'password', dataContext, undefined)
 }
 
 describe('createUserAccount', () => {
