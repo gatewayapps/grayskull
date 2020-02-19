@@ -5,9 +5,10 @@ import Cookies from 'cookies'
 import SessionService from '../../server/api/services/SessionService'
 
 import { NextApiRequest, NextApiResponse } from 'next'
-import TokenService from '../../server/api/services/TokenService'
+
 import { UserContext } from '../../foundation/context/getUserContext'
 import { IRequestContext } from '../../foundation/context/prepareContext'
+import { validateAndDecodeAccessToken } from './validateAndDecodeAccessToken'
 
 export type RequestContext = NextApiRequest & {
   cookies: any
@@ -31,7 +32,7 @@ export async function getClientRequestOptionsFromRequest(context: IRequestContex
     }
     const authParts = auth.split(' ')
     const accessToken = authParts[1]
-    return await TokenService.validateAndDecodeAccessToken(accessToken, context)
+    return await validateAndDecodeAccessToken(accessToken, context)
   } catch {
     return undefined
   }
