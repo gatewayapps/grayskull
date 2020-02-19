@@ -1,4 +1,4 @@
-import { getClientRequestOptionsFromRequest } from '../../operations/logic/authentication'
+import { getClientRequestOptionsFromRequest } from './authentication'
 import { IRequestContext } from '../../foundation/context/prepareContext'
 
 export async function ensureScope(scopeId: string, context: IRequestContext) {

@@ -1,8 +1,6 @@
-import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
-
 import { NextApiRequest, NextApiResponse } from 'next'
-
-import ClientRepository from '../../server/data/repositories/ClientRepository'
+import { getPinnedClientsActivity } from '../../activities/getPinnedClientsActivity'
+import { countUserAccounts } from '../../operations/data/userAccount/countUserAccounts'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
 
@@ -14,12 +12,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   configuration.Mail.password = PASSWORD_PLACEHOLDER
   configuration.Mail.sendgridApiKey = PASSWORD_PLACEHOLDER
 
-  const pinnedClients = await ClientRepository.getClients({ pinToHeader_equals: true }, {})
+  const pinnedClients = await getPinnedClientsActivity(context)
 
   configuration.HeaderItems = pinnedClients
   const needsConfiguration = !configuration.Server?.baseUrl
 
-  const needsAdmin = (await (await UserAccountRepository.userAccountsMeta({}, {})).count) === 0
+  const needsAdmin = (await countUserAccounts(context.dataContext)) === 0
 
   res.json({
     configuration,

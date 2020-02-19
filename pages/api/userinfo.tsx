@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getClientRequestOptionsFromRequest } from '../../operations/logic/authentication'
 import { ScopeMap } from '../../foundation/constants/scopes'
-import { ensureScope } from '../../server/utils/ensureScope'
+import { ensureScope } from '../../operations/logic/ensureScope'
 import { IClientRequestOptions } from '../../foundation/models/IClientRequestOptions'
 import { UserAccount } from '../../foundation/models/UserAccount'
-import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
+
 import { prepareContext, IRequestContext } from '../../foundation/context/prepareContext'
 import { getUserProfileForClient } from '../../operations/logic/getUserProfileForClient'
+import { updateUserAccountActivity } from '../../activities/updateUserAccountActivity'
 
 async function getUserProfile(clientOptions: IClientRequestOptions, context: IRequestContext) {
   const isClientAuthorized = await ensureScope(ScopeMap.openid.id, context)
@@ -31,28 +32,21 @@ async function postUserProfile(clientOptions: IClientRequestOptions, context: IR
     const reqBody: UserAccount = context.req.body as UserAccount
     if (reqBody) {
       const { firstName, lastName, displayName, gender, birthday } = reqBody
-
-      const result = await UserAccountRepository.updateUserAccount(
-        {
-          userAccountId: clientOptions.userAccount.userAccountId
-        },
+      await updateUserAccountActivity(
+        clientOptions.userAccount.userAccountId,
         {
           firstName,
           lastName,
           displayName,
           gender,
           birthday
-        },
-        { userContext: clientOptions.userAccount }
+        } as any,
+        context
       )
 
-      if (result) {
-        const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
-        context.res.json({ success: true, profile: response })
-        return
-      } else {
-        context.res.json({ success: false, message: 'Something went wrong' })
-      }
+      const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
+      context.res.json({ success: true, profile: response })
+      return
     }
   } catch (err) {
     context.res.json({ success: false, message: err.message })
