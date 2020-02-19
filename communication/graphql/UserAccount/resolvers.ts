@@ -27,6 +27,7 @@ import { sendEmailVerification } from '../../../activities/sendEmailVerification
 import { verifyOtpToken } from '../../../activities/verifyOtpToken'
 import { createUserAccount } from '../../../operations/data/userAccount/createUserAccount'
 import { createUserAccountActivity } from '../../../activities/createUserAccountActivity'
+import { activateAccountActivity } from '../../../activities/activateAccountActivity'
 
 function isValidDate(d: any) {
   try {
@@ -249,33 +250,16 @@ export default {
     sendBackupCode: sendBackupCodeResolver,
     activateAccount: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       const { emailAddress, token, password, confirmPassword } = args.data
-      if (!(await UserAccountService.validateResetPasswordToken(emailAddress, token, context.dataContext))) {
-        return {
-          success: false,
-          message: 'Invalid email address or token'
-        }
-      }
+
       if (password !== confirmPassword) {
         return {
           success: false,
           message: 'Password does not match confirm password'
         }
-      } else {
-        const validationResult = await verifyPasswordStrength(password, context.configuration.Security)
-        if (validationResult.success && !validationResult.validationErrors) {
-          return {
-            success: true
-          }
-        } else {
-          if (validationResult.validationErrors) {
-            return {
-              success: false,
-              message: validationResult.validationErrors.join('\n')
-            }
-          }
-        }
       }
-      return { success: false }
+
+      await activateAccountActivity(emailAddress, password, token, context)
+      return { success: true }
     },
     logout: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       try {

@@ -45,6 +45,7 @@ class UserAccountService {
       const updates: Partial<UserAccount> = {
         otpEnabled: !!otpSecret,
         otpSecret,
+        isActive: true,
         passwordHash
       }
 
