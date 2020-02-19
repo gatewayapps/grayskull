@@ -1,12 +1,11 @@
 import { IUserClient } from '../../foundation/types/types'
 
-import { ISubject, IProfileClaim, IEmailClaim } from '../../server/api/services/TokenService'
-
 import moment from 'moment'
 
 import { userClientHasAllowedScope } from './userClientHasAllowedScope'
 import { UserContext } from '../../foundation/context/getUserContext'
 import { ScopeMap } from '../../foundation/constants/scopes'
+import { ISubject, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
 
 export function getUserProfileForClient(
   userAccount: UserContext,

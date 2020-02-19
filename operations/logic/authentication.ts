@@ -3,10 +3,11 @@ import { Session } from '../../foundation/models/Session'
 
 import Cookies from 'cookies'
 import SessionService from '../../server/api/services/SessionService'
-import { UserAccount } from '../../foundation/models/UserAccount'
 
 import { NextApiRequest, NextApiResponse } from 'next'
 import TokenService from '../../server/api/services/TokenService'
+import { UserContext } from '../../foundation/context/getUserContext'
+import { IRequestContext } from '../../foundation/context/prepareContext'
 
 export type RequestContext = NextApiRequest & {
   cookies: any
@@ -18,21 +19,19 @@ export type RequestContext = NextApiRequest & {
 export type ResponseContext = NextApiResponse & {
   cookies: any
   session?: Session
-  user?: Partial<UserAccount> & {
-    emailAddress: string
-  }
+  user?: UserContext
   locals?: any
 }
 
-export async function getClientRequestOptionsFromRequest(req: RequestContext) {
+export async function getClientRequestOptionsFromRequest(context: IRequestContext) {
   try {
-    const auth = req.headers.authorization
+    const auth = context.req.headers.authorization
     if (!auth) {
       throw new Error('Missing authorization header')
     }
     const authParts = auth.split(' ')
     const accessToken = authParts[1]
-    return await TokenService.validateAndDecodeAccessToken(accessToken)
+    return await TokenService.validateAndDecodeAccessToken(accessToken, context)
   } catch {
     return undefined
   }

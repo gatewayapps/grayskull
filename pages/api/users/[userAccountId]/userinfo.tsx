@@ -4,10 +4,11 @@ import UserClientService from '../../../../server/api/services/UserClientService
 import { ScopeMap } from '../../../../foundation/constants/scopes'
 import { UserAccount } from '../../../../foundation/models/UserAccount'
 import UserAccountRepository from '../../../../server/data/repositories/UserAccountRepository'
-import TokenService from '../../../../server/api/services/TokenService'
+
 import { Permissions } from '../../../../foundation/constants/permissions'
 import { ensureScope } from '../../../../server/utils/ensureScope'
 import { prepareContext } from '../../../../foundation/context/prepareContext'
+import { getUserProfileForClient } from '../../../../operations/logic/getUserProfileForClient'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
@@ -69,11 +70,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             )
 
             if (result) {
-              const response = await TokenService.getUserProfileForClient(
-                clientOptions.client,
-                clientOptions.userAccount,
-                { userContext: clientOptions.userAccount }
-              )
+              const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
               res.json({ success: true, profile: response })
               return
             } else {

@@ -1,43 +1,34 @@
-import TokenService from '../../server/api/services/TokenService'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getClientRequestOptionsFromRequest, RequestContext } from '../../operations/logic/authentication'
+import { getClientRequestOptionsFromRequest } from '../../operations/logic/authentication'
 import { ScopeMap } from '../../foundation/constants/scopes'
 import { ensureScope } from '../../server/utils/ensureScope'
 import { IClientRequestOptions } from '../../foundation/models/IClientRequestOptions'
 import { UserAccount } from '../../foundation/models/UserAccount'
 import UserAccountRepository from '../../server/data/repositories/UserAccountRepository'
-import { prepareContext } from '../../foundation/context/prepareContext'
+import { prepareContext, IRequestContext } from '../../foundation/context/prepareContext'
+import { getUserProfileForClient } from '../../operations/logic/getUserProfileForClient'
 
-async function getUserProfile(
-  clientOptions: IClientRequestOptions,
-  requestContext: RequestContext,
-  res: NextApiResponse
-) {
-  const isClientAuthorized = await ensureScope(ScopeMap.openid.id, requestContext)
+async function getUserProfile(clientOptions: IClientRequestOptions, context: IRequestContext) {
+  const isClientAuthorized = await ensureScope(ScopeMap.openid.id, context)
   if (!isClientAuthorized) {
-    res.status(403)
+    context.res.status(403)
     return
   }
 
-  const profile = await TokenService.getUserProfileForClient(clientOptions.client, clientOptions.userAccount, {
-    userContext: clientOptions.userAccount
-  })
-  res.json(profile)
+  const profile = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
+
+  context.res.json(profile)
 }
 
-async function postUserProfile(
-  clientOptions: IClientRequestOptions,
-  requestContext: RequestContext,
-  res: NextApiResponse
-) {
-  const isClientAuthorized = await ensureScope(ScopeMap['profile:write'].id, requestContext)
+async function postUserProfile(clientOptions: IClientRequestOptions, context: IRequestContext) {
+  const isClientAuthorized = await ensureScope(ScopeMap['profile:write'].id, context)
   if (!isClientAuthorized) {
-    res.status(403)
+    context.res.status(403)
     return
   }
 
   try {
-    const reqBody: UserAccount = requestContext.body as UserAccount
+    const reqBody: UserAccount = context.req.body as UserAccount
     if (reqBody) {
       const { firstName, lastName, displayName, gender, birthday } = reqBody
 
@@ -56,31 +47,29 @@ async function postUserProfile(
       )
 
       if (result) {
-        const response = await TokenService.getUserProfileForClient(clientOptions.client, clientOptions.userAccount, {
-          userContext: clientOptions.userAccount
-        })
-        res.json({ success: true, profile: response })
+        const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.client)
+        context.res.json({ success: true, profile: response })
         return
       } else {
-        res.json({ success: false, message: 'Something went wrong' })
+        context.res.json({ success: false, message: 'Something went wrong' })
       }
     }
   } catch (err) {
-    res.json({ success: false, message: err.message })
+    context.res.json({ success: false, message: err.message })
   }
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const context = await prepareContext(req, res)
 
-  const clientOptions = await getClientRequestOptionsFromRequest(context.req)
+  const clientOptions = await getClientRequestOptionsFromRequest(context)
   switch (req.method) {
     case 'GET': {
-      getUserProfile(clientOptions, context.req, res)
+      getUserProfile(clientOptions, context)
       break
     }
     case 'POST': {
-      postUserProfile(clientOptions, context.req, res)
+      postUserProfile(clientOptions, context)
       break
     }
     default: {

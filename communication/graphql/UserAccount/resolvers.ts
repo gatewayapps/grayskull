@@ -1,9 +1,7 @@
-import EmailAddressService from '../../../server/api/services/EmailAddressService'
-import UserAccountService from '../../../server/api/services/UserAccountService'
 import { doLogout } from '../../../operations/logic/authentication'
 import UserClientService from '../../../server/api/services/UserClientService'
 import { verifyPassword } from '../../../operations/data/userAccount/verifyPassword'
-import { verifyPasswordStrength } from '../../../operations/logic/verifyPasswordStrength'
+
 import { IOperationResponse } from '../../../foundation/models/IOperationResponse'
 import UserAccountRepository from '../../../server/data/repositories/UserAccountRepository'
 
@@ -25,9 +23,11 @@ import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequest
 import { authorizeClientResolver } from './authorizeClientResolver'
 import { sendEmailVerification } from '../../../activities/sendEmailVerification'
 import { verifyOtpToken } from '../../../activities/verifyOtpToken'
-import { createUserAccount } from '../../../operations/data/userAccount/createUserAccount'
+
 import { createUserAccountActivity } from '../../../activities/createUserAccountActivity'
-import { activateAccountActivity } from '../../../activities/activateAccountActivity'
+
+import { activateAccountResolver } from './activateAccountResolver'
+import { listUserAccountEmailAddresses } from '../../../activities/listUserAccountEmailAddresses'
 
 function isValidDate(d: any) {
   try {
@@ -248,19 +248,7 @@ export default {
       }
     },
     sendBackupCode: sendBackupCodeResolver,
-    activateAccount: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
-      const { emailAddress, token, password, confirmPassword } = args.data
-
-      if (password !== confirmPassword) {
-        return {
-          success: false,
-          message: 'Password does not match confirm password'
-        }
-      }
-
-      await activateAccountActivity(emailAddress, password, token, context)
-      return { success: true }
-    },
+    activateAccount: activateAccountResolver,
     logout: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
       try {
         await doLogout(context.req, context.res)
@@ -290,18 +278,11 @@ export default {
   },
   UserAccount: {
     emailAddresses: async (obj, args, context: IRequestContext) => {
-      return await EmailAddressService.getEmailAddresses(
-        { userAccountId_equals: obj.userAccountId },
-        { userContext: context.user }
-      )
+      return listUserAccountEmailAddresses(context)
     },
     emailAddress: async (obj, args, context: IRequestContext) => {
-      const result = await EmailAddressRepository.getEmailAddresses(
-        { primary_equals: true, userAccountId_equals: obj.userAccountId },
-        { userContext: context.user }
-      )
-      if (result.length > 0) {
-        return result[0].emailAddress
+      if (context.user) {
+        return context.user.emailAddress
       } else {
         return null
       }
