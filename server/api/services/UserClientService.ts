@@ -1,19 +1,16 @@
 import _ from 'lodash'
 
-import { IUserClientUniqueFilter } from '../../interfaces/graphql/IUserClient'
 import { IQueryOptions } from '../../../foundation/models/IQueryOptions'
 
 import UserClientRepository from '../../data/repositories/UserClientRepository'
 import { hasPermission } from '../../decorators/permissionDecorator'
 import { Permissions } from '../../../foundation/constants/permissions'
-import AuthorizationHelper from '../../utils/AuthorizationHelper'
+
 import ClientRepository from '../../data/repositories/ClientRepository'
 import { UserClient } from '../../../foundation/models/UserClient'
-import UserAccountRepository from '../../data/repositories/UserAccountRepository'
 
-import { WhereAttributeHash, default as Sequelize } from 'sequelize'
+import { default as Sequelize } from 'sequelize'
 import { IUserAccount } from '../../../foundation/types/types'
-import { ScopeMap } from '../../../foundation/constants/scopes'
 
 export interface IVerifyScopeResult {
   approvedScopes?: string[]
