@@ -2,15 +2,15 @@ import React from 'react'
 import { AdaptiveInputProps } from './index'
 import Cleave from 'cleave.js/react'
 
-export const MaskedInput: React.FC<AdaptiveInputProps> = ({ className, ...props }) => {
-  const { type, ...finalProps } = props
+export const MaskedInput: React.FC<AdaptiveInputProps> = (props) => {
   return (
     <Cleave
-      {...finalProps}
-      className={`form-control ${className || ''}`}
-      value={finalProps.value || ''}
+      {...props}
+      type={undefined}
+      className={`form-control ${props.className || ''}`}
+      value={props.value || ''}
       onChange={(e) => {
-        finalProps.onChange({ target: { name: finalProps.name, value: e.target.rawValue } })
+        props.onChange({ target: { name: props.name, value: e.target.rawValue } })
       }}
     />
   )

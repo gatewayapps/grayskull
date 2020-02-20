@@ -1,3 +1,4 @@
+import React from 'react'
 import { AdaptiveInputProps } from './index'
 
 export const CheckboxInput: React.FC<AdaptiveInputProps> = ({ className, ...props }) => {
