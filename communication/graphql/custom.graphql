@@ -62,8 +62,17 @@ input SecurityConfigurationInput {
   passwordMinimumLength: Int!
   multifactorRequired: Boolean!
   accessTokenExpirationSeconds: Int!
+  invitationExpirationSeconds: Int
+  maxLoginAttemptsPerMinute: Int
+  maxPasswordAge: Int
+  passwordHistoryCount: Int
+  passwordHistoryEnabled: Boolean
   allowSignup: Boolean!
   domainWhitelist: String!
+  allowSMSBackupCodes: Boolean
+  twilioApiKey: String
+  requireEmailAddressVerification: Boolean
+  smsFromNumber: String
 }
 
 input MailConfigurationInput {

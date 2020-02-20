@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	configuration.Mail.password = PASSWORD_PLACEHOLDER
 	configuration.Mail.sendgridApiKey = PASSWORD_PLACEHOLDER
+	configuration.Security.twilioApiKey = PASSWORD_PLACEHOLDER
 
 	const pinnedClients = context.user ? await getPinnedClientsActivity(context) : []
 
