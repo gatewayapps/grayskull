@@ -41,7 +41,7 @@ export async function sendEmailVerificationActivity(
   const verificationLink = new URL(
     configuration.Server.baseUrl!,
     `/verify?address=${encodeURIComponent(emailAddress)}&code=${verificationCode}`
-  )
+  ).href
 
   await sendTemplatedEmail(
     `verifyEmailTemplate`,
