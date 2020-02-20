@@ -7,7 +7,7 @@ import { clearValue } from '../operations/data/persistentCache/clearValue'
 import { getCacheKeyForEmailVerification } from '../operations/logic/getCacheKeyForEmailVerification'
 import { getEmailAddressByEmailAddress } from '../operations/data/emailAddress/getEmailAddressByEmailAddress'
 import { setUserAccountActive } from '../operations/data/userAccount/setUserAccountActive'
-import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
+
 import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
 
 export async function verifyEmailAddressActivity(
