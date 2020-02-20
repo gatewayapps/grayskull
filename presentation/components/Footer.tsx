@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
         </Button>
       </StyledFooterContent>
       <Modal isOpen={modal} toggle={toggle} size="lg">
-        <ModalHeader toggle={toggle}>Version {process.env.PRODUCT_VERSION} Release Notes</ModalHeader>
+        <ModalHeader toggle={toggle}>Version Release Notes</ModalHeader>
         <ModalBody>
           <div style={{ height: '50vh', width: '100%', overflow: 'auto', position: 'relative' }}>
             <iframe
