@@ -17,13 +17,14 @@ export interface IUploadedFile {
 export type OnUploadCompleteFn = (uploadedFile: IUploadedFile) => void
 
 export interface IImageDropAreaProps {
-  'aria-describedby': string
+  'aria-describedby'?: string
   className?: string
   disabled?: boolean
   onUploadComplete: OnUploadCompleteFn
   onUploadFailed?: (error: Error) => void
   style?: React.CSSProperties
   value: string
+  src?: string
 }
 
 const DropArea = styled.div`
