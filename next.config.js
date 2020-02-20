@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const withSass = require('next-dart-sass')
 const withCss = require('@zeit/next-css')
+const packageInfo = require('./package.json')
 
 module.exports = withSass(
   withCss({
@@ -29,7 +30,8 @@ module.exports = withSass(
       }
     },
     env: {
-      PROJECT_ROOT: __dirname
+      PROJECT_ROOT: __dirname,
+      PRODUCT_VERSION: packageInfo.version
     }
   })
 )
