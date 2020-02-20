@@ -1,32 +1,32 @@
 scalar Upload
 
 enum Role {
-  None
-  User
-  Admin
+	None
+	User
+	Admin
 }
 
 type UserProfile {
-  userAccountId: String!
-  firstName: String!
-  lastName: String!
-  displayName: String
-  gender: String
-  birthday: Date
-  profileImageUrl: String
-  permissions: Int!
-  lastPasswordChange: Date
-  emailAddress: String
-  otpEnabled: Boolean
+	userAccountId: String!
+	firstName: String!
+	lastName: String!
+	displayName: String
+	gender: String
+	birthday: Date
+	profileImageUrl: String
+	permissions: Int!
+	lastPasswordChange: Date
+	emailAddress: String
+	otpEnabled: Boolean
 }
 
 extend type UserAccount {
-  emailAddress: String
+	emailAddress: String
 }
 
 type BackupResponse {
-  success: Boolean!
-  downloadUrl: String
+	success: Boolean!
+	downloadUrl: String
 }
 
 directive @anonymous on QUERY | MUTATION | FIELD_DEFINITION
@@ -36,61 +36,61 @@ directive @auth(requires: Role) on OBJECT | FIELD_DEFINITION
 directive @authOrSelf(requires: Role) on OBJECT | FIELD_DEFINITION
 
 type Query {
-  isOobe: Boolean! @anonymous
-  scopes: [Scope!]!
-  configuration: Configuration!
-  securityConfiguration: SecurityConfiguration!
-  serverConfiguration: ServerConfiguration!
-  emailAddressAvailable(emailAddress: String!): Boolean @anonymous
-  myEmailAddresses: [EmailAddress!]!
-  me: UserProfile
-  backupConfiguration: BackupResponse
+	isOobe: Boolean! @anonymous
+	scopes: [Scope!]!
+	configuration: Configuration!
+	securityConfiguration: SecurityConfiguration!
+	serverConfiguration: ServerConfiguration!
+	emailAddressAvailable(emailAddress: String!): Boolean @anonymous
+	myEmailAddresses: [EmailAddress!]!
+	me: UserProfile
+	backupConfiguration: BackupResponse
 }
 
 type Mutation {
-  uploadFile(file: Upload!): UploadFileResponse
-  logout: OperationResponse @anonymous
-  saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
-  restoreConfiguration(file: Upload!): OperationResponse
-  sendVerificationCodeToPhoneNumber(phoneNumber: String!): OperationResponse
+	uploadFile(file: Upload!): UploadFileResponse
+	logout: OperationResponse @anonymous
+	saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
+	restoreConfiguration(file: Upload!): OperationResponse
+	sendVerificationCodeToPhoneNumber(phoneNumber: String!): OperationResponse
 }
 
 input SecurityConfigurationInput {
-  passwordRequiresLowercase: Boolean!
-  passwordRequiresUppercase: Boolean!
-  passwordRequiresNumber: Boolean!
-  passwordRequiresSymbol: Boolean!
-  passwordMinimumLength: Int!
-  multifactorRequired: Boolean!
-  accessTokenExpirationSeconds: Int!
-  invitationExpirationSeconds: Int
-  maxLoginAttemptsPerMinute: Int
-  maxPasswordAge: Int
-  passwordHistoryCount: Int
-  passwordHistoryEnabled: Boolean
-  allowSignup: Boolean!
-  domainWhitelist: String!
-  allowSMSBackupCodes: Boolean
-  twilioSID: String
-  twilioApiKey: String
-  requireEmailAddressVerification: Boolean
-  smsFromNumber: String
+	passwordRequiresLowercase: Boolean!
+	passwordRequiresUppercase: Boolean!
+	passwordRequiresNumber: Boolean!
+	passwordRequiresSymbol: Boolean!
+	passwordMinimumLength: Int!
+	multifactorRequired: Boolean!
+	accessTokenExpirationSeconds: Int!
+	invitationExpirationSeconds: Int
+	maxLoginAttemptsPerMinute: Int
+	maxPasswordAge: Int
+	passwordHistoryCount: Int
+	passwordHistoryEnabled: Boolean
+	allowSignup: Boolean!
+	domainWhitelist: String!
+	allowSMSBackupCodes: Boolean
+	twilioSID: String
+	twilioApiKey: String
+	requireEmailAddressVerification: Boolean
+	smsFromNumber: String
 }
 
 input MailConfigurationInput {
-  serverAddress: String!
-  username: String
-  password: String
-  port: Int!
-  fromAddress: String!
-  tlsSslRequired: Boolean!
-  sendgridApiKey: String
+	serverAddress: String!
+	username: String
+	password: String
+	port: Int!
+	fromAddress: String!
+	tlsSslRequired: Boolean!
+	sendgridApiKey: String
 }
 
 input ServerConfigurationInput {
-  baseUrl: String!
-  realmName: String!
-  realmLogo: String!
-  realmBackground: String!
-  realmFavicon: String
+	baseUrl: String!
+	realmName: String!
+	realmLogo: String!
+	realmBackground: String!
+	realmFavicon: String
 }
