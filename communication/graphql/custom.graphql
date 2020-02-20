@@ -52,6 +52,7 @@ type Mutation {
   logout: OperationResponse @anonymous
   saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
   restoreConfiguration(file: Upload!): OperationResponse
+  sendVerificationCodeToPhoneNumber(phoneNumber: String!): OperationResponse
 }
 
 input SecurityConfigurationInput {

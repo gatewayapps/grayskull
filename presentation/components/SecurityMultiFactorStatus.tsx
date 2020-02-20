@@ -4,6 +4,7 @@ import MutationButton from './MutationButton'
 import MultiFactorSetup from './MultiFactorSetup'
 import ResponsiveInput from './ResponsiveInput'
 import RequireConfiguration from './RequireConfiguration'
+import { AddBackupPhoneNumber } from './AddBackupPhoneNumber'
 
 const SET_OTP_SECRET = gql`
 	mutation SET_OTP_SECRET($otpSecret: String!, $password: String!) {
@@ -234,75 +235,84 @@ export default class SecurityMutifactorStatus extends React.Component<
 		)
 	}
 
-	renderDefaultFooter = () => {
+	renderDefaultFooter = (configuration) => {
 		return (
-			<RequireConfiguration>
-				{(configuration) => {
-					return (
-						<div className="btn-toolbar ml-auto">
-							{this.props.user.otpEnabled && !configuration.Security.multifactorRequired && (
-								<button
-									className="btn btn-danger mr-2"
-									onClick={() => {
-										this.setState({ promptForDisable: true })
-									}}>
-									<i className="fa fa-fw fa-skull-crossbones" /> Disable
-								</button>
-							)}
-							<button
-								className="btn btn-secondary"
-								onClick={() => {
-									if (this.props.user.otpEnabled) {
-										this.setState({ promptForChange: true })
-									} else {
-										this.setState({ changing: true })
-									}
-								}}>
-								<i className="fa fa-fw fa-wrench" /> Configure App
-							</button>
-						</div>
-					)
-				}}
-			</RequireConfiguration>
+			<div className="btn-toolbar ml-auto">
+				{this.props.user.otpEnabled && !configuration.Security.multifactorRequired && (
+					<button
+						className="btn btn-danger mr-2"
+						onClick={() => {
+							this.setState({ promptForDisable: true })
+						}}>
+						<i className="fa fa-fw fa-skull-crossbones" /> Disable
+					</button>
+				)}
+				<button
+					className="btn btn-secondary"
+					onClick={() => {
+						if (this.props.user.otpEnabled) {
+							this.setState({ promptForChange: true })
+						} else {
+							this.setState({ changing: true })
+						}
+					}}>
+					<i className="fa fa-fw fa-wrench" /> Configure App
+				</button>
+			</div>
 		)
 	}
 
 	render = () => {
-		let footer
-		let body
-
-		if (this.state.changing) {
-			footer = this.renderChangeFooter()
-			body = this.renderChangeForm()
-		}
-		if (this.state.promptForChange) {
-			footer = this.renderChangePromptFooter()
-			body = this.renderChangePrompt()
-		}
-		if (this.state.promptForDisable) {
-			footer = this.renderDisableFooter()
-			body = this.renderDisable()
-		}
-		if (!this.state.changing && !this.state.promptForChange && !this.state.promptForDisable) {
-			footer = this.renderDefaultFooter()
-			body = this.renderDefault()
-		}
-
 		return (
-			<div className="card">
-				<div className="card-body">
-					<h5 className="card-title">
-						Authenticator App
-						{this.props.user.otpEnabled ? (
-							<i className="ml-2 text-success fa fa-fw fa-shield-check" />
-						) : (
-							<i className="ml-2 text-danger fa fa-fw fa-exclamation-triangle" />
-						)}
-					</h5>
-					{body}
-				</div>
-				<div className="card-footer d-flex">{footer}</div>
-			</div>
+			<RequireConfiguration>
+				{(configuration) => (
+					<div>
+						{() => {
+							let footer
+							let body
+
+							if (this.state.changing) {
+								footer = this.renderChangeFooter()
+								body = this.renderChangeForm()
+							}
+							if (this.state.promptForChange) {
+								footer = this.renderChangePromptFooter()
+								body = this.renderChangePrompt()
+							}
+							if (this.state.promptForDisable) {
+								footer = this.renderDisableFooter()
+								body = this.renderDisable()
+							}
+							if (!this.state.changing && !this.state.promptForChange && !this.state.promptForDisable) {
+								footer = this.renderDefaultFooter(configuration)
+								body = this.renderDefault()
+							}
+							return (
+								<div className="card">
+									<div className="card-body">
+										<h5 className="card-title">
+											Authenticator App
+											{this.props.user.otpEnabled ? (
+												<i className="ml-2 text-success fa fa-fw fa-shield-check" />
+											) : (
+												<i className="ml-2 text-danger fa fa-fw fa-exclamation-triangle" />
+											)}
+										</h5>
+										{body}
+										{this.props.user.otpEnabled && configuration.Security.allowSMSBackupCodes && (
+											<div className="mt-4">
+												<h5>Add Backup Phone Number</h5>
+												<AddBackupPhoneNumber />
+											</div>
+										)}
+									</div>
+									<div className="card-footer d-flex">{footer}</div>
+								</div>
+							)
+						}}
+					</div>
+				)}
+			</RequireConfiguration>
 		)
 	}
 }

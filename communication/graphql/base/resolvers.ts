@@ -9,6 +9,7 @@ import { Stream } from 'stream'
 import { restoreConfigurationActivity } from '../../../activities/restoreConfigurationActivity'
 
 import { uploadFileResolver } from './uploadFileResolver'
+import { sendVerificationCodeToPhoneNumberResolver } from './sendVerificationCodeToPhoneNumberResolver'
 
 export default {
 	Upload: GraphQLUpload,
@@ -64,6 +65,7 @@ export default {
 	},
 	Mutation: {
 		uploadFile: uploadFileResolver,
+		sendVerificationCodeToPhoneNumber: sendVerificationCodeToPhoneNumberResolver,
 		restoreConfiguration: async (obj, args, context: IRequestContext) => {
 			try {
 				const { createReadStream } = await args.file

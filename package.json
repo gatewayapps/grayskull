@@ -193,6 +193,7 @@
     "styled-components": "^4.4.1",
     "tedious": "^6.6.5",
     "titatoggle": "^2.1.2",
+    "twilio": "^3.39.5",
     "ua-parser-js": "^0.7.21",
     "url-loader": "^1.1.2",
     "url-parse": "^1.4.4",
