@@ -6,6 +6,9 @@ export const SettingsKeys = {
 	MAIL_USER: 'MAIL_USER',
 	MAIL_FROM_ADDRESS: 'MAIL_FROM_ADDRESS',
 	MAIL_SENDGRID_API_KEY: 'MAIL_SENDGRID_API_KEY',
+	SECURITY_ALLOW_SMS_BACKUP_TOKENS: 'SECURITY_ALLOW_SMS_BACKUP_TOKENS',
+	SECURITY_TWILIO_API_KEY: 'SECURITY_TWILIO_API_KEY',
+	SECURITY_SMS_FROM_NUMBER: 'SECURITY_SMS_FROM_NUMBER',
 	SECURITY_PASSWORD_EXPIRES_DAYS: 'SECURITY_PASSWORD_EXPIRES_DAYS',
 	SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS: 'SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS',
 	SECURITY_ACTIVATION_EXPIRES_IN_MINUTES: 'SECURITY_ACTIVATION_EXPIRES_IN_MINUTES',
@@ -148,6 +151,27 @@ export default {
 			Key: SettingsKeys.SECURITY_MULTIFACTOR_REQUIRED,
 			Label: 'Require Multifactor Authentication',
 			Type: 'Boolean'
+		},
+		{
+			Default: true,
+			Description: 'Allow users to provide a phone number for backup multifactor codes',
+			Key: SettingsKeys.SECURITY_ALLOW_SMS_BACKUP_TOKENS,
+			Label: 'Allow SMS Backup Tokens',
+			Type: 'Boolean'
+		},
+		{
+			Default: '',
+			Description: 'Twilio API Key for sending SMS messages',
+			Key: SettingsKeys.SECURITY_TWILIO_API_KEY,
+			Label: 'Twilio API Key',
+			Type: 'String'
+		},
+		{
+			Default: '',
+			Description: 'Phone Number used to send SMS messages',
+			Key: SettingsKeys.SECURITY_SMS_FROM_NUMBER,
+			Label: 'Send From Phone Number',
+			Type: 'String'
 		},
 		{
 			Default: true,
