@@ -21,6 +21,8 @@ jobs:
         run: yarn eslint --quiet '*/**/*.{js,ts,tsx}'
       - name: Tests
         run: yarn test
+      - name: Update release notes
+        run: yarn update-release-notes
       - name: Compile
         run: yarn next build
       - name: Publish Docker
