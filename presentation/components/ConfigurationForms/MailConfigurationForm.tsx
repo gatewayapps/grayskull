@@ -1,7 +1,7 @@
 import React from 'react'
-import FormValidation, { FormValidationRule } from './FormValidation'
-import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import { IMailConfiguration } from '../../foundation/models/IMailConfiguration'
+import FormValidation, { FormValidationRule } from '../FormValidation'
+import ResponsiveValidatingInput from '../ResponsiveValidatingInput'
+import { IMailConfiguration } from '../../../foundation/models/IMailConfiguration'
 
 export interface IMailConfigurationFormProps {
 	data: IMailConfiguration

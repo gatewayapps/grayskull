@@ -1,7 +1,7 @@
 import React from 'react'
-import FormValidation, { FormValidationRule } from './FormValidation'
-import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import { ISecurityConfiguration } from '../../foundation/models/ISecurityConfiguration'
+import FormValidation, { FormValidationRule } from '../FormValidation'
+import ResponsiveValidatingInput from '../ResponsiveValidatingInput'
+import { ISecurityConfiguration } from '../../../foundation/models/ISecurityConfiguration'
 
 export interface ISecurityConfigurationFormProps {
 	data: ISecurityConfiguration
@@ -123,6 +123,38 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							checked={data.multifactorRequired}
 							onChange={(e) => handleChange(e, validate)}
 						/>
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Allow SMS Backup Codes"
+							name="allowSMSBackupCodes"
+							type="checkbox"
+							checked={data.allowSMSBackupCodes}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Twilio API Key"
+							disabled={!data.allowSMSBackupCodes}
+							name="twilioApiKey"
+							type="password"
+							value={data.twilioApiKey}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Send From Phone Number"
+							disabled={!data.allowSMSBackupCodes}
+							name="smsFromNumber"
+							type="phone"
+							options={{ phone: true, phoneCountry: 'US' }}
+							value={data.smsFromNumber}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+
 						<ResponsiveValidatingInput
 							labelColumnWidth={4}
 							validationErrors={validationErrors}

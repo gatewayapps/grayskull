@@ -6,7 +6,7 @@ import RequireConfiguration from '../../../presentation/components/RequireConfig
 import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import { Permissions } from '../../../foundation/constants/permissions'
 import { IConfiguration } from '../../../foundation/models/IConfiguration'
-import ServerConfigurationForm from '../../../presentation/components/ServerConfigurationForm'
+import ServerConfigurationForm from '../../../presentation/components/ConfigurationForms/ServerConfigurationForm'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import MutationButton from '../../../presentation/components/MutationButton'
 

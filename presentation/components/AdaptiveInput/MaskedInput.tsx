@@ -1,6 +1,7 @@
 import React from 'react'
 import { AdaptiveInputProps } from './index'
 import Cleave from 'cleave.js/react'
+import 'cleave.js/dist/addons/cleave-phone.i18n'
 
 export const MaskedInput: React.FC<AdaptiveInputProps> = (props) => {
 	return (

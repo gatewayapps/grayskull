@@ -1,7 +1,7 @@
 import React from 'react'
 import ServerConfigurationForm, {
 	IServerConfigurationFormProps
-} from '../../presentation/components/ServerConfigurationForm'
+} from '../../presentation/components/ConfigurationForms/ServerConfigurationForm'
 
 export interface OobeServerConfigurationProps extends IServerConfigurationFormProps {
 	stepIndex: number

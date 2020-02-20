@@ -6,6 +6,7 @@ import { TextAreaInput } from './TextAreaInput'
 import { DateInput } from './DateInput'
 import { CheckboxInput } from './CheckboxInput'
 import { SelectInput } from './SelectInput'
+import { PhoneInput } from './PhoneInput'
 
 export interface AdaptiveInputProps {
 	type: string
@@ -15,7 +16,7 @@ export interface AdaptiveInputProps {
 	name: string
 	readOnly?: boolean
 	placeholder?: string
-	options?: any[]
+	options?: any
 	allowCustom?: boolean
 }
 
@@ -35,7 +36,8 @@ const AdaptiveInput: React.FC<AdaptiveInputProps> = (props) => {
 			} else {
 				return <SelectInput {...props} />
 			}
-
+		case 'phone':
+			return <PhoneInput {...props} />
 		case 'photo':
 			return <PhotoInput {...props} />
 		case 'text':
