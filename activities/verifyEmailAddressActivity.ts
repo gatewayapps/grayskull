@@ -6,6 +6,9 @@ import { verifyEmailAddressVerificationCode } from '../operations/data/emailAddr
 import { clearValue } from '../operations/data/persistentCache/clearValue'
 import { getCacheKeyForEmailVerification } from '../operations/logic/getCacheKeyForEmailVerification'
 import { getEmailAddressByEmailAddress } from '../operations/data/emailAddress/getEmailAddressByEmailAddress'
+import { setUserAccountActive } from '../operations/data/userAccount/setUserAccountActive'
+
+import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
 
 export async function verifyEmailAddressActivity(
   emailAddress: string,
@@ -26,6 +29,15 @@ export async function verifyEmailAddressActivity(
 
   if (await verifyEmailAddressVerificationCode(emailAddress, verificationCode, context.dataContext)) {
     await setEmailAddressVerified(emailAddress, context.dataContext)
+    const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, false)
+    if (!userAccount) {
+      throw new GrayskullError(
+        GrayskullErrorCode.InvalidEmailAddress,
+        `No user account exists for email address ${emailAddress}`
+      )
+    }
+    await setUserAccountActive(userAccount.userAccountId, true, context.dataContext)
+
     const CACHE_KEY = getCacheKeyForEmailVerification(emailAddress)
     await clearValue(CACHE_KEY, context.dataContext)
   } else {
