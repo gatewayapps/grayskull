@@ -1,3 +1,4 @@
+import React from 'react'
 import { AdaptiveInputProps } from './index'
 import Cleave from 'cleave.js/react'
 

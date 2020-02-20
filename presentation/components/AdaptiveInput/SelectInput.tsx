@@ -1,3 +1,4 @@
+import React from 'react'
 import { AdaptiveInputProps } from './index'
 import { default as Select, Creatable } from 'react-select'
 

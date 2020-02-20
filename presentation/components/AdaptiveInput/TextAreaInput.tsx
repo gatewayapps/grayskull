@@ -1,3 +1,4 @@
+import React from 'react'
 import { AdaptiveInputProps } from './index'
 
 export const TextAreaInput: React.FC<AdaptiveInputProps> = ({ className, ...props }) => {

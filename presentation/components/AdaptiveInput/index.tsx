@@ -1,3 +1,4 @@
+import React from 'react'
 import { TextInput } from './TextInput'
 import { MaskedInput } from './MaskedInput'
 import { PhotoInput } from './PhotoInput'
