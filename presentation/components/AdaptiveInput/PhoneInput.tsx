@@ -4,6 +4,12 @@ import * as libphonenumber from 'google-libphonenumber'
 const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 
 export const PhoneInput: React.FC<AdaptiveInputProps> = ({ className, ...props }) => {
+  let parsedValue = props.value
+  let formattedValue = props.value
+  try {
+    parsedValue = phoneUtil.parse(props.value, 'US')
+    formattedValue = phoneUtil.format(parsedValue, libphonenumber.PhoneNumberFormat.INTERNATIONAL)
+  } catch {}
   return (
     <input
       className={`form-control ${className || ''}`}
@@ -12,7 +18,7 @@ export const PhoneInput: React.FC<AdaptiveInputProps> = ({ className, ...props }
         let parsedNumber = e.target.value
         try {
           const parsed = phoneUtil.parse(parsedNumber, 'US')
-          parsedNumber = phoneUtil.format(parsed, libphonenumber.PhoneNumberFormat.INTERNATIONAL)
+          parsedNumber = parsed.rawInput()
         } catch {}
 
         props.onChange({
@@ -22,7 +28,7 @@ export const PhoneInput: React.FC<AdaptiveInputProps> = ({ className, ...props }
           }
         })
       }}
-      value={props.value || undefined}
+      value={formattedValue || undefined}
     />
   )
 }
