@@ -15,6 +15,7 @@ export interface ISecurityConfiguration {
 	domainWhitelist?: string | null
 	allowSignup?: boolean | null
 	allowSMSBackupCodes?: boolean | null
+	twilioSID?: string | null
 	twilioApiKey?: string | null
 	smsFromNumber?: string | null
 }

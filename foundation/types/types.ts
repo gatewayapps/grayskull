@@ -87,6 +87,7 @@ export interface ISecurityConfiguration {
 	allowSignup?: boolean | null
 	allowSMSBackupCodes?: boolean | null
 	twilioApiKey?: string | null
+	twilioSID?: string | null
 	smsFromNumber?: string | null
 }
 

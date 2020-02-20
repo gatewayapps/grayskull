@@ -213,6 +213,14 @@ export default {
 							context.dataContext
 						)
 						if (!!data.Security.allowSMSBackupCodes) {
+							if (data.Security.twilioSID !== PASSWORD_PLACEHOLDER) {
+								await saveStringSetting(
+									SettingsKeys.SECURITY_TWILIO_SID,
+									encrypt(data.Security.twilioSID!),
+									'Security',
+									context.dataContext
+								)
+							}
 							if (data.Security.twilioApiKey !== PASSWORD_PLACEHOLDER) {
 								await saveStringSetting(
 									SettingsKeys.SECURITY_TWILIO_API_KEY,
@@ -229,6 +237,7 @@ export default {
 							)
 						} else {
 							await saveStringSetting(SettingsKeys.SECURITY_TWILIO_API_KEY, '', 'Security', context.dataContext)
+							await saveStringSetting(SettingsKeys.SECURITY_TWILIO_SID, '', 'Security', context.dataContext)
 							await saveStringSetting(SettingsKeys.SECURITY_SMS_FROM_NUMBER, '', 'Security', context.dataContext)
 						}
 					}

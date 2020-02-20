@@ -70,6 +70,7 @@ input SecurityConfigurationInput {
   allowSignup: Boolean!
   domainWhitelist: String!
   allowSMSBackupCodes: Boolean
+  twilioSID: String
   twilioApiKey: String
   requireEmailAddressVerification: Boolean
   smsFromNumber: String

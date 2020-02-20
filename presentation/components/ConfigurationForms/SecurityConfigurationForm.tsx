@@ -45,7 +45,16 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 				return !currentData.allowSMSBackupCodes || currentData.twilioApiKey.length > 0
 			},
 			true,
-			'If SMS Backups codes are allowed, you must provide a Twilio API Key',
+			'If SMS Backups codes are allowed, you must provide a Twilio Auth Token',
+			[data]
+		),
+		new FormValidationRule(
+			'twilioSID',
+			(val, currentData) => {
+				return !currentData.allowSMSBackupCodes || currentData.twilioSID.length > 0
+			},
+			true,
+			'If SMS Backups codes are allowed, you must provide a Twilio SID',
 			[data]
 		),
 		new FormValidationRule(
@@ -140,11 +149,20 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							checked={data.allowSMSBackupCodes}
 							onChange={(e) => handleChange(e, validate)}
 						/>
-
 						<ResponsiveValidatingInput
 							labelColumnWidth={4}
 							validationErrors={validationErrors}
-							label="Twilio API Key"
+							label="Twilio SID"
+							disabled={!data.allowSMSBackupCodes}
+							name="twilioSID"
+							type="password"
+							value={data.twilioSID}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Twilio Auth Token"
 							disabled={!data.allowSMSBackupCodes}
 							name="twilioApiKey"
 							type="password"

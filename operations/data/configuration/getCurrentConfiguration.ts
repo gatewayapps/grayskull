@@ -79,6 +79,7 @@ function buildSecurityConfigurationFromSettings(settings: ISetting[]): ISecurity
 		requireEmailAddressVerification: true,
 		allowSMSBackupCodes: getBooleanSetting(SettingsKeys.SECURITY_ALLOW_SMS_BACKUP_TOKENS, settings),
 		twilioApiKey: getStringSetting(SettingsKeys.SECURITY_TWILIO_API_KEY, settings, true),
+		twilioSID: getStringSetting(SettingsKeys.SECURITY_TWILIO_SID, settings, true),
 		smsFromNumber: getStringSetting(SettingsKeys.SECURITY_SMS_FROM_NUMBER, settings, false)
 	}
 }

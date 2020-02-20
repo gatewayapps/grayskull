@@ -8,6 +8,7 @@ export const SettingsKeys = {
 	MAIL_SENDGRID_API_KEY: 'MAIL_SENDGRID_API_KEY',
 	SECURITY_ALLOW_SMS_BACKUP_TOKENS: 'SECURITY_ALLOW_SMS_BACKUP_TOKENS',
 	SECURITY_TWILIO_API_KEY: 'SECURITY_TWILIO_API_KEY',
+	SECURITY_TWILIO_SID: 'SECURITY_TWILIO_SID',
 	SECURITY_SMS_FROM_NUMBER: 'SECURITY_SMS_FROM_NUMBER',
 	SECURITY_PASSWORD_EXPIRES_DAYS: 'SECURITY_PASSWORD_EXPIRES_DAYS',
 	SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS: 'SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS',
@@ -161,9 +162,16 @@ export default {
 		},
 		{
 			Default: '',
-			Description: 'Twilio API Key for sending SMS messages',
+			Description: 'Twilio SID for sending SMS messages',
+			Key: SettingsKeys.SECURITY_TWILIO_SID,
+			Label: 'Twilio SID',
+			Type: 'String'
+		},
+		{
+			Default: '',
+			Description: 'Twilio Auth Token for sending SMS messages',
 			Key: SettingsKeys.SECURITY_TWILIO_API_KEY,
-			Label: 'Twilio API Key',
+			Label: 'Twilio Auth Token',
 			Type: 'String'
 		},
 		{
