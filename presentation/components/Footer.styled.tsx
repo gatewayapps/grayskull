@@ -10,9 +10,10 @@ export const StyledFooter = styled.div`
 `
 
 export const StyledFooterContent = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 60%;
-  margin-right: -15px;
+  min-width: 60%;
+  margin-right: -18px;
 `
