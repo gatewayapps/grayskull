@@ -7,6 +7,7 @@ import RequireAuthentication from '../components/RequireAuthentication'
 import { RequirePermission } from '../components/RequirePermission'
 import Permissions from '../utils/permissions'
 import Header from '../components/Header'
+import { Footer } from '../components/Footer'
 export default class AuthenticatedRoute extends React.Component {
   static propTypes = {
     permission: PropTypes.number
@@ -23,7 +24,7 @@ export default class AuthenticatedRoute extends React.Component {
             <Header />
 
             <div style={{ flexGrow: 1 }}>{this.props.children}</div>
-            <div style={{ width: '100%', height: '400px', backgroundColor: '#eee' }} />
+            <Footer />
           </div>
         </RequirePermission>
       </RequireAuthentication>
