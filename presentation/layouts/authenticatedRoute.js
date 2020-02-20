@@ -19,9 +19,11 @@ export default class AuthenticatedRoute extends React.Component {
     return (
       <RequireAuthentication>
         <RequirePermission permission={this.props.permission}>
-          <div>
+          <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header />
-            {this.props.children}
+
+            <div style={{ flexGrow: 1 }}>{this.props.children}</div>
+            <div style={{ width: '100%', height: '400px', backgroundColor: '#eee' }} />
           </div>
         </RequirePermission>
       </RequireAuthentication>
