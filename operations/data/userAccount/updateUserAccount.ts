@@ -1,14 +1,16 @@
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { UserContext } from '../../../foundation/context/getUserContext'
 import { IUserAccount } from '../../../foundation/types/types'
+import { CacheContext } from '../../../foundation/context/getCacheContext'
 
 export async function updateUserAccount(
   userAccountId,
   userAccountDetails: IUserAccount,
   context: DataContext,
-  userContext: UserContext
+  userContext: UserContext,
+  cacheContext: CacheContext
 ) {
-  return await context.UserAccount.update(
+  const results = await context.UserAccount.update(
     {
       ...userAccountDetails,
       updatedAt: new Date(),
@@ -16,4 +18,7 @@ export async function updateUserAccount(
     },
     { where: { userAccountId }, validate: false }
   )
+  const cacheKey = `USER_${userAccountId}`
+  cacheContext.clearValue(cacheKey)
+  return results
 }
