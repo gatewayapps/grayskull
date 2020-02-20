@@ -6,6 +6,8 @@ import { Permissions } from '../foundation/constants/permissions'
 import { generateEmailAddressVerificationCode } from '../operations/data/emailAddress/generateEmailAddressVerificationCode'
 import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
 
+import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
+
 const INVITATION_EXPIRES_IN = 60 * 60 // 1 hour
 
 export async function sendEmailVerificationActivity(
@@ -33,8 +35,13 @@ export async function sendEmailVerificationActivity(
       `User ${user?.userAccountId} attempted to send verification email to ${emailAddress} which does not belong to them.`
     )
   }
-
+  const userAccount = await getUserAccount(emailRecord.userAccountId, dataContext, undefined, false)
   const verificationCode = await generateEmailAddressVerificationCode(emailAddress, INVITATION_EXPIRES_IN, dataContext)
+
+  const verificationLink = new URL(
+    configuration.Server.baseUrl!,
+    `/verify?address=${encodeURIComponent(emailAddress)}&code=${verificationCode}`
+  )
 
   await sendTemplatedEmail(
     `verifyEmailTemplate`,
@@ -42,10 +49,8 @@ export async function sendEmailVerificationActivity(
     'E-mail Address Verification',
     {
       realmName: configuration.Server.realmName,
-      user,
-      verificationLink: `${configuration.Server.baseUrl}/verify?address=${encodeURIComponent(
-        emailAddress
-      )}&code=${verificationCode}`
+      userAccount,
+      verificationLink
     },
     configuration
   )
