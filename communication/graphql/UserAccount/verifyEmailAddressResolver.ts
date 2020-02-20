@@ -5,6 +5,7 @@ import { verifyEmailAddressActivity } from '../../../activities/verifyEmailAddre
 export async function verifyEmailAddressResolver(obj, args, context: IRequestContext): Promise<IOperationResponse> {
   try {
     await verifyEmailAddressActivity(decodeURIComponent(args.data.emailAddress), args.data.code, context)
+
     return {
       success: true
     }
