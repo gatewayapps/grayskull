@@ -105,3 +105,13 @@ _Sample now.json_
 You will need to follow Zeit's instructions for configuring secrets in Now - https://zeit.co/docs/v2/serverless-functions/env-and-secrets
 
 Once you have your secrets configured and are authenticated with the now CLI, run node ./index.js and it will deploy the latest release of Grayskull.
+
+# Feature roadmap
+
+- SMS Backup codes
+- Refresh token management for signing out of devices
+- Webhooks for notifying user signup, login, profile updated
+- Full Oauth 2 support including all flows
+- SDK for embedded login/signup
+- React components
+- Themes
