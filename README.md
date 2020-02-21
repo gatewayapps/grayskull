@@ -76,7 +76,7 @@ services:
 
 #### Zeit Now
 
-We have a node script for deploying to Zeit's Now located at https://github.com/gatewayapps/grayskull-deployment
+We have a node script for deploying to Zeit's Now located at https://github.com/gatewayapps/grayskull-deployments
 
 Clone that repo and create a now.json file inside it.
 
