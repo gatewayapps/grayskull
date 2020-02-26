@@ -12,7 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   configuration.Mail.password = PASSWORD_PLACEHOLDER
   configuration.Mail.sendgridApiKey = PASSWORD_PLACEHOLDER
 
-  const pinnedClients = await getPinnedClientsActivity(context)
+  const pinnedClients = context.user ? await getPinnedClientsActivity(context) : []
 
   configuration.HeaderItems = pinnedClients
   const needsConfiguration = !configuration.Server?.baseUrl
