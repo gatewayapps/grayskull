@@ -21,6 +21,12 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-var-requires': 'off'
       }
+    },
+    {
+      files: ['**/*.spec.*'],
+      rules: {
+        '@typescript-eslint/no-var-requires': 'off'
+      }
     }
   ],
   parserOptions: {

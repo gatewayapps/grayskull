@@ -6,7 +6,7 @@ jest.mock('../../../activities/validateRedirectUriActivity', () => ({
   }
 }))
 import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequestResolver'
-import { default as validateRedirectUriActivity } from '../../../activities/validateRedirectUriActivity'
+const validateRedirectUriActivity = require('../../../activities/validateRedirectUriActivity')
 
 describe('verifyAuthorizationRequestResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {

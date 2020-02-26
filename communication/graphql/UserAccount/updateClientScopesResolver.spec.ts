@@ -2,7 +2,7 @@ jest.mock('../../../activities/updateScopesActivity', () => ({
   updateScopesActivity: () => 'test'
 }))
 import { updateClientScopesResolver } from './updateClientScopesResolver'
-import { default as updateScopesActivity } from '../../../activities/updateScopesActivity'
+const updateScopesActivity = require('../../../activities/updateScopesActivity')
 
 describe('verifyEmailAddressResolver', () => {
   it('should invoke the updateScopesActivity', async () => {
