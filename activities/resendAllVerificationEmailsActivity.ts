@@ -4,11 +4,11 @@ import { getUnverifiedPrimaryEmailAddresses } from '../operations/data/emailAddr
 import { sendEmailVerificationActivity } from './sendEmailVerificationActivity'
 
 export async function resendAllVerificationEmailsActivity(context: IRequestContext) {
-  ensureAdministrator(context)
-  const emailRecords = await getUnverifiedPrimaryEmailAddresses(context.dataContext)
-  await Promise.all(
-    emailRecords.map(async (e) => {
-      await sendEmailVerificationActivity(e.emailAddress, context)
-    })
-  )
+	ensureAdministrator(context)
+	const emailRecords = await getUnverifiedPrimaryEmailAddresses(context.dataContext)
+	await Promise.all(
+		emailRecords.map(async (e) => {
+			await sendEmailVerificationActivity(e.emailAddress, context)
+		})
+	)
 }

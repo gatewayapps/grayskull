@@ -4,34 +4,34 @@ const withCss = require('@zeit/next-css')
 const packageInfo = require('./package.json')
 
 module.exports = withSass(
-  withCss({
-    webpack(config) {
-      config.module.rules.push({
-        test: /\.(graphql|gql)$/,
-        exclude: /node_modules/,
-        loader: 'graphql-tag/loader'
-      })
-      config.module.rules.push({
-        test: /\.handlebars$/i,
-        use: 'raw-loader'
-      })
+	withCss({
+		webpack(config) {
+			config.module.rules.push({
+				test: /\.(graphql|gql)$/,
+				exclude: /node_modules/,
+				loader: 'graphql-tag/loader'
+			})
+			config.module.rules.push({
+				test: /\.handlebars$/i,
+				use: 'raw-loader'
+			})
 
-      config.plugins.push(new webpack.IgnorePlugin(/^pg-native$/))
+			config.plugins.push(new webpack.IgnorePlugin(/^pg-native$/))
 
-      return config
-    },
-    experimental: {
-      async rewrites() {
-        return [
-          { source: '/token', destination: '/api/token' },
-          { source: '/userinfo', destination: '/api/userinfo' },
-          { source: '/users/:userAccountId/userinfo', destination: '/api/users/:userAccountId/userinfo' }
-        ]
-      }
-    },
-    env: {
-      PROJECT_ROOT: __dirname,
-      PRODUCT_VERSION: packageInfo.version
-    }
-  })
+			return config
+		},
+		experimental: {
+			async rewrites() {
+				return [
+					{ source: '/token', destination: '/api/token' },
+					{ source: '/userinfo', destination: '/api/userinfo' },
+					{ source: '/users/:userAccountId/userinfo', destination: '/api/users/:userAccountId/userinfo' }
+				]
+			}
+		},
+		env: {
+			PROJECT_ROOT: __dirname,
+			PRODUCT_VERSION: packageInfo.version
+		}
+	})
 )

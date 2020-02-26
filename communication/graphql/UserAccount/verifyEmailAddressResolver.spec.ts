@@ -1,23 +1,23 @@
 jest.mock('../../../activities/verifyEmailAddressActivity', () => ({
-  verifyEmailAddressActivity: () => {
-    return {
-      userAccountId: 'abc'
-    }
-  }
+	verifyEmailAddressActivity: () => {
+		return {
+			userAccountId: 'abc'
+		}
+	}
 }))
 import { verifyEmailAddressResolver } from './verifyEmailAddressResolver'
 const verifyEmailAddressActivity = require('../../../activities/verifyEmailAddressActivity')
 
 describe('verifyEmailAddressResolver', () => {
-  it('should call the verifyEmailAddress activity', async () => {
-    const context: any = {}
-    const args: any = { data: { emailAddress: 'test@test.com', code: 'test' } }
-    const obj: any = {}
+	it('should call the verifyEmailAddress activity', async () => {
+		const context: any = {}
+		const args: any = { data: { emailAddress: 'test@test.com', code: 'test' } }
+		const obj: any = {}
 
-    const resolverSpy = jest.spyOn(verifyEmailAddressActivity, 'verifyEmailAddressActivity')
+		const resolverSpy = jest.spyOn(verifyEmailAddressActivity, 'verifyEmailAddressActivity')
 
-    await verifyEmailAddressResolver(obj, args, context)
+		await verifyEmailAddressResolver(obj, args, context)
 
-    expect(resolverSpy).toBeCalledTimes(1)
-  })
+		expect(resolverSpy).toBeCalledTimes(1)
+	})
 })

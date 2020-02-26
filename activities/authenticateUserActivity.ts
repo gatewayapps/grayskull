@@ -20,79 +20,79 @@ import { createSession } from '../operations/data/session/createSession'
 */
 
 export async function authenticateUserActivity(
-  emailAddress: string,
-  password: string,
-  context: IRequestContext,
-  otpToken?: string,
-  extendedSession = false
+	emailAddress: string,
+	password: string,
+	context: IRequestContext,
+	otpToken?: string,
+	extendedSession = false
 ) {
-  const emailRecord = await getEmailAddressByEmailAddress(emailAddress, context.dataContext)
-  if (!emailRecord) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `Attempted to sign in with email address ${emailAddress} which is not registered`
-    )
-  }
-  if (!emailRecord.verified) {
-    throw new GrayskullError(
-      GrayskullErrorCode.EmailNotVerified,
-      `Attempted to sign in with email address ${emailAddress} which is not verified`
-    )
-  }
-  if (!emailRecord.primary) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `Attempted to sign in with email address ${emailAddress} which is not a primary address`
-    )
-  }
-  const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, true)
-  if (!userAccount) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `No user account found associated with ${emailAddress}`
-    )
-  }
+	const emailRecord = await getEmailAddressByEmailAddress(emailAddress, context.dataContext)
+	if (!emailRecord) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`Attempted to sign in with email address ${emailAddress} which is not registered`
+		)
+	}
+	if (!emailRecord.verified) {
+		throw new GrayskullError(
+			GrayskullErrorCode.EmailNotVerified,
+			`Attempted to sign in with email address ${emailAddress} which is not verified`
+		)
+	}
+	if (!emailRecord.primary) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`Attempted to sign in with email address ${emailAddress} which is not a primary address`
+		)
+	}
+	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, true)
+	if (!userAccount) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`No user account found associated with ${emailAddress}`
+		)
+	}
 
-  const passwordMatch = await compare(password, userAccount.passwordHash)
-  if (!passwordMatch) {
-    throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `Password was not correct`)
-  }
+	const passwordMatch = await compare(password, userAccount.passwordHash)
+	if (!passwordMatch) {
+		throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `Password was not correct`)
+	}
 
-  if (context.configuration.Security.multifactorRequired && !userAccount.otpEnabled) {
-    throw new GrayskullError(
-      GrayskullErrorCode.MultifactorRequired,
-      `Multifactor authentication is required, but not configured for user ${userAccount.userAccountId}`
-    )
-  }
+	if (context.configuration.Security.multifactorRequired && !userAccount.otpEnabled) {
+		throw new GrayskullError(
+			GrayskullErrorCode.MultifactorRequired,
+			`Multifactor authentication is required, but not configured for user ${userAccount.userAccountId}`
+		)
+	}
 
-  if (userAccount.otpEnabled && userAccount.otpSecret) {
-    if (otpToken) {
-      const otpSecret = decrypt(userAccount.otpSecret)
-      if (!otpSecret) {
-        throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Failed to decrypt otp secret`)
-      } else {
-        if (
-          !otplib.authenticator.check(otpToken, otpSecret) &&
-          !(await verifyBackupMultifactorCode(emailAddress, otpToken, context.dataContext))
-        ) {
-          throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
-        }
-      }
-    } else {
-      throw new GrayskullError(GrayskullErrorCode.RequiresOTP, `Login requires OTP`)
-    }
+	if (userAccount.otpEnabled && userAccount.otpSecret) {
+		if (otpToken) {
+			const otpSecret = decrypt(userAccount.otpSecret)
+			if (!otpSecret) {
+				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Failed to decrypt otp secret`)
+			} else {
+				if (
+					!otplib.authenticator.check(otpToken, otpSecret) &&
+					!(await verifyBackupMultifactorCode(emailAddress, otpToken, context.dataContext))
+				) {
+					throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
+				}
+			}
+		} else {
+			throw new GrayskullError(GrayskullErrorCode.RequiresOTP, `Login requires OTP`)
+		}
 
-    await clearBackupMultifactorCode(emailAddress, context.dataContext)
-  }
+		await clearBackupMultifactorCode(emailAddress, context.dataContext)
+	}
 
-  const fingerprint = context.req.headers ? context.req.headers['x-fingerprint']?.toString() : ''
-  return await createSession(
-    {
-      fingerprint,
-      userAccountId: userAccount.userAccountId,
-      ipAddress: context.req.socket.remoteAddress
-    },
-    extendedSession,
-    context.dataContext
-  )
+	const fingerprint = context.req.headers ? context.req.headers['x-fingerprint']?.toString() : ''
+	return await createSession(
+		{
+			fingerprint,
+			userAccountId: userAccount.userAccountId,
+			ipAddress: context.req.socket.remoteAddress
+		},
+		extendedSession,
+		context.dataContext
+	)
 }

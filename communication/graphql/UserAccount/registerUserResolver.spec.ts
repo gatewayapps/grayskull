@@ -1,9 +1,9 @@
 jest.mock('../../../activities/registerUserActivity', () => ({
-  registerUserActivity: () => {
-    return {
-      userAccountId: 'abc'
-    }
-  }
+	registerUserActivity: () => {
+		return {
+			userAccountId: 'abc'
+		}
+	}
 }))
 
 import { registerUserResolver } from './registerUserResolver'
@@ -15,28 +15,28 @@ let dataContext: DataContext
 let cacheContext: CacheContext
 
 describe('registerUserResolver', () => {
-  beforeAll(async () => {
-    dataContext = await getInMemoryContext()
-    cacheContext = getCacheContext()
-  })
+	beforeAll(async () => {
+		dataContext = await getInMemoryContext()
+		cacheContext = getCacheContext()
+	})
 
-  it('should call the registerUserActivity', async () => {
-    const configuration: any = {}
+	it('should call the registerUserActivity', async () => {
+		const configuration: any = {}
 
-    const userContext: any = { permissions: 1 }
-    const registerUserSpy = jest.spyOn(registerUserActivity, 'registerUserActivity')
-    await registerUserResolver(
-      {},
-      { data: {} },
-      {
-        user: userContext,
-        res: {},
-        cacheContext,
-        configuration,
-        dataContext,
-        req: { socket: { remoteAddress: '1.1.1.1' }, headers: { 'x-fingerprint': 'test' } }
-      }
-    )
-    expect(registerUserSpy).toBeCalledTimes(1)
-  })
+		const userContext: any = { permissions: 1 }
+		const registerUserSpy = jest.spyOn(registerUserActivity, 'registerUserActivity')
+		await registerUserResolver(
+			{},
+			{ data: {} },
+			{
+				user: userContext,
+				res: {},
+				cacheContext,
+				configuration,
+				dataContext,
+				req: { socket: { remoteAddress: '1.1.1.1' }, headers: { 'x-fingerprint': 'test' } }
+			}
+		)
+		expect(registerUserSpy).toBeCalledTimes(1)
+	})
 })

@@ -11,75 +11,75 @@ import { restoreConfigurationActivity } from '../../../activities/restoreConfigu
 import { uploadFileResolver } from './uploadFileResolver'
 
 export default {
-  Upload: GraphQLUpload,
-  Role: {
-    None: Permissions.None,
-    User: Permissions.User,
-    Admin: Permissions.Admin
-  },
-  Date: new GraphQLScalarType({
-    name: 'Date',
-    description: 'Date custom scalar type',
-    parseValue(value) {
-      return new Date(value) // value from the client
-    },
-    serialize(value) {
-      return value.getTime() // value sent to the client
-    },
-    parseLiteral(ast) {
-      if (ast.kind === Kind.INT) {
-        return new Date(ast.value) // ast value is always in string format
-      }
-      return null
-    }
-  }),
-  Query: {
-    securityConfiguration: async (obj, args, context: IRequestContext) => {
-      const config = context.configuration
-      return {
-        multifactorRequired: config.Security.multifactorRequired,
-        passwordRequiresLowercase: config.Security.passwordRequiresLowercase,
-        passwordRequiresUppercase: config.Security.passwordRequiresUppercase,
-        passwordRequiresNumber: config.Security.passwordRequiresNumber,
-        passwordRequiresSymbol: config.Security.passwordRequiresSymbol,
-        passwordMinimumLength: config.Security.passwordMinimumLength,
-        allowSignup: config.Security.allowSignup
-      }
-    },
-    serverConfiguration: async (obj, args, context: IRequestContext) => {
-      const config = context.configuration
-      return config.Server
-    },
-    isOobe: async (obj, args, context: IRequestContext) => {
-      const isServerConfigured = !!context.configuration.Server.baseUrl
-      return !isServerConfigured
-    },
-    backupConfiguration: async (obj, args, context: IRequestContext) => {
-      const backupDownloadCode = await generateBackupCodeActivity(context)
-      return {
-        success: true,
-        downloadUrl: `/api/backup?code=${backupDownloadCode}`
-      }
-    }
-  },
-  Mutation: {
-    uploadFile: uploadFileResolver,
-    restoreConfiguration: async (obj, args, context: IRequestContext) => {
-      try {
-        const { createReadStream } = await args.file
-        const readStream: Stream = createReadStream()
+	Upload: GraphQLUpload,
+	Role: {
+		None: Permissions.None,
+		User: Permissions.User,
+		Admin: Permissions.Admin
+	},
+	Date: new GraphQLScalarType({
+		name: 'Date',
+		description: 'Date custom scalar type',
+		parseValue(value) {
+			return new Date(value) // value from the client
+		},
+		serialize(value) {
+			return value.getTime() // value sent to the client
+		},
+		parseLiteral(ast) {
+			if (ast.kind === Kind.INT) {
+				return new Date(ast.value) // ast value is always in string format
+			}
+			return null
+		}
+	}),
+	Query: {
+		securityConfiguration: async (obj, args, context: IRequestContext) => {
+			const config = context.configuration
+			return {
+				multifactorRequired: config.Security.multifactorRequired,
+				passwordRequiresLowercase: config.Security.passwordRequiresLowercase,
+				passwordRequiresUppercase: config.Security.passwordRequiresUppercase,
+				passwordRequiresNumber: config.Security.passwordRequiresNumber,
+				passwordRequiresSymbol: config.Security.passwordRequiresSymbol,
+				passwordMinimumLength: config.Security.passwordMinimumLength,
+				allowSignup: config.Security.allowSignup
+			}
+		},
+		serverConfiguration: async (obj, args, context: IRequestContext) => {
+			const config = context.configuration
+			return config.Server
+		},
+		isOobe: async (obj, args, context: IRequestContext) => {
+			const isServerConfigured = !!context.configuration.Server.baseUrl
+			return !isServerConfigured
+		},
+		backupConfiguration: async (obj, args, context: IRequestContext) => {
+			const backupDownloadCode = await generateBackupCodeActivity(context)
+			return {
+				success: true,
+				downloadUrl: `/api/backup?code=${backupDownloadCode}`
+			}
+		}
+	},
+	Mutation: {
+		uploadFile: uploadFileResolver,
+		restoreConfiguration: async (obj, args, context: IRequestContext) => {
+			try {
+				const { createReadStream } = await args.file
+				const readStream: Stream = createReadStream()
 
-        const contents = await streamToString(readStream)
-        await restoreConfigurationActivity(contents, context)
-        return { success: true }
-      } catch (err) {
-        console.error(err)
-        return {
-          success: false,
-          error: err.message,
-          message: err.message
-        }
-      }
-    }
-  }
+				const contents = await streamToString(readStream)
+				await restoreConfigurationActivity(contents, context)
+				return { success: true }
+			} catch (err) {
+				console.error(err)
+				return {
+					success: false,
+					error: err.message,
+					message: err.message
+				}
+			}
+		}
+	}
 }

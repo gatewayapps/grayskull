@@ -7,12 +7,12 @@ let dataContext: DataContext
 let cacheContext: CacheContext
 
 describe('getCurrentConfiguration', () => {
-  beforeAll(async () => {
-    dataContext = await getInMemoryContext()
-    cacheContext = await getCacheContext()
-  })
-  it('Should return a valid configuration', async () => {
-    const config = await getCurrentConfiguration(dataContext, cacheContext)
-    expect(config).toBeDefined()
-  })
+	beforeAll(async () => {
+		dataContext = await getInMemoryContext()
+		cacheContext = await getCacheContext()
+	})
+	it('Should return a valid configuration', async () => {
+		const config = await getCurrentConfiguration(dataContext, cacheContext)
+		expect(config).toBeDefined()
+	})
 })

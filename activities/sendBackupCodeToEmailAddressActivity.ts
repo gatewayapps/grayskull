@@ -8,30 +8,30 @@ import { generateBackupMultifactorCode } from '../operations/data/userAccount/ge
 import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
 
 export async function sendBackupCodeToEmailAddressActivity(emailAddress: string, context: IRequestContext) {
-  const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext, true)
-  if (!userAccount || !userAccount.otpEnabled || !userAccount.otpSecret) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `No MFA keys found associated with email address ${emailAddress}`
-    )
-  }
+	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext, true)
+	if (!userAccount || !userAccount.otpEnabled || !userAccount.otpSecret) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`No MFA keys found associated with email address ${emailAddress}`
+		)
+	}
 
-  const otpSecret = decrypt(userAccount.otpSecret)
-  if (!otpSecret) {
-    throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Failed to decrypt the OTP secret`)
-  }
+	const otpSecret = decrypt(userAccount.otpSecret)
+	if (!otpSecret) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Failed to decrypt the OTP secret`)
+	}
 
-  const backupCode = await generateBackupMultifactorCode(emailAddress, otpSecret, context.dataContext)
+	const backupCode = await generateBackupMultifactorCode(emailAddress, otpSecret, context.dataContext)
 
-  await sendTemplatedEmail(
-    'backupCodeTemplate',
-    emailAddress,
-    `${context.configuration.Server.realmName} Backup Code`,
-    {
-      realmName: context.configuration.Server.realmName,
-      userAccount,
-      backupCode
-    },
-    context.configuration
-  )
+	await sendTemplatedEmail(
+		'backupCodeTemplate',
+		emailAddress,
+		`${context.configuration.Server.realmName} Backup Code`,
+		{
+			realmName: context.configuration.Server.realmName,
+			userAccount,
+			backupCode
+		},
+		context.configuration
+	)
 }

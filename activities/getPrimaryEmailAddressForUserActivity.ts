@@ -3,11 +3,11 @@ import { ensureAuthenticated } from '../operations/logic/ensureAuthenticated'
 import { getPrimaryEmailAddress } from '../operations/data/emailAddress/getPrimaryEmailAddress'
 
 export async function getPrimaryEmailAddressForUserActivity(context: IRequestContext) {
-  ensureAuthenticated(context)
-  const emailAddressRecord = await getPrimaryEmailAddress(
-    context.user!.userAccountId,
-    context.dataContext,
-    context.cacheContext
-  )
-  return emailAddressRecord ? emailAddressRecord.emailAddress : null
+	ensureAuthenticated(context)
+	const emailAddressRecord = await getPrimaryEmailAddress(
+		context.user!.userAccountId,
+		context.dataContext,
+		context.cacheContext
+	)
+	return emailAddressRecord ? emailAddressRecord.emailAddress : null
 }

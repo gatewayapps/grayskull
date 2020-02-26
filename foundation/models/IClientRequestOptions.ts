@@ -3,7 +3,7 @@ import { UserContext } from '../context/getUserContext'
 import { IUserClient } from '../types/types'
 
 export interface IClientRequestOptions {
-  userAccount: UserContext
-  client: IUserClient
-  accessToken: IAccessToken
+	userAccount: UserContext
+	client: IUserClient
+	accessToken: IAccessToken
 }
