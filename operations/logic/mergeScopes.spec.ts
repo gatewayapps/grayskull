@@ -1,4 +1,4 @@
-import { mergeScopes } from "./mergeScopes"
+import { mergeScopes } from './mergeScopes'
 
 describe('mergeScopes', () => {
   it('Should correctly merge allowed scopes', () => {
@@ -19,7 +19,6 @@ describe('mergeScopes', () => {
     expect(result.denied).toHaveLength(2)
     expect(result.denied[0]).toEqual('test')
     expect(result.denied[1]).toEqual('test2')
-
   })
   it('Should remove scopes from denied that are in new allowed', () => {
     const result = mergeScopes([], ['test'], ['test'], [])

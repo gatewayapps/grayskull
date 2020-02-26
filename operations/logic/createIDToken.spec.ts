@@ -1,10 +1,8 @@
-import { createIDToken } from "./createIDToken"
+import { createIDToken } from './createIDToken'
 import jwt from 'jsonwebtoken'
 
 describe('createIDToken', () => {
-
   it('should correcetly return an IDToken', async () => {
-
     const userContext: any = {
       userAccountId: 'abc',
       createdAt: new Date(),

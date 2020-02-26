@@ -4,7 +4,7 @@ import { ensureAuthenticated } from '../operations/logic/ensureAuthenticated'
 
 import { createUserClient } from '../operations/data/userClient/createUserClient'
 import { updateUserClient } from '../operations/data/userClient/updateUserClient'
-import _ from 'lodash'
+
 import { mergeScopes } from '../operations/logic/mergeScopes'
 
 export async function updateScopesActivity(
@@ -25,13 +25,6 @@ export async function updateScopesActivity(
 
     const { allowed, denied } = mergeScopes(prevAllowedScopes, allowedScopes, prevDeniedScopes, deniedScopes)
 
-
-    await updateUserClient(
-      userClient.userClientId,
-      userClient.userAccountId,
-      allowed,
-      denied,
-      context.dataContext
-    )
+    await updateUserClient(userClient.userClientId, userClient.userAccountId, allowed, denied, context.dataContext)
   }
 }
