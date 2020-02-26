@@ -6,7 +6,7 @@ jest.mock('../../../activities/authenticateUserActivity', () => ({
   }
 }))
 import { loginResolver } from './loginResolver'
-import { default as authenticateUserActivity } from '../../../activities/authenticateUserActivity'
+const authenticateUserActivity = require('../../../activities/authenticateUserActivity')
 
 describe('loginResolver', () => {
   it('should call the authenticateUser activity', async () => {

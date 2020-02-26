@@ -2,7 +2,7 @@ jest.mock('../../../activities/generateOTPSecretActivity', () => ({
   generateOtpSecretActivity: () => 'test'
 }))
 import { generateMfaKeyResolver } from './generateMfaKeyResolver'
-import { default as generateOTPSecretActivity } from '../../../activities/generateOTPSecretActivity'
+const generateOTPSecretActivity = require('../../../activities/generateOTPSecretActivity')
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {

@@ -6,7 +6,7 @@ jest.mock('../../../activities/sendBackupCodeToEmailAddressActivity', () => ({
   }
 }))
 import { sendBackupCodeResolver } from './sendBackupCodeResolver'
-import { default as sendBackupCodeToEmailAddressActivity } from '../../../activities/sendBackupCodeToEmailAddressActivity'
+const sendBackupCodeToEmailAddressActivity = require('../../../activities/sendBackupCodeToEmailAddressActivity')
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {
