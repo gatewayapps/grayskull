@@ -16,19 +16,19 @@ import scopeResolver from './Scope/resolvers'
 import userAccountResolver from './UserAccount/resolvers'
 
 const resolvers = mergeResolvers([
-  baseResolver as any,
-  clientResolver as any,
-  configurationResolver as any,
-  emailResolver as any,
-  scopeResolver as any,
-  userAccountResolver as any
+	baseResolver as any,
+	clientResolver as any,
+	configurationResolver as any,
+	emailResolver as any,
+	scopeResolver as any,
+	userAccountResolver as any
 ])
 
 export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-  schemaDirectives: {
-    auth: AuthorizationDirective,
-    anonymous: AnonymousDirective
-  }
+	typeDefs,
+	resolvers,
+	schemaDirectives: {
+		auth: AuthorizationDirective,
+		anonymous: AnonymousDirective
+	}
 })

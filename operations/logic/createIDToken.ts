@@ -10,40 +10,40 @@ import jwt from 'jsonwebtoken'
 import { IIDToken, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
 
 export async function createIDToken(
-  userContext: UserContext,
-  client: Client,
-  userClient: UserClient,
-  nonce: string | undefined,
-  accessToken: string | undefined,
+	userContext: UserContext,
+	client: Client,
+	userClient: UserClient,
+	nonce: string | undefined,
+	accessToken: string | undefined,
 
-  configuration: IConfiguration
+	configuration: IConfiguration
 ): Promise<string> {
-  const security = configuration.Security!
-  const serverConfig = configuration.Server!
+	const security = configuration.Security!
+	const serverConfig = configuration.Server!
 
-  const profile = getUserProfileForClient(userContext, userClient)
-  let at_hash: string | undefined = undefined
-  if (accessToken) {
-    const hmac = createHmac('sha256', client.secret)
-    const digest = hmac.update(accessToken).digest()
+	const profile = getUserProfileForClient(userContext, userClient)
+	let at_hash: string | undefined = undefined
+	if (accessToken) {
+		const hmac = createHmac('sha256', client.secret)
+		const digest = hmac.update(accessToken).digest()
 
-    const finalBytes = digest.slice(0, 15)
-    at_hash = finalBytes.toString('base64')
-  }
+		const finalBytes = digest.slice(0, 15)
+		at_hash = finalBytes.toString('base64')
+	}
 
-  const tokenBase: IIDToken = {
-    iat: moment().unix(),
-    exp: moment()
-      .add(security.accessTokenExpirationSeconds || 300, 'seconds')
-      .unix(),
-    aud: client.client_id,
-    sub: profile.sub,
-    at_hash: at_hash,
-    iss: serverConfig.baseUrl!,
-    nonce: nonce
-  }
+	const tokenBase: IIDToken = {
+		iat: moment().unix(),
+		exp: moment()
+			.add(security.accessTokenExpirationSeconds || 300, 'seconds')
+			.unix(),
+		aud: client.client_id,
+		sub: profile.sub,
+		at_hash: at_hash,
+		iss: serverConfig.baseUrl!,
+		nonce: nonce
+	}
 
-  const result: IIDToken & IProfileClaim & IEmailClaim = Object.assign(tokenBase, profile)
+	const result: IIDToken & IProfileClaim & IEmailClaim = Object.assign(tokenBase, profile)
 
-  return jwt.sign(result, client.secret)
+	return jwt.sign(result, client.secret)
 }

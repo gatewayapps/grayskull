@@ -1,27 +1,28 @@
 jest.mock('../../../activities/uploadFileActivity', () => ({
-  uploadFileActivity: () => true
+	uploadFileActivity: () => true
 }))
 import { uploadFileResolver } from './uploadFileResolver'
-import { default as uploadFileActivity } from '../../../activities/uploadFileActivity'
+
+const uploadFileActivity = require('../../../activities/uploadFileActivity')
 
 describe('verifyEmailAddressResolver', () => {
-  it('should call the verifyEmailAddress activity', async () => {
-    const args: any = {
-      file: new Promise((resolve) => {
-        resolve({
-          createReadStream: function() {
-            return true
-          },
-          fileName: '',
-          mimeType: ''
-        })
-      })
-    }
+	it('should call the verifyEmailAddress activity', async () => {
+		const args: any = {
+			file: new Promise((resolve) => {
+				resolve({
+					createReadStream: function() {
+						return true
+					},
+					fileName: '',
+					mimeType: ''
+				})
+			})
+		}
 
-    const obj: any = {}
-    const resolverSpy = jest.spyOn(uploadFileActivity, 'uploadFileActivity')
-    await uploadFileResolver(obj, args)
+		const obj: any = {}
+		const resolverSpy = jest.spyOn(uploadFileActivity, 'uploadFileActivity')
+		await uploadFileResolver(obj, args)
 
-    expect(resolverSpy).toBeCalledTimes(1)
-  })
+		expect(resolverSpy).toBeCalledTimes(1)
+	})
 })

@@ -13,34 +13,34 @@ import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplat
  */
 
 export async function sendResetPasswordEmailActivity(emailAddress: string, context: IRequestContext) {
-  const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext)
-  if (!userAccount) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `Attempted to reset the password for ${emailAddress}, which does not exist`
-    )
-  } else {
-    const token = randomBytes(32).toString('hex')
-    const cacheKey = `RESET_PASSWORD:${emailAddress}`
-    const cachedValue = `${userAccount.userAccountId}:${token}`
-    const cacheTTL = 60 * 60 // 1 Hour
+	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext)
+	if (!userAccount) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`Attempted to reset the password for ${emailAddress}, which does not exist`
+		)
+	} else {
+		const token = randomBytes(32).toString('hex')
+		const cacheKey = `RESET_PASSWORD:${emailAddress}`
+		const cachedValue = `${userAccount.userAccountId}:${token}`
+		const cacheTTL = 60 * 60 // 1 Hour
 
-    await cacheValue(cacheKey, cachedValue, cacheTTL, context.dataContext)
+		await cacheValue(cacheKey, cachedValue, cacheTTL, context.dataContext)
 
-    const resetPasswordLink = new URL(
-      context.configuration.Server.baseUrl!,
-      `/changePassword?emailAddress=${encodeURIComponent(emailAddress)}&token=${token}`
-    ).href
-    await sendTemplatedEmail(
-      'resetPasswordTemplate',
-      emailAddress,
-      `${context.configuration.Server.realmName} Password Reset`,
-      {
-        resetLink: resetPasswordLink,
-        realmName: context.configuration.Server.realmName,
-        user: userAccount
-      },
-      context.configuration
-    )
-  }
+		const resetPasswordLink = new URL(
+			context.configuration.Server.baseUrl!,
+			`/changePassword?emailAddress=${encodeURIComponent(emailAddress)}&token=${token}`
+		).href
+		await sendTemplatedEmail(
+			'resetPasswordTemplate',
+			emailAddress,
+			`${context.configuration.Server.realmName} Password Reset`,
+			{
+				resetLink: resetPasswordLink,
+				realmName: context.configuration.Server.realmName,
+				user: userAccount
+			},
+			context.configuration
+		)
+	}
 }

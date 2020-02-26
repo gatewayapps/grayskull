@@ -11,39 +11,39 @@ import { setUserAccountActive } from '../operations/data/userAccount/setUserAcco
 import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
 
 export async function verifyEmailAddressActivity(
-  emailAddress: string,
-  verificationCode: string,
-  context: IRequestContext
+	emailAddress: string,
+	verificationCode: string,
+	context: IRequestContext
 ) {
-  const emailAddressRecord = await getEmailAddressByEmailAddress(emailAddress, context.dataContext)
-  if (!emailAddressRecord) {
-    throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `${emailAddress} is not a valid email address`)
-  }
+	const emailAddressRecord = await getEmailAddressByEmailAddress(emailAddress, context.dataContext)
+	if (!emailAddressRecord) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `${emailAddress} is not a valid email address`)
+	}
 
-  if (context.user && emailAddressRecord.userAccountId !== context.user.userAccountId) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `${emailAddress} is not registered for your account`
-    )
-  }
+	if (context.user && emailAddressRecord.userAccountId !== context.user.userAccountId) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`${emailAddress} is not registered for your account`
+		)
+	}
 
-  if (await verifyEmailAddressVerificationCode(emailAddress, verificationCode, context.dataContext)) {
-    await setEmailAddressVerified(emailAddress, context.dataContext)
-    const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, false)
-    if (!userAccount) {
-      throw new GrayskullError(
-        GrayskullErrorCode.InvalidEmailAddress,
-        `No user account exists for email address ${emailAddress}`
-      )
-    }
-    await setUserAccountActive(userAccount.userAccountId, true, context.dataContext)
+	if (await verifyEmailAddressVerificationCode(emailAddress, verificationCode, context.dataContext)) {
+		await setEmailAddressVerified(emailAddress, context.dataContext)
+		const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, false)
+		if (!userAccount) {
+			throw new GrayskullError(
+				GrayskullErrorCode.InvalidEmailAddress,
+				`No user account exists for email address ${emailAddress}`
+			)
+		}
+		await setUserAccountActive(userAccount.userAccountId, true, context.dataContext)
 
-    const CACHE_KEY = getCacheKeyForEmailVerification(emailAddress)
-    await clearValue(CACHE_KEY, context.dataContext)
-  } else {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailVerificationCode,
-      `Failed to verify email address ${emailAddress} with ${verificationCode}`
-    )
-  }
+		const CACHE_KEY = getCacheKeyForEmailVerification(emailAddress)
+		await clearValue(CACHE_KEY, context.dataContext)
+	} else {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailVerificationCode,
+			`Failed to verify email address ${emailAddress} with ${verificationCode}`
+		)
+	}
 }

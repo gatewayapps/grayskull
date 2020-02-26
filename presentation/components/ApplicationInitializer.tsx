@@ -9,63 +9,63 @@ import { IConfiguration } from '../../foundation/models/IConfiguration'
 import ActivityMessageContainerComponent from './ActivityMessageContainer'
 
 const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (props) => {
-  const { response, isLoading, error, refetch } = useFetch(`/api/initialize`, { method: 'GET' })
+	const { response, isLoading, error, refetch } = useFetch(`/api/initialize`, { method: 'GET' })
 
-  let redirectUri = ''
-  let content: ReactNode = props.children
+	let redirectUri = ''
+	let content: ReactNode = props.children
 
-  if (error) {
-    content = (
-      <ActivityMessageContainerComponent>
-        <div className="alert alert-danger">error.message</div>
-      </ActivityMessageContainerComponent>
-    )
-  }
-  if (isLoading) {
-    content = (
-      <ActivityMessageContainerComponent>
-        <LoadingIndicator message="Loading..." />
-      </ActivityMessageContainerComponent>
-    )
-  }
+	if (error) {
+		content = (
+			<ActivityMessageContainerComponent>
+				<div className="alert alert-danger">error.message</div>
+			</ActivityMessageContainerComponent>
+		)
+	}
+	if (isLoading) {
+		content = (
+			<ActivityMessageContainerComponent>
+				<LoadingIndicator message="Loading..." />
+			</ActivityMessageContainerComponent>
+		)
+	}
 
-  if (response) {
-    if (
-      response.user &&
-      (window.location.pathname === '/login' || window.location.pathname === '/' || window.location.pathname === '')
-    ) {
-      redirectUri = '/personal-info'
-    }
-    if (response.needsConfiguration && window.location.pathname !== '/oobe') {
-      redirectUri = '/oobe'
-    }
-    if (!response.needsConfiguration && window.location.pathname.toLowerCase() === '/oobe') {
-      redirectUri = '/'
-    }
-    if (response.needsAdmin && !response.needsConfiguration && window.location.pathname !== '/register') {
-      redirectUri = '/register'
-    }
-  }
+	if (response) {
+		if (
+			response.user &&
+			(window.location.pathname === '/login' || window.location.pathname === '/' || window.location.pathname === '')
+		) {
+			redirectUri = '/personal-info'
+		}
+		if (response.needsConfiguration && window.location.pathname !== '/oobe') {
+			redirectUri = '/oobe'
+		}
+		if (!response.needsConfiguration && window.location.pathname.toLowerCase() === '/oobe') {
+			redirectUri = '/'
+		}
+		if (response.needsAdmin && !response.needsConfiguration && window.location.pathname !== '/register') {
+			redirectUri = '/register'
+		}
+	}
 
-  if (redirectUri) {
-    content = (
-      <ActivityMessageContainerComponent>
-        <LoadingIndicator message="Redirecting..." />
-      </ActivityMessageContainerComponent>
-    )
+	if (redirectUri) {
+		content = (
+			<ActivityMessageContainerComponent>
+				<LoadingIndicator message="Redirecting..." />
+			</ActivityMessageContainerComponent>
+		)
 
-    Router.push(redirectUri)
-  }
+		Router.push(redirectUri)
+	}
 
-  return (
-    <div>
-      <ConfigurationContext.Provider value={response ? response.configuration : props.configuration}>
-        <UserContext.Provider value={{ user: response?.user, refresh: refetch, hasInitialized: true }}>
-          {content}
-        </UserContext.Provider>
-      </ConfigurationContext.Provider>
-    </div>
-  )
+	return (
+		<div>
+			<ConfigurationContext.Provider value={response ? response.configuration : props.configuration}>
+				<UserContext.Provider value={{ user: response?.user, refresh: refetch, hasInitialized: true }}>
+					{content}
+				</UserContext.Provider>
+			</ConfigurationContext.Provider>
+		</div>
+	)
 }
 
 export default ApplicationInitializer

@@ -13,59 +13,59 @@ import { updateRefreshTokenActiveAt } from '../operations/data/refreshToken/refr
 import { IAccessTokenResponse } from '../foundation/types/tokens'
 
 export async function getTokensFromRefreshTokenActivity(
-  clientId: string,
-  clientSecret: string,
-  refreshToken: string,
-  context: IRequestContext
+	clientId: string,
+	clientSecret: string,
+	refreshToken: string,
+	context: IRequestContext
 ): Promise<IAccessTokenResponse> {
-  let id_token: string | undefined = undefined
-  if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
-    throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
-  }
+	let id_token: string | undefined = undefined
+	if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
+	}
 
-  const client = await getClient(clientId, context.dataContext, true)
-  if (!client) {
-    throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Unable to find client ${clientId}`)
-  }
+	const client = await getClient(clientId, context.dataContext, true)
+	if (!client) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Unable to find client ${clientId}`)
+	}
 
-  const finalRefreshToken = await getRefreshTokenFromRawToken(refreshToken, client, context.dataContext)
-  if (!finalRefreshToken) {
-    throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Invalid refresh token ${refreshToken}`)
-  }
+	const finalRefreshToken = await getRefreshTokenFromRawToken(refreshToken, client, context.dataContext)
+	if (!finalRefreshToken) {
+		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Invalid refresh token ${refreshToken}`)
+	}
 
-  const userClient = await getUserClientByUserClientId(finalRefreshToken.userClientId, context.dataContext)
-  if (!userClient) {
-    throw new GrayskullError(
-      GrayskullErrorCode.NotAuthorized,
-      `UserClient does not exist: ${finalRefreshToken.userClientId}`
-    )
-  }
+	const userClient = await getUserClientByUserClientId(finalRefreshToken.userClientId, context.dataContext)
+	if (!userClient) {
+		throw new GrayskullError(
+			GrayskullErrorCode.NotAuthorized,
+			`UserClient does not exist: ${finalRefreshToken.userClientId}`
+		)
+	}
 
-  const userContext = await createUserContextForUserId(
-    userClient.userAccountId,
-    context.dataContext,
-    context.cacheContext,
-    context.configuration
-  )
-  if (!userContext) {
-    throw new GrayskullError(
-      GrayskullErrorCode.NotAuthorized,
-      `Unable to build user context for ${userClient.userAccountId}`
-    )
-  }
+	const userContext = await createUserContextForUserId(
+		userClient.userAccountId,
+		context.dataContext,
+		context.cacheContext,
+		context.configuration
+	)
+	if (!userContext) {
+		throw new GrayskullError(
+			GrayskullErrorCode.NotAuthorized,
+			`Unable to build user context for ${userClient.userAccountId}`
+		)
+	}
 
-  if (userClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-    id_token = await createIDToken(userContext, client, userClient, undefined, undefined, context.configuration)
-  }
+	if (userClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
+		id_token = await createIDToken(userContext, client, userClient, undefined, undefined, context.configuration)
+	}
 
-  const access_token = await createAccessToken(client, userClient, finalRefreshToken, context.configuration)
-  await updateRefreshTokenActiveAt(refreshToken, client, context.dataContext)
+	const access_token = await createAccessToken(client, userClient, finalRefreshToken, context.configuration)
+	await updateRefreshTokenActiveAt(refreshToken, client, context.dataContext)
 
-  return {
-    access_token,
-    id_token,
-    expires_in: context.configuration.Security.accessTokenExpirationSeconds || 300,
-    refresh_token: finalRefreshToken ? finalRefreshToken.token : undefined,
-    token_type: 'Bearer'
-  }
+	return {
+		access_token,
+		id_token,
+		expires_in: context.configuration.Security.accessTokenExpirationSeconds || 300,
+		refresh_token: finalRefreshToken ? finalRefreshToken.token : undefined,
+		token_type: 'Bearer'
+	}
 }

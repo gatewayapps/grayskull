@@ -5,38 +5,36 @@ import { prepareContext } from '../../foundation/context/prepareContext'
 import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const context = await prepareContext(req, res)
+	const context = await prepareContext(req, res)
 
-  const configuration = context.configuration
+	const configuration = context.configuration
 
-  configuration.Mail.password = PASSWORD_PLACEHOLDER
-  configuration.Mail.sendgridApiKey = PASSWORD_PLACEHOLDER
+	configuration.Mail.password = PASSWORD_PLACEHOLDER
+	configuration.Mail.sendgridApiKey = PASSWORD_PLACEHOLDER
 
-  const pinnedClients = await getPinnedClientsActivity(context)
+	const pinnedClients = context.user ? await getPinnedClientsActivity(context) : []
 
-  configuration.HeaderItems = pinnedClients
-  const needsConfiguration = !configuration.Server?.baseUrl
+	configuration.HeaderItems = pinnedClients
+	const needsConfiguration = !configuration.Server?.baseUrl
 
-  const needsAdmin = (await countUserAccounts(context.dataContext)) === 0
+	const needsAdmin = (await countUserAccounts(context.dataContext)) === 0
 
-  res.json({
-    configuration,
-    needsConfiguration,
-    needsAdmin,
-    user: context.user
-      ? {
-          userAccountId: context.user.userAccountId,
-          firstName: context.user.firstName,
-          lastName: context.user.lastName,
-          gender: context.user.gender,
-          birthday: context.user.birthday,
-          displayName: context.user.displayName,
-          lastPasswordChange: context.user.lastPasswordChange,
-          profileImageUrl: context.user.profileImageUrl,
-          emailAddress: context.user.emailAddress,
-          permissions: context.user.permissions,
-          otpEnabled: context.user.otpEnabled
-        }
-      : undefined
-  })
+	res.json({
+		configuration,
+		needsConfiguration,
+		needsAdmin,
+		user: context.user ?? {
+			userAccountId: context.user.userAccountId,
+			firstName: context.user.firstName,
+			lastName: context.user.lastName,
+			gender: context.user.gender,
+			birthday: context.user.birthday,
+			displayName: context.user.displayName,
+			lastPasswordChange: context.user.lastPasswordChange,
+			profileImageUrl: context.user.profileImageUrl,
+			emailAddress: context.user.emailAddress,
+			permissions: context.user.permissions,
+			otpEnabled: context.user.otpEnabled
+		}
+	})
 }

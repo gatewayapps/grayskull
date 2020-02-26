@@ -4,11 +4,11 @@ import { getInMemoryContext } from '../../../foundation/context/getDataContext.s
 let dataContext: DataContext
 
 describe('generateBackupMultifactorCode', () => {
-  beforeAll(async () => {
-    dataContext = await getInMemoryContext()
-  })
-  it('should return a code', async () => {
-    const code = await generateBackupMultifactorCode('test@test.com', 'abc123', dataContext)
-    expect(code).toBeDefined()
-  })
+	beforeAll(async () => {
+		dataContext = await getInMemoryContext()
+	})
+	it('should return a code', async () => {
+		const code = await generateBackupMultifactorCode('test@test.com', 'abc123', dataContext)
+		expect(code).toBeDefined()
+	})
 })

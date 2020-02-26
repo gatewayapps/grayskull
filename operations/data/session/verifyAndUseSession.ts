@@ -14,44 +14,44 @@ import { SESSION_EXPIRATION_SECONDS } from './createSession'
  * @param cacheContext
  */
 export async function verifyAndUseSession(
-  sessionId: string,
-  fingerprint: string,
-  dataContext: DataContext,
-  cacheContext: CacheContext
+	sessionId: string,
+	fingerprint: string,
+	dataContext: DataContext,
+	cacheContext: CacheContext
 ): Promise<Session | null> {
-  if (!sessionId || !fingerprint) {
-    return null
-  }
+	if (!sessionId || !fingerprint) {
+		return null
+	}
 
-  const cacheKey = `SESSION_${sessionId}`
-  const NOW = new Date()
+	const cacheKey = `SESSION_${sessionId}`
+	const NOW = new Date()
 
-  const cachedSession = cacheContext.getValue<Session>(cacheKey)
-  if (cachedSession && cachedSession.fingerprint === fingerprint && cachedSession.expiresAt > NOW) {
-    return cachedSession
-  }
+	const cachedSession = cacheContext.getValue<Session>(cacheKey)
+	if (cachedSession && cachedSession.fingerprint === fingerprint && cachedSession.expiresAt > NOW) {
+		return cachedSession
+	}
 
-  const session = await dataContext.Session.findOne({ where: { sessionId } })
-  if (!session) {
-    return null
-  }
+	const session = await dataContext.Session.findOne({ where: { sessionId } })
+	if (!session) {
+		return null
+	}
 
-  if (session.expiresAt < NOW) {
-    return null
-  }
+	if (session.expiresAt < NOW) {
+		return null
+	}
 
-  if ((await compare(fingerprint, session.fingerprint)) === false) {
-    return null
-  }
+	if ((await compare(fingerprint, session.fingerprint)) === false) {
+		return null
+	}
 
-  const HALF_EXPIRATION = SESSION_EXPIRATION_SECONDS / 2
-  if (session.expiresAt < addSeconds(NOW, HALF_EXPIRATION)) {
-    session.expiresAt = addSeconds(NOW, SESSION_EXPIRATION_SECONDS)
-  }
-  session.lastUsedAt = NOW
-  await session.save()
+	const HALF_EXPIRATION = SESSION_EXPIRATION_SECONDS / 2
+	if (session.expiresAt < addSeconds(NOW, HALF_EXPIRATION)) {
+		session.expiresAt = addSeconds(NOW, SESSION_EXPIRATION_SECONDS)
+	}
+	session.lastUsedAt = NOW
+	await session.save()
 
-  cacheContext.setValue(cacheKey, session, 30)
+	cacheContext.setValue(cacheKey, session, 30)
 
-  return session
+	return session
 }

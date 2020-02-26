@@ -1,4 +1,4 @@
 export interface IAuthorizeClientResponse {
-  pendingScopes?: string[]
-  redirectUri?: string | null
+	pendingScopes?: string[]
+	redirectUri?: string | null
 }

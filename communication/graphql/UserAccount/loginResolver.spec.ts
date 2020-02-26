@@ -1,23 +1,23 @@
 jest.mock('../../../activities/authenticateUserActivity', () => ({
-  authenticateUserActivity: () => {
-    return {
-      sessionId: 'abc'
-    }
-  }
+	authenticateUserActivity: () => {
+		return {
+			sessionId: 'abc'
+		}
+	}
 }))
 import { loginResolver } from './loginResolver'
-import { default as authenticateUserActivity } from '../../../activities/authenticateUserActivity'
+const authenticateUserActivity = require('../../../activities/authenticateUserActivity')
 
 describe('loginResolver', () => {
-  it('should call the authenticateUser activity', async () => {
-    const context: any = {}
-    const args: any = { data: { password: '', emailAddress: 'test@test.com' } }
-    const obj: any = {}
+	it('should call the authenticateUser activity', async () => {
+		const context: any = {}
+		const args: any = { data: { password: '', emailAddress: 'test@test.com' } }
+		const obj: any = {}
 
-    const resolverSpy = jest.spyOn(authenticateUserActivity, 'authenticateUserActivity')
+		const resolverSpy = jest.spyOn(authenticateUserActivity, 'authenticateUserActivity')
 
-    await loginResolver(obj, args, context)
+		await loginResolver(obj, args, context)
 
-    expect(resolverSpy).toBeCalledTimes(1)
-  })
+		expect(resolverSpy).toBeCalledTimes(1)
+	})
 })
