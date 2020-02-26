@@ -1,6 +1,6 @@
 import React from 'react'
 import MailConfigurationForm, {
-  IMailConfigurationFormProps
+	IMailConfigurationFormProps
 } from '../../presentation/components/ConfigurationForms/MailConfigurationForm'
 
 export interface OobeMailConfigurationProps extends IMailConfigurationFormProps {

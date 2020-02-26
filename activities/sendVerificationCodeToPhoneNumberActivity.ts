@@ -4,11 +4,11 @@ import { generatePhoneNumberVerificationCode } from '../operations/data/phoneNum
 import { sendMessageToPhoneNumber } from '../operations/services/sms/sendMessageToPhoneNumber'
 
 export async function sendVerificationCodeToPhoneNumberActivity(phoneNumber: string, context: IRequestContext) {
-  ensureAuthenticated(context)
-  const code = await generatePhoneNumberVerificationCode(phoneNumber, 300, context.dataContext)
-  await sendMessageToPhoneNumber(
-    phoneNumber,
-    `${context.configuration.Server.realmName} verification code: ${code}`,
-    context
-  )
+	ensureAuthenticated(context)
+	const code = await generatePhoneNumberVerificationCode(phoneNumber, 300, context.dataContext)
+	await sendMessageToPhoneNumber(
+		phoneNumber,
+		`${context.configuration.Server.realmName} verification code: ${code}`,
+		context
+	)
 }
