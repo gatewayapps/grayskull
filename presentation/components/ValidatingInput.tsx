@@ -9,13 +9,17 @@ export interface IValidatingInputProps {
 	autoFocus?: boolean
 	allowCustom?: boolean
 	options?: any
+	disabled?: boolean
+	min?: number | string
+	max?: number | string
+	checked?: boolean
 	getOptionValue?: any
 	style?: React.CSSProperties
 	getOptionLabel?: any
 	readOnly?: boolean
 	className?: string
 	type: any
-	value: any
+	value?: any
 	id?: any
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }

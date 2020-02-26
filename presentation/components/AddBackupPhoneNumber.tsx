@@ -6,6 +6,7 @@ export const AddBackupPhoneNumber: React.FC = () => {
 	return (
 		<ResponsiveValidatingInput
 			type="phone"
+			label="Mobile Phone Number"
 			name="phoneNumber"
 			value={phoneNumber}
 			placeholder="Mobile Phone Number"

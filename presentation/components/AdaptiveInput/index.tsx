@@ -12,7 +12,7 @@ export interface AdaptiveInputProps {
 	type: string
 	className?: string
 	onChange?: ({ target: { name: string, value: any } }) => void
-	value: any
+	value?: any
 	name: string
 	readOnly?: boolean
 	placeholder?: string
