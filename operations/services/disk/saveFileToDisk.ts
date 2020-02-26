@@ -12,6 +12,7 @@ export async function saveFileToDisk(
   localDirectory: string | undefined
 ): Promise<IUploadFileResponse> {
   if (!localDirectory) {
+    console.error('CANT WRITE TO DISK')
     throw new GrayskullError(
       GrayskullErrorCode.InvalidRuntimeEnvironment,
       `Attempted to write file to disk in serverless environment.`
@@ -23,6 +24,7 @@ export async function saveFileToDisk(
   const localFilename = `${fileId}${extname}`
   const uploadDirectory = path.join(localDirectory, 'public/uploads/')
   const fullLocalPath = path.join(uploadDirectory, localFilename)
+
   return new Promise((resolve, reject) => {
     try {
       fs.ensureDirSync(uploadDirectory)

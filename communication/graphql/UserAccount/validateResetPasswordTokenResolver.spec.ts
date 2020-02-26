@@ -2,7 +2,7 @@ jest.mock('../../../activities/validateResetPasswordTokenActivity', () => ({
   validateResetPasswordTokenActivity: () => true
 }))
 import { validateResetPasswordTokenResolver } from './validateResetPasswordTokenResolver'
-import { default as validateResetPasswordTokenActivity } from '../../../activities/validateResetPasswordTokenActivity'
+const validateResetPasswordTokenActivity = require('../../../activities/validateResetPasswordTokenActivity')
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the validateResetPasswordToken activity', async () => {
