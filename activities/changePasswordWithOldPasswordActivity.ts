@@ -13,48 +13,48 @@ import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
  */
 
 export async function changePasswordWithOldPasswordActivity(
-  oldPassword: string,
-  newPassword: string,
-  confirmPassword: string,
-  context: IRequestContext
+	oldPassword: string,
+	newPassword: string,
+	confirmPassword: string,
+	context: IRequestContext
 ) {
-  if (!context.user) {
-    throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `You must be signed in to change your password`)
-  } else {
-    const oldPasswordVerified = await verifyPassword(context.user.userAccountId, oldPassword, context.dataContext)
-    if (!oldPasswordVerified) {
-      throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `The old password provided is not correct`)
-    } else {
-      if (newPassword !== confirmPassword) {
-        throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `new password does not match confirm password`)
-      } else {
-        const verificationResult = verifyPasswordStrength(newPassword, context.configuration.Security)
-        if (!verificationResult.success) {
-          throw new GrayskullError(
-            GrayskullErrorCode.PasswordFailsSecurityRequirements,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            verificationResult.validationErrors!.join(';')
-          )
-        } else {
-          const userAccount = await getUserAccount(
-            context.user.userAccountId,
-            context.dataContext,
-            context.cacheContext,
-            true
-          )
-          if (!userAccount) {
-            throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `Something is broken`)
-          }
+	if (!context.user) {
+		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `You must be signed in to change your password`)
+	} else {
+		const oldPasswordVerified = await verifyPassword(context.user.userAccountId, oldPassword, context.dataContext)
+		if (!oldPasswordVerified) {
+			throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `The old password provided is not correct`)
+		} else {
+			if (newPassword !== confirmPassword) {
+				throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `new password does not match confirm password`)
+			} else {
+				const verificationResult = verifyPasswordStrength(newPassword, context.configuration.Security)
+				if (!verificationResult.success) {
+					throw new GrayskullError(
+						GrayskullErrorCode.PasswordFailsSecurityRequirements,
+						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+						verificationResult.validationErrors!.join(';')
+					)
+				} else {
+					const userAccount = await getUserAccount(
+						context.user.userAccountId,
+						context.dataContext,
+						context.cacheContext,
+						true
+					)
+					if (!userAccount) {
+						throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `Something is broken`)
+					}
 
-          await setUserAccountPassword(
-            userAccount.userAccountId,
-            newPassword,
-            context.dataContext,
-            context.cacheContext
-          )
-          return true
-        }
-      }
-    }
-  }
+					await setUserAccountPassword(
+						userAccount.userAccountId,
+						newPassword,
+						context.dataContext,
+						context.cacheContext
+					)
+					return true
+				}
+			}
+		}
+	}
 }

@@ -8,23 +8,23 @@ import { deleteSession } from './deleteSession'
 let dataContext: DataContext
 
 describe('deleteSession', () => {
-  beforeAll(async () => {
-    dataContext = await getInMemoryContext()
-  })
+	beforeAll(async () => {
+		dataContext = await getInMemoryContext()
+	})
 
-  it('should delete a session from the dataContext', async () => {
-    const sessionData: Partial<Session> = {
-      userAccountId: 'abc123',
-      fingerprint: 'xyz789',
-      ipAddress: '1.1.1.1'
-    }
+	it('should delete a session from the dataContext', async () => {
+		const sessionData: Partial<Session> = {
+			userAccountId: 'abc123',
+			fingerprint: 'xyz789',
+			ipAddress: '1.1.1.1'
+		}
 
-    const createdSession = await createSession(sessionData, true, dataContext)
-    expect(createdSession).toBeDefined()
+		const createdSession = await createSession(sessionData, true, dataContext)
+		expect(createdSession).toBeDefined()
 
-    await deleteSession(createdSession.sessionId, dataContext)
+		await deleteSession(createdSession.sessionId, dataContext)
 
-    const sessionFromContext = await dataContext.Session.findOne({ where: { sessionId: createdSession.sessionId } })
-    expect(sessionFromContext).toBeNull()
-  })
+		const sessionFromContext = await dataContext.Session.findOne({ where: { sessionId: createdSession.sessionId } })
+		expect(sessionFromContext).toBeNull()
+	})
 })

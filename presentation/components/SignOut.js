@@ -4,16 +4,16 @@ import React from 'react'
 import { generateRoutingState } from '../utils/routing'
 
 const SignOut = ({ includeState, router, children, ...otherProps }) => {
-  const href = `/logout${includeState ? `?state=${generateRoutingState(router)}` : ''}`
-  return (
-    <a href={href} {...otherProps}>
-      {children}
-    </a>
-  )
+	const href = `/logout${includeState ? `?state=${generateRoutingState(router)}` : ''}`
+	return (
+		<a href={href} {...otherProps}>
+			{children}
+		</a>
+	)
 }
 
 SignOut.propTypes = {
-  includeState: PropTypes.bool
+	includeState: PropTypes.bool
 }
 
 export default withRouter(SignOut)

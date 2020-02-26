@@ -9,29 +9,29 @@ let dataContext: DataContext
 let cacheContext: CacheContext
 
 describe('setUserAccountPassword', () => {
-  beforeAll(async () => {
-    dataContext = await getInMemoryContext()
-    cacheContext = getCacheContext()
-  })
+	beforeAll(async () => {
+		dataContext = await getInMemoryContext()
+		cacheContext = getCacheContext()
+	})
 
-  it('Should correctly update a users account with a new password', async () => {
-    const createdUser = await createUserAccount(
-      { firstName: 'test', lastName: 'user', otpEnabled: false, isActive: true, permissions: 1 },
-      'password1',
-      dataContext,
-      undefined
-    )
+	it('Should correctly update a users account with a new password', async () => {
+		const createdUser = await createUserAccount(
+			{ firstName: 'test', lastName: 'user', otpEnabled: false, isActive: true, permissions: 1 },
+			'password1',
+			dataContext,
+			undefined
+		)
 
-    const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
-    expect(passwordVerified).toEqual(true)
+		const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
+		expect(passwordVerified).toEqual(true)
 
-    await setUserAccountPassword(createdUser.userAccountId, 'password2', dataContext, cacheContext)
-    expect(cacheContext.getValue(`USER_${createdUser.userAccountId}`)).toBeUndefined()
+		await setUserAccountPassword(createdUser.userAccountId, 'password2', dataContext, cacheContext)
+		expect(cacheContext.getValue(`USER_${createdUser.userAccountId}`)).toBeUndefined()
 
-    const passwordVerified2 = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
-    expect(passwordVerified2).toEqual(false)
+		const passwordVerified2 = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
+		expect(passwordVerified2).toEqual(false)
 
-    const passwordVerified3 = await verifyPassword(createdUser.userAccountId, 'password2', dataContext)
-    expect(passwordVerified3).toEqual(true)
-  })
+		const passwordVerified3 = await verifyPassword(createdUser.userAccountId, 'password2', dataContext)
+		expect(passwordVerified3).toEqual(true)
+	})
 })

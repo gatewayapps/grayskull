@@ -20,64 +20,64 @@ import { createSession } from '../operations/data/session/createSession'
 */
 
 export async function registerUserActivity(
-  data: IUserAccount,
-  emailAddress: string,
-  password: string,
-  context: IRequestContext
+	data: IUserAccount,
+	emailAddress: string,
+	password: string,
+	context: IRequestContext
 ) {
-  const { configuration, dataContext } = context
-  if (!isEmailAddressDomainAllowed(emailAddress, configuration.Security)) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `${emailAddress} is not valid for self registration`
-    )
-  }
+	const { configuration, dataContext } = context
+	if (!isEmailAddressDomainAllowed(emailAddress, configuration.Security)) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`${emailAddress} is not valid for self registration`
+		)
+	}
 
-  const existingEmail = await getEmailAddressByEmailAddress(emailAddress, dataContext)
-  if (existingEmail) {
-    throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `${emailAddress} has already been registered`)
-  }
+	const existingEmail = await getEmailAddressByEmailAddress(emailAddress, dataContext)
+	if (existingEmail) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `${emailAddress} has already been registered`)
+	}
 
-  const userCount = await dataContext.UserAccount.count()
-  if (userCount === 0) {
-    data.permissions = Permissions.Admin
-  } else {
-    data.permissions = Permissions.User
-  }
+	const userCount = await dataContext.UserAccount.count()
+	if (userCount === 0) {
+		data.permissions = Permissions.Admin
+	} else {
+		data.permissions = Permissions.User
+	}
 
-  data.otpEnabled = data.otpEnabled || false
-  data.otpSecret = data.otpSecret || null
-  data.isActive = true
+	data.otpEnabled = data.otpEnabled || false
+	data.otpSecret = data.otpSecret || null
+	data.isActive = true
 
-  const passwordVerification = verifyPasswordStrength(password, configuration.Security)
-  if (!passwordVerification.success) {
-    throw new GrayskullError(
-      GrayskullErrorCode.PasswordFailsSecurityRequirements,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      passwordVerification.validationErrors!.join(';')
-    )
-  }
+	const passwordVerification = verifyPasswordStrength(password, configuration.Security)
+	if (!passwordVerification.success) {
+		throw new GrayskullError(
+			GrayskullErrorCode.PasswordFailsSecurityRequirements,
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			passwordVerification.validationErrors!.join(';')
+		)
+	}
 
-  const userAccount = await createUserAccount(data, password, dataContext)
-  await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, userCount === 0)
-  if (userCount > 0) {
-    await sendEmailVerificationActivity(emailAddress, context)
-  }
+	const userAccount = await createUserAccount(data, password, dataContext)
+	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, userCount === 0)
+	if (userCount > 0) {
+		await sendEmailVerificationActivity(emailAddress, context)
+	}
 
-  const fingerprint = context.req.headers['x-fingerprint'].toString()
-  if (fingerprint) {
-    await createSession(
-      {
-        fingerprint,
-        userAccountId: userAccount.userAccountId,
-        ipAddress: context.req.socket.remoteAddress
-      },
-      false,
-      context.dataContext
-    )
+	const fingerprint = context.req.headers['x-fingerprint'].toString()
+	if (fingerprint) {
+		await createSession(
+			{
+				fingerprint,
+				userAccountId: userAccount.userAccountId,
+				ipAddress: context.req.socket.remoteAddress
+			},
+			false,
+			context.dataContext
+		)
 
-    // setAuthCookies(context.res, session)
-  }
+		// setAuthCookies(context.res, session)
+	}
 
-  return userAccount
+	return userAccount
 }
