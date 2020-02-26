@@ -13,6 +13,7 @@
     "format": "prettier --check */**/*.{js,ts,tsx}",
     "lint": "eslint --quiet */**/*.{js,ts,tsx}",
     "test": "jest",
+    "update-release-notes": "node ./updateReleaseNotes.js",
     "test-resolvers": "jest --testPathPattern resolver.spec.ts",
     "test-operations": "jest --testPathPattern operations",
     "test-foundation": "jest --testPathPattern foundation",
