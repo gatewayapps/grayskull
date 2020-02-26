@@ -1,5 +1,7 @@
 jest.mock('../../../activities/validateRedirectUriActivity', () => ({
-  validateRedirectUriActivity: () => true
+  validateRedirectUriActivity: () => {
+    return true
+  }
 }))
 
 jest.mock('../../../activities/generateAuthorizationRedirectActivity', () => ({
@@ -9,9 +11,10 @@ jest.mock('../../../activities/generateAuthorizationRedirectActivity', () => ({
 jest.mock('../../../activities/verifyUserScopesForClientActivity', () => ({
   verifyUserScopesForClientActivity: () => 'test'
 }))
-import { default as validateRedirectUriActivity } from '../../../activities/validateRedirectUriActivity'
-import { default as generateAuthorizationRedirectActivity } from '../../../activities/generateAuthorizationRedirectActivity'
-import { default as verifyUserScopesForClientActivity } from '../../../activities/verifyUserScopesForClientActivity'
+
+const validateRedirectUriActivity = require('../../../activities/validateRedirectUriActivity')
+const generateAuthorizationRedirectActivity = require('../../../activities/generateAuthorizationRedirectActivity')
+const verifyUserScopesForClientActivity = require('../../../activities/verifyUserScopesForClientActivity')
 
 import { authorizeClientResolver } from './authorizeClientResolver'
 
@@ -32,8 +35,8 @@ describe('authorizeClientResolver', () => {
     )
 
     await authorizeClientResolver(obj, args, context)
+    expect(validateRedirectUriSpy).toHaveBeenCalledTimes(1)
 
-    expect(validateRedirectUriSpy).toBeCalledTimes(1)
     expect(generateAuthorizationRedirectSpy).toBeCalledTimes(1)
     expect(verifyUserScopesForClientSpy).toBeCalledTimes(1)
   })

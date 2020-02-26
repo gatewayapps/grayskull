@@ -6,7 +6,7 @@ jest.mock('../../../activities/verifyEmailAddressActivity', () => ({
   }
 }))
 import { verifyEmailAddressResolver } from './verifyEmailAddressResolver'
-import { default as verifyEmailAddressActivity } from '../../../activities/verifyEmailAddressActivity'
+const verifyEmailAddressActivity = require('../../../activities/verifyEmailAddressActivity')
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {

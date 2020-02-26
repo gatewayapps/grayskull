@@ -10,7 +10,7 @@ import { registerUserResolver } from './registerUserResolver'
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-import { default as registerUserActivity } from '../../../activities/registerUserActivity'
+const registerUserActivity = require('../../../activities/registerUserActivity')
 let dataContext: DataContext
 let cacheContext: CacheContext
 

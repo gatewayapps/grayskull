@@ -2,7 +2,8 @@ jest.mock('../../../activities/uploadFileActivity', () => ({
   uploadFileActivity: () => true
 }))
 import { uploadFileResolver } from './uploadFileResolver'
-import { default as uploadFileActivity } from '../../../activities/uploadFileActivity'
+
+const uploadFileActivity = require('../../../activities/uploadFileActivity')
 
 describe('verifyEmailAddressResolver', () => {
   it('should call the verifyEmailAddress activity', async () => {

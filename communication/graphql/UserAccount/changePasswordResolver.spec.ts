@@ -7,8 +7,9 @@ jest.mock('../../../activities/changePasswordWithOldPasswordActivity', () => ({
 }))
 
 import { changePasswordResolver } from './changePasswordResolver'
-import { default as changePasswordWithTokenActivity } from '../../../activities/changePasswordWithTokenActivity'
-import { default as changePasswordWithOldPasswordActivity } from '../../../activities/changePasswordWithOldPasswordActivity'
+
+const changePasswordWithTokenActivity = require('../../../activities/changePasswordWithTokenActivity')
+const changePasswordWithOldPasswordActivity = require('../../../activities/changePasswordWithOldPasswordActivity')
 
 describe('changePasswordResolver', () => {
   it('should call the changePasswordWithTokenActivity when called with a token', async () => {
