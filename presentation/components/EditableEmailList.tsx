@@ -91,15 +91,6 @@ export default class EditableEmailList extends React.Component<EditableEmailList
 								<i className="fa fa-fw fa-save" /> Save E-Mail Address
 							</span>
 						}
-						// onClick={async () => {
-						//   const saveResult = await addEmailAddress({ variables: { emailAddress: this.state.newEmailAddress } })
-						//   if (saveResult && saveResult.data.addEmailAddress.success) {
-						//     refetch()
-						//     this.setState({ isAdding: false, newEmailAddress: '', message: '', errorMessage: '' })
-						//   } else {
-						//     this.setState({ errorMessage: saveResult ? saveResult.data.addEmailAddress.message : 'Something went wrong' })
-						//   }
-						// }}
 						className="btn btn-outline-success">
 						<i className="fa fa-fw fa-save" /> Save E-Mail Address
 					</MutationButton>

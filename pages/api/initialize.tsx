@@ -21,25 +21,33 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const needsConfiguration = !configuration.Server?.baseUrl
 
 	const needsAdmin = (await countUserAccounts(context.dataContext)) === 0
+	let finalUserContext: any = null
+	if (context.user) {
+		finalUserContext = {
+			userAccountId: context.user.userAccountId,
+			firstName: context.user.firstName,
+			lastName: context.user.lastName,
+			gender: context.user.gender,
+			birthday: context.user.birthday,
+			displayName: context.user.displayName,
+			lastPasswordChange: context.user.lastPasswordChange,
+			profileImageUrl: context.user.profileImageUrl,
+			emailAddress: context.user.emailAddress,
+			permissions: context.user.permissions,
+			otpEnabled: context.user.otpEnabled
+		}
+
+		if (context.user.phoneNumber) {
+			finalUserContext.phoneNumber =
+				context.user.phoneNumber.substr(0, context.user.phoneNumber.length - 4).replace(/\d/gi, '*') +
+				context.user.phoneNumber.substr(-4)
+		}
+	}
 
 	res.json({
 		configuration,
 		needsConfiguration,
 		needsAdmin,
-		user: context.user
-			? {
-					userAccountId: context.user.userAccountId,
-					firstName: context.user.firstName,
-					lastName: context.user.lastName,
-					gender: context.user.gender,
-					birthday: context.user.birthday,
-					displayName: context.user.displayName,
-					lastPasswordChange: context.user.lastPasswordChange,
-					profileImageUrl: context.user.profileImageUrl,
-					emailAddress: context.user.emailAddress,
-					permissions: context.user.permissions,
-					otpEnabled: context.user.otpEnabled
-			  }
-			: null
+		user: finalUserContext
 	})
 }

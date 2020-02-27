@@ -6,8 +6,9 @@ import { verifyAndUseSession } from '../../operations/data/session/verifyAndUseS
 import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
 import { IUserAccount, IConfiguration } from '../types/types'
 import Knex from 'knex'
+import { getPrimaryPhoneNumberForUserAccount } from '../../operations/data/phoneNumber/getPrimaryPhoneNumberForUserAccount'
 
-export type UserContext = IUserAccount & { emailAddress: string; emailAddressVerified: boolean }
+export type UserContext = IUserAccount & { emailAddress: string; emailAddressVerified: boolean; phoneNumber?: string }
 
 export async function createUserContextForUserId(
 	userAccountId: string,
@@ -20,7 +21,7 @@ export async function createUserContextForUserId(
 		return undefined
 	}
 	const primaryEmailAddress = await getPrimaryEmailAddress(userAccount.userAccountId, dataContext, cacheContext)
-
+	const primaryPhoneNumber = await getPrimaryPhoneNumberForUserAccount(userAccount.userAccountId, dataContext)
 	let profileImage = userAccount.profileImageUrl
 	if (profileImage) {
 		try {
@@ -52,7 +53,8 @@ export async function createUserContextForUserId(
 		deletedBy: userAccount.deletedBy,
 		deletedAt: userAccount.deletedAt,
 		emailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : '',
-		emailAddressVerified: primaryEmailAddress && primaryEmailAddress.verified ? true : false
+		emailAddressVerified: primaryEmailAddress && primaryEmailAddress.verified ? true : false,
+		phoneNumber: primaryPhoneNumber ? primaryPhoneNumber.phoneNumber : undefined
 	}
 }
 

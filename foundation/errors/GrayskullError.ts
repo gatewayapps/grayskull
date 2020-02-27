@@ -7,6 +7,7 @@ export enum GrayskullErrorCode {
 	InvalidEmailAddress = 'invalid_email_address',
 	InvalidResetPasswordToken = 'invalid_reset_password_token',
 	InvalidEmailVerificationCode = 'invalid_email_verification_code',
+	InvalidPhoneVerificationCode = 'invalid_phone_verification_code',
 	ExpiredResetPasswordToken = 'expired_reset_password_token',
 	PasswordFailsSecurityRequirements = 'password_fails_security_requirements',
 	IncorrectPassword = 'incorrect_password',
