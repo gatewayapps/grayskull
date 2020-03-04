@@ -3,8 +3,7 @@ import React, { useState } from 'react'
 import MutationButton from './MutationButton'
 import MultiFactorSetup from './MultiFactorSetup'
 import ResponsiveInput from './ResponsiveInput'
-import RequireConfiguration from './RequireConfiguration'
-import { AddBackupPhoneNumber } from './AddBackupPhoneNumber'
+
 import { BackupPhoneNumberSetup } from './BackupPhoneNumberSetup'
 
 const SET_OTP_SECRET = gql`

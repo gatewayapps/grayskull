@@ -34,7 +34,6 @@ export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ 
 		return (
 			<ResponsiveValidatingInput
 				name="txtPhoneNumber"
-				onChange={(e) => {}}
 				type="text"
 				readOnly
 				value={user.phoneNumber}

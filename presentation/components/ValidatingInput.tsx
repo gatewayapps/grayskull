@@ -21,7 +21,7 @@ export interface IValidatingInputProps {
 	type: any
 	value?: any
 	id?: any
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const ValidatingInput: React.FC<IValidatingInputProps> = ({ name, validationErrors, className, ...props }) => {
