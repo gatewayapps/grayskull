@@ -155,6 +155,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.3.1",
     "jsonwebtoken": "^8.3.0",
+    "knex": "^0.20.10",
     "lodash": "^4.17.15",
     "merge-graphql-schemas": "^1.7.6",
     "moment": "^2.22.2",
@@ -191,7 +192,7 @@
     "ua-parser-js": "^0.7.21",
     "url-loader": "^1.1.2",
     "url-parse": "^1.4.4",
-    "uuid": "^3.4.0",
+    "uuid": "^7.0.2",
     "validator": "^10.10.0",
     "webpack": "4.41.6"
   }

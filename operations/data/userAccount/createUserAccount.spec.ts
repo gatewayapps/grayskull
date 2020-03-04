@@ -1,11 +1,12 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-import { UserAccount } from '../../../foundation/models/UserAccount'
+
 import { createUserAccount } from './createUserAccount'
+import { IUserAccount } from '../../../foundation/types/types'
+import Knex from 'knex'
 
-let dataContext: DataContext
+let dataContext: Knex
 
-export const TEST_USER_DATA: Partial<UserAccount> = {
+export const TEST_USER_DATA: Partial<IUserAccount> = {
 	firstName: 'Test',
 	lastName: 'User',
 	permissions: 0,
@@ -13,7 +14,7 @@ export const TEST_USER_DATA: Partial<UserAccount> = {
 	isActive: true
 }
 
-export async function createTestUserAccount(dataContext: DataContext) {
+export async function createTestUserAccount(dataContext: Knex) {
 	return await createUserAccount(TEST_USER_DATA, 'password', dataContext, undefined)
 }
 
@@ -25,12 +26,10 @@ describe('createUserAccount', () => {
 	it('Should correctly create a user account', async () => {
 		const createdUser = await createTestUserAccount(dataContext)
 		expect(createdUser).toBeDefined()
-		const userFromData = await dataContext.UserAccount.findOne({ where: { userAccountId: createdUser.userAccountId } })
 
-		expect(userFromData).toBeDefined()
-		if (userFromData) {
-			expect(userFromData.firstName).toEqual(TEST_USER_DATA.firstName)
-			expect(userFromData.lastName).toEqual(TEST_USER_DATA.lastName)
+		if (createdUser) {
+			expect(createdUser.firstName).toEqual(TEST_USER_DATA.firstName)
+			expect(createdUser.lastName).toEqual(TEST_USER_DATA.lastName)
 		}
 	})
 })

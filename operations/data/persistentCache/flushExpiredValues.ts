@@ -1,4 +1,3 @@
-import Sequelize from 'sequelize'
 import { DataContext } from '../../../foundation/context/getDataContext'
 
 export async function flushExpiredValues(dataContext: DataContext) {

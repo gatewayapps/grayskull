@@ -1,5 +1,6 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IUserAccount } from '../../../foundation/types/types'
 
-export async function countUserAccounts(context: DataContext) {
-	return await context.UserAccount.count()
+export async function countUserAccounts(context: Knex) {
+	return await context<IUserAccount>('UserAccounts').count()
 }

@@ -1,10 +1,10 @@
 import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
-import { Session } from '../../../foundation/models/Session'
 
 import { addSeconds } from 'date-fns'
 
 import { SESSION_EXPIRATION_SECONDS } from './createSession'
+import { ISession } from '../../../foundation/types/types'
 
 /**
  * @description Attempts to find a matching session in the cache context.  If no session is cached, find it in the data context and cache it
@@ -16,7 +16,7 @@ export async function verifyAndUseSession(
 	sessionId: string,
 	dataContext: DataContext,
 	cacheContext: CacheContext
-): Promise<Session | null> {
+): Promise<ISession | null> {
 	if (!sessionId) {
 		return null
 	}
@@ -24,12 +24,14 @@ export async function verifyAndUseSession(
 	const cacheKey = `SESSION_${sessionId}`
 	const NOW = new Date()
 
-	const cachedSession = cacheContext.getValue<Session>(cacheKey)
+	const cachedSession = cacheContext.getValue<ISession>(cacheKey)
 	if (cachedSession && cachedSession.expiresAt > NOW) {
 		return cachedSession
 	}
 
-	const session = await dataContext.Session.findOne({ where: { sessionId } })
+	const session = await dataContext.Session.where({ sessionId })
+		.select('*')
+		.first()
 	if (!session) {
 		return null
 	}
@@ -43,7 +45,7 @@ export async function verifyAndUseSession(
 		session.expiresAt = addSeconds(NOW, SESSION_EXPIRATION_SECONDS)
 	}
 	session.lastUsedAt = NOW
-	await session.save()
+	await dataContext.Session.where({ sessionId }).update({ lastUsedAt: NOW })
 
 	cacheContext.setValue(cacheKey, session, 30)
 

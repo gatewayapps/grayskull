@@ -1,15 +1,16 @@
-import uuid from 'uuid'
-import { UserAccount } from '../../../foundation/models/UserAccount'
-import { DataContext } from '../../../foundation/context/getDataContext'
+import { v4 as uuidv4 } from 'uuid'
+
 import bcrypt from 'bcrypt'
 import { encrypt } from '../../logic/encryption'
 import { UserContext } from '../../../foundation/context/getUserContext'
 import { GrayskullErrorCode, GrayskullError } from '../../../foundation/errors/GrayskullError'
+import { IUserAccount } from '../../../foundation/types/types'
+import Knex from 'knex'
 
 export async function createUserAccount(
-	data: Partial<UserAccount>,
+	data: Partial<IUserAccount>,
 	password: string | undefined,
-	dataContext: DataContext,
+	dataContext: Knex,
 	userContext?: UserContext
 ) {
 	if (data.permissions === undefined) {
@@ -28,7 +29,7 @@ export async function createUserAccount(
 		throw new Error('lastName must be specified when a user is created')
 	}
 
-	data.userAccountId = uuid()
+	data.userAccountId = uuidv4()
 	if (password) {
 		data.passwordHash = await bcrypt.hash(password, 10)
 	}
@@ -45,9 +46,11 @@ export async function createUserAccount(
 
 	data.createdAt = new Date()
 	data.updatedAt = new Date()
-
-	await new dataContext.UserAccount(data).save()
-	const userAccountRecord = await dataContext.UserAccount.findOne({ where: { userAccountId: data.userAccountId } })
+	await dataContext<IUserAccount>('UserAccounts').insert(data)
+	const userAccountRecord = await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId: data.userAccountId })
+		.select('*')
+		.first()
 	if (!userAccountRecord) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `Failed to create a user account`)
 	}

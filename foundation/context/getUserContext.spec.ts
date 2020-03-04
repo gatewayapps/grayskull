@@ -5,13 +5,11 @@ import { DataContext } from './getDataContext'
 import { createTestUserAccount } from '../../operations/data/userAccount/createUserAccount.spec'
 import { createSession } from '../../operations/data/session/createSession'
 import { getInMemoryContext } from './getDataContext.spec'
-
-import { UserAccount } from '../models/UserAccount'
-import { Session } from '../models/Session'
+import { IUserAccount, ISession } from '../types/types'
 
 let dataContext: DataContext
-let testUser: UserAccount
-let testSession: Session
+let testUser: IUserAccount
+let testSession: ISession | undefined
 const cacheContext: CacheContext = getCacheContext()
 
 describe('getUserContext', () => {
@@ -29,6 +27,10 @@ describe('getUserContext', () => {
 	})
 
 	it('Should correctly return a user from a session id ', async () => {
+		if (!testSession) {
+			expect(1).toEqual(0)
+			throw new Error('testSession not set')
+		}
 		const userContext = await getUserContext(testSession.sessionId, dataContext, cacheContext, {
 			Server: { baseUrl: 'http://127.0.0.1' }
 		} as any)

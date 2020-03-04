@@ -2,6 +2,8 @@ import { getInMemoryContext } from '../../../foundation/context/getDataContext.s
 import { cacheValue } from './cacheValue'
 import { addSeconds } from 'date-fns'
 
+import { getRecord } from './getValue'
+
 describe('cacheValue', () => {
 	it('Should store a string value with the correct expiration', async () => {
 		const context = await getInMemoryContext()
@@ -12,12 +14,12 @@ describe('cacheValue', () => {
 
 		await cacheValue(TEST_KEY, TEST_VALUE, TEST_EXPIRATION_SECONDS, context)
 
-		const kvc = await context.KeyValueCache.findOne({ where: { key: TEST_KEY } })
+		const kvc = await getRecord(TEST_KEY, context)
 		expect(kvc).toBeDefined()
 
 		const TEST_EXPIRATION = addSeconds(new Date(), TEST_EXPIRATION_SECONDS)
 
-		if (kvc) {
+		if (kvc && kvc.expires) {
 			expect(kvc.expires.getTime()).toBeGreaterThan(new Date().getTime())
 			expect(kvc.expires.getTime()).toBeLessThanOrEqual(TEST_EXPIRATION.getTime())
 			expect(kvc.value).toEqual(TEST_VALUE)
@@ -38,10 +40,10 @@ describe('cacheValue', () => {
 
 		await cacheValue(TEST_KEY, TEST_VALUE_2, 30, context)
 
-		const kvc = await context.KeyValueCache.findOne({ where: { key: TEST_KEY } })
+		const kvc = await getRecord(TEST_KEY, context)
 		expect(kvc).toBeDefined()
 
-		if (kvc) {
+		if (kvc && kvc.expires) {
 			expect(kvc.expires.getTime()).toBeGreaterThan(new Date().getTime())
 			expect(kvc.value).toEqual(TEST_VALUE_2)
 		} else {
