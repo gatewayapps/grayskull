@@ -188,7 +188,6 @@ export interface IScope {
 
 export interface ISession {
 	sessionId: string
-	fingerprint: string
 	userAccountId: string
 	name: string | null
 	ipAddress: string
@@ -288,7 +287,6 @@ export interface LoginOperationArgs {
 	emailAddress: string
 	password: string
 	otpToken: string | null
-	fingerprint: string
 	extendedSession: boolean
 }
 export interface AuthorizeClientOperationArgs {

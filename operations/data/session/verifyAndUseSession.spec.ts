@@ -13,12 +13,9 @@ describe('verifyAndUseSession', () => {
 	beforeAll(async () => {
 		dataContext = await getInMemoryContext()
 	})
-	it('Should correctly return a session with matching id and fingerprint', async () => {
-		const fingerprintData = 'xyz789'
-
+	it('Should correctly return a session with matching id', async () => {
 		const sessionData: Partial<Session> = {
 			userAccountId: 'abc123',
-			fingerprint: fingerprintData,
 			ipAddress: '1.1.1.1'
 		}
 		try {
@@ -26,7 +23,7 @@ describe('verifyAndUseSession', () => {
 
 			const dataSession = await verifyAndUseSession(
 				createdSession.sessionId,
-				fingerprintData,
+
 				dataContext,
 				cacheContext
 			)

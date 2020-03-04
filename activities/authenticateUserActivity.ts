@@ -85,10 +85,8 @@ export async function authenticateUserActivity(
 		await clearBackupMultifactorCode(emailAddress, context.dataContext)
 	}
 
-	const fingerprint = context.req.headers ? context.req.headers['x-fingerprint']?.toString() : ''
 	return await createSession(
 		{
-			fingerprint,
 			userAccountId: userAccount.userAccountId,
 			ipAddress: context.req.socket.remoteAddress
 		},

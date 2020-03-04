@@ -265,11 +265,6 @@ export interface SessionFilter {
 	sessionId_in?: [string]
 	sessionId_equals?: string
 	sessionId_notEquals?: string
-	fingerprint_contains?: string
-	fingerprint_startsWith?: string
-	fingerprint_endsWith?: string
-	fingerprint_equals?: string
-	fingerprint_notEquals?: string
 	userAccountId_in?: [string]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string

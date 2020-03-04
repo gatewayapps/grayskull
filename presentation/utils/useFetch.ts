@@ -1,5 +1,5 @@
 import React from 'react'
-import generateFingerprint from './generateFingerprint'
+
 import { LiteralType } from 'typescript'
 
 export const useFetch = (url, options, triggerProps: LiteralType[] = []) => {
@@ -11,12 +11,6 @@ export const useFetch = (url, options, triggerProps: LiteralType[] = []) => {
 	const refetch = React.useCallback(async () => {
 		setIsLoading(true)
 		try {
-			const fingerprint = await generateFingerprint()
-			if (!options.headers) {
-				options.headers = {}
-			}
-			options.headers['x-fingerprint'] = fingerprint
-
 			const response = await fetch(url, options)
 			const json = await response.json()
 			setResponse(json)

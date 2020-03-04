@@ -21,7 +21,6 @@ describe('getUserContext', () => {
 		testSession = await createSession(
 			{
 				userAccountId: testUser.userAccountId,
-				fingerprint: 'xyz789',
 				ipAddress: '1.1.1.1'
 			},
 			false,
@@ -29,8 +28,8 @@ describe('getUserContext', () => {
 		)
 	})
 
-	it('Should correctly return a user from a session id and fingerprint', async () => {
-		const userContext = await getUserContext(testSession.sessionId, 'xyz789', dataContext, cacheContext, {
+	it('Should correctly return a user from a session id ', async () => {
+		const userContext = await getUserContext(testSession.sessionId, dataContext, cacheContext, {
 			Server: { baseUrl: 'http://127.0.0.1' }
 		} as any)
 
@@ -45,7 +44,7 @@ describe('getUserContext', () => {
 	})
 
 	it('Should return undefined for invalid session id', async () => {
-		const userContext = await getUserContext('abc123', 'xyz789', dataContext, cacheContext, {
+		const userContext = await getUserContext('abc123', dataContext, cacheContext, {
 			Server: { baseUrl: 'http://127.0.0.1' }
 		} as any)
 		expect(userContext).toBeUndefined()

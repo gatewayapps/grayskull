@@ -64,20 +64,16 @@ export async function registerUserActivity(
 		await sendEmailVerificationActivity(emailAddress, context)
 	}
 
-	const fingerprint = context.req.headers['x-fingerprint'].toString()
-	if (fingerprint) {
-		await createSession(
-			{
-				fingerprint,
-				userAccountId: userAccount.userAccountId,
-				ipAddress: context.req.socket.remoteAddress
-			},
-			false,
-			context.dataContext
-		)
+	await createSession(
+		{
+			userAccountId: userAccount.userAccountId,
+			ipAddress: context.req.socket.remoteAddress
+		},
+		false,
+		context.dataContext
+	)
 
-		// setAuthCookies(context.res, session)
-	}
+	// setAuthCookies(context.res, session)
 
 	return userAccount
 }

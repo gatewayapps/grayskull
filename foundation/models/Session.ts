@@ -3,7 +3,6 @@ import { default as Sequelize, Model } from 'sequelize'
 
 export class Session extends Model {
 	public sessionId: string = this.sessionId
-	public fingerprint: string = this.fingerprint
 	public userAccountId: string = this.userAccountId
 	public name: string | null = this.name
 	public ipAddress: string = this.ipAddress
@@ -23,10 +22,6 @@ function SessionFactory(sequelize: Sequelize.Sequelize) {
 				defaultValue: Sequelize.UUIDV4,
 				allowNull: false,
 				type: Sequelize.UUID
-			},
-			fingerprint: {
-				allowNull: false,
-				type: Sequelize.STRING
 			},
 			userAccountId: {
 				allowNull: false,

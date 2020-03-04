@@ -58,7 +58,6 @@ export async function createUserContextForUserId(
 
 export async function getUserContext(
 	sessionId: string,
-	fingerprint: string,
 	dataContext: DataContext,
 	cacheContext: CacheContext,
 	configuration: IConfiguration
@@ -66,7 +65,7 @@ export async function getUserContext(
 	if (!sessionId) {
 		return undefined
 	} else {
-		const session = await verifyAndUseSession(sessionId, fingerprint, dataContext, cacheContext)
+		const session = await verifyAndUseSession(sessionId, dataContext, cacheContext)
 		if (!session) {
 			return undefined
 		} else {

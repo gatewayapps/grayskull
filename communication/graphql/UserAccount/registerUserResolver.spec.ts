@@ -34,7 +34,7 @@ describe('registerUserResolver', () => {
 				cacheContext,
 				configuration,
 				dataContext,
-				req: { socket: { remoteAddress: '1.1.1.1' }, headers: { 'x-fingerprint': 'test' } }
+				req: { socket: { remoteAddress: '1.1.1.1' } }
 			}
 		)
 		expect(registerUserSpy).toBeCalledTimes(1)

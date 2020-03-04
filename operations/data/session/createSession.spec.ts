@@ -14,7 +14,6 @@ describe('createSession', () => {
 	it('Should correctly create a session', async () => {
 		const sessionData: Partial<Session> = {
 			userAccountId: 'abc123',
-			fingerprint: 'xyz789',
 			ipAddress: '1.1.1.1'
 		}
 
@@ -26,7 +25,6 @@ describe('createSession', () => {
 		expect(sessionFromData).toBeDefined()
 		if (sessionFromData) {
 			expect(sessionFromData.ipAddress).toEqual(sessionData.ipAddress)
-			expect(sessionFromData.fingerprint).toEqual(sessionData.fingerprint)
 			expect(sessionFromData.userAccountId).toEqual(sessionData.userAccountId)
 		}
 	})

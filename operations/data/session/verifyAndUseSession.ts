@@ -3,23 +3,21 @@ import { CacheContext } from '../../../foundation/context/getCacheContext'
 import { Session } from '../../../foundation/models/Session'
 
 import { addSeconds } from 'date-fns'
-import { compare } from 'bcrypt'
+
 import { SESSION_EXPIRATION_SECONDS } from './createSession'
 
 /**
  * @description Attempts to find a matching session in the cache context.  If no session is cached, find it in the data context and cache it
  * @param sessionId
- * @param fingerprint
  * @param dataContext
  * @param cacheContext
  */
 export async function verifyAndUseSession(
 	sessionId: string,
-	fingerprint: string,
 	dataContext: DataContext,
 	cacheContext: CacheContext
 ): Promise<Session | null> {
-	if (!sessionId || !fingerprint) {
+	if (!sessionId) {
 		return null
 	}
 
@@ -27,7 +25,7 @@ export async function verifyAndUseSession(
 	const NOW = new Date()
 
 	const cachedSession = cacheContext.getValue<Session>(cacheKey)
-	if (cachedSession && cachedSession.fingerprint === fingerprint && cachedSession.expiresAt > NOW) {
+	if (cachedSession && cachedSession.expiresAt > NOW) {
 		return cachedSession
 	}
 
@@ -37,10 +35,6 @@ export async function verifyAndUseSession(
 	}
 
 	if (session.expiresAt < NOW) {
-		return null
-	}
-
-	if ((await compare(fingerprint, session.fingerprint)) === false) {
 		return null
 	}
 

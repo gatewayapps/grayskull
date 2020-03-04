@@ -15,7 +15,6 @@ describe('deleteSession', () => {
 	it('should delete a session from the dataContext', async () => {
 		const sessionData: Partial<Session> = {
 			userAccountId: 'abc123',
-			fingerprint: 'xyz789',
 			ipAddress: '1.1.1.1'
 		}
 

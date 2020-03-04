@@ -30,11 +30,10 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 	}
 
 	const sessionCookie = req.cookies.get(SESSION_ID_COOKIE_NAME)
-	const fingerprint = req.headers['x-fingerprint']
 
 	const configuration = await getCurrentConfiguration(dataContext, cacheContext)
 
-	const userContext = await getUserContext(sessionCookie, fingerprint, dataContext, cacheContext, configuration)
+	const userContext = await getUserContext(sessionCookie, dataContext, cacheContext, configuration)
 
 	return {
 		req,

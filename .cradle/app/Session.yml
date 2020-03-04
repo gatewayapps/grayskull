@@ -5,7 +5,6 @@ Session:
     destroy: true
   properties:
     sessionId: uniqueidentifier primary auto
-    fingerprint: string
     userAccountId: uniqueidentifier
     name: string(100)?
     ipAddress: string(50)

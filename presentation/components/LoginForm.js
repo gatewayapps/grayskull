@@ -3,7 +3,6 @@ import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 
-import generateFingerprint from '../utils/generateFingerprint'
 import RequireConfiguration from './RequireConfiguration'
 import ResponsiveForm from './ResponsiveForm'
 import ResponsiveInput from './ResponsiveInput'
@@ -11,21 +10,9 @@ import ResponsiveInput from './ResponsiveInput'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 const LOGIN_MUTATION = gql`
-	mutation LOGIN_MUTATION(
-		$emailAddress: String!
-		$password: String!
-		$otpToken: String
-		$fingerprint: String!
-		$extendedSession: Boolean!
-	) {
+	mutation LOGIN_MUTATION($emailAddress: String!, $password: String!, $otpToken: String, $extendedSession: Boolean!) {
 		login(
-			data: {
-				emailAddress: $emailAddress
-				password: $password
-				otpToken: $otpToken
-				fingerprint: $fingerprint
-				extendedSession: $extendedSession
-			}
+			data: { emailAddress: $emailAddress, password: $password, otpToken: $otpToken, extendedSession: $extendedSession }
 		) {
 			success
 			message
@@ -52,7 +39,7 @@ class LoginForm extends PureComponent {
 		emailAddress: '',
 		password: '',
 		otpToken: '',
-		fingerprint: '',
+
 		otpRequired: false,
 		message: undefined,
 		backupCodeSent: false,
@@ -61,17 +48,11 @@ class LoginForm extends PureComponent {
 		extendedSession: false
 	}
 
-	async componentDidMount() {
-		const fingerprint = await generateFingerprint()
-		this.setState({ fingerprint })
-	}
-
 	attemptLogin = async (login) => {
 		const variables = {
 			emailAddress: this.state.emailAddress,
 			password: this.state.password,
 			otpToken: this.state.otpToken,
-			fingerprint: this.state.fingerprint,
 			extendedSession: this.state.extendedSession
 		}
 

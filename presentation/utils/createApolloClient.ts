@@ -4,7 +4,6 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { onError } from 'apollo-link-error'
 import { ApolloLink, Observable } from 'apollo-link'
 import { createUploadLink } from 'apollo-upload-client'
-import generateFingerprint from '../utils/generateFingerprint'
 
 export default function createApolloClient() {
 	const onErrorHandler = onError(({ graphQLErrors, networkError }) => {
@@ -35,14 +34,6 @@ export default function createApolloClient() {
 			new Observable((observer) => {
 				let handle: any
 				Promise.resolve(operation)
-					.then(async (oper) => {
-						const fingerprint = await generateFingerprint()
-						oper.setContext({
-							headers: {
-								'x-fingerprint': fingerprint
-							}
-						})
-					})
 					.then(() => {
 						handle = forward(operation).subscribe({
 							next: observer.next.bind(observer),
