@@ -35,7 +35,6 @@
   },
   "browser": {
     "sqlite3": false,
-    "sequelize": false,
     "pg": false,
     "dns": false,
     "tedious": false,
@@ -185,7 +184,6 @@
     "react-select": "^2.3.0",
     "reactstrap": "^8.4.1",
     "sass": "^1.26.1",
-    "sequelize": "^5.21.5",
     "sqlite3": "^4.1.1",
     "styled-components": "^4.4.1",
     "tedious": "^6.6.5",
