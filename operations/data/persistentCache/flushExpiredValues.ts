@@ -1,11 +1,5 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 
-export async function flushExpiredValues(dataContext: DataContext) {
-	await dataContext.KeyValueCache.destroy({
-		where: {
-			expires: {
-				[Sequelize.Op.lte]: new Date()
-			}
-		}
-	})
+export async function flushExpiredValues(dataContext: Knex) {
+	await dataContext.where('expires', '<', new Date()).delete()
 }
