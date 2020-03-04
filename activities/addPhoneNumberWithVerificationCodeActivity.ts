@@ -3,6 +3,8 @@ import { verifyPhoneNumberVerificationCode } from '../operations/data/phoneNumbe
 import { IRequestContext } from '../foundation/context/prepareContext'
 import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
 import { addPrimaryPhoneNumber } from '../operations/data/phoneNumber/addPrimaryPhoneNumber'
+import { getCacheKeyForPhoneNumberVerification } from '../operations/logic/getCacheKeyForPhoneNumberVerification'
+import { clearValue } from '../operations/data/persistentCache/clearValue'
 
 export async function addPhoneNumberWithVerificationCodeActivity(
 	phoneNumber: string,
@@ -17,6 +19,10 @@ export async function addPhoneNumberWithVerificationCodeActivity(
 			`Invalid verification code ${verificationCode} for ${phoneNumber}`
 		)
 	} else {
+		const CACHE_KEY = getCacheKeyForPhoneNumberVerification(phoneNumber)
+		await clearValue(CACHE_KEY, context.dataContext)
+
 		await addPrimaryPhoneNumber(context.user!.userAccountId, phoneNumber, context.dataContext)
+		context.cacheContext.clearValue(`USER_${context.user!.userAccountId}`)
 	}
 }
