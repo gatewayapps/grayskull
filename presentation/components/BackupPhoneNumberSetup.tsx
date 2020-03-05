@@ -2,6 +2,7 @@ import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import MutationButton from './MutationButton'
+import { FormRow } from './FormRow'
 
 const SEND_VERIFICATION_CODE_TO_PHONE_NUMBER = gql`
 	mutation SEND_VERIFICATION_CODE_TO_PHONE_NUMBER($phoneNumber: String!) {
@@ -23,28 +24,43 @@ const ADD_PHONE_NUMBER_WITH_VERIFICATION_CODE = gql`
 
 export interface BackupPhoneNumberSetupProps {
 	user: any
+	refreshContext: () => void
 }
 
-export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ user }) => {
+export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ user, refreshContext }) => {
 	const [adding, setAdding] = useState(false)
 	const [verifying, setVerifying] = useState(false)
 	const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber || '')
 	const [verificationCode, setVerificationCode] = useState('')
-	if (user.phoneNumber) {
+	if (!adding && user.phoneNumber) {
 		return (
-			<ResponsiveValidatingInput
-				name="txtPhoneNumber"
-				type="text"
-				readOnly
-				value={user.phoneNumber}
-				label="Mobile Phone Number"
-			/>
+			<FormRow>
+				<div className="col-12 col-md-8">
+					<ResponsiveValidatingInput
+						name="txtPhoneNumber"
+						type="text"
+						readOnly
+						value={user.phoneNumber}
+						label="Mobile Phone Number"
+					/>
+				</div>
+				<div className="col-12 col-md-4">
+					<button
+						className="btn btn-outline-success float-right"
+						onClick={() => {
+							setPhoneNumber('')
+							setAdding(true)
+						}}>
+						<i className="fa fa-fw fa-edit" /> Change Number
+					</button>
+				</div>
+			</FormRow>
 		)
 	}
 	if (adding) {
 		return (
-			<div className="container">
-				<div className="row">
+			<>
+				<FormRow>
 					<div className="col-12 col-md-8">
 						<ResponsiveValidatingInput
 							name="txtPhoneNumber"
@@ -71,12 +87,12 @@ export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ 
 								setVerifying(true)
 							}}
 							content="Send Verification Code"
-							className="btn btn-outline-success"
+							className="btn btn-outline-success float-right"
 						/>
 					</div>
-				</div>
+				</FormRow>
 				{verifying && (
-					<div className="row">
+					<FormRow>
 						<div className="col-12 col-md-8">
 							<ResponsiveValidatingInput
 								name="txtVerificationCode"
@@ -98,23 +114,30 @@ export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ 
 										<i className="fa fa-fw fa-spin fa-spinner" /> Saving Phone Number...
 									</>
 								}
+								onSuccess={() => {
+									setAdding(false)
+									setPhoneNumber(false)
+									refreshContext()
+								}}
 								content="Verify and Save"
-								className="btn btn-outline-success"
+								className="btn btn-outline-success float-right"
 							/>
 						</div>
-					</div>
+					</FormRow>
 				)}
-			</div>
+			</>
 		)
 	} else {
 		return (
-			<button
-				className="btn btn-outline-success"
-				onClick={() => {
-					setAdding(true)
-				}}>
-				<i className="fa fa-fw fa-plus" /> Add Backup Phone Number
-			</button>
+			<FormRow>
+				<button
+					className="btn btn-outline-success float-right"
+					onClick={() => {
+						setAdding(true)
+					}}>
+					<i className="fa fa-fw fa-plus" /> Add Backup Phone Number
+				</button>
+			</FormRow>
 		)
 	}
 }

@@ -12,6 +12,11 @@ exports.up = (knex) => {
 				.table('PhoneNumbers', (table) => {
 					table.dropColumn('verificationSecret')
 				})
+				.table('Settings', (table) => {
+					table.dropColumn('createdAt')
+					table.dropColumn('updatedAt')
+					table.dropColumn('deletedAt')
+				})
 		} else {
 			return knex.schema
 				.createTable('UserAccounts', (table) => {

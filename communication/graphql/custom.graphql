@@ -63,7 +63,7 @@ input SecurityConfigurationInput {
 	passwordRequiresSymbol: Boolean!
 	passwordMinimumLength: Int!
 	multifactorRequired: Boolean!
-	accessTokenExpirationSeconds: Int!
+	accessTokenExpirationSeconds: Int
 	invitationExpirationSeconds: Int
 	maxLoginAttemptsPerMinute: Int
 	maxPasswordAge: Int

@@ -1,11 +1,9 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IPhoneNumber } from '../../../foundation/types/types'
 
-export async function getPrimaryPhoneNumberForUserAccount(userAccountId: string, dataContext: DataContext) {
-	return dataContext.PhoneNumber.findOne({
-		where: {
-			userAccountId,
-			verified: true,
-			primary: true
-		}
-	})
+export async function getPrimaryPhoneNumberForUserAccount(userAccountId: string, dataContext: Knex) {
+	return await dataContext<IPhoneNumber>('PhoneNumbers')
+		.where({ userAccountId, verified: true, primary: true })
+		.select('*')
+		.first()
 }

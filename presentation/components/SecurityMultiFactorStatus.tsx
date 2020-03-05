@@ -6,6 +6,9 @@ import ResponsiveInput from './ResponsiveInput'
 
 import { BackupPhoneNumberSetup } from './BackupPhoneNumberSetup'
 
+import { CardFooter } from './CardFooter'
+import { FormRow } from './FormRow'
+
 const SET_OTP_SECRET = gql`
 	mutation SET_OTP_SECRET($otpSecret: String!, $password: String!) {
 		setOtpSecret(data: { otpSecret: $otpSecret, password: $password }) {
@@ -71,7 +74,7 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 			</div>
 		)
 		footer = (
-			<div className="btn-toolbar ml-auto">
+			<div className="ml-auto">
 				<button
 					className="btn btn-secondary mr-2"
 					onClick={() => {
@@ -197,9 +200,10 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 			</div>
 		)
 	} else {
+		const showDisable = props.user.otpEnabled && !props.configuration.Security.multifactorRequired
 		footer = (
-			<div className="btn-toolbar ml-auto">
-				{props.user.otpEnabled && !props.configuration.Security.multifactorRequired && (
+			<div className="ml-auto">
+				{showDisable ? (
 					<button
 						className="btn btn-danger mr-2"
 						onClick={() => {
@@ -207,7 +211,7 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 						}}>
 						<i className="fa fa-fw fa-skull-crossbones" /> Disable
 					</button>
-				)}
+				) : null}
 				<button
 					className="btn btn-secondary"
 					onClick={() => {
@@ -222,20 +226,24 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 			</div>
 		)
 		body = (
-			<div>
-				<ResponsiveInput
-					label="Status"
-					value={props.user.otpEnabled ? 'Configured' : 'Not Configured'}
-					type="static"
-					className="form-control form-control-static"
-					readOnly
-				/>
-				{otpUpdated && (
-					<div className="alert alert-success mx-4">Your account is now protected by an Authenticator App.</div>
-				)}
-			</div>
+			<FormRow>
+				<div className="col-12">
+					<ResponsiveInput
+						label="Status"
+						value={props.user.otpEnabled ? 'Configured' : 'Not Configured'}
+						type="static"
+						className="form-control form-control-static"
+						readOnly
+					/>
+					{otpUpdated && (
+						<div className="alert alert-success mx-4">Your account is now protected by an Authenticator App.</div>
+					)}
+				</div>
+			</FormRow>
 		)
 	}
+
+	const shouldRenderPhoneSection = props.user.otpEnabled && props.configuration.Security.allowSMSBackupCodes
 
 	return (
 		<div className="card">
@@ -249,14 +257,14 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 					)}
 				</h5>
 				{body}
-				{props.user.otpEnabled && props.configuration.Security.allowSMSBackupCodes && (
+				{shouldRenderPhoneSection ? (
 					<div className="mt-4">
 						<h5>Backup Phone Number</h5>
-						<BackupPhoneNumberSetup user={props.user} />
+						<BackupPhoneNumberSetup refreshContext={props.refresh} user={props.user} />
 					</div>
-				)}
+				) : null}
 			</div>
-			<div className="card-footer d-flex">{footer}</div>
+			<CardFooter>{footer}</CardFooter>
 		</div>
 	)
 }
