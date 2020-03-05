@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { AdaptiveInputProps } from './index'
 export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 	const val: string = props.value || ',,,,,'
