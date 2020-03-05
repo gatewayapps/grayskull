@@ -2,9 +2,16 @@ exports.up = (knex) => {
 	return knex.schema.hasTable('UserAccounts').then((tableExists) => {
 		if (tableExists) {
 			//this is an existing installation.  We need to update tables
-			return knex.schema.table('Sessions', (table) => {
-				table.dropColumn('fingerprint')
-			})
+			return knex.schema
+				.table('Sessions', (table) => {
+					table.dropColumn('fingerprint')
+				})
+				.table('EmailAddresses', (table) => {
+					table.dropColumn('verificationSecret')
+				})
+				.table('PhoneNumbers', (table) => {
+					table.dropColumn('verificationSecret')
+				})
 		} else {
 			return knex.schema
 				.createTable('UserAccounts', (table) => {

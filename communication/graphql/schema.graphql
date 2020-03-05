@@ -258,7 +258,6 @@ type EmailAddress {
 	emailAddressId: ID!
 	userAccountId: ID!
 	emailAddress: String!
-	verificationSecret: String!
 	verified: Boolean!
 	primary: Boolean!
 	createdBy: ID
@@ -300,12 +299,6 @@ input EmailAddressFilter {
 	emailAddress_endsWith: String
 	emailAddress_equals: String
 	emailAddress_notEquals: String
-	verificationSecret_contains: String
-	verificationSecret_notContains: String
-	verificationSecret_startsWith: String
-	verificationSecret_endsWith: String
-	verificationSecret_equals: String
-	verificationSecret_notEquals: String
 	verified_equals: Boolean
 	verified_notEquals: Boolean
 	primary_equals: Boolean
@@ -354,7 +347,6 @@ type PhoneNumber {
 	phoneNumberId: ID!
 	userAccountId: ID!
 	phoneNumber: String!
-	verificationSecret: String!
 	verified: Boolean!
 	primary: Boolean!
 	createdBy: ID
@@ -384,12 +376,6 @@ input PhoneNumberFilter {
 	phoneNumber_endsWith: String
 	phoneNumber_equals: String
 	phoneNumber_notEquals: String
-	verificationSecret_contains: String
-	verificationSecret_notContains: String
-	verificationSecret_startsWith: String
-	verificationSecret_endsWith: String
-	verificationSecret_equals: String
-	verificationSecret_notEquals: String
 	verified_equals: Boolean
 	verified_notEquals: Boolean
 	primary_equals: Boolean

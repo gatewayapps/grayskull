@@ -103,7 +103,6 @@ export interface IEmailAddress {
 	emailAddressId: string
 	userAccountId: string
 	emailAddress: string
-	verificationSecret: string
 	verified: boolean
 	primary: boolean
 	createdBy: string | null
@@ -146,7 +145,6 @@ export interface IPhoneNumber {
 	phoneNumberId: string
 	userAccountId: string
 	phoneNumber: string
-	verificationSecret: string
 	verified: boolean
 	primary: boolean
 	createdBy: string | null
