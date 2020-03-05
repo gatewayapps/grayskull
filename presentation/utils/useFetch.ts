@@ -1,14 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
-import { LiteralType } from 'typescript'
-
-export const useFetch = (url, options, triggerProps: LiteralType[] = []) => {
+export const useFetch = (url, options) => {
 	const [response, setResponse] = React.useState(null)
 	const [error, setError] = React.useState(null)
 	const [isLoading, setIsLoading] = React.useState(true)
 
-	// const [refetch, setRefetch] = React.useState(null)
-	const refetch = React.useCallback(async () => {
+	const makeRequest = async () => {
 		setIsLoading(true)
 		try {
 			const response = await fetch(url, options)
@@ -18,11 +15,11 @@ export const useFetch = (url, options, triggerProps: LiteralType[] = []) => {
 		} catch (error) {
 			setError(error)
 		}
+	}
+
+	useEffect(() => {
+		makeRequest()
 	}, [url, options])
 
-	React.useEffect(() => {
-		refetch()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [refetch, ...triggerProps])
-	return { response, error, isLoading, refetch }
+	return { response, error, isLoading }
 }

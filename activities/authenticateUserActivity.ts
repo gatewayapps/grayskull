@@ -84,8 +84,7 @@ export async function authenticateUserActivity(
 
 		await clearBackupMultifactorCode(emailAddress, context.dataContext)
 	}
-
-	return await createSession(
+	const session = await createSession(
 		{
 			userAccountId: userAccount.userAccountId,
 			ipAddress: context.req.socket.remoteAddress
@@ -93,4 +92,9 @@ export async function authenticateUserActivity(
 		extendedSession,
 		context.dataContext
 	)
+	if (session) {
+		return session
+	} else {
+		throw new Error('Failed to retrieve session from database')
+	}
 }

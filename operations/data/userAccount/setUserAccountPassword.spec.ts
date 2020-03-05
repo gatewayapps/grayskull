@@ -1,11 +1,12 @@
 import { setUserAccountPassword } from './setUserAccountPassword'
-import { DataContext } from '../../../foundation/context/getDataContext'
+
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createUserAccount } from './createUserAccount'
 import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
 import { verifyPassword } from './verifyPassword'
+import Knex from 'knex'
 
-let dataContext: DataContext
+let dataContext: Knex
 let cacheContext: CacheContext
 
 describe('setUserAccountPassword', () => {
@@ -23,15 +24,15 @@ describe('setUserAccountPassword', () => {
 		)
 
 		const passwordVerified = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
-		expect(passwordVerified).toEqual(true)
+		expect(passwordVerified).toBeTruthy()
 
 		await setUserAccountPassword(createdUser.userAccountId, 'password2', dataContext, cacheContext)
 		expect(cacheContext.getValue(`USER_${createdUser.userAccountId}`)).toBeUndefined()
 
 		const passwordVerified2 = await verifyPassword(createdUser.userAccountId, 'password1', dataContext)
-		expect(passwordVerified2).toEqual(false)
+		expect(passwordVerified2).toBeFalsy()
 
 		const passwordVerified3 = await verifyPassword(createdUser.userAccountId, 'password2', dataContext)
-		expect(passwordVerified3).toEqual(true)
+		expect(passwordVerified3).toBeTruthy()
 	})
 })

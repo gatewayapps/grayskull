@@ -1,12 +1,13 @@
 import { CacheContext } from '../../../foundation/context/getCacheContext'
-import { DataContext } from '../../../foundation/context/getDataContext'
+
 import { getEmailAddressByEmailAddress } from '../emailAddress/getEmailAddressByEmailAddress'
 import { getUserAccount } from './getUserAccount'
 import { GrayskullErrorCode, GrayskullError } from '../../../foundation/errors/GrayskullError'
+import Knex from 'knex'
 
 export async function getUserAccountByEmailAddress(
 	emailAddress: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	cacheContext?: CacheContext,
 	includeSensitive = false
 ) {

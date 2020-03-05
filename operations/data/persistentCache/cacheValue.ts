@@ -5,5 +5,8 @@ import { IKeyValueCache } from '../../../foundation/types/types'
 
 export async function cacheValue(key: string, value: string, ttlSeconds: number, dataContext: Knex) {
 	await clearValue(key, dataContext)
-	await dataContext<IKeyValueCache>('KeyValueCache').insert({ key, value, expires: addSeconds(new Date(), ttlSeconds) })
+
+	const expires = addSeconds(new Date(), ttlSeconds)
+
+	await dataContext<IKeyValueCache>('KeyValueCache').insert({ key, value, expires })
 }

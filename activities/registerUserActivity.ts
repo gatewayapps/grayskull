@@ -38,8 +38,9 @@ export async function registerUserActivity(
 		throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `${emailAddress} has already been registered`)
 	}
 
-	const userCount = await dataContext.UserAccount.count()
-	if (userCount === 0) {
+	const userCount = await dataContext<IUserAccount>('UserAccounts').count('*', { as: 'userCount' })
+	const isFirstUser = userCount[0]['userCount'] === 0
+	if (isFirstUser) {
 		data.permissions = Permissions.Admin
 	} else {
 		data.permissions = Permissions.User
@@ -59,8 +60,8 @@ export async function registerUserActivity(
 	}
 
 	const userAccount = await createUserAccount(data, password, dataContext)
-	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, userCount === 0)
-	if (userCount > 0) {
+	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, isFirstUser)
+	if (!isFirstUser) {
 		await sendEmailVerificationActivity(emailAddress, context)
 	}
 

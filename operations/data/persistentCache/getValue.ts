@@ -15,6 +15,7 @@ export async function getValue(key: string, dataContext: Knex) {
 export async function getRecord(key: string, dataContext: Knex) {
 	await flushExpiredValues(dataContext)
 	const record = await dataContext<IKeyValueCache>('KeyValueCache')
+		.debug(true)
 		.where({ key })
 		.select('*')
 		.first()

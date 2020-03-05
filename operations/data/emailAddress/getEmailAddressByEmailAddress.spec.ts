@@ -1,10 +1,9 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
-
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createEmailAddress } from './createEmailAddress'
 import { getEmailAddressByEmailAddress } from './getEmailAddressByEmailAddress'
+import Knex from 'knex'
 
-let dataContext: DataContext
+let dataContext: Knex
 
 describe('getEmailAddressByEmailAddress', () => {
 	beforeAll(async () => {
@@ -21,6 +20,6 @@ describe('getEmailAddressByEmailAddress', () => {
 	})
 	it('should not return an email address that does not exist', async () => {
 		const emailAddressRecord = await getEmailAddressByEmailAddress('test2@test.com', dataContext)
-		expect(emailAddressRecord).toBeNull()
+		expect(emailAddressRecord).toBeUndefined()
 	})
 })

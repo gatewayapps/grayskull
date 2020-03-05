@@ -1,10 +1,9 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
 import { IEmailAddress } from '../../../foundation/types/types'
-
+import Knex from 'knex'
 export async function getPrimaryEmailAddress(
 	userAccountId: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	cacheContext: CacheContext
 ): Promise<IEmailAddress | undefined> {
 	const cacheKey = `PRIMARY_EMAIL_${userAccountId}`
@@ -12,7 +11,8 @@ export async function getPrimaryEmailAddress(
 	if (cachedEmail) {
 		return cachedEmail
 	} else {
-		const primaryEmailRecord = await dataContext.EmailAddress.where({ userAccountId, primary: true })
+		const primaryEmailRecord = await dataContext<IEmailAddress>('EmailAddresses')
+			.where({ userAccountId, primary: true })
 			.select('*')
 			.first()
 		if (primaryEmailRecord) {

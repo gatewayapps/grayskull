@@ -1,5 +1,9 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IUserClient } from '../../../foundation/types/types'
 
-export async function getUserClient(userAccountId: string, client_id: string, context: DataContext) {
-	return context.UserClient.findOne({ where: { userAccountId, client_id } })
+export async function getUserClient(userAccountId: string, client_id: string, dataContext: Knex) {
+	return dataContext<IUserClient>('UserClients')
+		.where({ userAccountId, client_id })
+		.select('*')
+		.first()
 }

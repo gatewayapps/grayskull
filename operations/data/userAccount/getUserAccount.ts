@@ -1,10 +1,10 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
 import { IUserAccount } from '../../../foundation/types/types'
+import Knex from 'knex'
 
 export async function getUserAccount(
 	userAccountId: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	cacheContext?: CacheContext,
 	includeSensitive = false
 ) {
@@ -18,9 +18,10 @@ export async function getUserAccount(
 			return cachedUser
 		}
 	}
-	const user = await dataContext.UserAccount.where({
-		userAccountId
-	})
+	const user = await dataContext<IUserAccount>('UserAccounts')
+		.where({
+			userAccountId
+		})
 		.select('*')
 		.first()
 	if (user && !includeSensitive) {

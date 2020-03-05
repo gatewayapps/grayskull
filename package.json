@@ -35,6 +35,7 @@
   },
   "browser": {
     "sqlite3": false,
+    "knex": false,
     "pg": false,
     "dns": false,
     "tedious": false,
@@ -129,6 +130,7 @@
     "apollo-server-micro": "^2.10.1",
     "apollo-upload-client": "^12.1.0",
     "apollo-utilities": "^1.3.3",
+    "atob": "^2.1.2",
     "aws-sdk": "^2.626.0",
     "babel-plugin-styled-components": "^1.10.7",
     "bcrypt": "^3.0.8",
@@ -136,6 +138,7 @@
     "body-parser": "^1.18.3",
     "bootstrap": "^4.3.1",
     "bootswatch": "^4.3.1",
+    "btoa": "^1.2.1",
     "classnames": "^2.2.6",
     "cleave.js": "^1.4.7",
     "cloudinary": "^1.19.0",

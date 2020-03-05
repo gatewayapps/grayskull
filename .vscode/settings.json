@@ -36,5 +36,6 @@
   },
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "workbench.colorTheme": "Noctis Obscuro",
+  "jest.autoEnable": false
 
 }

@@ -1,5 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IClient } from '../../../foundation/types/types'
 
-export async function getPinnedClients(dataContext: DataContext) {
-	return dataContext.Client.findAll({ where: { pinToHeader: true } })
+export async function getPinnedClients(dataContext: Knex) {
+	return dataContext<IClient>('Clients')
+		.where({ pinToHeader: true })
+		.select('baseUrl', 'client_id', 'homePageUrl', 'logoImageUrl', 'name', 'pinToHeader')
 }

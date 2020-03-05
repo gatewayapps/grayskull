@@ -1,9 +1,9 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IEmailAddress } from '../../../foundation/types/types'
 
-export async function getEmailAddressById(emailAddressId: string, dataContext: DataContext) {
-	return dataContext.EmailAddress.findOne({
-		where: {
-			emailAddressId
-		}
-	})
+export async function getEmailAddressById(emailAddressId: string, dataContext: Knex) {
+	return dataContext<IEmailAddress>('EmailAddresses')
+		.where({ emailAddressId })
+		.select('*')
+		.first()
 }

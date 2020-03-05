@@ -126,7 +126,7 @@ export interface SendVerificationOperationArgs {
 export interface IKeyValueCache {
 	key: string
 	value: string
-	expires: Date | null
+	expires: Date
 }
 
 export interface ILoginResponse {

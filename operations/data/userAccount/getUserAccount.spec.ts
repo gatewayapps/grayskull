@@ -1,10 +1,10 @@
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import { createTestUserAccount } from './createUserAccount.spec'
 import { getUserAccount } from './getUserAccount'
 import { getCacheContext } from '../../../foundation/context/getCacheContext'
 
-let dataContext: DataContext
+let dataContext: Knex
 
 describe('getUserContext', () => {
 	beforeAll(async () => {

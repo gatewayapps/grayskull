@@ -3,12 +3,13 @@ import { getDataContext } from './getDataContext'
 
 export async function getInMemoryContext() {
 	const options: Knex.Config = {
-		log: undefined,
+		debug: false,
 		client: 'sqlite',
 		connection: {
 			database: 'grayskull',
 			filename: ':memory:'
-		}
+		},
+		useNullAsDefault: true
 	}
 
 	const context = await getDataContext(options)

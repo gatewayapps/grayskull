@@ -1,6 +1,6 @@
 import { ReadStream } from 'fs'
 import fs from 'fs-extra'
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import { IUploadFileResponse } from '../../../foundation/types/types'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
@@ -18,7 +18,7 @@ export async function saveFileToDisk(
 		)
 	}
 
-	const fileId = uuid().replace(/-/g, '')
+	const fileId = uuidv4().replace(/-/g, '')
 	const extname = path.extname(fileName)
 	const localFilename = `${fileId}${extname}`
 	const uploadDirectory = path.join(localDirectory, 'public/uploads/')

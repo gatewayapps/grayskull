@@ -1,13 +1,13 @@
 import { getUserContext } from './getUserContext'
 import { getCacheContext, CacheContext } from './getCacheContext'
-import { DataContext } from './getDataContext'
 
 import { createTestUserAccount } from '../../operations/data/userAccount/createUserAccount.spec'
 import { createSession } from '../../operations/data/session/createSession'
 import { getInMemoryContext } from './getDataContext.spec'
 import { IUserAccount, ISession } from '../types/types'
+import Knex from 'knex'
 
-let dataContext: DataContext
+let dataContext: Knex
 let testUser: IUserAccount
 let testSession: ISession | undefined
 const cacheContext: CacheContext = getCacheContext()

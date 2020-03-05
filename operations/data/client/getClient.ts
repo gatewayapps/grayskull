@@ -1,6 +1,14 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IClient } from '../../../foundation/types/types'
 
-export async function getClient(clientId: string, dataContext: DataContext, includeSensitive = false) {
-	const exclude = includeSensitive ? [] : ['secret']
-	return dataContext.Client.findOne({ where: { client_id: clientId }, attributes: { exclude } })
+export async function getClient(clientId: string, dataContext: Knex, includeSensitive = false) {
+	const result = await dataContext<IClient>('Clients')
+		.where({ clientId })
+		.select('*')
+		.first()
+	if (result && !includeSensitive) {
+		delete result.secret
+	}
+
+	return result
 }

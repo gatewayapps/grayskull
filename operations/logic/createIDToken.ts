@@ -1,18 +1,18 @@
 import { getUserProfileForClient } from './getUserProfileForClient'
 import { UserContext } from '../../foundation/context/getUserContext'
-import { Client } from '../../foundation/models/Client'
-import { IConfiguration } from '../../foundation/types/types'
+
+import { IConfiguration, IClient, IUserClient } from '../../foundation/types/types'
 
 import moment from 'moment'
-import { UserClient } from '../../foundation/models/UserClient'
+
 import { createHmac } from 'crypto'
 import jwt from 'jsonwebtoken'
 import { IIDToken, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
 
 export async function createIDToken(
 	userContext: UserContext,
-	client: Client,
-	userClient: UserClient,
+	client: IClient,
+	userClient: IUserClient,
 	nonce: string | undefined,
 	accessToken: string | undefined,
 

@@ -1,9 +1,9 @@
 import { verifyPassword } from './verifyPassword'
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createUserAccount } from '../userAccount/createUserAccount'
 
-let dataContext: DataContext
+let dataContext: Knex
 
 describe('verifyPassword', () => {
 	beforeAll(async () => {

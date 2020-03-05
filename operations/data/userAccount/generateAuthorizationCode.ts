@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto'
 import { cacheValue } from '../persistentCache/cacheValue'
 import { UserContext } from '../../../foundation/context/getUserContext'
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 
 export async function generateAuthorizationCode(
 	clientId: string,
@@ -9,7 +9,7 @@ export async function generateAuthorizationCode(
 	userClientId: string,
 	nonce: string,
 	userAccount: UserContext,
-	dataContext: DataContext
+	dataContext: Knex
 ) {
 	const authorizationCode = randomBytes(64).toString('hex')
 	await cacheValue(

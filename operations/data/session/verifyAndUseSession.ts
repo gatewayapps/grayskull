@@ -1,10 +1,10 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
 
 import { addSeconds } from 'date-fns'
 
 import { SESSION_EXPIRATION_SECONDS } from './createSession'
 import { ISession } from '../../../foundation/types/types'
+import Knex from 'knex'
 
 /**
  * @description Attempts to find a matching session in the cache context.  If no session is cached, find it in the data context and cache it
@@ -14,7 +14,7 @@ import { ISession } from '../../../foundation/types/types'
  */
 export async function verifyAndUseSession(
 	sessionId: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	cacheContext: CacheContext
 ): Promise<ISession | null> {
 	if (!sessionId) {
@@ -29,7 +29,8 @@ export async function verifyAndUseSession(
 		return cachedSession
 	}
 
-	const session = await dataContext.Session.where({ sessionId })
+	const session = await dataContext<ISession>('Sessions')
+		.where({ sessionId })
 		.select('*')
 		.first()
 	if (!session) {
@@ -45,7 +46,9 @@ export async function verifyAndUseSession(
 		session.expiresAt = addSeconds(NOW, SESSION_EXPIRATION_SECONDS)
 	}
 	session.lastUsedAt = NOW
-	await dataContext.Session.where({ sessionId }).update({ lastUsedAt: NOW })
+	await dataContext<ISession>('Sessions')
+		.where({ sessionId })
+		.update({ lastUsedAt: NOW })
 
 	cacheContext.setValue(cacheKey, session, 30)
 

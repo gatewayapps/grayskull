@@ -1,10 +1,53 @@
 import Knex from 'knex'
 
+function enforceDates(record) {
+	const KNOWN_DATE_COLUMNS = [
+		'expires',
+		'expiresAt',
+		'createdAt',
+		'updatedAt',
+		'deletedAt',
+		'lastActive',
+		'lastPasswordChange',
+		'issuedAt',
+		'lastUsedAt',
+		'activeAt',
+		'revokedAt',
+		'birthday',
+		'RevokedAt'
+	]
+	const keys = Object.keys(record).filter((k) => KNOWN_DATE_COLUMNS.includes(k))
+	keys.forEach((k) => {
+		if (record[k] !== undefined && typeof record[k] !== 'object') {
+			record[k] = new Date(record[k])
+		}
+	})
+	return record
+}
+
 export async function getDataContext(options: Knex.Config): Promise<Knex> {
 	if (!(options as any).connection['database']) {
 		throw new Error('You must provide a database name')
 	}
+
+	options.postProcessResponse = (result) => {
+		if (Array.isArray(result)) {
+			return result.map((r) => enforceDates(r))
+		} else {
+			if (typeof result === 'object') {
+				return enforceDates(result)
+			} else {
+				return result
+			}
+		}
+	}
 	const knex = Knex(options)
+	if (options.debug) {
+		knex.on('query', (queryText) => {
+			// eslint-disable-next-line no-console
+			console.debug(queryText)
+		})
+	}
 
 	return knex
 }
