@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react'
-import { useFetch } from '../utils/useFetch'
+import React, { ReactNode, useState } from 'react'
+
 import Router from 'next/router'
 import ConfigurationContext from '../contexts/ConfigurationContext'
 import UserContext from '../contexts/UserContext'
@@ -9,7 +9,29 @@ import { IConfiguration } from '../../foundation/models/IConfiguration'
 import ActivityMessageContainerComponent from './ActivityMessageContainer'
 
 const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (props) => {
-	const { response, isLoading, error, refetch } = useFetch(`/api/initialize`, { method: 'GET' })
+	const [response, setResponse] = useState(undefined)
+	const [error, setError] = useState(undefined)
+	const [busy, setBusy] = useState(false)
+
+	const callInitialize = async () => {
+		if (busy) {
+			return
+		}
+		try {
+			setBusy(true)
+			const response = await fetch(`/api/initialize`, { method: 'GET' })
+			const json = await response.json()
+			setResponse(json)
+		} catch (err) {
+			console.error(err)
+			setError(err)
+		}
+		setBusy(false)
+	}
+
+	if (!busy && !response) {
+		callInitialize()
+	}
 
 	let redirectUri = ''
 	let content: ReactNode = props.children
@@ -21,7 +43,7 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 			</ActivityMessageContainerComponent>
 		)
 	}
-	if (isLoading) {
+	if (busy) {
 		content = (
 			<ActivityMessageContainerComponent>
 				<LoadingIndicator message="Loading..." />
@@ -30,6 +52,9 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 	}
 
 	if (response) {
+		if (!response.user && window.location.pathname !== '/login') {
+			redirectUri = '/login'
+		}
 		if (
 			response.user &&
 			(window.location.pathname === '/login' || window.location.pathname === '/' || window.location.pathname === '')
@@ -53,14 +78,18 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 				<LoadingIndicator message="Redirecting..." />
 			</ActivityMessageContainerComponent>
 		)
-
 		Router.push(redirectUri)
 	}
 
 	return (
 		<div>
 			<ConfigurationContext.Provider value={response ? response.configuration : props.configuration}>
-				<UserContext.Provider value={{ user: response?.user, refresh: refetch, hasInitialized: true }}>
+				<UserContext.Provider
+					value={{
+						user: response?.user,
+						refresh: callInitialize,
+						hasInitialized: true
+					}}>
 					{content}
 				</UserContext.Provider>
 			</ConfigurationContext.Provider>

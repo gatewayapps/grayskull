@@ -5,5 +5,5 @@ import { getClients } from '../operations/data/client/getClients'
 
 export async function listClientsActivity(filter: IClientFilter, skip: number, take: number, context: IRequestContext) {
 	ensureAdministrator(context)
-	return getClients(filter, skip, take, [['name', 'ASC']], context.dataContext)
+	return getClients(skip, take, context.dataContext)
 }

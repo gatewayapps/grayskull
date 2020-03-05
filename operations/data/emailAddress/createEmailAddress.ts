@@ -1,19 +1,27 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { v4 as uuidv4 } from 'uuid'
+import { IEmailAddress } from '../../../foundation/types/types'
 
 export async function createEmailAddress(
 	emailAddress: string,
 	userAccountId: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	primary,
 	verified
 ) {
-	return new dataContext.EmailAddress({
+	const emailAddressId = uuidv4()
+	await dataContext<IEmailAddress>('EmailAddresses').insert({
+		emailAddressId,
 		emailAddress,
-		userAccountId: userAccountId,
+		userAccountId,
 		verified,
 		primary,
 		createdAt: new Date(),
-		updatedAt: new Date(),
-		verificationSecret: ''
-	}).save()
+		updatedAt: new Date()
+	})
+
+	return await dataContext<IEmailAddress>('EmailAddresses')
+		.where({ emailAddressId })
+		.select('*')
+		.first()
 }

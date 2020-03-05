@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getPinnedClientsActivity } from '../../activities/getPinnedClientsActivity'
 import { countUserAccounts } from '../../operations/data/userAccount/countUserAccounts'
@@ -23,18 +24,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		configuration,
 		needsConfiguration,
 		needsAdmin,
-		user: context.user ?? {
-			userAccountId: context.user.userAccountId,
-			firstName: context.user.firstName,
-			lastName: context.user.lastName,
-			gender: context.user.gender,
-			birthday: context.user.birthday,
-			displayName: context.user.displayName,
-			lastPasswordChange: context.user.lastPasswordChange,
-			profileImageUrl: context.user.profileImageUrl,
-			emailAddress: context.user.emailAddress,
-			permissions: context.user.permissions,
-			otpEnabled: context.user.otpEnabled
-		}
+		user: context.user
+			? {
+					userAccountId: context.user.userAccountId,
+					firstName: context.user.firstName,
+					lastName: context.user.lastName,
+					gender: context.user.gender,
+					birthday: context.user.birthday,
+					displayName: context.user.displayName,
+					lastPasswordChange: context.user.lastPasswordChange,
+					profileImageUrl: context.user.profileImageUrl,
+					emailAddress: context.user.emailAddress,
+					permissions: context.user.permissions,
+					otpEnabled: context.user.otpEnabled
+			  }
+			: null
 	})
 }

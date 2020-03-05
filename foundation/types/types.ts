@@ -103,7 +103,6 @@ export interface IEmailAddress {
 	emailAddressId: string
 	userAccountId: string
 	emailAddress: string
-	verificationSecret: string
 	verified: boolean
 	primary: boolean
 	createdBy: string | null
@@ -126,7 +125,7 @@ export interface SendVerificationOperationArgs {
 export interface IKeyValueCache {
 	key: string
 	value: string
-	expires: Date | null
+	expires: Date
 }
 
 export interface ILoginResponse {
@@ -146,7 +145,6 @@ export interface IPhoneNumber {
 	phoneNumberId: string
 	userAccountId: string
 	phoneNumber: string
-	verificationSecret: string
 	verified: boolean
 	primary: boolean
 	createdBy: string | null
@@ -188,7 +186,6 @@ export interface IScope {
 
 export interface ISession {
 	sessionId: string
-	fingerprint: string
 	userAccountId: string
 	name: string | null
 	ipAddress: string
@@ -288,7 +285,6 @@ export interface LoginOperationArgs {
 	emailAddress: string
 	password: string
 	otpToken: string | null
-	fingerprint: string
 	extendedSession: boolean
 }
 export interface AuthorizeClientOperationArgs {

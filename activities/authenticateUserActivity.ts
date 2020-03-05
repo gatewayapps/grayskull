@@ -84,15 +84,17 @@ export async function authenticateUserActivity(
 
 		await clearBackupMultifactorCode(emailAddress, context.dataContext)
 	}
-
-	const fingerprint = context.req.headers ? context.req.headers['x-fingerprint']?.toString() : ''
-	return await createSession(
+	const session = await createSession(
 		{
-			fingerprint,
 			userAccountId: userAccount.userAccountId,
 			ipAddress: context.req.socket.remoteAddress
 		},
 		extendedSession,
 		context.dataContext
 	)
+	if (session) {
+		return session
+	} else {
+		throw new Error('Failed to retrieve session from database')
+	}
 }

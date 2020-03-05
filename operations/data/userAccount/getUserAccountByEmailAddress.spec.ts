@@ -1,10 +1,10 @@
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import { createTestUserAccount } from './createUserAccount.spec'
 import { createEmailAddress } from '../emailAddress/createEmailAddress'
 import { getUserAccountByEmailAddress } from './getUserAccountByEmailAddress'
 import { getCacheContext, CacheContext } from '../../../foundation/context/getCacheContext'
-let dataContext: DataContext
+let dataContext: Knex
 let cacheContext: CacheContext
 
 describe('getUserAccountByEmailAddress', () => {

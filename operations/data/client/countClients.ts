@@ -1,8 +1,11 @@
 import { IClientFilter } from '../../../foundation/types/filterTypes'
-import { DataContext } from '../../../foundation/context/getDataContext'
-import { convertFilterToSequelizeWhere } from '../../logic/graphQLSequelizeConverter'
+import Knex from 'knex'
+import { IClient } from '../../../foundation/types/types'
 
-export async function countClients(filter: IClientFilter, dataContext: DataContext) {
-	const convertedFilter = convertFilterToSequelizeWhere(filter)
-	return await dataContext.Client.count({ where: convertedFilter })
+export async function countClients(filter: IClientFilter, dataContext: Knex) {
+	const results = await dataContext<IClient>('Clients').count('*', { as: 'clientCount' })
+	if (!results || results.length === 0) {
+		throw new Error('Unknown')
+	}
+	return results[0]['clientCount'] as number
 }

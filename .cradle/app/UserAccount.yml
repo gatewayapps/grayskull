@@ -63,7 +63,6 @@ UserAccount:
         emailAddress: string
         password: string
         otpToken: string?
-        fingerprint: string
         extendedSession: boolean default(0)
     # Authorize Client #
     authorizeClient:

@@ -1,10 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IEmailAddress } from '../../../foundation/types/types'
 
-export async function getUnverifiedPrimaryEmailAddresses(dataContext: DataContext) {
-	return dataContext.EmailAddress.findAll({
-		where: {
-			primary: true,
-			verified: false
-		}
-	})
+export async function getUnverifiedPrimaryEmailAddresses(dataContext: Knex) {
+	return dataContext<IEmailAddress>('EmailAddresses')
+		.where({ primary: true, verified: false })
+		.select('*')
 }

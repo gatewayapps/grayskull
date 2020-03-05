@@ -1,30 +1,26 @@
-import Sequelize from 'sequelize'
+import Knex from 'knex'
 import { getDataContext } from './getDataContext'
 
 export async function getInMemoryContext() {
-	const options: Sequelize.Options = {
-		database: 'grayskull',
-		dialect: 'sqlite',
-		storage: ':memory:',
-		logging: false
+	const options: Knex.Config = {
+		debug: false,
+		client: 'sqlite',
+		connection: {
+			database: 'grayskull',
+			filename: ':memory:'
+		},
+		useNullAsDefault: true
 	}
 
-	return await getDataContext(options)
+	const context = await getDataContext(options)
+	await context.migrate.up({ directory: './foundation/migrations' })
+	return context
 }
 
 describe('getDataContext', () => {
 	it('should correctly return a data context', async () => {
 		const dc = await getInMemoryContext()
 
-		expect(dc.Client).toBeDefined()
-		expect(dc.EmailAddress).toBeDefined()
-		expect(dc.KeyValueCache).toBeDefined()
-		expect(dc.PhoneNumber).toBeDefined()
-		expect(dc.RefreshToken).toBeDefined()
-		expect(dc.Session).toBeDefined()
-		expect(dc.Setting).toBeDefined()
-		expect(dc.UserAccount).toBeDefined()
-		expect(dc.UserClient).toBeDefined()
-		expect(dc.sequelize).toBeDefined()
+		expect(dc).toBeDefined()
 	})
 })

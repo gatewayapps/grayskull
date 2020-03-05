@@ -1,8 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import * as otplib from 'otplib'
 import { cacheValue } from '../persistentCache/cacheValue'
 
-export async function generateBackupMultifactorCode(emailAddress: string, otpSecret: string, dataContext: DataContext) {
+export async function generateBackupMultifactorCode(emailAddress: string, otpSecret: string, dataContext: Knex) {
 	const cacheKey = `BACKUP_MFA:${emailAddress}`
 	const backupCode = otplib.authenticator.generate(otpSecret)
 

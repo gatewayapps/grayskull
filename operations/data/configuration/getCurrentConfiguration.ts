@@ -1,23 +1,24 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
-import { Setting } from '../../../foundation/models/Setting'
+
 import {
 	IConfiguration,
 	IMailConfiguration,
 	IServerConfiguration,
-	ISecurityConfiguration
+	ISecurityConfiguration,
+	ISetting
 } from '../../../foundation/types/types'
 import { SettingsKeys } from '../../../foundation/constants/KnownSettings'
 import { decrypt } from '../../logic/encryption'
+import Knex from 'knex'
 const settingsCacheKey = `SETTINGS_RECORDS`
-function getNumericSetting(key: string, settings: Setting[]) {
+function getNumericSetting(key: string, settings: ISetting[]) {
 	const record = settings.find((s) => s.key === key && s.type === 'Number')
 	if (!record) {
 		return null
 	}
 	return parseInt(record.value)
 }
-function getBooleanSetting(key: string, settings: Setting[]) {
+function getBooleanSetting(key: string, settings: ISetting[]) {
 	const record = settings.find((s) => s.key === key && s.type === 'Boolean')
 	if (!record) {
 		return null
@@ -25,7 +26,7 @@ function getBooleanSetting(key: string, settings: Setting[]) {
 	return record.value.toString() === 'true'
 }
 
-function getStringSetting(key: string, settings: Setting[], encrypted = false) {
+function getStringSetting(key: string, settings: ISetting[], encrypted = false) {
 	const record = settings.find((s) => s.key === key && s.type === 'String')
 	if (!record) {
 		return null
@@ -37,7 +38,7 @@ function getStringSetting(key: string, settings: Setting[], encrypted = false) {
 	}
 }
 
-function buildMailConfigurationFromSettings(settings: Setting[]): IMailConfiguration {
+function buildMailConfigurationFromSettings(settings: ISetting[]): IMailConfiguration {
 	return {
 		fromAddress: getStringSetting(SettingsKeys.MAIL_FROM_ADDRESS, settings),
 		password: getStringSetting(SettingsKeys.MAIL_PASSWORD, settings, true),
@@ -49,7 +50,7 @@ function buildMailConfigurationFromSettings(settings: Setting[]): IMailConfigura
 	}
 }
 
-function buildServerConfigurationFromSettings(settings: Setting[]): IServerConfiguration {
+function buildServerConfigurationFromSettings(settings: ISetting[]): IServerConfiguration {
 	return {
 		baseUrl: getStringSetting(SettingsKeys.SERVER_BASE_URL, settings),
 		realmBackground: getStringSetting(SettingsKeys.SERVER_BACKGROUND_IMAGE, settings),
@@ -59,7 +60,7 @@ function buildServerConfigurationFromSettings(settings: Setting[]): IServerConfi
 	}
 }
 
-function buildSecurityConfigurationFromSettings(settings: Setting[]): ISecurityConfiguration {
+function buildSecurityConfigurationFromSettings(settings: ISetting[]): ISecurityConfiguration {
 	return {
 		accessTokenExpirationSeconds: getNumericSetting(SettingsKeys.SECURITY_ACCESS_TOKEN_EXPIRES_IN_SECONDS, settings),
 		allowSignup: getBooleanSetting(SettingsKeys.SECURITY_ALLOW_USER_SIGNUP, settings),
@@ -79,7 +80,7 @@ function buildSecurityConfigurationFromSettings(settings: Setting[]): ISecurityC
 	}
 }
 
-function buildConfigurationFromSettings(settings: Setting[]): IConfiguration {
+function buildConfigurationFromSettings(settings: ISetting[]): IConfiguration {
 	return {
 		Mail: buildMailConfigurationFromSettings(settings.filter((s) => s.category === 'Mail')),
 		Server: buildServerConfigurationFromSettings(settings.filter((s) => s.category === 'Server')),
@@ -88,12 +89,12 @@ function buildConfigurationFromSettings(settings: Setting[]): IConfiguration {
 	}
 }
 
-export async function getCurrentConfiguration(dataContext: DataContext, cacheContext: CacheContext) {
+export async function getCurrentConfiguration(dataContext: Knex, cacheContext: CacheContext) {
 	const settingsCacheKey = `SETTINGS_RECORDS`
 
-	let settings = cacheContext.getValue<Setting[]>(settingsCacheKey)
+	let settings = cacheContext.getValue<ISetting[]>(settingsCacheKey)
 	if (!settings || settings.length === 0) {
-		settings = await dataContext.Setting.findAll()
+		settings = await dataContext<ISetting>('Settings').select('*')
 		cacheContext.setValue(settingsCacheKey, settings, 30)
 	}
 

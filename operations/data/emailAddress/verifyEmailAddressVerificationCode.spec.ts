@@ -1,8 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { generateEmailAddressVerificationCode } from './generateEmailAddressVerificationCode'
 import { verifyEmailAddressVerificationCode } from './verifyEmailAddressVerificationCode'
-let dataContext: DataContext
+let dataContext: Knex
 let verificationCode: string
 const TEST_EMAIL_ADDRESS = 'test@test.com'
 describe('verifyEmailAddressVerificationCode', () => {

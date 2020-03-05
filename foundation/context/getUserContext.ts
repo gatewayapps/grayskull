@@ -1,4 +1,3 @@
-import { DataContext } from './getDataContext'
 import { CacheContext } from './getCacheContext'
 
 import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
@@ -6,12 +5,13 @@ import { verifyAndUseSession } from '../../operations/data/session/verifyAndUseS
 
 import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
 import { IUserAccount, IConfiguration } from '../types/types'
+import Knex from 'knex'
 
 export type UserContext = IUserAccount & { emailAddress: string; emailAddressVerified: boolean }
 
 export async function createUserContextForUserId(
 	userAccountId: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	cacheContext: CacheContext,
 	configuration: IConfiguration
 ) {
@@ -58,15 +58,14 @@ export async function createUserContextForUserId(
 
 export async function getUserContext(
 	sessionId: string,
-	fingerprint: string,
-	dataContext: DataContext,
+	dataContext: Knex,
 	cacheContext: CacheContext,
 	configuration: IConfiguration
 ): Promise<UserContext | undefined> {
 	if (!sessionId) {
 		return undefined
 	} else {
-		const session = await verifyAndUseSession(sessionId, fingerprint, dataContext, cacheContext)
+		const session = await verifyAndUseSession(sessionId, dataContext, cacheContext)
 		if (!session) {
 			return undefined
 		} else {

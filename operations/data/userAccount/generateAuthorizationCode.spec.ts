@@ -1,9 +1,9 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { generateAuthorizationCode } from './generateAuthorizationCode'
 import { getValue } from '../persistentCache/getValue'
 
-let dataContext: DataContext
+let dataContext: Knex
 describe('generateAuthorizationCode', () => {
 	beforeAll(async () => {
 		dataContext = await getInMemoryContext()

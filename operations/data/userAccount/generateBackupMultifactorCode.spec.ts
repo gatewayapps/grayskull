@@ -1,7 +1,8 @@
 import { generateBackupMultifactorCode } from './generateBackupMultifactorCode'
-import { DataContext } from '../../../foundation/context/getDataContext'
+
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-let dataContext: DataContext
+import Knex from 'knex'
+let dataContext: Knex
 
 describe('generateBackupMultifactorCode', () => {
 	beforeAll(async () => {

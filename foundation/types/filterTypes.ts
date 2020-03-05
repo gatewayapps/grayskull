@@ -106,11 +106,6 @@ export interface IEmailAddressFilter {
 	emailAddress_endsWith?: string
 	emailAddress_equals?: string
 	emailAddress_notEquals?: string
-	verificationSecret_contains?: string
-	verificationSecret_startsWith?: string
-	verificationSecret_endsWith?: string
-	verificationSecret_equals?: string
-	verificationSecret_notEquals?: string
 	verified_equals?: boolean
 	verified_notEquals?: boolean
 	primary_equals?: boolean
@@ -161,11 +156,6 @@ export interface IPhoneNumberFilter {
 	phoneNumber_endsWith?: string
 	phoneNumber_equals?: string
 	phoneNumber_notEquals?: string
-	verificationSecret_contains?: string
-	verificationSecret_startsWith?: string
-	verificationSecret_endsWith?: string
-	verificationSecret_equals?: string
-	verificationSecret_notEquals?: string
 	verified_equals?: boolean
 	verified_notEquals?: boolean
 	primary_equals?: boolean
@@ -265,11 +255,6 @@ export interface SessionFilter {
 	sessionId_in?: [string]
 	sessionId_equals?: string
 	sessionId_notEquals?: string
-	fingerprint_contains?: string
-	fingerprint_startsWith?: string
-	fingerprint_endsWith?: string
-	fingerprint_equals?: string
-	fingerprint_notEquals?: string
 	userAccountId_in?: [string]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string

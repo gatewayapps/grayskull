@@ -7,11 +7,12 @@ jest.mock('../../../activities/registerUserActivity', () => ({
 }))
 
 import { registerUserResolver } from './registerUserResolver'
-import { DataContext } from '../../../foundation/context/getDataContext'
+
 import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
+import Knex from 'knex'
 const registerUserActivity = require('../../../activities/registerUserActivity')
-let dataContext: DataContext
+let dataContext: Knex
 let cacheContext: CacheContext
 
 describe('registerUserResolver', () => {
@@ -34,7 +35,7 @@ describe('registerUserResolver', () => {
 				cacheContext,
 				configuration,
 				dataContext,
-				req: { socket: { remoteAddress: '1.1.1.1' }, headers: { 'x-fingerprint': 'test' } }
+				req: { socket: { remoteAddress: '1.1.1.1' } }
 			}
 		)
 		expect(registerUserSpy).toBeCalledTimes(1)

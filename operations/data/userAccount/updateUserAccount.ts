@@ -1,4 +1,4 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
 import { UserContext } from '../../../foundation/context/getUserContext'
 import { IUserAccount } from '../../../foundation/types/types'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
@@ -6,19 +6,17 @@ import { CacheContext } from '../../../foundation/context/getCacheContext'
 export async function updateUserAccount(
 	userAccountId,
 	userAccountDetails: IUserAccount,
-	context: DataContext,
+	dataContext: Knex,
 	userContext: UserContext,
 	cacheContext: CacheContext
 ) {
-	const results = await context.UserAccount.update(
-		{
-			...userAccountDetails,
-			updatedAt: new Date(),
-			updatedBy: userContext.userAccountId
-		},
-		{ where: { userAccountId }, validate: false }
-	)
+	userAccountDetails.updatedAt = new Date()
+	userAccountDetails.updatedBy = userContext.userAccountId
+
+	await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId })
+		.update(userAccountDetails)
+
 	const cacheKey = `USER_${userAccountId}`
 	cacheContext.clearValue(cacheKey)
-	return results
 }

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Session } from '../../foundation/models/Session'
 
 import Cookies from 'cookies'
 
@@ -9,17 +8,18 @@ import { UserContext } from '../../foundation/context/getUserContext'
 import { IRequestContext } from '../../foundation/context/prepareContext'
 import { validateAndDecodeAccessToken } from './validateAndDecodeAccessToken'
 import { deleteSession } from '../data/session/deleteSession'
+import { ISession } from '../../foundation/types/types'
 
 export type RequestContext = NextApiRequest & {
 	cookies: any
 	parsedUrl: URL
 	originalUrl: string
-	session?: Session
+	session?: ISession
 	user?: any
 }
 export type ResponseContext = NextApiResponse & {
 	cookies: any
-	session?: Session
+	session?: ISession
 	user?: UserContext
 	locals?: any
 }
@@ -65,7 +65,7 @@ export function decodeState(state: string | undefined): IAuthState | null {
 	}
 }
 
-export function setAuthCookies(res: ResponseContext, session: Session) {
+export function setAuthCookies(res: ResponseContext, session: ISession) {
 	res.cookies.set(SESSION_ID_COOKIE_NAME, session.sessionId, { httpOnly: true, expires: session.expiresAt })
 }
 
