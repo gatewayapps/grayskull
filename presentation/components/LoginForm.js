@@ -52,7 +52,7 @@ class LoginForm extends PureComponent {
 		const variables = {
 			emailAddress: this.state.emailAddress,
 			password: this.state.password,
-			otpToken: this.state.otpToken,
+			otpToken: this.state.otpToken.split(',').join(''),
 			extendedSession: this.state.extendedSession
 		}
 
@@ -195,7 +195,7 @@ class LoginForm extends PureComponent {
 														<div className="form-group">
 															<ResponsiveInput
 																label="Authentication Code"
-																type="number"
+																type="otp"
 																style={{ fontSize: '1.5rem', paddingTop: 0, paddingBottom: 0 }}
 																name="otpToken"
 																value={this.state.otpToken}

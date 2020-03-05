@@ -6,7 +6,7 @@ import { ApolloConsumer } from 'react-apollo'
 import urlParse from 'url-parse'
 import LoadingIndicator from './LoadingIndicator'
 import CopyTextField from './CopyTextField'
-
+import AdaptiveInput from './AdaptiveInput'
 const GENERATE_MFA_KEY = gql`
 	mutation GENERATE_MFA_KEY($emailAddress: String!) {
 		generateMfaKey(data: { emailAddress: $emailAddress })
@@ -90,7 +90,7 @@ class MultiFactorSetup extends PureComponent {
 	verifyToken = async (client) => {
 		const { data } = await client.mutate({
 			mutation: VERIFY_MFA_KEY,
-			variables: { secret: this.state.otpSecret, token: this.state.token }
+			variables: { secret: this.state.otpSecret, token: this.state.token.split(',').join('') }
 		})
 		if (data && data.verifyMfaKey === true) {
 			this.setState({ isVerified: true }, () => {
@@ -130,8 +130,8 @@ class MultiFactorSetup extends PureComponent {
 						<li>
 							<p>Verify the authenticator app is setup correctly by entering a code below.</p>
 							<p>
-								<input
-									type="text"
+								<AdaptiveInput
+									type="otp"
 									className="form-control"
 									placeholder="Enter code here"
 									value={this.state.token}

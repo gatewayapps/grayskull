@@ -7,6 +7,7 @@ import { DateInput } from './DateInput'
 import { CheckboxInput } from './CheckboxInput'
 import { SelectInput } from './SelectInput'
 import { PhoneInput } from './PhoneInput'
+import { OTPInput } from './OTPInput'
 
 export interface AdaptiveInputProps {
 	type: string
@@ -36,6 +37,8 @@ const AdaptiveInput: React.FC<AdaptiveInputProps> = (props) => {
 			} else {
 				return <SelectInput {...props} />
 			}
+		case 'otp':
+			return <OTPInput {...props} />
 		case 'phone':
 			return <PhoneInput {...props} />
 		case 'photo':
