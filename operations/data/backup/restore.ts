@@ -2,6 +2,11 @@ import { decrypt } from '../../logic/encryption'
 import Knex from 'knex'
 
 async function bulkInsertHelper(record: any, tableName: string, dataContext: Knex) {
+	// When we drop a column from an existing table
+	// we need to add a delete statement here for the restore process
+	delete record.verificationSecret
+	delete record.fingerprint
+
 	return dataContext(tableName).insert(record)
 }
 
