@@ -10,6 +10,8 @@ export interface MutationButtonProps {
 	busyContent: any
 	disabled?: boolean
 	content: any
+	onMutationStart?: () => void
+	onMutationEnd?: () => void
 }
 
 class MutationButton extends React.Component<MutationButtonProps, any> {
@@ -21,6 +23,9 @@ class MutationButton extends React.Component<MutationButtonProps, any> {
 						disabled={this.props.disabled || result.loading}
 						className={this.props.className}
 						onClick={async () => {
+							if (this.props.onMutationStart) {
+								this.props.onMutationStart()
+							}
 							try {
 								const result = await mutation()
 								if (this.props.onSuccess) {
@@ -29,6 +34,10 @@ class MutationButton extends React.Component<MutationButtonProps, any> {
 							} catch (err) {
 								if (this.props.onFail) {
 									this.props.onFail(err)
+								}
+							} finally {
+								if (this.props.onMutationEnd) {
+									this.props.onMutationEnd()
 								}
 							}
 						}}>

@@ -332,11 +332,18 @@ input EmailAddressUniqueFilter {
 	emailAddress: String
 }
 
+type OTPOption {
+	type: String!
+	id: String!
+	value: String!
+}
+
 type LoginResponse {
 	success: Boolean!
 	message: String
 	otpRequired: Boolean
 	emailVerificationRequired: Boolean
+	otpOptions: [OTPOption!]
 }
 type OperationResponse {
 	success: Boolean!

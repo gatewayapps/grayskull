@@ -54,6 +54,7 @@ type Mutation {
 	restoreConfiguration(file: Upload!): OperationResponse
 	sendVerificationCodeToPhoneNumber(phoneNumber: String!): OperationResponse
 	addPhoneNumberWithVerificationCode(phoneNumber: String!, verificationCode: String!): OperationResponse
+	sendOTP(type: String!, id: String!): OperationResponse @anonymous
 }
 
 input SecurityConfigurationInput {

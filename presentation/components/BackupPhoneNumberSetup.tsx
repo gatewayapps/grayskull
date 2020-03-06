@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import gql from 'graphql-tag'
 import MutationButton from './MutationButton'
 import { FormRow } from './FormRow'
+import { CancelButton } from './CancelButton'
 
 const SEND_VERIFICATION_CODE_TO_PHONE_NUMBER = gql`
 	mutation SEND_VERIFICATION_CODE_TO_PHONE_NUMBER($phoneNumber: String!) {
@@ -77,7 +78,7 @@ export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ 
 						<MutationButton
 							mutation={SEND_VERIFICATION_CODE_TO_PHONE_NUMBER}
 							variables={{ phoneNumber }}
-							disabled={verifying}
+							disabled={verifying || phoneNumber.length < 8}
 							busyContent={
 								<>
 									<i className="fa fa-fw fa-spin fa-spinner" /> Sending Code...
@@ -86,8 +87,21 @@ export const BackupPhoneNumberSetup: React.FC<BackupPhoneNumberSetupProps> = ({ 
 							onSuccess={() => {
 								setVerifying(true)
 							}}
-							content="Send Verification Code"
+							content={
+								<>
+									<i className="fa fa-fw fa-mobile" /> Send Verification Code
+								</>
+							}
 							className="btn btn-outline-success float-right"
+						/>
+					</div>
+					<div className="col-12">
+						<CancelButton
+							className="float-right"
+							onClick={() => {
+								setPhoneNumber('')
+								setAdding(false)
+							}}
 						/>
 					</div>
 				</FormRow>

@@ -18,6 +18,11 @@ const LOGIN_MUTATION = gql`
 			message
 			otpRequired
 			emailVerificationRequired
+			otpOptions {
+				type
+				id
+				value
+			}
 		}
 	}
 `
@@ -25,6 +30,15 @@ const LOGIN_MUTATION = gql`
 const RESEND_VERIFICATION_MUTATION = gql`
 	mutation RESEND_VERIFICATION_MUTATION($emailAddress: String!) {
 		resendVerification(data: { emailAddress: $emailAddress })
+	}
+`
+
+const SEND_OTP_MUTATION = gql`
+	mutation SEND_OTP_MUTATION($type: String!, $id: String!) {
+		sendOTP(type: $type, id: $id) {
+			success
+			message
+		}
 	}
 `
 

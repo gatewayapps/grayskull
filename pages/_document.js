@@ -25,6 +25,7 @@ export default class MyDocument extends Document {
 					<script type="text/javascript" src="/scripts/jquery.min.js" />
 					<script type="text/javascript" src="/scripts/popper.min.js" />
 					<script type="text/javascript" src="/scripts/bootstrap.min.js" />
+
 					<style>{`body { margin: 0 } /* custom! */`}</style>
 					<link rel="stylesheet" href="/fontawesome-pro/css/all.min.css" />
 
@@ -35,6 +36,7 @@ export default class MyDocument extends Document {
 					<Main />
 					<NextScript />
 				</body>
+				<script type="text/javascript" src="/scripts/inert.js" />
 			</html>
 		)
 	}

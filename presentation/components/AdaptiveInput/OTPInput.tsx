@@ -5,6 +5,7 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 	const valParts = val.split(',')
 	const [focusedIndex, setFocusedIndex] = useState(0)
 	const currentInput = useRef(null)
+
 	const onValueChanged = (e: React.KeyboardEvent<HTMLInputElement>, i: number) => {
 		if (/\d/.test(e.key)) {
 			valParts[i] = e.key
@@ -51,8 +52,14 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 		for (let i = 0; i < sanitized.length; i++) {
 			valParts[i] = sanitized[i]
 		}
+
 		props.onChange({ target: { name: props.name, value: valParts.join(',') } })
+
 		setFocusedIndex(5)
+	}
+
+	if (!currentInput.current && val !== ',,,,,') {
+		props.onChange({ target: { name: props.name, value: valParts.join(',') } })
 	}
 
 	return (
@@ -66,7 +73,7 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 						}
 					}}
 					key={`otp-${props.name}-${i}`}
-					name={i === 0 ? 'otpToken' : undefined}
+					name={i === 0 ? props.name : undefined}
 					autoComplete={i === 0 ? 'otpToken' : undefined}
 					className="form-control mr-1 d-inline-block"
 					type="text"

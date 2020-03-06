@@ -2,6 +2,7 @@ import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { authenticateUserActivity } from '../../../activities/authenticateUserActivity'
 import { setAuthCookies } from '../../../operations/logic/authentication'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
+import { getOTPBackupOptionsForEmailAddressActivity } from '../../../activities/getOTPBackupOptionsForEmailAddressActivity'
 
 export async function loginResolver(obj, args, context: IRequestContext) {
 	const { emailAddress, password, otpToken, extendedSession } = args.data
@@ -17,10 +18,13 @@ export async function loginResolver(obj, args, context: IRequestContext) {
 			switch (err.code) {
 				case GrayskullErrorCode.InvalidOTP:
 				case GrayskullErrorCode.RequiresOTP: {
+					const otpOptions = await getOTPBackupOptionsForEmailAddressActivity(emailAddress, context)
+
 					return {
 						success: false,
 						otpRequired: true,
-						message: otpToken ? err.message : ''
+						message: otpToken ? err.message : '',
+						otpOptions
 					}
 				}
 				case GrayskullErrorCode.EmailNotVerified: {

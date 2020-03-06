@@ -4,6 +4,7 @@ import { getPinnedClientsActivity } from '../../activities/getPinnedClientsActiv
 import { countUserAccounts } from '../../operations/data/userAccount/countUserAccounts'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
+import { maskPhoneNumber } from '../../operations/logic/maskPhoneNumber'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const context = await prepareContext(req, res)
@@ -38,9 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 
 		if (context.user.phoneNumber) {
-			finalUserContext.phoneNumber =
-				context.user.phoneNumber.substr(0, context.user.phoneNumber.length - 4).replace(/\d/gi, '*') +
-				context.user.phoneNumber.substr(-4)
+			finalUserContext.phoneNumber = maskPhoneNumber(context.user.phoneNumber)
 		}
 	}
 

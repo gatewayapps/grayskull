@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { TextInput } from './TextInput'
 import { MaskedInput } from './MaskedInput'
 import { PhotoInput } from './PhotoInput'
@@ -22,6 +22,13 @@ export interface AdaptiveInputProps {
 }
 
 const AdaptiveInput: React.FC<AdaptiveInputProps> = (props) => {
+	const inertRef = useRef(null)
+	useEffect(() => {
+		if (inertRef.current) {
+			inertRef.current.setAttribute('inert', true)
+		}
+	}, [inertRef.current])
+
 	switch (props.type) {
 		case 'masked':
 			return <MaskedInput {...props} />
@@ -37,6 +44,8 @@ const AdaptiveInput: React.FC<AdaptiveInputProps> = (props) => {
 			} else {
 				return <SelectInput {...props} />
 			}
+		case 'hidden':
+			return <input {...props} type="text" ref={inertRef} />
 		case 'otp':
 			return <OTPInput {...props} />
 		case 'phone':
