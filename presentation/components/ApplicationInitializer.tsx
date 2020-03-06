@@ -52,7 +52,6 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 	}
 
 	if (response) {
-
 		if (
 			response.user &&
 			(window.location.pathname === '/login' || window.location.pathname === '/' || window.location.pathname === '')

@@ -39,8 +39,6 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const [otpToken, setOTPToken] = useState('')
 	const [otpOptions, setOTPOptions] = useState<OTPOption[]>([])
 	const [extendedSession, setExtendedSession] = useState(false)
-	const [otpRequired, setOTPRequired] = useState(false)
-	const [emailVerificationRequired, setEmailVerificationRequired] = useState(false)
 	const [emailVerificationSent, setEmailVerificationSent] = useState(false)
 	const [message, setMessage] = useState('')
 	const [otpSent, setOTPSent] = useState(false)
@@ -116,7 +114,6 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 								if (data.login.success) {
 									onAuthenticated()
 								} else if (data.login.otpRequired) {
-									setOTPRequired(true)
 									setOTPOptions(data.login.otpOptions)
 									setStep('otp')
 								} else if (data.login.emailVerificationRequired) {
