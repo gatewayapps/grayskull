@@ -1,7 +1,7 @@
 import React from 'react'
 import SecurityConfigurationForm, {
 	ISecurityConfigurationFormProps
-} from '../../presentation/components/SecurityConfigurationForm'
+} from '../../presentation/components/ConfigurationForms/SecurityConfigurationForm'
 
 export interface OobeSecurityConfigurationProps extends ISecurityConfigurationFormProps {
 	stepIndex: number

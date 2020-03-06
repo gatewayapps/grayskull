@@ -5,7 +5,7 @@ export interface ResponsiveValidatingInputProps extends IValidatingInputProps {
 	placeholder?: string
 	label: string
 	labelColumnWidth?: number
-	labelStyles?: CSSStyleDeclaration
+	labelStyles?: React.CSSProperties
 	helpText?: string
 }
 

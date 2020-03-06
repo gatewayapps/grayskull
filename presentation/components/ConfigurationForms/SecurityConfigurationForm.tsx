@@ -1,7 +1,7 @@
 import React from 'react'
-import FormValidation, { FormValidationRule } from './FormValidation'
-import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import { ISecurityConfiguration } from '../../foundation/models/ISecurityConfiguration'
+import FormValidation, { FormValidationRule } from '../FormValidation'
+import ResponsiveValidatingInput from '../ResponsiveValidatingInput'
+import { ISecurityConfiguration } from '../../../foundation/models/ISecurityConfiguration'
 
 export interface ISecurityConfigurationFormProps {
 	data: ISecurityConfiguration
@@ -38,6 +38,33 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 			true,
 			'Min Password Length is required and must be between 6 and 64',
 			[{ gt: 5, lt: 65 }]
+		),
+		new FormValidationRule(
+			'twilioApiKey',
+			(val, currentData) => {
+				return !currentData.allowSMSBackupCodes || currentData.twilioApiKey.length > 0
+			},
+			true,
+			'If SMS Backups codes are allowed, you must provide a Twilio Auth Token',
+			[data]
+		),
+		new FormValidationRule(
+			'twilioSID',
+			(val, currentData) => {
+				return !currentData.allowSMSBackupCodes || currentData.twilioSID.length > 0
+			},
+			true,
+			'If SMS Backups codes are allowed, you must provide a Twilio SID',
+			[data]
+		),
+		new FormValidationRule(
+			'smsFromNumber',
+			(val, currentData) => {
+				return !currentData.allowSMSBackupCodes || currentData.smsFromNumber.length > 5
+			},
+			true,
+			'If SMS Backups codes are allowed, you must provide a valid phone number',
+			[data]
 		)
 	]
 
@@ -102,18 +129,8 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							value={data.passwordMinimumLength}
 							onChange={(e) => handleChange(e, validate)}
 						/>
-						<ResponsiveValidatingInput
-							validationErrors={validationErrors}
-							label="Token Duration (sec)"
-							labelColumnWidth={4}
-							autoComplete="off"
-							min="60"
-							type="number"
-							name="accessTokenExpirationSeconds"
-							value={data.accessTokenExpirationSeconds}
-							onChange={(e) => handleChange(e, validate)}
-						/>
 
+						<h6 style={{ marginTop: '1rem', marginBottom: '-0.25rem' }}>Multifactor Rules</h6>
 						<ResponsiveValidatingInput
 							labelColumnWidth={4}
 							validationErrors={validationErrors}
@@ -126,23 +143,78 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 						<ResponsiveValidatingInput
 							labelColumnWidth={4}
 							validationErrors={validationErrors}
+							label="Allow SMS Backup Codes"
+							name="allowSMSBackupCodes"
+							type="checkbox"
+							checked={data.allowSMSBackupCodes}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Twilio SID"
+							disabled={!data.allowSMSBackupCodes}
+							name="twilioSID"
+							type="password"
+							value={data.twilioSID}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Twilio Auth Token"
+							disabled={!data.allowSMSBackupCodes}
+							name="twilioApiKey"
+							type="password"
+							value={data.twilioApiKey}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
+							label="Send From Phone Number"
+							disabled={!data.allowSMSBackupCodes}
+							name="smsFromNumber"
+							type="phone"
+							options={{ phone: true, phoneCountry: 'US' }}
+							value={data.smsFromNumber}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+
+						<h6 style={{ marginTop: '1rem', marginBottom: '-0.25rem' }}>Miscellaneous</h6>
+
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							validationErrors={validationErrors}
 							label="Allow Registration"
 							name="allowSignup"
 							type="checkbox"
 							checked={data.allowSignup}
 							onChange={(e) => handleChange(e, validate)}
 						/>
-						{data.allowSignup && (
-							<ResponsiveValidatingInput
-								labelColumnWidth={4}
-								validationErrors={validationErrors}
-								label="Allowed Domains for Sign Up"
-								name="domainWhitelist"
-								type="text"
-								value={data.domainWhitelist}
-								onChange={(e) => handleChange(e, validate)}
-							/>
-						)}
+
+						<ResponsiveValidatingInput
+							labelColumnWidth={4}
+							disabled={!data.allowSignup}
+							validationErrors={validationErrors}
+							label="Allowed Domains for Sign Up"
+							name="domainWhitelist"
+							type="text"
+							value={data.domainWhitelist}
+							onChange={(e) => handleChange(e, validate)}
+						/>
+
+						<ResponsiveValidatingInput
+							validationErrors={validationErrors}
+							label="Token Duration (sec)"
+							labelColumnWidth={4}
+							autoComplete="off"
+							min="60"
+							type="number"
+							name="accessTokenExpirationSeconds"
+							value={data.accessTokenExpirationSeconds}
+							onChange={(e) => handleChange(e, validate)}
+						/>
 					</div>
 				)}
 			</FormValidation>

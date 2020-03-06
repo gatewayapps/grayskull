@@ -8,6 +8,7 @@ import ResponsiveInput from './ResponsiveInput'
 import PasswordComplexity from './PasswordComplexity'
 import MutationButton from './MutationButton'
 import gql from 'graphql-tag'
+import { CardFooter } from './CardFooter'
 
 const CHANGE_PASSWORD = gql`
 	mutation CHANGE_PASSWORD($oldPassword: String!, $newPassword: String!, $confirmPassword: String!) {
@@ -164,8 +165,8 @@ export default class SecurityPasswordStatus extends React.Component<
 					<h5 className="card-title">Password</h5>
 					{this.state.changing ? this.renderEdit() : this.renderDefault()}
 				</div>
-				<div className="card-footer">
-					<div className="btn-toolbar float-right">
+				<CardFooter>
+					<div className="btn-toolbar ml-auto">
 						<button
 							className="btn btn-secondary"
 							onClick={() => {
@@ -232,7 +233,7 @@ export default class SecurityPasswordStatus extends React.Component<
 							/>
 						)}
 					</div>
-				</div>
+				</CardFooter>
 			</div>
 		)
 	}

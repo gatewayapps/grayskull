@@ -52,9 +52,6 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 	}
 
 	if (response) {
-		if (!response.user && window.location.pathname !== '/login') {
-			redirectUri = '/login'
-		}
 		if (
 			response.user &&
 			(window.location.pathname === '/login' || window.location.pathname === '/' || window.location.pathname === '')
@@ -70,6 +67,11 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 		if (response.needsAdmin && !response.needsConfiguration && window.location.pathname !== '/register') {
 			redirectUri = '/register'
 		}
+		// if (!redirectUri) {
+		// 	if (!response.needsConfiguration && !response.needsAdmin && !response.user && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+		// 		redirectUri = '/login'
+		// 	}
+		// }
 	}
 
 	if (redirectUri) {

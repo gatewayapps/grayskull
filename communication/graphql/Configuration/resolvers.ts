@@ -205,6 +205,42 @@ export default {
 							context.dataContext
 						)
 					}
+					if (data.Security.allowSMSBackupCodes !== undefined && data.Security.allowSMSBackupCodes !== null) {
+						await saveBooleanSetting(
+							SettingsKeys.SECURITY_ALLOW_SMS_BACKUP_TOKENS,
+							!!data.Security.allowSMSBackupCodes,
+							'Security',
+							context.dataContext
+						)
+						if (!!data.Security.allowSMSBackupCodes) {
+							if (data.Security.twilioSID !== PASSWORD_PLACEHOLDER) {
+								await saveStringSetting(
+									SettingsKeys.SECURITY_TWILIO_SID,
+									encrypt(data.Security.twilioSID!),
+									'Security',
+									context.dataContext
+								)
+							}
+							if (data.Security.twilioApiKey !== PASSWORD_PLACEHOLDER) {
+								await saveStringSetting(
+									SettingsKeys.SECURITY_TWILIO_API_KEY,
+									encrypt(data.Security.twilioApiKey!),
+									'Security',
+									context.dataContext
+								)
+							}
+							await saveStringSetting(
+								SettingsKeys.SECURITY_SMS_FROM_NUMBER,
+								data.Security.smsFromNumber!,
+								'Security',
+								context.dataContext
+							)
+						} else {
+							await saveStringSetting(SettingsKeys.SECURITY_TWILIO_API_KEY, '', 'Security', context.dataContext)
+							await saveStringSetting(SettingsKeys.SECURITY_TWILIO_SID, '', 'Security', context.dataContext)
+							await saveStringSetting(SettingsKeys.SECURITY_SMS_FROM_NUMBER, '', 'Security', context.dataContext)
+						}
+					}
 				}
 
 				await saveBooleanSetting(SettingsKeys.SERVER_CONFIGURED, true, 'Server', context.dataContext)

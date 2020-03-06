@@ -7,6 +7,12 @@ async function bulkInsertHelper(record: any, tableName: string, dataContext: Kne
 	delete record.verificationSecret
 	delete record.fingerprint
 
+	if (tableName === 'Settings') {
+		delete record.createdAt
+		delete record.updatedAt
+		delete record.deletedAt
+	}
+
 	return dataContext(tableName).insert(record)
 }
 

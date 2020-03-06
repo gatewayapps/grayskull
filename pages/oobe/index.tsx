@@ -68,7 +68,10 @@ class OobeIndex extends React.Component<any, any> {
 					multifactorRequired: false,
 					accessTokenExpirationSeconds: '1800',
 					domainWhitelist: '',
-					allowSignup: true
+					allowSignup: true,
+					allowSMSBackupCodes: false,
+					twilioApiKey: '',
+					smsFromNumber: ''
 				}
 			}
 		}

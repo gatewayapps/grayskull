@@ -22,4 +22,7 @@ export async function setOTPSecretActivity(password: string, otpSecret: string, 
 	const finalOtpSecret = otpSecret ? encrypt(otpSecret) : ''
 
 	await setUserAccountOTPSecret(context.user!.userAccountId, finalOtpSecret, otpEnabled, context.dataContext)
+
+	const cacheKey = `USER_${context.user!.userAccountId}`
+	context.cacheContext.clearValue(cacheKey)
 }

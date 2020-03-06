@@ -8,7 +8,8 @@ export default class ResponsiveInput extends React.PureComponent {
 		labelColumnWidth: PropTypes.number,
 		labelStyles: PropTypes.object,
 		helpText: PropTypes.string,
-		validationErrors: PropTypes.array
+		validationErrors: PropTypes.array,
+		type: PropTypes.string
 	}
 
 	static defaultProps = {
@@ -33,8 +34,10 @@ export default class ResponsiveInput extends React.PureComponent {
 		const labelMediumColumnClass = `col-md-${labelColumnWidth}`
 		const inputMediumColumnClass = `col-md-${12 - labelColumnWidth}`
 
+		const containerStyle = this.props.type === 'hidden' ? { width: 0, height: 0, overflow: 'hidden' } : undefined
+
 		return (
-			<div className="form-group row align-items-start my-1">
+			<div className="form-group row align-items-start my-1" style={containerStyle}>
 				<label
 					className={`d-md-block col-sm-12 ${labelMediumColumnClass} col-form-label noselect`}
 					style={{ fontSize: '0.725rem', textTransform: 'uppercase', opacity: 0.75, paddingTop: '1.25rem' }}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter, default as Router } from 'next/router'
 import BackgroundCover from '../presentation/components/BackgroundCover'
-
+import RequireConfiguration from '../presentation/components/RequireConfiguration'
 import LoginForm from '../presentation/components/LoginForm'
 import Primary from '../presentation/layouts/primary'
 import { parseRoutingState } from '../presentation/utils/routing'
@@ -34,15 +34,19 @@ class LoginPage extends React.PureComponent {
 		return (
 			<Primary>
 				<BackgroundCover>
-					<div className="container">
-						{headerMessage}
-						<UserContext.Consumer>
-							{({ refresh }) => {
-								this.refresh = refresh
-								return <LoginForm onAuthenticated={this.onAuthenticated} />
-							}}
-						</UserContext.Consumer>
-					</div>
+					<RequireConfiguration>
+						{(configuration) => (
+							<div className="container">
+								{headerMessage}
+								<UserContext.Consumer>
+									{({ refresh }) => {
+										this.refresh = refresh
+										return <LoginForm onAuthenticated={this.onAuthenticated} configuration={configuration} />
+									}}
+								</UserContext.Consumer>
+							</div>
+						)}
+					</RequireConfiguration>
 				</BackgroundCover>
 			</Primary>
 		)

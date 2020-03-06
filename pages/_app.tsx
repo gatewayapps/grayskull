@@ -1,4 +1,5 @@
 import 'core-js'
+
 import { ApolloProvider } from 'react-apollo'
 import App from 'next/app'
 

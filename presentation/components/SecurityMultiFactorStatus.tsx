@@ -1,9 +1,13 @@
 import gql from 'graphql-tag'
-import React from 'react'
+import React, { useState } from 'react'
 import MutationButton from './MutationButton'
 import MultiFactorSetup from './MultiFactorSetup'
 import ResponsiveInput from './ResponsiveInput'
-import RequireConfiguration from './RequireConfiguration'
+
+import { BackupPhoneNumberSetup } from './BackupPhoneNumberSetup'
+
+import { CardFooter } from './CardFooter'
+import { FormRow } from './FormRow'
 
 const SET_OTP_SECRET = gql`
 	mutation SET_OTP_SECRET($otpSecret: String!, $password: String!) {
@@ -18,6 +22,7 @@ const SET_OTP_SECRET = gql`
 export interface SecurityMutifactorStatusProps {
 	user: any
 	refresh: any
+	configuration: any
 }
 
 export interface SecurityMutifactorStatusState {
@@ -31,192 +36,74 @@ export interface SecurityMutifactorStatusState {
 	otpUpdated: boolean
 }
 
-export default class SecurityMutifactorStatus extends React.Component<
-	SecurityMutifactorStatusProps,
-	SecurityMutifactorStatusState
-> {
-	constructor(props: SecurityMutifactorStatusProps) {
-		super(props)
+const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps> = (props) => {
+	const [changing, setChanging] = useState(false)
+	const [promptForChange, setPromptForChange] = useState(false)
+	const [promptForDisable, setPromptForDisable] = useState(false)
+	const [password, setPassword] = useState('')
 
-		this.state = {
-			changing: false,
-			promptForChange: false,
-			promptForDisable: false,
-			password: '',
-			isValid: false,
-			message: '',
-			otpSecret: '',
-			otpUpdated: false
-		}
-	}
+	const [message, setMessage] = useState('')
+	const [otpSecret, setOtpSecret] = useState('')
+	const [otpUpdated, setOtpUpdated] = useState(false)
 
-	renderChangeForm = () => {
-		return (
+	let body = <div />
+	let footer = <div />
+
+	if (changing) {
+		body = (
 			<div>
 				<MultiFactorSetup
-					emailAddress={this.props.user.emailAddress}
+					emailAddress={props.user.emailAddress}
 					required={true}
 					onVerified={(otpSecret) => {
-						this.setState({ otpSecret: otpSecret })
+						setOtpSecret(otpSecret)
 					}}
 				/>
 				<div className="mx-4 px-4">
 					<ResponsiveInput
 						label="Enter your password"
-						value={this.state.password}
+						value={password}
 						onChange={(e) => {
-							this.setState({ password: e.target.value })
+							setPassword(e.target.value)
 						}}
 						type="password"
 					/>
 
-					{this.state.message && <div className="alert alert-danger">{this.state.message}</div>}
+					{message && <div className="alert alert-danger">{message}</div>}
 				</div>
 			</div>
 		)
-	}
-
-	renderChangePrompt = () => {
-		return (
-			<div className="alert alert-danger">
-				You already have an authenticator app configured. If you proceed, your existing authenticator app will no longer
-				work.
-			</div>
-		)
-	}
-	renderChangePromptFooter = () => {
-		return (
-			<div className="btn-toolbar ml-auto">
+		footer = (
+			<div className="ml-auto">
 				<button
 					className="btn btn-secondary mr-2"
 					onClick={() => {
-						this.setState({ changing: false, promptForChange: false, message: '', password: '', otpUpdated: false })
-					}}>
-					<i className="fa fa-fw fa-times" /> Never Mind!
-				</button>
-
-				<button
-					className="btn btn-success"
-					onClick={() => {
-						this.setState({ changing: true, promptForChange: false })
-					}}>
-					<i className="fa fa-fw fa-check" /> I Understand, Proceed
-				</button>
-			</div>
-		)
-	}
-
-	renderDisable = () => {
-		return (
-			<div>
-				<div className="alert alert-danger">
-					You already have an authenticator app configured. If you proceed, your existing authenticator app will no
-					longer work.
-				</div>
-				<div className="m-4 px-4">
-					<ResponsiveInput
-						label="Enter your password"
-						value={this.state.password}
-						onChange={(e) => {
-							this.setState({ password: e.target.value })
-						}}
-						type="password"
-					/>
-				</div>
-			</div>
-		)
-	}
-
-	renderDisableFooter = () => {
-		return (
-			<div className="btn-toolbar ml-auto">
-				<button
-					className="btn btn-secondary mr-2"
-					onClick={() => {
-						this.setState({ changing: false, promptForChange: false, message: '', password: '', otpUpdated: false })
-					}}>
-					<i className="fa fa-fw fa-times" /> Never Mind!
-				</button>
-
-				<MutationButton
-					mutation={SET_OTP_SECRET}
-					variables={{ password: this.state.password, otpSecret: '' }}
-					className="btn btn-danger"
-					disabled={!this.state.password}
-					onFail={(err) => {
-						alert(err)
-					}}
-					onSuccess={(result) => {
-						if (result.data.setOtpSecret.success) {
-							this.setState({
-								promptForDisable: false,
-								changing: false,
-								otpUpdated: false,
-								password: '',
-								otpSecret: ''
-							})
-							this.props.refresh()
-						} else {
-							this.setState({ message: result.data.setOtpSecret.message })
-						}
-					}}
-					busyContent={
-						<span>
-							<i className="fa fa-fw fa-spin fa-spinner" /> Disabling
-						</span>
-					}
-					content={
-						<span>
-							<i className="fa fa-fw fa-save" /> I Understand, Disable App
-						</span>
-					}
-				/>
-			</div>
-		)
-	}
-
-	renderDefault = () => {
-		return (
-			<div>
-				<ResponsiveInput
-					label="Status"
-					value={this.props.user.otpEnabled ? 'Configured' : 'Not Configured'}
-					type="static"
-					className="form-control form-control-static"
-					readOnly
-				/>
-				{this.state.otpUpdated && (
-					<div className="alert alert-success mx-4">Your account is now protected by an Authenticator App.</div>
-				)}
-			</div>
-		)
-	}
-
-	renderChangeFooter = () => {
-		return (
-			<div className="btn-toolbar ml-auto">
-				<button
-					className="btn btn-secondary mr-2"
-					onClick={() => {
-						this.setState({ changing: false, message: '', password: '', otpUpdated: false })
+						setChanging(false)
+						setMessage('')
+						setPassword('')
+						setOtpUpdated(false)
 					}}>
 					<i className="fa fa-fw fa-times" /> Cancel
 				</button>
 
 				<MutationButton
 					mutation={SET_OTP_SECRET}
-					variables={{ password: this.state.password, otpSecret: this.state.otpSecret }}
+					variables={{ password: password, otpSecret: otpSecret }}
 					className="btn btn-success"
-					disabled={!this.state.otpSecret}
+					disabled={!otpSecret}
 					onFail={(err) => {
 						alert(err)
 					}}
 					onSuccess={(result) => {
 						if (result.data.setOtpSecret.success) {
-							this.setState({ changing: false, otpUpdated: true, password: '', otpSecret: '' })
-							this.props.refresh()
+							setChanging(false)
+							setOtpUpdated(true)
+							setPassword('')
+							setOtpSecret('')
+
+							props.refresh()
 						} else {
-							this.setState({ message: result.data.setOtpSecret.message })
+							setMessage(result.data.setOtpSecret.message)
 						}
 					}}
 					busyContent={
@@ -232,77 +119,153 @@ export default class SecurityMutifactorStatus extends React.Component<
 				/>
 			</div>
 		)
-	}
-
-	renderDefaultFooter = () => {
-		return (
-			<RequireConfiguration>
-				{(configuration) => {
-					return (
-						<div className="btn-toolbar ml-auto">
-							{this.props.user.otpEnabled && !configuration.Security.multifactorRequired && (
-								<button
-									className="btn btn-danger mr-2"
-									onClick={() => {
-										this.setState({ promptForDisable: true })
-									}}>
-									<i className="fa fa-fw fa-skull-crossbones" /> Disable
-								</button>
-							)}
-							<button
-								className="btn btn-secondary"
-								onClick={() => {
-									if (this.props.user.otpEnabled) {
-										this.setState({ promptForChange: true })
-									} else {
-										this.setState({ changing: true })
-									}
-								}}>
-								<i className="fa fa-fw fa-wrench" /> Configure App
-							</button>
-						</div>
-					)
-				}}
-			</RequireConfiguration>
-		)
-	}
-
-	render = () => {
-		let footer
-		let body
-
-		if (this.state.changing) {
-			footer = this.renderChangeFooter()
-			body = this.renderChangeForm()
-		}
-		if (this.state.promptForChange) {
-			footer = this.renderChangePromptFooter()
-			body = this.renderChangePrompt()
-		}
-		if (this.state.promptForDisable) {
-			footer = this.renderDisableFooter()
-			body = this.renderDisable()
-		}
-		if (!this.state.changing && !this.state.promptForChange && !this.state.promptForDisable) {
-			footer = this.renderDefaultFooter()
-			body = this.renderDefault()
-		}
-
-		return (
-			<div className="card">
-				<div className="card-body">
-					<h5 className="card-title">
-						Authenticator App
-						{this.props.user.otpEnabled ? (
-							<i className="ml-2 text-success fa fa-fw fa-shield-check" />
-						) : (
-							<i className="ml-2 text-danger fa fa-fw fa-exclamation-triangle" />
-						)}
-					</h5>
-					{body}
-				</div>
-				<div className="card-footer d-flex">{footer}</div>
+	} else if (promptForChange) {
+		body = (
+			<div className="alert alert-danger">
+				You already have an authenticator app configured. If you proceed, your existing authenticator app will no longer
+				work.
 			</div>
 		)
+		footer = (
+			<div className="btn-toolbar ml-auto">
+				<button
+					className="btn btn-secondary mr-2"
+					onClick={() => {
+						setChanging(false)
+						setPromptForChange(false)
+						setMessage('')
+						setPassword('')
+						setOtpUpdated(false)
+					}}>
+					<i className="fa fa-fw fa-times" /> Never Mind!
+				</button>
+
+				<button
+					className="btn btn-success"
+					onClick={() => {
+						setChanging(true)
+						setPromptForChange(false)
+					}}>
+					<i className="fa fa-fw fa-check" /> I Understand, Proceed
+				</button>
+			</div>
+		)
+	} else if (promptForDisable) {
+		footer = (
+			<div className="btn-toolbar ml-auto">
+				<button
+					className="btn btn-secondary mr-2"
+					onClick={() => {
+						setChanging(false)
+						setPromptForChange(false)
+						setMessage('')
+						setPassword('')
+						setOtpUpdated(false)
+					}}>
+					<i className="fa fa-fw fa-times" /> Never Mind!
+				</button>
+
+				<MutationButton
+					mutation={SET_OTP_SECRET}
+					variables={{ password: password, otpSecret: '' }}
+					className="btn btn-danger"
+					disabled={!password}
+					onFail={(err) => {
+						alert(err)
+					}}
+					onSuccess={(result) => {
+						if (result.data.setOtpSecret.success) {
+							setPromptForDisable(false)
+							setChanging(false)
+							setOtpUpdated(false)
+							setPassword('')
+							setOtpSecret('')
+
+							props.refresh()
+						} else {
+							setMessage(result.data.setOtpSecret.message)
+						}
+					}}
+					busyContent={
+						<span>
+							<i className="fa fa-fw fa-spin fa-spinner" /> Disabling
+						</span>
+					}
+					content={
+						<span>
+							<i className="fa fa-fw fa-save" /> I Understand, Disable App
+						</span>
+					}
+				/>
+			</div>
+		)
+	} else {
+		const showDisable = props.user.otpEnabled && !props.configuration.Security.multifactorRequired
+		footer = (
+			<div className="ml-auto">
+				{showDisable ? (
+					<button
+						className="btn btn-danger mr-2"
+						onClick={() => {
+							setPromptForDisable(false)
+						}}>
+						<i className="fa fa-fw fa-skull-crossbones" /> Disable
+					</button>
+				) : null}
+				<button
+					className="btn btn-secondary"
+					onClick={() => {
+						if (props.user.otpEnabled) {
+							setPromptForChange(true)
+						} else {
+							setChanging(true)
+						}
+					}}>
+					<i className="fa fa-fw fa-wrench" /> Configure App
+				</button>
+			</div>
+		)
+		body = (
+			<FormRow>
+				<div className="col-12">
+					<ResponsiveInput
+						label="Status"
+						value={props.user.otpEnabled ? 'Configured' : 'Not Configured'}
+						type="static"
+						className="form-control form-control-static"
+						readOnly
+					/>
+					{otpUpdated && (
+						<div className="alert alert-success mx-4">Your account is now protected by an Authenticator App.</div>
+					)}
+				</div>
+			</FormRow>
+		)
 	}
+
+	const shouldRenderPhoneSection = props.user.otpEnabled && props.configuration.Security.allowSMSBackupCodes
+
+	return (
+		<div className="card">
+			<div className="card-body">
+				<h5 className="card-title">
+					Authenticator App
+					{props.user.otpEnabled ? (
+						<i className="ml-2 text-success fa fa-fw fa-shield-check" />
+					) : (
+						<i className="ml-2 text-danger fa fa-fw fa-exclamation-triangle" />
+					)}
+				</h5>
+				{body}
+				{shouldRenderPhoneSection ? (
+					<div className="mt-4">
+						<h5>Backup Phone Number</h5>
+						<BackupPhoneNumberSetup refreshContext={props.refresh} user={props.user} />
+					</div>
+				) : null}
+			</div>
+			<CardFooter>{footer}</CardFooter>
+		</div>
+	)
 }
+export default SecurityMultifactorStatusComponent

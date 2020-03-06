@@ -1,5 +1,7 @@
 import React from 'react'
-import MailConfigurationForm, { IMailConfigurationFormProps } from '../../presentation/components/MailConfigurationForm'
+import MailConfigurationForm, {
+	IMailConfigurationFormProps
+} from '../../presentation/components/ConfigurationForms/MailConfigurationForm'
 
 export interface OobeMailConfigurationProps extends IMailConfigurationFormProps {
 	stepIndex: number
