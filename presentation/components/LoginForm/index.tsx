@@ -7,6 +7,7 @@ import ResponsiveForm from '../ResponsiveForm'
 import MutationButton from '../MutationButton'
 import { LoginCredentials } from './Credentials'
 import { withRouter } from 'next/router'
+import { OTPOption, OTPBackupOptions } from './OTPBackupOptions'
 
 export interface LoginProps {
 	configuration: IConfiguration
@@ -36,7 +37,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const [emailAddress, setEmailAddress] = useState('')
 	const [password, setPassword] = useState('')
 	const [otpToken, setOTPToken] = useState('')
-	const [otpOptions, setOTPOptions] = useState([])
+	const [otpOptions, setOTPOptions] = useState<OTPOption[]>([])
 	const [extendedSession, setExtendedSession] = useState(false)
 	const [otpRequired, setOTPRequired] = useState(false)
 	const [emailVerificationRequired, setEmailVerificationRequired] = useState(false)
@@ -46,12 +47,13 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const [step, setStep] = useState<'credentials' | 'otp' | 'otpChoices' | 'emailVerification'>('credentials')
 	const [busy, setBusy] = useState(false)
 
-	const body: React.ReactNode = (
+	let body: React.ReactNode = (
 		<LoginCredentials
 			emailAddress={emailAddress}
 			password={password}
 			otpToken={otpToken}
 			step={step}
+			setStep={setStep}
 			setEmailAddress={setEmailAddress}
 			setPassword={setPassword}
 			setOtpToken={setOTPToken}
@@ -62,7 +64,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 		/>
 	)
 	if (step === 'otpChoices') {
-		//set body to OTPBackupOptions
+		body = <OTPBackupOptions setStep={setStep} emailAddress={emailAddress} options={otpOptions} />
 	}
 
 	const wrappedBody = (
@@ -115,8 +117,8 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 									onAuthenticated()
 								} else if (data.login.otpRequired) {
 									setOTPRequired(true)
-									setStep('otp')
 									setOTPOptions(data.login.otpOptions)
+									setStep('otp')
 								} else if (data.login.emailVerificationRequired) {
 									setStep('emailVerification')
 								}

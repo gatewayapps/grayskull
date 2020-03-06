@@ -15,6 +15,7 @@ export interface LoginCredentialsProps {
 	setExtendedSession: (value: boolean) => void
 	showSignup: boolean
 	routerQueryString?: string
+	setStep: (step: 'credentials' | 'otp' | 'otpChoices' | 'emailVerification') => void
 }
 
 export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
@@ -25,6 +26,7 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 	otpToken,
 	setOtpToken,
 	step,
+	setStep,
 	extendedSession,
 	setExtendedSession,
 	showSignup,
@@ -79,6 +81,11 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 				}
 				label="OTP Token"
 			/>
+			{step === 'otp' && (
+				<button type="button" className="btn btn-link pl-0" onClick={() => setStep('otpChoices')}>
+					Need a backup code?
+				</button>
+			)}
 			{step === 'credentials' && (
 				<div className="form-check mb-3">
 					<input

@@ -11,6 +11,7 @@ import { restoreConfigurationActivity } from '../../../activities/restoreConfigu
 import { uploadFileResolver } from './uploadFileResolver'
 import { sendVerificationCodeToPhoneNumberResolver } from './sendVerificationCodeToPhoneNumberResolver'
 import { addPhoneNumberWithVerificationCodeResolver } from './addPhoneNumberWithVerificationCodeResolver'
+import { sendOTPActivity } from '../../../activities/sendOTPActivity'
 
 export default {
 	Upload: GraphQLUpload,
@@ -68,6 +69,13 @@ export default {
 		uploadFile: uploadFileResolver,
 		sendVerificationCodeToPhoneNumber: sendVerificationCodeToPhoneNumberResolver,
 		addPhoneNumberWithVerificationCode: addPhoneNumberWithVerificationCodeResolver,
+		sendOTP: async (obj, args, context: IRequestContext) => {
+			const { emailAddress, id, type } = args
+			await sendOTPActivity(emailAddress, type, id, context)
+			return {
+				success: true
+			}
+		},
 		restoreConfiguration: async (obj, args, context: IRequestContext) => {
 			try {
 				const { createReadStream } = await args.file
