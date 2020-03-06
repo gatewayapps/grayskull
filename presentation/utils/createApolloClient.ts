@@ -11,7 +11,7 @@ export default function createApolloClient() {
 			graphQLErrors.forEach((err) => {
 				console.error(err)
 
-				if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && window.location.pathname !== '/login') {
+				if (err.extensions && err.extensions.code === 'UNAUTHENTICATED' && window.location.pathname !== '/login' && window.location.pathname !== '/register') {
 					window.location.replace('/login')
 				}
 				if (err.extensions && err.extensions.code === 'FORBIDDEN' && window.location.pathname !== '/oobe') {
