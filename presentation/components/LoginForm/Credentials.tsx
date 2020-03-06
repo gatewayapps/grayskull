@@ -14,6 +14,7 @@ export interface LoginCredentialsProps {
 	setOtpToken: (value: string) => void
 	setExtendedSession: (value: boolean) => void
 	showSignup: boolean
+	otpSent: boolean
 	routerQueryString?: string
 	setStep: (step: 'credentials' | 'otp' | 'otpChoices' | 'emailVerification') => void
 }
@@ -30,7 +31,8 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 	extendedSession,
 	setExtendedSession,
 	showSignup,
-	routerQueryString
+	routerQueryString,
+	otpSent
 }) => {
 	const [otpAutofill, setOtpAutofill] = useState('')
 	const forgotPasswordLink = `/resetPassword${emailAddress ? '?emailAddress=' + emailAddress : ''}`
@@ -82,9 +84,15 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 				label="OTP Token"
 			/>
 			{step === 'otp' && (
-				<button type="button" className="btn btn-link pl-0" onClick={() => setStep('otpChoices')}>
-					Need a backup code?
-				</button>
+				<div>
+					{otpSent ? (
+						<div className="alert alert-success">Your code has been sent. Enter it above.</div>
+					) : (
+						<button type="button" className="btn btn-link pl-0" onClick={() => setStep('otpChoices')}>
+							Need a backup code?
+						</button>
+					)}
+				</div>
 			)}
 			{step === 'credentials' && (
 				<div className="form-check mb-3">

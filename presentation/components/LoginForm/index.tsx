@@ -39,8 +39,8 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const [otpToken, setOTPToken] = useState('')
 	const [otpOptions, setOTPOptions] = useState<OTPOption[]>([])
 	const [extendedSession, setExtendedSession] = useState(false)
-	const [emailVerificationSent, setEmailVerificationSent] = useState(false)
-	const [message, setMessage] = useState('')
+	const [emailVerificationRequired, setEmailVerificationRequired] = useState(false)
+
 	const [otpSent, setOTPSent] = useState(false)
 	const [step, setStep] = useState<'credentials' | 'otp' | 'otpChoices' | 'emailVerification'>('credentials')
 	const [busy, setBusy] = useState(false)
@@ -52,6 +52,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 			otpToken={otpToken}
 			step={step}
 			setStep={setStep}
+			otpSent={otpSent}
 			setEmailAddress={setEmailAddress}
 			setPassword={setPassword}
 			setOtpToken={setOTPToken}
@@ -62,7 +63,9 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 		/>
 	)
 	if (step === 'otpChoices') {
-		body = <OTPBackupOptions setStep={setStep} emailAddress={emailAddress} options={otpOptions} />
+		body = (
+			<OTPBackupOptions setStep={setStep} setOTPSent={setOTPSent} emailAddress={emailAddress} options={otpOptions} />
+		)
 	}
 
 	const wrappedBody = (
@@ -71,6 +74,11 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 				<img className="body-logo align-self-start w-100 my-2" src={configuration.Server.realmLogo} />
 			</div>
 			<div className="col-12 col-md-10 ">{body}</div>
+			{emailVerificationRequired && (
+				<div className="col-12 col-md-10">
+					<div className="alert alert-danger">You must verify your e-mail address before signing in.</div>
+				</div>
+			)}
 		</div>
 	)
 
@@ -117,7 +125,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 									setOTPOptions(data.login.otpOptions)
 									setStep('otp')
 								} else if (data.login.emailVerificationRequired) {
-									setStep('emailVerification')
+									setEmailVerificationRequired(true)
 								}
 							}}
 							className="btn btn-outline-success"

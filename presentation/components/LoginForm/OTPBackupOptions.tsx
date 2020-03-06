@@ -17,11 +17,12 @@ const SEND_OTP_MUTATION = gql`
 	}
 `
 
-export const OTPBackupOptions: React.FC<{ emailAddress: string; options: OTPOption[]; setStep: (string) => void }> = ({
-	options,
-	setStep,
-	emailAddress
-}) => {
+export const OTPBackupOptions: React.FC<{
+	setOTPSent: (val) => void
+	emailAddress: string
+	options: OTPOption[]
+	setStep: (string) => void
+}> = ({ options, setStep, emailAddress, setOTPSent }) => {
 	const [selectedOption, setSelectedOption] = useState<OTPOption>(undefined)
 	const [busy, setBusy] = useState(false)
 	return (
@@ -64,6 +65,7 @@ export const OTPBackupOptions: React.FC<{ emailAddress: string; options: OTPOpti
 				onMutationStart={() => setBusy(true)}
 				onMutationEnd={() => setBusy(false)}
 				onSuccess={() => {
+					setOTPSent(true)
 					setStep('otp')
 				}}
 			/>
