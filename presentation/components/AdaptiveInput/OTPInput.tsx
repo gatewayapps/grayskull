@@ -70,11 +70,11 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 						const clipboardText = e.clipboardData.getData('text')
 						if (clipboardText) {
 							setValueFromText(clipboardText)
+							e.clipboardData.clearData('text')
 						}
 					}}
 					key={`otp-${props.name}-${i}`}
 					name={i === 0 ? props.name : undefined}
-					autoComplete={i === 0 ? 'otpToken' : undefined}
 					className="form-control mr-1 d-inline-block"
 					type="text"
 					ref={i === focusedIndex ? currentInput : undefined}
