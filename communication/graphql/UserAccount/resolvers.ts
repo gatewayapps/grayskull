@@ -32,7 +32,6 @@ import { deleteUserAccountActivity } from '../../../activities/deleteUserAccount
 import { updateUserAccountActivity } from '../../../activities/updateUserAccountActivity'
 import { getPrimaryEmailAddressForLoggedInUserActivity } from '../../../activities/getPrimaryEmailAddressForLoggedInUserActivity'
 import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
-import { getEmailAddressesForUserAccountId } from '../../../operations/data/emailAddress/getEmailAddressesForUserAccountId'
 
 function isValidDate(d: any) {
 	try {
