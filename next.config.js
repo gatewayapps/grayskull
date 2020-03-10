@@ -5,6 +5,9 @@ const packageInfo = require('./package.json')
 
 module.exports = withSass(
 	withCss({
+		typescript: {
+			ignoreDevErrors: true
+		},
 		webpack(config) {
 			config.module.rules.push({
 				test: /\.(graphql|gql)$/,
