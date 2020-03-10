@@ -30,6 +30,21 @@ class ClientForm extends PureComponent {
 		}
 	}
 
+	handleGrantTypeChange = (e) => {
+		const { name, checked } = e.target
+		if (checked) {
+			if (!this.props.client.AuthorizationFlows.includes(name)) {
+				const AuthorizationFlows = [...this.props.client.AuthorizationFlows, name]
+				this.props.onChange('AuthorizationFlows', AuthorizationFlows)
+			}
+		} else {
+			const AuthorizationFlows = this.props.client.AuthorizationFlows.filter(
+				(authorizationFlow) => authorizationFlow !== name
+			)
+			this.props.onChange('AuthorizationFlows', AuthorizationFlows)
+		}
+	}
+
 	handleScopeCheckChanged = (e) => {
 		const { name, checked } = e.target
 		if (checked) {
@@ -233,6 +248,30 @@ class ClientForm extends PureComponent {
 							</div>
 						</div>
 						<div className="form-group row">
+							<label className="col-sm-12 col-md-3 col-form-label">Grant Types</label>
+							<div className="col-sm-12 col-md-9">
+								{this.props.grantTypes.map((grantType) => (
+									<div key={grantType.key} className="form-check">
+										<input
+											type="checkbox"
+											id={grantType.key}
+											name={grantType.key}
+											className="form-check-input"
+											checked={this.props.client.AuthorizationFlows.includes(grantType.key)}
+											onChange={this.handleGrantTypeChange}
+											aria-describedby="grantTypeHelpBlock"
+										/>
+										<label htmlFor={grantType.key} className="form-check-label">
+											{grantType.name}
+										</label>
+									</div>
+								))}
+								<small id="grantTypeHelpBlock" className="form-text text-muted">
+									Grant types determine the authorization flows clients can use to authroize users.
+								</small>
+							</div>
+						</div>
+						<div className="form-group row">
 							<label className="col-sm-12 col-md-3 col-form-label">Scopes</label>
 							<div className="col-sm-12 col-md-9">
 								{this.props.scopes.map((scope) => (
@@ -316,6 +355,12 @@ ClientForm.propTypes = {
 	onChange: PropTypes.func.isRequired,
 	onValidated: PropTypes.func,
 	readOnly: PropTypes.bool,
+	grantTypes: PropTypes.arrayOf(
+		PropTypes.shape({
+			key: PropTypes.string.isRequired,
+			name: PropTypes.string.isRequired
+		})
+	),
 	scopes: PropTypes.arrayOf(
 		PropTypes.shape({
 			id: PropTypes.string.isRequired,

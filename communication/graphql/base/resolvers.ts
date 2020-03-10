@@ -12,6 +12,7 @@ import { uploadFileResolver } from './uploadFileResolver'
 import { sendVerificationCodeToPhoneNumberResolver } from './sendVerificationCodeToPhoneNumberResolver'
 import { addPhoneNumberWithVerificationCodeResolver } from './addPhoneNumberWithVerificationCodeResolver'
 import { sendOTPActivity } from '../../../activities/sendOTPActivity'
+import { GrantTypes, GrantTypeNames } from '../../../foundation/constants/authorizationTypes'
 
 export default {
 	Upload: GraphQLUpload,
@@ -37,6 +38,9 @@ export default {
 		}
 	}),
 	Query: {
+		grantTypes: async () => {
+			return Object.values(GrantTypes).map((gt) => ({ key: gt, name: GrantTypeNames[gt] }))
+		},
 		securityConfiguration: async (obj, args, context: IRequestContext) => {
 			const config = context.configuration
 			return {
