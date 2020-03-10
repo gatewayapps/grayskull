@@ -26,6 +26,7 @@ class MyApp extends App<any> {
 			const prepareContext = (await import('../foundation/context/prepareContext')).prepareContext
 			const context = await prepareContext(ctx.req, ctx.res)
 			configuration = context.configuration
+			process.env.GRAYSKULL_BASE_URL = configuration.Server?.baseUrl
 		}
 
 		if (Component && Component.getInitialProps) {

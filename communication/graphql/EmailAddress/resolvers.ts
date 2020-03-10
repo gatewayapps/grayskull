@@ -22,7 +22,7 @@ export default {
 			return result
 		},
 		myEmailAddresses: async (obj, args, context) => {
-			return listUserAccountEmailAddressesActivity(context)
+			return listUserAccountEmailAddressesActivity(undefined, context)
 		}
 	},
 	Mutation: {
