@@ -25,12 +25,14 @@ import { listUserAccountEmailAddressesActivity } from '../../../activities/listU
 
 import { updateClientScopesResolver } from './updateClientScopesResolver'
 
-import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
 import { resendAllVerificationEmailsActivity } from '../../../activities/resendAllVerificationEmailsActivity'
 import { getUserAccountsActivity } from '../../../activities/getUserAccountsActivity'
 import { setOTPSecretActivity } from '../../../activities/setOTPSecretActivity'
 import { deleteUserAccountActivity } from '../../../activities/deleteUserAccountActivity'
 import { updateUserAccountActivity } from '../../../activities/updateUserAccountActivity'
+import { getPrimaryEmailAddressForLoggedInUserActivity } from '../../../activities/getPrimaryEmailAddressForLoggedInUserActivity'
+import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
+import { getEmailAddressesForUserAccountId } from '../../../operations/data/emailAddress/getEmailAddressesForUserAccountId'
 
 function isValidDate(d: any) {
 	try {
@@ -131,19 +133,15 @@ export default {
 	},
 	UserProfile: {
 		emailAddress: async (obj, args, context: IRequestContext) => {
-			return await getPrimaryEmailAddressForUserActivity(context)
+			return await getPrimaryEmailAddressForLoggedInUserActivity(context)
 		}
 	},
 	UserAccount: {
 		emailAddresses: async (obj, args, context: IRequestContext) => {
-			return listUserAccountEmailAddressesActivity(context)
+			return listUserAccountEmailAddressesActivity(obj.userAccountId, context)
 		},
 		emailAddress: async (obj, args, context: IRequestContext) => {
-			if (context.user) {
-				return context.user.emailAddress
-			} else {
-				return null
-			}
+			return getPrimaryEmailAddressForUserActivity(obj.userAccountId, context)
 		}
 	}
 }
