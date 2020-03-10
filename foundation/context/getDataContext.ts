@@ -58,14 +58,14 @@ export async function getDataContextFromConnectionString(connectionString: strin
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 	let dialect = connectionUrl.protocol.substr(0, connectionUrl.protocol.length - 1) as
-		| 'mysql'
+		| 'mysql2'
 		| 'sqlite'
 		| 'postgres'
 		| 'mssql'
 	switch (dialect.toString()) {
 		case 'mysql':
 		case 'jdbc:mysql':
-			dialect = 'mysql'
+			dialect = 'mysql2'
 
 			break
 		case 'sqlite':
