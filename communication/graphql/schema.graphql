@@ -83,6 +83,7 @@ type Client {
 	updatedAt: Date!
 	deletedBy: ID
 	deletedAt: Date
+	AuthorizationFlows: String!
 }
 
 input CreateClientArgs {
@@ -98,6 +99,7 @@ input CreateClientArgs {
 	redirectUris: String!
 	scopes: String!
 	isActive: Boolean!
+	AuthorizationFlows: String!
 }
 
 input UpdateClientArgs {
@@ -112,6 +114,7 @@ input UpdateClientArgs {
 	redirectUris: String
 	scopes: String
 	isActive: Boolean
+	AuthorizationFlows: String
 }
 
 type ClientMeta {
