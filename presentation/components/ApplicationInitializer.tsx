@@ -14,22 +14,26 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 	const [busy, setBusy] = useState(false)
 
 	const callInitialize = async () => {
-		if (busy) {
-			return
-		}
 		try {
+			if (busy) {
+				return
+			}
 			setBusy(true)
-			const response = await fetch(`/api/initialize`, { method: 'GET' })
+			const finalUrl = process.env.GRAYSKULL_BASE_URL
+				? new URL('/api/initialize', process.env.GRAYSKULL_BASE_URL).href
+				: '/api/initialize'
+			const response = await fetch(finalUrl, { method: 'GET' })
 			const json = await response.json()
 			setResponse(json)
 		} catch (err) {
 			console.error(err)
 			setError(err)
+		} finally {
+			setBusy(false)
 		}
-		setBusy(false)
 	}
 
-	if (!busy && !response) {
+	if (!busy && !response && !error) {
 		callInitialize()
 	}
 
@@ -39,7 +43,7 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 	if (error) {
 		content = (
 			<ActivityMessageContainerComponent>
-				<div className="alert alert-danger">error.message</div>
+				<div className="alert alert-danger">{error.message}</div>
 			</ActivityMessageContainerComponent>
 		)
 	}
