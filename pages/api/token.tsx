@@ -28,7 +28,7 @@ const getClientCredentialsFromRequest = (
 	}
 }
 
-const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function postAccessToken(req: NextApiRequest, res: NextApiResponse) {
 	const context = await prepareContext(req, res)
 
 	if (req.method !== 'POST') {
@@ -80,5 +80,3 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(400).json({ success: false, message: err.message })
 	}
 }
-
-export default postAccessToken

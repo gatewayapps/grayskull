@@ -16,6 +16,7 @@ export async function createUserClient(
 		deniedScopes: JSON.stringify(deniedScopes),
 		createdAt: new Date(),
 		createdBy: userAccountId,
+		updatedAt: new Date(),
 		userClientId: uuidv4()
 	}
 
