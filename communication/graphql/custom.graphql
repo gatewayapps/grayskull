@@ -21,7 +21,7 @@ type UserProfile {
 }
 
 type GrantType {
-	key: String!
+	id: String!
 	name: String!
 }
 

@@ -11,7 +11,7 @@ import generateSecret from '../../../presentation/utils/generateSecret'
 import { ALL_CLIENTS_QUERY } from './index'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import ClientForm from '../../../presentation/components/ClientForm'
-import { GrantTypes } from '../../../foundation/constants/authorizationTypes'
+import { GrantTypes } from '../../../foundation/constants/grantTypes'
 
 import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import Permissions from '../../../presentation/utils/permissions'
@@ -40,7 +40,7 @@ const GET_SCOPES_FOR_CLIENT_QUERY = gql`
 			required
 		}
 		grantTypes {
-			key
+			id
 			name
 		}
 	}

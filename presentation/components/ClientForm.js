@@ -251,23 +251,23 @@ class ClientForm extends PureComponent {
 							<label className="col-sm-12 col-md-3 col-form-label">Grant Types</label>
 							<div className="col-sm-12 col-md-9">
 								{this.props.grantTypes.map((grantType) => (
-									<div key={grantType.key} className="form-check">
+									<div key={grantType.id} className="form-check">
 										<input
 											type="checkbox"
-											id={grantType.key}
-											name={grantType.key}
+											id={grantType.id}
+											name={grantType.id}
 											className="form-check-input"
-											checked={this.props.client.AuthorizationFlows.includes(grantType.key)}
+											checked={this.props.client.AuthorizationFlows.includes(grantType.id)}
 											onChange={this.handleGrantTypeChange}
 											aria-describedby="grantTypeHelpBlock"
 										/>
-										<label htmlFor={grantType.key} className="form-check-label">
+										<label htmlFor={grantType.id} className="form-check-label">
 											{grantType.name}
 										</label>
 									</div>
 								))}
 								<small id="grantTypeHelpBlock" className="form-text text-muted">
-									Grant types determine the authorization flows clients can use to authroize users.
+									Grant types determine the authorization flows clients can use to authorize users.
 								</small>
 							</div>
 						</div>

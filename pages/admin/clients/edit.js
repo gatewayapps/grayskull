@@ -31,8 +31,8 @@ const UPDATE_CLIENT_QUERY = gql`
 		}
 
 		grantTypes {
+			id
 			name
-			key
 		}
 
 		scopes {

@@ -5,7 +5,7 @@ export const StyledFooter = styled.div`
 	flex-direction: row;
 	justify-content: center;
 	height: 5em;
-	background: #eee;
+	background: #f3f3f3;
 	padding: 30px;
 `
 
@@ -14,6 +14,7 @@ export const StyledFooterContent = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	min-width: 60%;
-	margin-right: -18px;
+	max-width: 980px;
+
+	width: 100%;
 `

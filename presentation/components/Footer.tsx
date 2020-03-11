@@ -10,11 +10,12 @@ export const Footer: React.FC = () => {
 	return (
 		<StyledFooter>
 			<StyledFooterContent>
-				<h5 style={{ margin: '0px' }}>Grayskull Authentication Server v{process.env.PRODUCT_VERSION}</h5>
+				<h6 style={{ margin: '0px' }}>Grayskull v{process.env.PRODUCT_VERSION}</h6>
 				<Button onClick={toggle} color="link">
 					Release Notes
 				</Button>
 			</StyledFooterContent>
+
 			<Modal isOpen={modal} toggle={toggle} size="lg">
 				<ModalHeader toggle={toggle}>Version Release Notes</ModalHeader>
 				<ModalBody>
