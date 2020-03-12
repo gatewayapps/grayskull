@@ -163,6 +163,7 @@ export interface IRefreshToken {
 	id: string
 	userClientId: string
 	token: string
+	scopes: string
 	issuedAt: Date
 	activeAt: Date
 	expiresAt: Date | null

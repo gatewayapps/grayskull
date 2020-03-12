@@ -4,7 +4,7 @@ export interface GrantType {
 	hidden?: boolean
 }
 
-export const GrantTypes: { [key: string]: GrantType } = {
+export const GrantTypes = {
 	AuthorizationCode: {
 		id: 'authorization_code',
 		name: 'Authorization Code'

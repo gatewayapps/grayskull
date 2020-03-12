@@ -12,7 +12,7 @@ import { uploadFileResolver } from './uploadFileResolver'
 import { sendVerificationCodeToPhoneNumberResolver } from './sendVerificationCodeToPhoneNumberResolver'
 import { addPhoneNumberWithVerificationCodeResolver } from './addPhoneNumberWithVerificationCodeResolver'
 import { sendOTPActivity } from '../../../activities/sendOTPActivity'
-import { GrantTypes, GrantTypeNames } from '../../../foundation/constants/grantTypes'
+import { GrantTypes } from '../../../foundation/constants/grantTypes'
 
 export default {
 	Upload: GraphQLUpload,

@@ -1,12 +1,12 @@
 import { getTokensFromAuthorizationCodeActivity } from '../../activities/getTokensFromAuthorizationCodeActivity'
 import { getTokensFromRefreshTokenActivity } from '../../activities/getTokensFromRefreshTokenActivity'
+import { getTokensFromPasswordActivity } from '../../activities/getTokensFromPasswordActivity'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-const getClientCredentialsFromRequest = (
-	req: NextApiRequest
-): { client_id: string; client_secret: string } | undefined => {
+import { GrantTypes } from '../../foundation/constants/grantTypes'
+function getClientCredentialsFromRequest(req: NextApiRequest) {
 	if (req.headers.authorization) {
 		const b64 = req.headers.authorization.replace('Basic ', '')
 		const buf = Buffer.from(b64, 'base64')
@@ -17,7 +17,7 @@ const getClientCredentialsFromRequest = (
 			client_secret: authParts[1]
 		}
 	} else {
-		if (req.body.client_id && req.body.client_secret) {
+		if (req.body.client_id) {
 			return {
 				client_id: req.body.client_id,
 				client_secret: req.body.client_secret
@@ -28,7 +28,18 @@ const getClientCredentialsFromRequest = (
 	}
 }
 
-export default async function postAccessToken(req: NextApiRequest, res: NextApiResponse) {
+function getLoginCredentialsFromRequest(req: NextApiRequest) {
+	if (req.body && req.body.username) {
+		return {
+			emailAddress: req.body.username,
+			password: req.body.password,
+			scope: req.body.scope
+		}
+	}
+	return undefined
+}
+
+export default async function handleTokenRequest(req: NextApiRequest, res: NextApiResponse) {
 	const context = await prepareContext(req, res)
 
 	if (req.method !== 'POST') {
@@ -52,7 +63,7 @@ export default async function postAccessToken(req: NextApiRequest, res: NextApiR
 
 		let accessTokenResponse: IAccessTokenResponse | undefined = undefined
 		switch (body.grant_type) {
-			case 'authorization_code': {
+			case GrantTypes.AuthorizationCode.id: {
 				accessTokenResponse = await getTokensFromAuthorizationCodeActivity(
 					clientCredentials.client_id,
 					clientCredentials.client_secret,
@@ -61,7 +72,7 @@ export default async function postAccessToken(req: NextApiRequest, res: NextApiR
 				)
 				break
 			}
-			case 'refresh_token': {
+			case GrantTypes.RefreshToken.id: {
 				accessTokenResponse = await getTokensFromRefreshTokenActivity(
 					clientCredentials.client_id,
 					clientCredentials.client_secret,
@@ -69,6 +80,39 @@ export default async function postAccessToken(req: NextApiRequest, res: NextApiR
 					context
 				)
 				break
+			}
+			case GrantTypes.Password.id: {
+				try {
+					const loginCredentials = getLoginCredentialsFromRequest(req)
+					if (!loginCredentials) {
+						throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid username or password')
+					}
+					accessTokenResponse = await getTokensFromPasswordActivity(
+						clientCredentials.client_id,
+						clientCredentials.client_secret,
+						loginCredentials.emailAddress,
+						loginCredentials.password,
+						loginCredentials.scope,
+						context
+					)
+				} catch (err2) {
+					if (err2 instanceof GrayskullError) {
+						switch (err2.code) {
+							case GrayskullErrorCode.RequiresOTP: {
+								res.status(403).json({ success: false, error: err2.code, message: err2.message })
+								return
+							}
+							default: {
+								res.status(403).json({
+									success: false,
+									error: GrayskullErrorCode.NotAuthorized,
+									message: 'Username or password is incorrect'
+								})
+								return
+							}
+						}
+					}
+				}
 			}
 			default: {
 				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid grant_type')

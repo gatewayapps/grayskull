@@ -34,7 +34,7 @@ export interface IEmailClaim {
 }
 
 export interface IAccessTokenResponse {
-	token_type: 'Bearer'
+	token_type: string
 	id_token?: string
 	expires_in: number
 	access_token?: string
