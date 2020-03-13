@@ -34,11 +34,12 @@ export interface IEmailClaim {
 }
 
 export interface IChallenge {
-	type: string
-	token: string
+	challenge_type: string
+	challenge_token: string
 }
 
 export interface IChallengeToken {
+	emailAddress: string
 	userClientId: string
 	scopes: string[]
 	iat: Date //Issued At

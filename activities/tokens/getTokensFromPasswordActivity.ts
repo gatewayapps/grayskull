@@ -1,17 +1,17 @@
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { validateClientSecretActivity } from './validateClientSecretActivity'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { validateClientSecretActivity } from '../validateClientSecretActivity'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 
-import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
-import { verifyPassword } from '../operations/data/userAccount/verifyPassword'
+import { getUserAccountByEmailAddress } from '../../operations/data/userAccount/getUserAccountByEmailAddress'
+import { verifyPassword } from '../../operations/data/userAccount/verifyPassword'
 
 import { getTokensActivity } from './getTokensActivity'
-import { IAccessTokenResponse } from '../foundation/types/tokens'
-import { createChallengeToken } from '../operations/logic/createChallengeToken'
-import { getUserClient } from '../operations/data/userClient/getUserClient'
-import { createUserClient } from '../operations/data/userClient/createUserClient'
-import { getClient } from '../operations/data/client/getClient'
-import { GrantTypes } from '../foundation/constants/grantTypes'
+import { IAccessTokenResponse } from '../../foundation/types/tokens'
+import { createChallengeToken } from '../../operations/logic/createChallengeToken'
+import { getUserClient } from '../../operations/data/userClient/getUserClient'
+import { createUserClient } from '../../operations/data/userClient/createUserClient'
+import { getClient } from '../../operations/data/client/getClient'
+import { GrantTypes } from '../../foundation/constants/grantTypes'
 
 export async function getTokensFromPasswordActivity(
 	clientId: string,
@@ -54,14 +54,15 @@ export async function getTokensFromPasswordActivity(
 		}
 
 		const token = await createChallengeToken(
+			emailAddress,
 			userClient.userClientId,
 			JSON.parse(userClient.allowedScopes),
 			clientSecret
 		)
 		return {
 			challenge: {
-				token,
-				type: GrantTypes.MultifactorToken.id
+				challenge_token: token,
+				challenge_type: GrantTypes.MultifactorToken.id
 			}
 		}
 	} else {

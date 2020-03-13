@@ -1,5 +1,5 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { authenticateUserActivity } from '../../../activities/authenticateUserActivity'
+import { authenticateUserActivity } from '../../../activities/authentication/authenticateUserActivity'
 import { setAuthCookies } from '../../../operations/logic/authentication'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 import { getOTPBackupOptionsForEmailAddressActivity } from '../../../activities/getOTPBackupOptionsForEmailAddressActivity'

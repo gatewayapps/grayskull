@@ -256,9 +256,7 @@ export interface ResendVerificationOperationArgs {
 export interface ResendAllVerificationEmailsOperationArgs {
 	dryRun: boolean | null
 }
-export interface SendBackupCodeOperationArgs {
-	emailAddress: string
-}
+
 export interface ResetPasswordOperationArgs {
 	emailAddress: string
 }

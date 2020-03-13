@@ -1,5 +1,5 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { sendResetPasswordEmailActivity } from '../../../activities/sendResetPasswordEmailActivity'
+import { sendResetPasswordEmailActivity } from '../../../activities/authentication/sendResetPasswordEmailActivity'
 
 export async function resetPasswordResolver(obj, args, context: IRequestContext) {
 	// insert your resetPassword implementation here

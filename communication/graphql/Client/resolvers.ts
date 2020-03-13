@@ -1,9 +1,9 @@
-import { listClientsActivity } from '../../../activities/listClientsActivity'
-import { getClientsMetaActivity } from '../../../activities/getClientsMetaActivity'
+import { listClientsActivity } from '../../../activities/admin/listClientsActivity'
+import { getClientsMetaActivity } from '../../../activities/admin/getClientsMetaActivity'
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { getClientByIdActivity } from '../../../activities/getClientByIdActivity'
-import { createClientActivity } from '../../../activities/createClientActivity'
-import { updateClientByIdActivity } from '../../../activities/updateClientByIdActivity'
+import { createClientActivity } from '../../../activities/admin/createClientActivity'
+import { updateClientByIdActivity } from '../../../activities/admin/updateClientByIdActivity'
 
 export default {
 	Query: {

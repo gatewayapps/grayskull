@@ -43,7 +43,6 @@ type Mutation {
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean @anonymous
 	resendVerification(data: ResendVerificationArgs!): Boolean @anonymous
 	resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
-	sendBackupCode(data: SendBackupCodeArgs!): Boolean @anonymous
 	resetPassword(data: ResetPasswordArgs!): Boolean @anonymous
 	validatePassword(data: ValidatePasswordArgs!): Boolean @anonymous
 	createUser(data: CreateUserArgs!): OperationResponse
@@ -706,10 +705,6 @@ input ResendVerificationArgs {
 
 input ResendAllVerificationEmailsArgs {
 	dryRun: Boolean
-}
-
-input SendBackupCodeArgs {
-	emailAddress: String!
 }
 
 input ResetPasswordArgs {

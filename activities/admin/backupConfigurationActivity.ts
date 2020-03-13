@@ -1,9 +1,9 @@
-import { backup } from '../operations/data/backup/backup'
+import { backup } from '../../operations/data/backup/backup'
 
-import { getValue } from '../operations/data/persistentCache/getValue'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
-import { clearValue } from '../operations/data/persistentCache/clearValue'
-import { IRequestContext } from '../foundation/context/prepareContext'
+import { getValue } from '../../operations/data/persistentCache/getValue'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
+import { clearValue } from '../../operations/data/persistentCache/clearValue'
+import { IRequestContext } from '../../foundation/context/prepareContext'
 
 export async function backupConfigurationActivity(code: string, context: IRequestContext) {
 	/*

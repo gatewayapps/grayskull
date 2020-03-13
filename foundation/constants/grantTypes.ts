@@ -7,15 +7,18 @@ export interface GrantType {
 export const GrantTypes = {
 	AuthorizationCode: {
 		id: 'authorization_code',
-		name: 'Authorization Code'
+		name: 'Authorization Code',
+		hidden: false
 	},
 	RefreshToken: {
 		id: 'refresh_token',
-		name: 'Refresh Token'
+		name: 'Refresh Token',
+		hidden: false
 	},
 	Password: {
 		id: 'password',
-		name: 'Password'
+		name: 'Password',
+		hidden: false
 	},
 	MultifactorToken: {
 		id: 'grayskull_mfa_token',

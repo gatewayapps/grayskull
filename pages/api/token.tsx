@@ -1,6 +1,7 @@
-import { getTokensFromAuthorizationCodeActivity } from '../../activities/getTokensFromAuthorizationCodeActivity'
-import { getTokensFromRefreshTokenActivity } from '../../activities/getTokensFromRefreshTokenActivity'
-import { getTokensFromPasswordActivity } from '../../activities/getTokensFromPasswordActivity'
+import { getTokensFromAuthorizationCodeActivity } from '../../activities/tokens/getTokensFromAuthorizationCodeActivity'
+import { getTokensFromMultifactorTokenActivity } from '../../activities/tokens/getTokensFromMultifactorTokenActivity'
+import { getTokensFromRefreshTokenActivity } from '../../activities/tokens/getTokensFromRefreshTokenActivity'
+import { getTokensFromPasswordActivity } from '../../activities/tokens/getTokensFromPasswordActivity'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
@@ -25,6 +26,17 @@ function getClientCredentialsFromRequest(req: NextApiRequest) {
 		} else {
 			return undefined
 		}
+	}
+}
+
+function getMultifactorCredentialsFromRequest(req: NextApiRequest) {
+	if (req.body && req.body.challenge_token && req.body.otp_token) {
+		return {
+			challenge_token: req.body.challenge_token,
+			otp_token: req.body.otp_token
+		}
+	} else {
+		return undefined
 	}
 }
 
@@ -95,6 +107,19 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 					loginCredentials.emailAddress,
 					loginCredentials.password,
 					loginCredentials.scope,
+					context
+				)
+			}
+			case GrantTypes.MultifactorToken.id: {
+				const mfaCredentials = getMultifactorCredentialsFromRequest(req)
+				if (!mfaCredentials) {
+					throw new GrayskullError(GrayskullErrorCode.InvalidOTP, 'otp_token and challenge_token are required')
+				}
+				accessTokenResponse = await getTokensFromMultifactorTokenActivity(
+					clientCredentials.client_id,
+					clientCredentials.client_secret,
+					mfaCredentials.otp_token,
+					mfaCredentials.challenge_token,
 					context
 				)
 			}

@@ -3,15 +3,15 @@ import { GraphQLScalarType, Kind } from 'graphql'
 import { Permissions } from '../../../foundation/constants/permissions'
 
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { generateBackupCodeActivity } from '../../../activities/generateBackupCodeActivity'
+import { generateBackupCodeActivity } from '../../../activities/admin/generateBackupCodeActivity'
 import { streamToString } from '../../../operations/logic/streamToString'
 import { Stream } from 'stream'
-import { restoreConfigurationActivity } from '../../../activities/restoreConfigurationActivity'
+import { restoreConfigurationActivity } from '../../../activities/admin/restoreConfigurationActivity'
 
 import { uploadFileResolver } from './uploadFileResolver'
 import { sendVerificationCodeToPhoneNumberResolver } from './sendVerificationCodeToPhoneNumberResolver'
 import { addPhoneNumberWithVerificationCodeResolver } from './addPhoneNumberWithVerificationCodeResolver'
-import { sendOTPActivity } from '../../../activities/sendOTPActivity'
+import { sendOTPActivity } from '../../../activities/authentication/sendOTPActivity'
 import { GrantTypes } from '../../../foundation/constants/grantTypes'
 
 export default {

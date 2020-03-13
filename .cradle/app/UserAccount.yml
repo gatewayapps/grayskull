@@ -112,11 +112,6 @@ UserAccount:
       returns: boolean
       arguments:
         dryRun: boolean? default(0)
-    # Send Backup Code #
-    sendBackupCode:
-      returns: boolean
-      arguments:
-        emailAddress: string
     # Reset Password #
     resetPassword:
       returns: boolean

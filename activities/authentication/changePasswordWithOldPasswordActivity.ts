@@ -1,9 +1,9 @@
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { verifyPassword } from '../operations/data/userAccount/verifyPassword'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
-import { verifyPasswordStrength } from '../operations/logic/verifyPasswordStrength'
-import { setUserAccountPassword } from '../operations/data/userAccount/setUserAccountPassword'
-import { getUserAccount } from '../operations/data/userAccount/getUserAccount'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { verifyPassword } from '../../operations/data/userAccount/verifyPassword'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
+import { verifyPasswordStrength } from '../../operations/logic/verifyPasswordStrength'
+import { setUserAccountPassword } from '../../operations/data/userAccount/setUserAccountPassword'
+import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
 
 /*
  * 1.  Does the old password validate

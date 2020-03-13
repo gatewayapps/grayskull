@@ -1,11 +1,11 @@
-import { getValue } from '../operations/data/persistentCache/getValue'
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
-import { clearValue } from '../operations/data/persistentCache/clearValue'
+import { getValue } from '../../operations/data/persistentCache/getValue'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
+import { clearValue } from '../../operations/data/persistentCache/clearValue'
 
-import { IAccessTokenResponse } from '../foundation/types/tokens'
+import { IAccessTokenResponse } from '../../foundation/types/tokens'
 
-import { validateClientSecretActivity } from './validateClientSecretActivity'
+import { validateClientSecretActivity } from '../validateClientSecretActivity'
 
 import { getTokensActivity } from './getTokensActivity'
 
