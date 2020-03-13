@@ -42,7 +42,7 @@ export interface IChallengeToken {
 	emailAddress: string
 	userClientId: string
 	scopes: string[]
-	iat: Date //Issued At
+	iat: number //Issued At
 }
 
 export interface IAccessTokenResponse {

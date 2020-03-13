@@ -25,7 +25,7 @@ export async function getTokensFromPasswordActivity(
 		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
 	}
 
-	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, false)
+	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, true)
 	if (!userAccount) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidEmailAddress, `No user found with that email address`)
 	}

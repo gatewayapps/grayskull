@@ -11,7 +11,7 @@ export async function createChallengeToken(
 		emailAddress,
 		userClientId,
 		scopes,
-		iat: new Date()
+		iat: new Date().getTime()
 	}
 
 	return jwt.sign(challengeToken, clientSecret)
