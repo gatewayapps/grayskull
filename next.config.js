@@ -15,7 +15,7 @@ module.exports = withSass(
 				loader: 'graphql-tag/loader'
 			})
 			config.module.rules.push({
-				test: /\.handlebars$/i,
+				test: /\.(handlebars|txt)$/i,
 				use: 'raw-loader'
 			})
 

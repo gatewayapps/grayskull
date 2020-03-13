@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
 				<ModalBody>
 					<div style={{ height: '50vh', width: '100%', overflow: 'auto', position: 'relative' }}>
 						<iframe
-							src="/releaseNotes.html"
+							src="/releaseNotes"
 							style={{
 								border: 'none',
 								position: 'absolute',
