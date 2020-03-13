@@ -22,6 +22,8 @@ jobs:
         run: yarn test-foundation
       - name: Operations tests
         run: yarn test-operations
+      - name: Activity tests
+        run: yarn test-activities
       - name: Resolver tests
         run: yarn test-resolvers
       - name: Compile
