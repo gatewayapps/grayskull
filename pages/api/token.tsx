@@ -1,12 +1,13 @@
-import { getTokensFromAuthorizationCodeActivity } from '../../activities/getTokensFromAuthorizationCodeActivity'
-import { getTokensFromRefreshTokenActivity } from '../../activities/getTokensFromRefreshTokenActivity'
+import { getTokensFromAuthorizationCodeActivity } from '../../activities/tokens/getTokensFromAuthorizationCodeActivity'
+import { getTokensFromMultifactorTokenActivity } from '../../activities/tokens/getTokensFromMultifactorTokenActivity'
+import { getTokensFromRefreshTokenActivity } from '../../activities/tokens/getTokensFromRefreshTokenActivity'
+import { getTokensFromPasswordActivity } from '../../activities/tokens/getTokensFromPasswordActivity'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-const getClientCredentialsFromRequest = (
-	req: NextApiRequest
-): { client_id: string; client_secret: string } | undefined => {
+import { GrantTypes } from '../../foundation/constants/grantTypes'
+function getClientCredentialsFromRequest(req: NextApiRequest) {
 	if (req.headers.authorization) {
 		const b64 = req.headers.authorization.replace('Basic ', '')
 		const buf = Buffer.from(b64, 'base64')
@@ -17,7 +18,7 @@ const getClientCredentialsFromRequest = (
 			client_secret: authParts[1]
 		}
 	} else {
-		if (req.body.client_id && req.body.client_secret) {
+		if (req.body.client_id) {
 			return {
 				client_id: req.body.client_id,
 				client_secret: req.body.client_secret
@@ -28,7 +29,32 @@ const getClientCredentialsFromRequest = (
 	}
 }
 
-const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
+function getMultifactorCredentialsFromRequest(req: NextApiRequest) {
+	if (req.body && req.body.challenge_token && req.body.otp_token) {
+		return {
+			challenge_token: req.body.challenge_token,
+			otp_token: req.body.otp_token
+		}
+	} else {
+		return undefined
+	}
+}
+
+function getLoginCredentialsFromRequest(req: NextApiRequest) {
+	if (req.body && req.body.username) {
+		const parsedScopes = decodeURIComponent(req.body.scope)
+		const scope = parsedScopes.split(/[,\s]/)
+
+		return {
+			emailAddress: req.body.username,
+			password: req.body.password,
+			scope: scope
+		}
+	}
+	return undefined
+}
+
+export default async function handleTokenRequest(req: NextApiRequest, res: NextApiResponse) {
 	const context = await prepareContext(req, res)
 
 	if (req.method !== 'POST') {
@@ -52,7 +78,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		let accessTokenResponse: IAccessTokenResponse | undefined = undefined
 		switch (body.grant_type) {
-			case 'authorization_code': {
+			case GrantTypes.AuthorizationCode.id: {
 				accessTokenResponse = await getTokensFromAuthorizationCodeActivity(
 					clientCredentials.client_id,
 					clientCredentials.client_secret,
@@ -61,7 +87,7 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
 				)
 				break
 			}
-			case 'refresh_token': {
+			case GrantTypes.RefreshToken.id: {
 				accessTokenResponse = await getTokensFromRefreshTokenActivity(
 					clientCredentials.client_id,
 					clientCredentials.client_secret,
@@ -69,6 +95,33 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
 					context
 				)
 				break
+			}
+			case GrantTypes.Password.id: {
+				const loginCredentials = getLoginCredentialsFromRequest(req)
+				if (!loginCredentials) {
+					throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid username or password')
+				}
+				accessTokenResponse = await getTokensFromPasswordActivity(
+					clientCredentials.client_id,
+					clientCredentials.client_secret,
+					loginCredentials.emailAddress,
+					loginCredentials.password,
+					loginCredentials.scope,
+					context
+				)
+			}
+			case GrantTypes.MultifactorToken.id: {
+				const mfaCredentials = getMultifactorCredentialsFromRequest(req)
+				if (!mfaCredentials) {
+					throw new GrayskullError(GrayskullErrorCode.InvalidOTP, 'otp_token and challenge_token are required')
+				}
+				accessTokenResponse = await getTokensFromMultifactorTokenActivity(
+					clientCredentials.client_id,
+					clientCredentials.client_secret,
+					mfaCredentials.otp_token,
+					mfaCredentials.challenge_token,
+					context
+				)
 			}
 			default: {
 				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid grant_type')
@@ -80,5 +133,3 @@ const postAccessToken = async (req: NextApiRequest, res: NextApiResponse) => {
 		res.status(400).json({ success: false, message: err.message })
 	}
 }
-
-export default postAccessToken

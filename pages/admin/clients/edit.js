@@ -27,6 +27,12 @@ const UPDATE_CLIENT_QUERY = gql`
 			scopes
 			public
 			pinToHeader
+			AuthorizationFlows
+		}
+
+		grantTypes {
+			id
+			name
 		}
 
 		scopes {
@@ -50,6 +56,7 @@ const UPDATE_CLIENT_MUTATION = gql`
 			scopes
 			public
 			pinToHeader
+			AuthorizationFlows
 		}
 	}
 `
@@ -88,7 +95,7 @@ class ClientEditPage extends PureComponent {
 
 		this.setState({ results: undefined })
 
-		const { redirectUris, scopes, ...data } = this.state.client
+		const { redirectUris, scopes, AuthorizationFlows, ...data } = this.state.client
 
 		data.client_id = clientId
 
@@ -97,6 +104,9 @@ class ClientEditPage extends PureComponent {
 		}
 		if (scopes) {
 			data.scopes = JSON.stringify(scopes)
+		}
+		if (AuthorizationFlows) {
+			data.AuthorizationFlows = JSON.stringify(AuthorizationFlows)
 		}
 
 		const res = await updateClient({ variables: { data } })
@@ -123,12 +133,13 @@ class ClientEditPage extends PureComponent {
 							return <ErrorMessage error={error} />
 						}
 
-						const { client, scopes } = data
+						const { client, scopes, grantTypes } = data
 
 						const parsedClient = {
 							...client,
 							redirectUris: JSON.parse(client.redirectUris).map((r) => ({ key: uuid(), value: r })),
-							scopes: JSON.parse(client.scopes)
+							scopes: JSON.parse(client.scopes),
+							AuthorizationFlows: JSON.parse(client.AuthorizationFlows)
 						}
 
 						const mergedClient = {
@@ -160,6 +171,7 @@ class ClientEditPage extends PureComponent {
 														onChange={this.handleClientFormChange}
 														onValidated={this.onClientFormValidated}
 														scopes={scopes}
+														grantTypes={grantTypes}
 													/>
 													{this.state.result && <div className="alert alert-success">Success!</div>}
 												</div>

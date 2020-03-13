@@ -1,6 +1,6 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
-import { changePasswordWithTokenActivity } from '../../../activities/changePasswordWithTokenActivity'
-import { changePasswordWithOldPasswordActivity } from '../../../activities/changePasswordWithOldPasswordActivity'
+import { changePasswordWithTokenActivity } from '../../../activities/authentication/changePasswordWithTokenActivity'
+import { changePasswordWithOldPasswordActivity } from '../../../activities/authentication/changePasswordWithOldPasswordActivity'
 
 export async function changePasswordResolver(obj, args, context: IRequestContext) {
 	const { emailAddress, token, newPassword, confirmPassword, oldPassword } = args.data

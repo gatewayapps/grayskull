@@ -163,6 +163,7 @@ export interface IRefreshToken {
 	id: string
 	userClientId: string
 	token: string
+	scopes: string
 	issuedAt: Date
 	activeAt: Date
 	expiresAt: Date | null
@@ -255,9 +256,7 @@ export interface ResendVerificationOperationArgs {
 export interface ResendAllVerificationEmailsOperationArgs {
 	dryRun: boolean | null
 }
-export interface SendBackupCodeOperationArgs {
-	emailAddress: string
-}
+
 export interface ResetPasswordOperationArgs {
 	emailAddress: string
 }

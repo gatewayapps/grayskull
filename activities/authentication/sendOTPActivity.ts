@@ -1,14 +1,14 @@
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
-import { decrypt } from '../operations/logic/encryption'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { getUserAccountByEmailAddress } from '../../operations/data/userAccount/getUserAccountByEmailAddress'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
+import { decrypt } from '../../operations/logic/encryption'
 
-import { generateBackupMultifactorCode } from '../operations/data/userAccount/generateBackupMultifactorCode'
+import { generateBackupMultifactorCode } from '../../operations/data/userAccount/generateBackupMultifactorCode'
 
-import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
-import { getEmailAddressById } from '../operations/data/emailAddress/getEmailAddressById'
-import { getPhoneNumberById } from '../operations/data/phoneNumber/getPhoneNumberById'
-import { sendMessageToPhoneNumber } from '../operations/services/sms/sendMessageToPhoneNumber'
+import { sendTemplatedEmail } from '../../operations/services/mail/sendEmailTemplate'
+import { getEmailAddressById } from '../../operations/data/emailAddress/getEmailAddressById'
+import { getPhoneNumberById } from '../../operations/data/phoneNumber/getPhoneNumberById'
+import { sendMessageToPhoneNumber } from '../../operations/services/sms/sendMessageToPhoneNumber'
 
 export async function sendOTPActivity(emailAddress: string, type: string, id: string, context: IRequestContext) {
 	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, context.cacheContext, true)

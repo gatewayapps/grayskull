@@ -23,7 +23,7 @@ export default class AuthenticatedRoute extends React.Component {
 					<div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 						<Header />
 
-						<div style={{ flexGrow: 1 }}>{this.props.children}</div>
+						<div style={{ flexGrow: 1, paddingBottom: '2rem' }}>{this.props.children}</div>
 						<Footer />
 					</div>
 				</RequirePermission>

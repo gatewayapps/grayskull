@@ -11,6 +11,7 @@ import generateSecret from '../../../presentation/utils/generateSecret'
 import { ALL_CLIENTS_QUERY } from './index'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import ClientForm from '../../../presentation/components/ClientForm'
+import { GrantTypes } from '../../../foundation/constants/grantTypes'
 
 import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import Permissions from '../../../presentation/utils/permissions'
@@ -38,6 +39,10 @@ const GET_SCOPES_FOR_CLIENT_QUERY = gql`
 			clientDescription
 			required
 		}
+		grantTypes {
+			id
+			name
+		}
 	}
 `
 
@@ -53,7 +58,8 @@ class ClientAddPage extends PureComponent {
 			public: true,
 			redirectUris: [{ key: uuid(), value: '' }],
 			scopes: [],
-			isActive: true
+			isActive: true,
+			AuthorizationFlows: [GrantTypes.AuthorizationCode, GrantTypes.RefreshToken]
 		},
 		customizeClientId: false,
 		clientIdValid: true,
@@ -116,13 +122,16 @@ class ClientAddPage extends PureComponent {
 		}
 		const secret = generateSecret()
 
-		const { redirectUris, scopes, ...data } = this.state.client
+		const { redirectUris, AuthorizationFlows, scopes, ...data } = this.state.client
 
 		if (redirectUris) {
 			data.redirectUris = JSON.stringify(redirectUris.map((r) => r.value))
 		}
 		if (scopes) {
 			data.scopes = JSON.stringify(scopes)
+		}
+		if (AuthorizationFlows) {
+			data.AuthorizationFlows = JSON.stringify(AuthorizationFlows)
 		}
 
 		data.secret = secret
@@ -211,6 +220,7 @@ class ClientAddPage extends PureComponent {
 														onChange={this.handleClientFormChange}
 														onValidated={this.onClientFormValidated}
 														scopes={data.scopes}
+														grantTypes={data.grantTypes}
 													/>
 													{this.state.result && (
 														<div className="alert alert-success">

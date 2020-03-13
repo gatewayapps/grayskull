@@ -11,24 +11,23 @@ import { changePasswordResolver } from './changePasswordResolver'
 import { validateResetPasswordTokenResolver } from './validateResetPasswordTokenResolver'
 import { loginResolver } from './loginResolver'
 import { generateMfaKeyResolver } from './generateMfaKeyResolver'
-import { sendBackupCodeResolver } from './sendBackupCodeResolver'
 import { verifyAuthorizationRequestResolver } from './verifyAuthorizationRequestResolver'
 
 import { authorizeClientResolver } from './authorizeClientResolver'
 import { sendEmailVerificationActivity } from '../../../activities/sendEmailVerificationActivity'
 import { verifyOtpTokenActivity } from '../../../activities/verifyOtpTokenActivity'
 
-import { createUserAccountActivity } from '../../../activities/createUserAccountActivity'
+import { createUserAccountActivity } from '../../../activities/admin/createUserAccountActivity'
 
 import { activateAccountResolver } from './activateAccountResolver'
 import { listUserAccountEmailAddressesActivity } from '../../../activities/listUserAccountEmailAddressesActivity'
 
 import { updateClientScopesResolver } from './updateClientScopesResolver'
 
-import { resendAllVerificationEmailsActivity } from '../../../activities/resendAllVerificationEmailsActivity'
-import { getUserAccountsActivity } from '../../../activities/getUserAccountsActivity'
+import { resendAllVerificationEmailsActivity } from '../../../activities/admin/resendAllVerificationEmailsActivity'
+import { getUserAccountsActivity } from '../../../activities/admin/getUserAccountsActivity'
 import { setOTPSecretActivity } from '../../../activities/setOTPSecretActivity'
-import { deleteUserAccountActivity } from '../../../activities/deleteUserAccountActivity'
+import { deleteUserAccountActivity } from '../../../activities/admin/deleteUserAccountActivity'
 import { updateUserAccountActivity } from '../../../activities/updateUserAccountActivity'
 import { getPrimaryEmailAddressForLoggedInUserActivity } from '../../../activities/getPrimaryEmailAddressForLoggedInUserActivity'
 import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
@@ -114,7 +113,6 @@ export default {
 			await deleteUserAccountActivity(args.data.userAccountId, context)
 			return { success: true }
 		},
-		sendBackupCode: sendBackupCodeResolver,
 		activateAccount: activateAccountResolver,
 		logout: async (obj, args, context: IRequestContext): Promise<IOperationResponse> => {
 			try {

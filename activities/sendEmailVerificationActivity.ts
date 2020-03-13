@@ -39,8 +39,8 @@ export async function sendEmailVerificationActivity(
 	const verificationCode = await generateEmailAddressVerificationCode(emailAddress, INVITATION_EXPIRES_IN, dataContext)
 
 	const verificationLink = new URL(
-		configuration.Server.baseUrl!,
-		`/verify?address=${encodeURIComponent(emailAddress)}&code=${verificationCode}`
+		`/verify?address=${encodeURIComponent(emailAddress)}&code=${verificationCode}`,
+		configuration.Server.baseUrl!
 	).href
 
 	await sendTemplatedEmail(

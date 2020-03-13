@@ -14,8 +14,12 @@ export const TEST_USER_DATA: Partial<IUserAccount> = {
 	isActive: true
 }
 
-export async function createTestUserAccount(dataContext: Knex) {
-	return await createUserAccount(TEST_USER_DATA, 'password', dataContext, undefined)
+export async function createTestUserAccount(dataContext: Knex, userDetails?: Partial<IUserAccount>) {
+	const finalUserData = TEST_USER_DATA
+	if (userDetails) {
+		Object.assign(finalUserData, userDetails)
+	}
+	return await createUserAccount(finalUserData, 'password', dataContext, undefined)
 }
 
 describe('createUserAccount', () => {

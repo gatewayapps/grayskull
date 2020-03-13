@@ -1,8 +1,8 @@
 import { randomBytes } from 'crypto'
-import { cacheValue } from '../operations/data/persistentCache/cacheValue'
-import { Permissions } from '../foundation/constants/permissions'
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
+import { cacheValue } from '../../operations/data/persistentCache/cacheValue'
+import { Permissions } from '../../foundation/constants/permissions'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 
 export async function generateBackupCodeActivity(context: IRequestContext) {
 	if (!context.user || context.user.permissions !== Permissions.Admin) {

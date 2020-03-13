@@ -1,12 +1,12 @@
-import { IUserAccount } from '../foundation/types/types'
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { createUserAccount } from '../operations/data/userAccount/createUserAccount'
-import { ensureAdministrator } from '../operations/logic/ensureAdministrator'
-import { isEmailAddressAvailable } from '../operations/data/emailAddress/isEmailAddressAvailable'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
-import { createEmailAddress } from '../operations/data/emailAddress/createEmailAddress'
-import { generateUserAccountActivationToken } from '../operations/data/userAccount/generateUserAccountActivationToken'
-import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
+import { IUserAccount } from '../../foundation/types/types'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { createUserAccount } from '../../operations/data/userAccount/createUserAccount'
+import { ensureAdministrator } from '../../operations/logic/ensureAdministrator'
+import { isEmailAddressAvailable } from '../../operations/data/emailAddress/isEmailAddressAvailable'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
+import { createEmailAddress } from '../../operations/data/emailAddress/createEmailAddress'
+import { generateUserAccountActivationToken } from '../../operations/data/userAccount/generateUserAccountActivationToken'
+import { sendTemplatedEmail } from '../../operations/services/mail/sendEmailTemplate'
 
 /**
  * 1. Make sure the user is an admin
@@ -37,8 +37,8 @@ export async function createUserAccountActivity(
 
 	const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
 	const activateLink = new URL(
-		context.configuration.Server.baseUrl!,
-		`activate?emailAddress=${emailAddress}&token=${activationToken}`
+		`activate?emailAddress=${emailAddress}&token=${activationToken}`,
+		context.configuration.Server.baseUrl!
 	).href
 	await sendTemplatedEmail(
 		'activateAccountTemplate',

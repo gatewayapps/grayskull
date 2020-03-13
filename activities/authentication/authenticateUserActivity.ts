@@ -1,14 +1,14 @@
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { getEmailAddressByEmailAddress } from '../operations/data/emailAddress/getEmailAddressByEmailAddress'
-import { GrayskullError, GrayskullErrorCode } from '../foundation/errors/GrayskullError'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { getEmailAddressByEmailAddress } from '../../operations/data/emailAddress/getEmailAddressByEmailAddress'
+import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 import { compare } from 'bcrypt'
-import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
-import { decrypt } from '../operations/logic/encryption'
+import { getUserAccountByEmailAddress } from '../../operations/data/userAccount/getUserAccountByEmailAddress'
+import { decrypt } from '../../operations/logic/encryption'
 import * as otplib from 'otplib'
-import { verifyBackupMultifactorCode } from '../operations/data/userAccount/verifyBackupMultifactorCode'
-import { clearBackupMultifactorCode } from '../operations/data/userAccount/clearBackupMultifactorCode'
+import { verifyBackupMultifactorCode } from '../../operations/data/userAccount/verifyBackupMultifactorCode'
+import { clearBackupMultifactorCode } from '../../operations/data/userAccount/clearBackupMultifactorCode'
 
-import { createSession } from '../operations/data/session/createSession'
+import { createSession } from '../../operations/data/session/createSession'
 
 /*
   1. Find user by email address

@@ -20,6 +20,11 @@ type UserProfile {
 	otpEnabled: Boolean
 }
 
+type GrantType {
+	id: String!
+	name: String!
+}
+
 extend type UserAccount {
 	emailAddress: String
 }
@@ -38,6 +43,7 @@ directive @authOrSelf(requires: Role) on OBJECT | FIELD_DEFINITION
 type Query {
 	isOobe: Boolean! @anonymous
 	scopes: [Scope!]!
+	grantTypes: [GrantType!]!
 	configuration: Configuration!
 	securityConfiguration: SecurityConfiguration!
 	serverConfiguration: ServerConfiguration!

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
-import { backupConfigurationActivity } from '../../activities/backupConfigurationActivity'
+import { backupConfigurationActivity } from '../../activities/admin/backupConfigurationActivity'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const context = await prepareContext(req, res)

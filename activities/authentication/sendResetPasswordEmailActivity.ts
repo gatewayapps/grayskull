@@ -1,10 +1,10 @@
-import { getUserAccountByEmailAddress } from '../operations/data/userAccount/getUserAccountByEmailAddress'
-import { IRequestContext } from '../foundation/context/prepareContext'
-import { GrayskullErrorCode, GrayskullError } from '../foundation/errors/GrayskullError'
+import { getUserAccountByEmailAddress } from '../../operations/data/userAccount/getUserAccountByEmailAddress'
+import { IRequestContext } from '../../foundation/context/prepareContext'
+import { GrayskullErrorCode, GrayskullError } from '../../foundation/errors/GrayskullError'
 import { randomBytes } from 'crypto'
-import { cacheValue } from '../operations/data/persistentCache/cacheValue'
+import { cacheValue } from '../../operations/data/persistentCache/cacheValue'
 
-import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplate'
+import { sendTemplatedEmail } from '../../operations/services/mail/sendEmailTemplate'
 
 /*
  *  1. Verify a user with the given email address exists
@@ -28,8 +28,8 @@ export async function sendResetPasswordEmailActivity(emailAddress: string, conte
 		await cacheValue(cacheKey, cachedValue, cacheTTL, context.dataContext)
 
 		const resetPasswordLink = new URL(
-			context.configuration.Server.baseUrl!,
-			`/changePassword?emailAddress=${encodeURIComponent(emailAddress)}&token=${token}`
+			`/changePassword?emailAddress=${encodeURIComponent(emailAddress)}&token=${token}`,
+			context.configuration.Server.baseUrl!
 		).href
 		await sendTemplatedEmail(
 			'resetPasswordTemplate',

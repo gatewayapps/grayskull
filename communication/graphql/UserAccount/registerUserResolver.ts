@@ -1,6 +1,6 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { IRegisterUserResponse } from '../../../foundation/types/types'
-import { registerUserActivity } from '../../../activities/registerUserActivity'
+import { registerUserActivity } from '../../../activities/authentication/registerUserActivity'
 import { GrayskullError } from '../../../foundation/errors/GrayskullError'
 
 export async function registerUserResolver(obj, args, context: IRequestContext): Promise<IRegisterUserResponse> {
