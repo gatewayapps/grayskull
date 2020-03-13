@@ -28,8 +28,8 @@ export async function sendResetPasswordEmailActivity(emailAddress: string, conte
 		await cacheValue(cacheKey, cachedValue, cacheTTL, context.dataContext)
 
 		const resetPasswordLink = new URL(
-			context.configuration.Server.baseUrl!,
-			`/changePassword?emailAddress=${encodeURIComponent(emailAddress)}&token=${token}`
+			`/changePassword?emailAddress=${encodeURIComponent(emailAddress)}&token=${token}`,
+			context.configuration.Server.baseUrl!
 		).href
 		await sendTemplatedEmail(
 			'resetPasswordTemplate',
