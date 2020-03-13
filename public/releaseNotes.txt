@@ -1,0 +1,1300 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style type='text/css'>
+.change-version{display:inline-block; padding: 3px 7px 0px 0px;}
+.change-version-container{padding: 10px;}
+.change-version-container:nth-child(even){background-color: #fafafa !important;}
+.change-list{padding:0px;}
+.change-item{display: flex; margin-bottom:12px;}
+.change-badge {text-align: center; border-radius: 4px;color: white; align-self: center; text-transform:uppercase; font-size:0.8rem; width: 75px; margin-right: 10px; margin-bottom: 0px; font-weight: bold;}
+.change-note{flex:1;}
+
+</style>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.16.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Updated readme in repo
+          <a href='https://github.com/gatewayapps/grayskull/pull/207' target='_blank'>#207</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added footer with release notes
+          <a href='https://github.com/gatewayapps/grayskull/pull/206' target='_blank'>#206</a> by <a href='https://github.com/tbroadway96' target='_blank'>tbroadway96</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.15.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Verifying an E-Mail address now also activates a user
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Links in Activation and Verification E-Mails are now correct
+          <a href='https://github.com/gatewayapps/grayskull/pull/201' target='_blank'>#201</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactored UploadService to Activities
+          <a href='https://github.com/gatewayapps/grayskull/pull/188' target='_blank'>#188</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactored EmailService to operations/services/mail
+          <a href='https://github.com/gatewayapps/grayskull/pull/196' target='_blank'>#196</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactor Create User Account flow for admins
+          <a href='https://github.com/gatewayapps/grayskull/pull/197' target='_blank'>#197</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Appended Activity to all Activity methods and file names
+          <a href='https://github.com/gatewayapps/grayskull/pull/198' target='_blank'>#198</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Final architecture refactor.  Server directory removed.
+          <a href='https://github.com/gatewayapps/grayskull/pull/199' target='_blank'>#199</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactor AdaptiveInput
+          <a href='https://github.com/gatewayapps/grayskull/pull/200' target='_blank'>#200</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.17</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactor client activities and token flows
+          <a href='https://github.com/gatewayapps/grayskull/pull/195' target='_blank'>#195</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.16</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fix issue with authorization code redirect loop
+          <a href='https://github.com/gatewayapps/grayskull/pull/194' target='_blank'>#194</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.15</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#5300eb; text-align: left; max-width: 100px; width: auto'>⚡Highlight</div>
+        	<div class='change-note'>Finally fixed issue with verifying email addresses
+          <a href='https://github.com/gatewayapps/grayskull/pull/193' target='_blank'>#193</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed an issue that would prevent users from activating their accounts
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.14</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that would cause new users to be unable to complete email address verification
+          <a href='https://github.com/gatewayapps/grayskull/pull/192' target='_blank'>#192</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.13</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Resolved more email verification bugs
+          <a href='https://github.com/gatewayapps/grayskull/pull/191' target='_blank'>#191</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.12</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that would cause backup codes to be blank
+          <a href='https://github.com/gatewayapps/grayskull/pull/190' target='_blank'>#190</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.11</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that would prevent email addresses from being verified
+          <a href='https://github.com/gatewayapps/grayskull/pull/189' target='_blank'>#189</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.10</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fix oobe
+          <a href='https://github.com/gatewayapps/grayskull/pull/187' target='_blank'>#187</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.9</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that would cause emails to not send if an email address had special characters
+          <a href='https://github.com/gatewayapps/grayskull/pull/183' target='_blank'>#183</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactor the authentication flow
+          <a href='https://github.com/gatewayapps/grayskull/pull/184' target='_blank'>#184</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.8</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug in the register user process
+          <a href='https://github.com/gatewayapps/grayskull/pull/181' target='_blank'>#181</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactored resolvers in UserAccount
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.7</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed bug with client authorization
+          <a href='https://github.com/gatewayapps/grayskull/pull/180' target='_blank'>#180</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Removed legacy code
+          <a href='https://github.com/gatewayapps/grayskull/pull/178' target='_blank'>#178</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.6</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed issue where verify password would not recognize new passwords until user cleared from cache after password change.
+          <a href='https://github.com/gatewayapps/grayskull/pull/176' target='_blank'>#176</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Cleaned up code and applied styling/lint rules
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.5</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that would not let you change your password from within Grayskull
+          <a href='https://github.com/gatewayapps/grayskull/pull/173' target='_blank'>#173</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.4</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactored the flow for changing a password
+          <a href='https://github.com/gatewayapps/grayskull/pull/172' target='_blank'>#172</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.3</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed issue with change password
+          <a href='https://github.com/gatewayapps/grayskull/pull/171' target='_blank'>#171</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Added missing dependency
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed docker build
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.14.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Cleaned up request pipeline for improved dx
+          <a href='https://github.com/gatewayapps/grayskull/pull/163' target='_blank'>#163</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactored authentication service to reduce complexity
+          <a href='https://github.com/gatewayapps/grayskull/pull/166' target='_blank'>#166</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Restructured project in layer structure
+          <a href='https://github.com/gatewayapps/grayskull/pull/167' target='_blank'>#167</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added ability to backup and restore grayskull configurations
+          <a href='https://github.com/gatewayapps/grayskull/pull/168' target='_blank'>#168</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.13.4</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug with logout/login
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Added logrocket support
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.13.3</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Improved reliability of delivering e-mails
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed an issue with sending reset password emails
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.13.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Increased backup code lifetime to 30 minutes
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.13.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a compile error
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.13.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that prevented re-sending verification emails
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added support for Sendgrid
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.12.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed an issue where settings would not be saved sometimes
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.12.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that would cause the app to crash in now.sh serverless deployments
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.12.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>You can now pin a client to the header menu.  Only one client can be pinned.
+          <a href='https://github.com/gatewayapps/grayskull/pull/157' target='_blank'>#157</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.19</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed an issue that would cause the configuration to not be reloaded after changing
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed issues with verifyEmail and changePassword routes
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed issues with sending emails in a serverless environment
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Moddified next.config to allow loading handlebar files
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Modified next.config to allow loading graphql files
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.18</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Increased KeyValueCache column size to 2048
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Removed excessive console logging
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.17</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug with /api/tokens
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.16</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Use KeyValueCache.findOne instead of findByPk
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.15</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Encrypt all cache values
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Increased cached column size to 1024
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.14</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed URL routes for /userinfo and /token
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.13</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed issues with MFA configuration
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Replaced node-cache with KeyValueCache in DB
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.12</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Additional logging
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.11</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Added lots of logging
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.10</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Now requires Node v12.x
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.9</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Added some error logging
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.8</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Allow scope OR scopes in query string for authorization request (for backwards compatibility)
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.7</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed the authorization flow
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.6</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Refactored AuthorizeClientComponent to improve maintainability
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.5</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed typo in verifyAuthorizationRequest mutation
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.4</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Use Cloudinary&#x27;s upload_stream method to support serverless environments
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.3</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Directly import schema files instead of using file loaders to allow for serverless environment
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Removed old graphql files
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed bugs related to serverless environment
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Added dialectModule to Sequelize options
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Upgraded mysql2
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.11.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Prepared Grayskull for serverless deployment
+          <a href='https://github.com/gatewayapps/grayskull/pull/150' target='_blank'>#150</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Implemented Next routing, removed express dependency
+          <a href='https://github.com/gatewayapps/grayskull/pull/148' target='_blank'>#148</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added support for cloudinary image storage
+          <a href='https://github.com/gatewayapps/grayskull/pull/149' target='_blank'>#149</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.10.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Users last active date is now correctly updated
+          <a href='https://github.com/gatewayapps/grayskull/pull/130' target='_blank'>#130</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Pressing enter key on login MFA screen now clicks the login button
+          <a href='https://github.com/gatewayapps/grayskull/pull/131' target='_blank'>#131</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>After resetting your password, you are redirected to the login screen
+          <a href='https://github.com/gatewayapps/grayskull/pull/132' target='_blank'>#132</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Changed placeholder for display name to Enter Display Name to improve mobile UX.
+          <a href='https://github.com/gatewayapps/grayskull/pull/135' target='_blank'>#135</a> by <a href='https://github.com/JohnGrisham' target='_blank'>JohnGrisham</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>When navigating to reset password from the login screen, maintain the current email address.
+          <a href='https://github.com/gatewayapps/grayskull/pull/137' target='_blank'>#137</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Use Yarn in Docker Build instead of npm
+          <a href='https://github.com/gatewayapps/grayskull/pull/133' target='_blank'>#133</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.9.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added button for resending verification emails to admin/users
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.8.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Disabled register button after account creation to avoid error
+          <a href='https://github.com/gatewayapps/grayskull/pull/125' target='_blank'>#125</a> by <a href='https://github.com/NathanWaddell121107' target='_blank'>NathanWaddell121107</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fix SMTP Connection missing credentials error when using a mail server configuration without login
+          <a href='https://github.com/gatewayapps/grayskull/pull/115' target='_blank'>#115</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Addressed compatibility issues when using Grayskull in Internet Explorer 11
+          <a href='https://github.com/gatewayapps/grayskull/pull/117' target='_blank'>#117</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Manually create users and account activation flow
+          <a href='https://github.com/gatewayapps/grayskull/pull/118' target='_blank'>#118</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Import users from a CSV file
+          <a href='https://github.com/gatewayapps/grayskull/pull/122' target='_blank'>#122</a> by <a href='https://github.com/NathanWaddell121107' target='_blank'>NathanWaddell121107</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.7.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fix adaptive input
+          <a href='https://github.com/gatewayapps/grayskull/pull/111' target='_blank'>#111</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>inc version
+          <a href='https://github.com/gatewayapps/grayskull/pull/110' target='_blank'>#110</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.7.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fix backup code template name
+          <a href='https://github.com/gatewayapps/grayskull/pull/109' target='_blank'>#109</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.7.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>added masked input to adaptiveinput, fixed console errors, replaced i…
+          <a href='https://github.com/gatewayapps/grayskull/pull/107' target='_blank'>#107</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>User management
+          <a href='https://github.com/gatewayapps/grayskull/pull/108' target='_blank'>#108</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.6.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Logout now redirects to client home page if passed client_id in query
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Cleaned up excessive console.logs
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.6.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Removed broken links from Header
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fixed a bug that caused the page title to be incorrect
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Fix issue with Authenticator App codes not working
+          <a href='https://github.com/gatewayapps/grayskull/pull/102' target='_blank'>#102</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Don&#x27;t show the Disable button if multifactor is required
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.6.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Users can configure Authenticator Apps in their Security tab
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Users can now stay signed in
+          <a href='https://github.com/gatewayapps/grayskull/pull/98' target='_blank'>#98</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.5.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Users can now change their passwords on the security tab
+          <a href='https://github.com/gatewayapps/grayskull/pull/96' target='_blank'>#96</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Realms and User Profile images can now be updated
+          <a href='https://github.com/gatewayapps/grayskull/pull/97' target='_blank'>#97</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.4.3</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Include templates in dist folder
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.4.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Grayskull is no longer a client and the login page does not need to load before rendering
+          <a href='https://github.com/gatewayapps/grayskull/pull/95' target='_blank'>#95</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.4.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Nickname is included in id_token
+          <a href='https://github.com/gatewayapps/grayskull/pull/90' target='_blank'>#90</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Allow insecure traffice over http
+          <a href='https://github.com/gatewayapps/grayskull/pull/92' target='_blank'>#92</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.4.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>improved rendering on mobile devices
+          <a href='https://github.com/gatewayapps/grayskull/pull/81' target='_blank'>#81</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Hybrid flow
+          <a href='https://github.com/gatewayapps/grayskull/pull/89' target='_blank'>#89</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Openid connect
+          <a href='https://github.com/gatewayapps/grayskull/pull/77' target='_blank'>#77</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Email-verification required for login and signup
+          <a href='https://github.com/gatewayapps/grayskull/pull/79' target='_blank'>#79</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Reset password
+          <a href='https://github.com/gatewayapps/grayskull/pull/80' target='_blank'>#80</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>User experience
+          <a href='https://github.com/gatewayapps/grayskull/pull/82' target='_blank'>#82</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Image upload support
+          <a href='https://github.com/gatewayapps/grayskull/pull/86' target='_blank'>#86</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Edit profile
+          <a href='https://github.com/gatewayapps/grayskull/pull/87' target='_blank'>#87</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Api profile edit
+          <a href='https://github.com/gatewayapps/grayskull/pull/88' target='_blank'>#88</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.3.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>UI Improvements for mobile
+          <a href='https://github.com/gatewayapps/grayskull/pull/65' target='_blank'>#65</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Authorization checks for services
+          <a href='https://github.com/gatewayapps/grayskull/pull/66' target='_blank'>#66</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.3.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Client structure changes
+          <a href='https://github.com/gatewayapps/grayskull/pull/47' target='_blank'>#47</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>removed config module
+          <a href='https://github.com/gatewayapps/grayskull/pull/62' target='_blank'>#62</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>improved registration layout for mobile
+          <a href='https://github.com/gatewayapps/grayskull/pull/63' target='_blank'>#63</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added new configuration wizard
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Multifactor Authentication
+          <a href='https://github.com/gatewayapps/grayskull/pull/42' target='_blank'>#42</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>index page now shows public clients to sign in
+          <a href='https://github.com/gatewayapps/grayskull/pull/40' target='_blank'>#40</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>User registration without an invitation
+          <a href='https://github.com/gatewayapps/grayskull/pull/59' target='_blank'>#59</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Defined scopes, scope on clients and editing clients
+          <a href='https://github.com/gatewayapps/grayskull/pull/60' target='_blank'>#60</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Configuration
+          <a href='https://github.com/gatewayapps/grayskull/pull/61' target='_blank'>#61</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Client Authorization flow
+          <a href='https://github.com/gatewayapps/grayskull/pull/64' target='_blank'>#64</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.6</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>fixed an issue with user registration not correctly reporting errors
+          <a href='https://github.com/gatewayapps/grayskull/pull/39' target='_blank'>#39</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.5</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Correct baseUrl for emails in production
+          <a href='https://github.com/gatewayapps/grayskull/pull/37' target='_blank'>#37</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.4</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Return new &#x60;userAccountId&#x60; in response of invite user
+          <a href='https://github.com/gatewayapps/grayskull/pull/36' target='_blank'>#36</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.3</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Include client static files in build
+          <a href='https://github.com/gatewayapps/grayskull/pull/35' target='_blank'>#35</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Include next app build step for running in production
+          <a href='https://github.com/gatewayapps/grayskull/pull/34' target='_blank'>#34</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Actually listen on port in default.js
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Remove client json
+          <a href='https://github.com/gatewayapps/grayskull/pull/33' target='_blank'>#33</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.2.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>You can now invite users to a client
+          <a href='https://github.com/gatewayapps/grayskull/pull/30' target='_blank'>#30</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>You can now add new clients
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.7</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>graphql files are now copied to dist folder
+          <a href='https://github.com/gatewayapps/grayskull/pull/28' target='_blank'>#28</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.6</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>added open/close parentheses to catch
+          <a href='https://github.com/gatewayapps/grayskull/pull/27' target='_blank'>#27</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.5</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added graphql support for querying clients
+          <a href='https://github.com/gatewayapps/grayskull/pull/24' target='_blank'>#24</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.4</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>fixed issue with process-cpt removing tokens from cache before use
+          <a href='https://github.com/gatewayapps/grayskull/pull/23' target='_blank'>#23</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.3</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#1273de; text-align: left; max-width: 100px; width: auto'>👏 Improved</div>
+        	<div class='change-note'>Added FontAwesome to project
+          
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Implemented reset password flow
+          <a href='https://github.com/gatewayapps/grayskull/pull/22' target='_blank'>#22</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.2</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added support for PostgresSQL as a data store
+          <a href='https://github.com/gatewayapps/grayskull/pull/21' target='_blank'>#21</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.1</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Obfuscated and renamed fingerprint2 to defeat adblocker.  We use fingerprint to help identify the device a user logs in from.
+          
+          </div>
+      </li>
+    </ul>
+  </div>
+  <div class='change-version-container'>
+  <h4 class='change-version text-muted'>0.1.0</h4>
+    <ul class='change-list'>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#db3e00; text-align: left; max-width: 100px; width: auto'>🐛 Fixed</div>
+        	<div class='change-note'>Rename dockerfile to Dockerfile
+          <a href='https://github.com/gatewayapps/grayskull/pull/7' target='_blank'>#7</a> by <a href='https://github.com/danielgary' target='_blank'>danielgary</a>
+          </div>
+      </li>
+      <li class='change-item'>
+        	<div class='change-badge badge' style='background-color:#008b02; text-align: left; max-width: 100px; width: auto'>🚀 New</div>
+        	<div class='change-note'>Added fingerprint session id to login and refresh token
+          <a href='https://github.com/gatewayapps/grayskull/pull/6' target='_blank'>#6</a> by <a href='https://github.com/justinneff' target='_blank'>justinneff</a>
+          </div>
+      </li>
+    </ul>
+  </div>
