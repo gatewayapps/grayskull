@@ -1,4 +1,4 @@
-jest.mock('../../../activities/registerUserActivity', () => ({
+jest.mock('../../../activities/authentication/registerUserActivity', () => ({
 	registerUserActivity: () => {
 		return {
 			userAccountId: 'abc'
@@ -11,7 +11,7 @@ import { registerUserResolver } from './registerUserResolver'
 import { CacheContext, getCacheContext } from '../../../foundation/context/getCacheContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import Knex from 'knex'
-const registerUserActivity = require('../../../activities/registerUserActivity')
+const registerUserActivity = require('../../../activities/authentication/registerUserActivity')
 let dataContext: Knex
 let cacheContext: CacheContext
 
