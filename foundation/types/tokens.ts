@@ -33,10 +33,22 @@ export interface IEmailClaim {
 	email_verified?: boolean
 }
 
+export interface IChallenge {
+	type: string
+	token: string
+}
+
+export interface IChallengeToken {
+	userClientId: string
+	scopes: string[]
+	iat: Date //Issued At
+}
+
 export interface IAccessTokenResponse {
-	token_type: string
+	challenge?: IChallenge
+	token_type?: string
 	id_token?: string
-	expires_in: number
+	expires_in?: number
 	access_token?: string
 	refresh_token?: string
 	session_id?: string

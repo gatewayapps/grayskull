@@ -30,10 +30,13 @@ function getClientCredentialsFromRequest(req: NextApiRequest) {
 
 function getLoginCredentialsFromRequest(req: NextApiRequest) {
 	if (req.body && req.body.username) {
+		const parsedScopes = decodeURIComponent(req.body.scope)
+		const scope = parsedScopes.split(/[,\s]/)
+
 		return {
 			emailAddress: req.body.username,
 			password: req.body.password,
-			scope: req.body.scope
+			scope: scope
 		}
 	}
 	return undefined
@@ -82,37 +85,18 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				break
 			}
 			case GrantTypes.Password.id: {
-				try {
-					const loginCredentials = getLoginCredentialsFromRequest(req)
-					if (!loginCredentials) {
-						throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid username or password')
-					}
-					accessTokenResponse = await getTokensFromPasswordActivity(
-						clientCredentials.client_id,
-						clientCredentials.client_secret,
-						loginCredentials.emailAddress,
-						loginCredentials.password,
-						loginCredentials.scope,
-						context
-					)
-				} catch (err2) {
-					if (err2 instanceof GrayskullError) {
-						switch (err2.code) {
-							case GrayskullErrorCode.RequiresOTP: {
-								res.status(403).json({ success: false, error: err2.code, message: err2.message })
-								return
-							}
-							default: {
-								res.status(403).json({
-									success: false,
-									error: GrayskullErrorCode.NotAuthorized,
-									message: 'Username or password is incorrect'
-								})
-								return
-							}
-						}
-					}
+				const loginCredentials = getLoginCredentialsFromRequest(req)
+				if (!loginCredentials) {
+					throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid username or password')
 				}
+				accessTokenResponse = await getTokensFromPasswordActivity(
+					clientCredentials.client_id,
+					clientCredentials.client_secret,
+					loginCredentials.emailAddress,
+					loginCredentials.password,
+					loginCredentials.scope,
+					context
+				)
 			}
 			default: {
 				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid grant_type')

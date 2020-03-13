@@ -6,6 +6,12 @@ import { getUserAccountByEmailAddress } from '../operations/data/userAccount/get
 import { verifyPassword } from '../operations/data/userAccount/verifyPassword'
 
 import { getTokensActivity } from './getTokensActivity'
+import { IAccessTokenResponse } from '../foundation/types/tokens'
+import { createChallengeToken } from '../operations/logic/createChallengeToken'
+import { getUserClient } from '../operations/data/userClient/getUserClient'
+import { createUserClient } from '../operations/data/userClient/createUserClient'
+import { getClient } from '../operations/data/client/getClient'
+import { GrantTypes } from '../foundation/constants/grantTypes'
 
 export async function getTokensFromPasswordActivity(
 	clientId: string,
@@ -14,7 +20,7 @@ export async function getTokensFromPasswordActivity(
 	password: string,
 	scopes: string[],
 	context: IRequestContext
-) {
+): Promise<IAccessTokenResponse> {
 	if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
 	}
@@ -30,7 +36,35 @@ export async function getTokensFromPasswordActivity(
 	}
 
 	if (userAccount.otpEnabled && userAccount.otpSecret) {
-		throw new GrayskullError(GrayskullErrorCode.RequiresOTP, `Login requires a OTP password`)
+		let userClient = await getUserClient(userAccount.userAccountId, clientId, context.dataContext)
+		if (!userClient) {
+			// User has never authorized this client, we should manually authorize all scopes
+			const client = await getClient(clientId, context.dataContext, false)
+
+			userClient = await createUserClient(
+				userAccount.userAccountId,
+				clientId,
+				JSON.parse(client!.scopes),
+				[],
+				context.dataContext
+			)
+			if (!userClient) {
+				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Something went wrong with authorizing the client.')
+			}
+		}
+
+		const token = await createChallengeToken(
+			userClient.userClientId,
+			JSON.parse(userClient.allowedScopes),
+			clientSecret
+		)
+		return {
+			challenge: {
+				token,
+				type: GrantTypes.MultifactorToken.id
+			}
+		}
+	} else {
+		return getTokensActivity(userAccount.userAccountId, clientId, scopes, context)
 	}
-	return getTokensActivity(userAccount.userAccountId, clientId, scopes, context)
 }
