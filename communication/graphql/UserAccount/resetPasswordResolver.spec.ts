@@ -2,7 +2,7 @@ jest.mock('../../../activities/authentication/sendResetPasswordEmailActivity', (
 	sendResetPasswordEmailActivity: () => true
 }))
 import { resetPasswordResolver } from './resetPasswordResolver'
-const sendResetPasswordActivity = require('../../../authentication/activities/sendResetPasswordEmailActivity')
+const sendResetPasswordActivity = require('../../../activities/authentication/sendResetPasswordEmailActivity')
 
 describe('resetPasswordResolver', () => {
 	it('should call the sendResetPasswordEmail activity', async () => {
