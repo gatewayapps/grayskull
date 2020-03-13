@@ -26,5 +26,7 @@ jobs:
         run: yarn test-activities
       - name: Resolver tests
         run: yarn test-resolvers
+      - name: Update release notes
+        run: yarn update-release-notes
       - name: Compile
         run: yarn build
