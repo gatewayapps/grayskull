@@ -1,4 +1,3 @@
-import * as otplib from 'otplib'
 import { IRequestContext } from '../../foundation/context/prepareContext'
 import { validateClientSecretActivity } from '../validateClientSecretActivity'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
