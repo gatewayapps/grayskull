@@ -35,23 +35,25 @@ export async function getTokensFromPasswordActivity(
 		throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `Incorrect password`)
 	}
 
-	if (userAccount.otpEnabled && userAccount.otpSecret) {
-		let userClient = await getUserClient(userAccount.userAccountId, clientId, context.dataContext)
-		if (!userClient) {
-			// User has never authorized this client, we should manually authorize all scopes
-			const client = await getClient(clientId, context.dataContext, false)
+	let userClient = await getUserClient(userAccount.userAccountId, clientId, context.dataContext)
+	if (!userClient) {
+		// User has never authorized this client, we should manually authorize all scopes
+		const client = await getClient(clientId, context.dataContext, false)
 
-			userClient = await createUserClient(
-				userAccount.userAccountId,
-				clientId,
-				JSON.parse(client!.scopes),
-				[],
-				context.dataContext
-			)
-			if (!userClient) {
-				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Something went wrong with authorizing the client.')
-			}
+		userClient = await createUserClient(
+			userAccount.userAccountId,
+			clientId,
+			JSON.parse(client!.scopes),
+			[],
+			context.dataContext
+		)
+		if (!userClient) {
+			throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Something went wrong with authorizing the client.')
 		}
+	}
+
+	if (userAccount.otpEnabled && userAccount.otpSecret) {
+
 
 		const token = await createChallengeToken(
 			emailAddress,
