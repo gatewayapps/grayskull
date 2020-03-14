@@ -53,8 +53,6 @@ export async function getTokensFromPasswordActivity(
 	}
 
 	if (userAccount.otpEnabled && userAccount.otpSecret) {
-
-
 		const token = await createChallengeToken(
 			emailAddress,
 			userClient.userClientId,
