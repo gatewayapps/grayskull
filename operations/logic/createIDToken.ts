@@ -8,6 +8,7 @@ import moment from 'moment'
 import { createHmac } from 'crypto'
 import jwt from 'jsonwebtoken'
 import { IIDToken, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
+import { addSeconds } from 'date-fns'
 
 export async function createIDToken(
 	userContext: UserContext,
@@ -33,9 +34,7 @@ export async function createIDToken(
 
 	const tokenBase: IIDToken = {
 		iat: moment().unix(),
-		exp: moment()
-			.add(security.accessTokenExpirationSeconds || 300, 'seconds')
-			.unix(),
+		exp: addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime(),
 		aud: client.client_id,
 		sub: profile.sub,
 		at_hash: at_hash,

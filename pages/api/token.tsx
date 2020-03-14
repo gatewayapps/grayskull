@@ -109,6 +109,7 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 					loginCredentials.scope,
 					context
 				)
+				break
 			}
 			case GrantTypes.MultifactorToken.id: {
 				const mfaCredentials = getMultifactorCredentialsFromRequest(req)
@@ -122,6 +123,7 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 					mfaCredentials.challenge_token,
 					context
 				)
+				break
 			}
 			default: {
 				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid grant_type')
