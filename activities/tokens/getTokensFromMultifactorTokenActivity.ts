@@ -7,6 +7,7 @@ import { getUserAccountByUserClientId } from '../../operations/data/userAccount/
 import { GrantTypes } from '../../foundation/constants/grantTypes'
 import { verifyBackupMultifactorCode } from '../../operations/data/userAccount/verifyBackupMultifactorCode'
 import { getTokensActivity } from './getTokensActivity'
+import { verifyOtpTokenActivity } from '../verifyOtpTokenActivity'
 
 export async function getTokensFromMultifactorTokenActivity(
 	clientId: string,
@@ -21,7 +22,12 @@ export async function getTokensFromMultifactorTokenActivity(
 
 	const challengeTokenObject = await verifyChallengeToken(challengeToken, clientSecret)
 	if (!challengeTokenObject) {
-		throw new GrayskullError(GrayskullErrorCode.InvalidAuthorizeRequest, `Invalid challenge token`)
+		return {
+			challenge: {
+				challenge_token: challengeToken,
+				challenge_type: GrantTypes.MultifactorToken.id
+			}
+		}
 	}
 
 	const userAccount = await getUserAccountByUserClientId(challengeTokenObject.userClientId, context.dataContext)
@@ -37,7 +43,7 @@ export async function getTokensFromMultifactorTokenActivity(
 	}
 
 	if (
-		!otplib.authenticator.check(otpToken, userAccount.otpSecret) &&
+		!verifyOtpTokenActivity(otpToken, userAccount.otpSecret) &&
 		!(await verifyBackupMultifactorCode(challengeTokenObject.emailAddress, otpToken, context.dataContext))
 	) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
