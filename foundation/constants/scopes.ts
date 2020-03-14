@@ -45,13 +45,6 @@ export const ScopeMap = {
 		required: false,
 		permissionLevel: Permissions.Admin
 	}
-	// 'admin-profile:read': {
-	//   id: 'admin-profile:write',
-	//   clientDescription: `Read any user's profile information`,
-	//   userDescription: `Read any user's profile information including name and profile image`,
-	//   required: false,
-	//   permissionLevel: Permissions.Admin
-	// }
 }
 
 export const Scopes: IScope[] = [
