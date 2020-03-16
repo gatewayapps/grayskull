@@ -2,6 +2,7 @@ import { getTokensFromAuthorizationCodeActivity } from '../../activities/tokens/
 import { getTokensFromMultifactorTokenActivity } from '../../activities/tokens/getTokensFromMultifactorTokenActivity'
 import { getTokensFromRefreshTokenActivity } from '../../activities/tokens/getTokensFromRefreshTokenActivity'
 import { getTokensFromPasswordActivity } from '../../activities/tokens/getTokensFromPasswordActivity'
+import { getTokensFromClientCredentialsActivity } from '../../activities/tokens/getTokensFromClientCredentialsActivity'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
@@ -119,6 +120,12 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				break
 			}
 			case GrantTypes.ClientCredentials.id: {
+				accessTokenResponse = await getTokensFromClientCredentialsActivity(
+					clientCredentials.client_id,
+					clientCredentials.client_secret,
+					context
+				)
+				break
 			}
 			default: {
 				res.status(400).json(new OauthError('unsupported_grant_type', `Grant type '${body.grant_type}'`))
