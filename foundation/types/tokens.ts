@@ -54,4 +54,3 @@ export interface IAccessTokenResponse {
 	refresh_token?: string
 	session_id?: string
 }
-export type GrantType = 'authorization_code' | 'refresh_token'
