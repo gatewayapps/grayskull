@@ -1,5 +1,4 @@
 import { IRequestContext } from '../../foundation/context/prepareContext'
-import { validateClientSecretActivity } from '../validateClientSecretActivity'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 import { verifyChallengeToken } from '../../operations/logic/verifyChallengeToken'
 import { getUserAccountByUserClientId } from '../../operations/data/userAccount/getUserAccountByUserClientId'
@@ -7,19 +6,21 @@ import { GrantTypes } from '../../foundation/constants/grantTypes'
 import { verifyBackupMultifactorCode } from '../../operations/data/userAccount/verifyBackupMultifactorCode'
 import { getTokensActivity } from './getTokensActivity'
 import { verifyOtpTokenActivity } from '../verifyOtpTokenActivity'
+import { getClient } from '../../operations/data/client/getClient'
 
 export async function getTokensFromMultifactorTokenActivity(
 	clientId: string,
-	clientSecret: string,
+
 	otpToken: string,
 	challengeToken: string,
 	context: IRequestContext
 ) {
-	if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
-		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
+	const client = await getClient(clientId, context.dataContext, true)
+	if (!client) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, 'No client found with that id')
 	}
 
-	const challengeTokenObject = await verifyChallengeToken(challengeToken, clientSecret)
+	const challengeTokenObject = await verifyChallengeToken(challengeToken, client.secret)
 	if (!challengeTokenObject) {
 		return {
 			challenge: {

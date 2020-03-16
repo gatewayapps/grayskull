@@ -1,10 +1,7 @@
 import { IRequestContext } from '../../foundation/context/prepareContext'
-import { validateClientSecretActivity } from '../validateClientSecretActivity'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-
 import { getUserAccountByEmailAddress } from '../../operations/data/userAccount/getUserAccountByEmailAddress'
 import { verifyPassword } from '../../operations/data/userAccount/verifyPassword'
-
 import { getTokensActivity } from './getTokensActivity'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
 import { createChallengeToken } from '../../operations/logic/createChallengeToken'
@@ -15,14 +12,14 @@ import { GrantTypes } from '../../foundation/constants/grantTypes'
 
 export async function getTokensFromPasswordActivity(
 	clientId: string,
-	clientSecret: string,
 	emailAddress: string,
 	password: string,
 	scopes: string[],
 	context: IRequestContext
 ): Promise<IAccessTokenResponse> {
-	if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
-		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
+	const client = await getClient(clientId, context.dataContext, true)
+	if (!client) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, 'No client found with that id')
 	}
 
 	const userAccount = await getUserAccountByEmailAddress(emailAddress, context.dataContext, undefined, true)
@@ -57,7 +54,7 @@ export async function getTokensFromPasswordActivity(
 			emailAddress,
 			userClient.userClientId,
 			JSON.parse(userClient.allowedScopes),
-			clientSecret
+			client.secret
 		)
 		return {
 			challenge: {
