@@ -16,7 +16,7 @@ export async function createAccessToken(
 
 	if (!userClient) {
 		const result: IIDToken = {
-			sub: client.client_id,
+			sub: `${client.client_id}@clients`,
 			aud: client.client_id,
 			iss: configuration.Server.baseUrl!,
 			exp: expiration,
