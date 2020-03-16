@@ -9,27 +9,7 @@ import { IAccessTokenResponse } from '../../foundation/types/tokens'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 import { OauthError } from '../../foundation/errors/OauthError'
 import { GrantTypes } from '../../foundation/constants/grantTypes'
-function getClientCredentialsFromRequest(req: NextApiRequest) {
-	if (req.headers.authorization) {
-		const b64 = req.headers.authorization.replace('Basic ', '')
-		const buf = Buffer.from(b64, 'base64')
-		const stringContents = buf.toString('utf8')
-		const authParts = stringContents.split(':')
-		return {
-			client_id: authParts[0],
-			client_secret: authParts[1]
-		}
-	} else {
-		if (req.body.client_id) {
-			return {
-				client_id: req.body.client_id,
-				client_secret: req.body.client_secret
-			}
-		} else {
-			return undefined
-		}
-	}
-}
+import { getClientCredentialsFromRequest } from '../../operations/logic/getClientCredentialsFromRequest'
 
 function getMultifactorCredentialsFromRequest(req: NextApiRequest) {
 	if (req.body && req.body.challenge_token && req.body.otp_token) {
