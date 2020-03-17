@@ -18,8 +18,11 @@ function enforceDates(record) {
 		'active_at',
 		'updated_at'
 	]
-	const keys = Object.keys(record).filter((k) =>
-		KNOWN_DATE_COLUMNS.some((d) => k.localeCompare(d, undefined, { sensitivity: 'accent' }) === 0)
+	if (!record) {
+		return record
+	}
+	const keys = Object.keys(record).filter(
+		(k) => k && KNOWN_DATE_COLUMNS.some((d) => k.localeCompare(d, undefined, { sensitivity: 'accent' }) === 0)
 	)
 	keys.forEach((k) => {
 		if (record[k] !== undefined && typeof record[k] !== 'object') {
@@ -58,9 +61,9 @@ export async function getDataContext(options: Knex.Config): Promise<Knex> {
 
 export async function getDataContextFromConnectionString(connectionString: string): Promise<Knex> {
 	const connectionUrl = new URL(connectionString)
-	let storage: string | undefined
+	let storage: string | undefined = undefined
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-
+	let useNullAsDefault = false
 	let dialect = connectionUrl.protocol.substr(0, connectionUrl.protocol.length - 1) as
 		| 'mysql2'
 		| 'sqlite'
@@ -74,6 +77,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
 			break
 		case 'sqlite':
 			dialect = 'sqlite'
+			useNullAsDefault = true
 			storage = connectionUrl.pathname
 			break
 		case 'postgres':
@@ -90,18 +94,32 @@ export async function getDataContextFromConnectionString(connectionString: strin
 
 	const user = connectionUrl.username
 	const password = connectionUrl.password
-	const server = connectionUrl.host
+
 	const databaseName = connectionUrl.pathname.substr(1)
-	return getDataContext({
+
+	const hostParts = connectionUrl.host.split(':')
+	const server = hostParts[0]
+	let port: number | undefined = undefined
+	if (hostParts.length > 0) {
+		port = parseInt(hostParts[1])
+	}
+
+	const options: Knex.Config<any> = {
 		client: dialect,
 		debug: true,
-		useNullAsDefault: true,
+		useNullAsDefault,
 		connection: {
 			user: user,
 			password: password,
 			host: server,
-			database: databaseName,
-			filename: storage
+			typeCast: null,
+			port: port,
+			database: databaseName
 		}
-	})
+	}
+	if (storage) {
+		options.connection!['filename'] = storage
+	}
+
+	return getDataContext(options)
 }
