@@ -90,6 +90,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
 	const databaseName = connectionUrl.pathname.substr(1)
 	return getDataContext({
 		client: dialect,
+		debug: true,
 		connection: {
 			user: user,
 			password: password,

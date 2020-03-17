@@ -14,6 +14,7 @@ export interface IRequestContext {
 	user?: UserContext
 	cacheContext: CacheContext
 	dataContext: Knex
+	accessTokenType: 'user' | 'client'
 	userClient?: IUserClient // Used for client_credentials flow
 }
 
