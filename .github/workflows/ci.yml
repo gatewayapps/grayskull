@@ -27,6 +27,7 @@ jobs:
         env:
           GRAYSKULL_DB_CONNECTION_STRING: mysql://root:root@mysql:3306/grayskull
           GRAYSKULL_GLOBAL_SECRET: TEST_ENVIRONMENT
+          ENABLE_TEST_ENDPOINTS: 1
       - name: Wait for startup
         run: sleep 7
       - name: Prepare for test test
