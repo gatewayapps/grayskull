@@ -13,7 +13,7 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v1
       - name: Create Test Database
-        run: mysql -uroot -proot -h127.0.0.1 --force -e "CREATE DATABASE grayskull"
+        run: mysql -uroot -proot -h127.0.0.1 --port=13306 --force -e "CREATE DATABASE grayskull"
       - name: Install Package Dependencies
         run: yarn install
       - name: Start instance
