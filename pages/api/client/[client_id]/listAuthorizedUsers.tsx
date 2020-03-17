@@ -8,7 +8,11 @@ async function listAuthorizedUsers(req: NextApiRequest, res: NextApiResponse) {
 			res.status(403)
 			return
 		}
-		const result = await listAuthorizedUsersActivity(req.query['client_id'].toString(), 100, 0, context)
+
+		const limit = req.query['limit'] !== undefined ? parseInt(req.query['limit'].toString()) : 100
+		const offset = req.query['offset'] !== undefined ? parseInt(req.query['offset'].toString()) : 0
+
+		const result = await listAuthorizedUsersActivity(req.query['client_id'].toString(), limit, offset, context)
 		res.json(result)
 	} catch (err) {
 		console.error(err)

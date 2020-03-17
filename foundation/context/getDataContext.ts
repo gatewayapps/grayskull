@@ -95,6 +95,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
 	return getDataContext({
 		client: dialect,
 		debug: true,
+		useNullAsDefault: true,
 		connection: {
 			user: user,
 			password: password,
