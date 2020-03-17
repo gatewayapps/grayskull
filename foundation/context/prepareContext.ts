@@ -42,6 +42,7 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 		req,
 		res,
 		configuration,
+		accessTokenType: 'user',
 		user: userContext,
 		cacheContext,
 		dataContext
