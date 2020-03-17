@@ -23,7 +23,7 @@ jobs:
       - name: Install Package Dependencies
         run: yarn install
       - name: Start instance
-        run: yarn start &
+        run: yarn dev &
         env:
           GRAYSKULL_DB_CONNECTION_STRING: mysql://root:root@mysql:3306/grayskull
           GRAYSKULL_GLOBAL_SECRET: TEST_ENVIRONMENT
