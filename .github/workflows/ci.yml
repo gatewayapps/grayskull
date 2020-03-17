@@ -16,7 +16,7 @@ jobs:
         run: mysql --silent -uroot -proot --force -e "CREATE DATABASE grayskull" -b 2> nul
       - name: Install Package Dependencies
         run: yarn install
-        - name: Start instance
+      - name: Start instance
         run: yarn start &
         env:
           GRAYSKULL_DB_CONNECTION_STRING: mysql://root:root@localhost/grayskull
