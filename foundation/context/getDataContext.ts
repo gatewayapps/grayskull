@@ -14,9 +14,13 @@ function enforceDates(record) {
 		'activeAt',
 		'revokedAt',
 		'birthday',
-		'RevokedAt'
+		'RevokedAt',
+		'active_at',
+		'updated_at'
 	]
-	const keys = Object.keys(record).filter((k) => KNOWN_DATE_COLUMNS.includes(k))
+	const keys = Object.keys(record).filter((k) =>
+		KNOWN_DATE_COLUMNS.some((d) => k.localeCompare(d, undefined, { sensitivity: 'accent' }) === 0)
+	)
 	keys.forEach((k) => {
 		if (record[k] !== undefined && typeof record[k] !== 'object') {
 			record[k] = new Date(record[k])
