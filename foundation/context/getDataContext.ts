@@ -1,6 +1,6 @@
 import Knex from 'knex'
 
-function enforceDates(record) {
+export function enforceDates(record) {
 	const KNOWN_DATE_COLUMNS = [
 		'expires',
 		'expiresAt',
