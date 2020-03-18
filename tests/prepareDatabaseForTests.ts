@@ -8,8 +8,8 @@ import { getDataContextFromConnectionString } from '../foundation/context/getDat
 
 import { restore } from '../operations/data/backup/restore'
 
-const TEST_CLIENT_ID = '94623896-a8f5-4e55-b955-9f12b53d0b32'
-const TEST_CLIENT_SECRET = '0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1'
+// const TEST_CLIENT_ID = '94623896-a8f5-4e55-b955-9f12b53d0b32'
+// const TEST_CLIENT_SECRET = '0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1'
 
 export async function prepareDatabaseForTests() {
 	if (!process.env.GRAYSKULL_DB_CONNECTION_STRING) {
@@ -17,7 +17,7 @@ export async function prepareDatabaseForTests() {
 	}
 
 	const dataContext = await getDataContextFromConnectionString(process.env.GRAYSKULL_DB_CONNECTION_STRING)
-	await applyMigrations(dataContext)
+	await applyMigrations(dataContext, 5)
 
 	await restore(BACKUP_CONTENT, dataContext)
 }

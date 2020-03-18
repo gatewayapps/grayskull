@@ -23,7 +23,7 @@ jobs:
       - name: Install Package Dependencies
         run: yarn install
       - name: Start instance
-        run: yarn debug &
+        run: yarn debug & # The & starts the process and doesn't wait for it to exit
         env:
           GRAYSKULL_DB_CONNECTION_STRING: mysql://root:root@127.0.0.1:3306/grayskull
           GRAYSKULL_GLOBAL_SECRET: TEST_ENVIRONMENT
