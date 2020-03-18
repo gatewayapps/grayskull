@@ -54,27 +54,9 @@ describe('getTokensFromMultifactorTokenActivity', () => {
 	it('Should throw an error if passed an invalid clientId', async () => {
 		let failed = false
 		try {
-			await getTokensFromMultifactorTokenActivity('INVALID-CLIENT', testClient.secret, 'challenge_token', 'otp_token', {
+			await getTokensFromMultifactorTokenActivity('INVALID-CLIENT', 'challenge_token', 'otp_token', {
 				dataContext
 			} as IRequestContext)
-		} catch {
-			failed = true
-		}
-		expect(failed).toBeTruthy()
-	})
-
-	it('Should throw an error if passed an invalid clientSecret', async () => {
-		let failed = false
-		try {
-			await getTokensFromMultifactorTokenActivity(
-				testClient.client_id,
-				'INVALID-SECRET',
-				'challenge_token',
-				'otp_token',
-				{
-					dataContext
-				} as IRequestContext
-			)
 		} catch {
 			failed = true
 		}
@@ -84,15 +66,9 @@ describe('getTokensFromMultifactorTokenActivity', () => {
 	it('Should throw an error if passed an invalid challenge_token', async () => {
 		let failed = false
 		try {
-			await getTokensFromMultifactorTokenActivity(
-				testClient.client_id,
-				testClient.secret,
-				'CHALLENGE_TOKEN',
-				'ot-token',
-				{
-					dataContext
-				} as IRequestContext
-			)
+			await getTokensFromMultifactorTokenActivity(testClient.client_id, 'CHALLENGE_TOKEN', 'ot-token', {
+				dataContext
+			} as IRequestContext)
 		} catch {
 			failed = true
 		}
@@ -113,7 +89,7 @@ describe('getTokensFromMultifactorTokenActivity', () => {
 
 		const otpToken = await generateBackupMultifactorCode('otpUser@test.com', otpUser.otpSecret!, dataContext)
 
-		await getTokensFromMultifactorTokenActivity(testClient.client_id, testClient.secret, otpToken, challengeToken, {
+		await getTokensFromMultifactorTokenActivity(testClient.client_id, otpToken, challengeToken, {
 			dataContext
 		} as IRequestContext)
 

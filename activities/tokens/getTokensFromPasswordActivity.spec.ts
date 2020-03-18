@@ -45,28 +45,9 @@ describe('getTokensFromPasswordActivity', () => {
 	it('Should throw an error if passed an invalid clientId', async () => {
 		let failed = false
 		try {
-			await getTokensFromPasswordActivity('INVALID-CLIENT', testClient.secret, 'test@test.com', 'password', [], {
+			await getTokensFromPasswordActivity('INVALID-CLIENT', 'test@test.com', 'password', [], {
 				dataContext
 			} as IRequestContext)
-		} catch {
-			failed = true
-		}
-		expect(failed).toBeTruthy()
-	})
-
-	it('Should throw an error if passed an invalid clientSecret', async () => {
-		let failed = false
-		try {
-			await getTokensFromPasswordActivity(
-				testClient.client_id,
-				'INVALID-SECRET',
-				'passwordUser@test.com',
-				'password',
-				[],
-				{
-					dataContext
-				} as IRequestContext
-			)
 		} catch {
 			failed = true
 		}
@@ -78,7 +59,7 @@ describe('getTokensFromPasswordActivity', () => {
 		try {
 			await getTokensFromPasswordActivity(
 				testClient.client_id,
-				'INVALID-SECRET',
+
 				'invalidEmail@test.com',
 				'password',
 				[],
@@ -98,7 +79,7 @@ describe('getTokensFromPasswordActivity', () => {
 		const getTokensSpy = jest.spyOn(getTokensActivity, 'getTokensActivity')
 		await getTokensFromPasswordActivity(
 			testClient.client_id,
-			testClient.secret,
+
 			'passwordUser@test.com',
 			'password',
 			[],
@@ -110,7 +91,7 @@ describe('getTokensFromPasswordActivity', () => {
 	it('Should not call getTokensActivity if passed correct values on otp user', async () => {
 		const result = await getTokensFromPasswordActivity(
 			testClient.client_id,
-			testClient.secret,
+
 			'otpUser@test.com',
 			'password',
 			[],

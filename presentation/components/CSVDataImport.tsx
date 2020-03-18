@@ -216,9 +216,9 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 													className="btn btn-outline-success"
 													type="button"
 													onClick={async () => {
-														const successCount = []
+														const successCount: any[] = []
 														let totalUsersToImport
-														const failedImportToStateArray = []
+														const failedImportToStateArray: any[] = []
 														if (this.state.importedCSVData) {
 															const CSVData = this.state.importedCSVData.data
 															totalUsersToImport = CSVData.length - 1
@@ -257,7 +257,9 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 																				currentlyImportingUsers: false
 																			})
 																			setTimeout(() => {
-																				this.props.onSave()
+																				if (this.props.onSave) {
+																					this.props.onSave()
+																				}
 																			}, 2000)
 																		}
 																	} catch (err) {
@@ -271,7 +273,9 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 																			failedImportArray: failedImportToStateArray,
 																			currentlyImportingUsers: false
 																		})
-																		this.props.refetch()
+																		if (this.props.refetch) {
+																			this.props.refetch()
+																		}
 																	}
 																}
 															}

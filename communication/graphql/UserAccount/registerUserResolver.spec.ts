@@ -32,6 +32,7 @@ describe('registerUserResolver', () => {
 			{
 				user: userContext,
 				res: {},
+				accessTokenType: 'user',
 				cacheContext,
 				configuration,
 				dataContext,

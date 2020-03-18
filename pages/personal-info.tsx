@@ -12,7 +12,7 @@ const PersonalInformationPage = () => {
 						<div className="container pt-4">
 							<div className="row">
 								<div className="col-12 ">
-									<EditableUserProfile user={user} />
+									<EditableUserProfile user={user as any} />
 									<EditableEmailList style={{ marginTop: '2rem', marginBottom: '4rem' }} />
 								</div>
 							</div>

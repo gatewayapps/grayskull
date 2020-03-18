@@ -1,5 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+
 import { validatePassword } from '../utils/passwordComplexity'
 import PasswordComplexity from './PasswordComplexity'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
@@ -24,7 +24,13 @@ const CHANGE_PASSWORD = gql`
 	}
 `
 
-export default class ChangePasswordForm extends React.Component {
+export default class ChangePasswordForm extends React.Component<{
+	emailAddress: string
+	token: string
+	oldPassword?: string
+	newPassword?: string
+	confirmPassword?: string
+}> {
 	state = {
 		isValid: false,
 		newPassword: '',
@@ -35,10 +41,6 @@ export default class ChangePasswordForm extends React.Component {
 		redirectCountdown: CHANGE_PASSWORD_REDIRECT_COUNTDOWN
 	}
 
-	static propTypes = {
-		emailAddress: PropTypes.string,
-		token: PropTypes.string
-	}
 	redirectInterval: any
 
 	componentWillUnmount() {

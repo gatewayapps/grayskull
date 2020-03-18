@@ -14,6 +14,7 @@ export interface IClient {
 	homePageUrl: string | null
 	redirectUris: string
 	scopes: string
+	AuthorizationFlows: string
 	public: boolean | null
 	isActive: boolean
 	createdBy: string | null

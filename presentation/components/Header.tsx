@@ -31,8 +31,8 @@ const Header = () => {
 						<div className="container">
 							<div>
 								<h3>
-									<img style={{ height: '64px' }} src={configuration.Server.realmLogo} />{' '}
-									{configuration.Server.realmName} Account Management
+									<img style={{ height: '64px' }} src={configuration.Server!.realmLogo || ''} />{' '}
+									{configuration.Server!.realmName} Account Management
 								</h3>
 							</div>
 							<ul

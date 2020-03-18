@@ -4,7 +4,7 @@ import { getDataContextFromConnectionString } from './getDataContext'
 import { SESSION_ID_COOKIE_NAME } from '../../operations/logic/authentication'
 import { getUserContext, UserContext } from './getUserContext'
 import { getCurrentConfiguration } from '../../operations/data/configuration/getCurrentConfiguration'
-import { IConfiguration } from '../types/types'
+import { IConfiguration, IUserClient } from '../types/types'
 import Knex from 'knex'
 
 export interface IRequestContext {
@@ -14,6 +14,8 @@ export interface IRequestContext {
 	user?: UserContext
 	cacheContext: CacheContext
 	dataContext: Knex
+	accessTokenType: 'user' | 'client'
+	userClient?: IUserClient // Used for client_credentials flow
 }
 
 export async function prepareContext(req, res): Promise<IRequestContext> {
@@ -40,6 +42,7 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 		req,
 		res,
 		configuration,
+		accessTokenType: 'user',
 		user: userContext,
 		cacheContext,
 		dataContext

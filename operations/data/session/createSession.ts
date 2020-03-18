@@ -1,6 +1,6 @@
 import { addSeconds } from 'date-fns'
 
-import { ISession } from '../../../foundation/types/types'
+import { ISession, IUserAccount } from '../../../foundation/types/types'
 import { v4 as uuidv4 } from 'uuid'
 import Knex from 'knex'
 
@@ -32,6 +32,10 @@ export async function createSession(data: Partial<ISession>, extendedSession: bo
 		.where({ sessionId: data.sessionId })
 		.select('*')
 		.first()
+
+	await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId: data.userAccountId })
+		.update({ lastActive: new Date() })
 
 	if (sessionRecord) {
 		return sessionRecord

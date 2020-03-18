@@ -9,7 +9,9 @@ export const SelectInput: React.FC<AdaptiveInputProps> = ({ className, ...props 
 			<Creatable
 				{...finalProps}
 				onChange={(e: any) => {
-					props.onChange({ target: { name: props.name, value: e } })
+					if (props.onChange) {
+						props.onChange({ target: { name: props.name, value: e } })
+					}
 				}}
 				placeholder={props.value || props.placeholder}
 				getNewOptionData={(option) => option}
@@ -25,7 +27,9 @@ export const SelectInput: React.FC<AdaptiveInputProps> = ({ className, ...props 
 				{...finalProps}
 				placeholder={props.value || props.placeholder}
 				onChange={(e: any) => {
-					props.onChange({ target: { name: props.name, value: e } })
+					if (props.onChange) {
+						props.onChange({ target: { name: props.name, value: e } })
+					}
 				}}
 			/>
 		)

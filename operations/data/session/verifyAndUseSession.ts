@@ -3,7 +3,7 @@ import { CacheContext } from '../../../foundation/context/getCacheContext'
 import { addSeconds } from 'date-fns'
 
 import { SESSION_EXPIRATION_SECONDS } from './createSession'
-import { ISession } from '../../../foundation/types/types'
+import { ISession, IUserAccount } from '../../../foundation/types/types'
 import Knex from 'knex'
 
 /**
@@ -50,7 +50,11 @@ export async function verifyAndUseSession(
 		.where({ sessionId })
 		.update({ lastUsedAt: NOW })
 
-	cacheContext.setValue(cacheKey, session, 30)
+	await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId: session.userAccountId })
+		.update({ lastActive: NOW })
+
+	await cacheContext.setValue(cacheKey, session, 30)
 
 	return session
 }

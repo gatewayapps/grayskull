@@ -26,7 +26,7 @@ const RESTORE_CONFIGURATION_MUTATION = gql`
 `
 
 const BackupPage = () => {
-	const [backupFile, setBackupFile] = useState<File>(undefined)
+	const [backupFile, setBackupFile] = useState<File | undefined>(undefined)
 
 	const [query, { data, loading }] = useLazyQuery(BACKUP_CONFIGURATION_QUERY, { fetchPolicy: 'network-only' })
 	const [restoreConfiguration, { data: restoredData, loading: restoring }] = useMutation(RESTORE_CONFIGURATION_MUTATION)

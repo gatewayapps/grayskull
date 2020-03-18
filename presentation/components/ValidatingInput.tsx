@@ -24,7 +24,7 @@ export interface IValidatingInputProps {
 	onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const ValidatingInput: React.FC<IValidatingInputProps> = ({ name, validationErrors, className, ...props }) => {
+const ValidatingInput: React.FC<IValidatingInputProps> = ({ name, validationErrors, className, ...props }: any) => {
 	const readOnlyClass = props.readOnly ? 'border-bottom-0' : ''
 	const validationClass = validationErrors[name] ? 'is-invalid' : props.readOnly ? '' : 'is-valid'
 

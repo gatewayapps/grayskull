@@ -2,32 +2,14 @@ import { getTokensFromAuthorizationCodeActivity } from '../../activities/tokens/
 import { getTokensFromMultifactorTokenActivity } from '../../activities/tokens/getTokensFromMultifactorTokenActivity'
 import { getTokensFromRefreshTokenActivity } from '../../activities/tokens/getTokensFromRefreshTokenActivity'
 import { getTokensFromPasswordActivity } from '../../activities/tokens/getTokensFromPasswordActivity'
+import { getTokensFromClientCredentialsActivity } from '../../activities/tokens/getTokensFromClientCredentialsActivity'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { IAccessTokenResponse } from '../../foundation/types/tokens'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
+import { OauthError } from '../../foundation/errors/OauthError'
 import { GrantTypes } from '../../foundation/constants/grantTypes'
-function getClientCredentialsFromRequest(req: NextApiRequest) {
-	if (req.headers.authorization) {
-		const b64 = req.headers.authorization.replace('Basic ', '')
-		const buf = Buffer.from(b64, 'base64')
-		const stringContents = buf.toString('utf8')
-		const authParts = stringContents.split(':')
-		return {
-			client_id: authParts[0],
-			client_secret: authParts[1]
-		}
-	} else {
-		if (req.body.client_id) {
-			return {
-				client_id: req.body.client_id,
-				client_secret: req.body.client_secret
-			}
-		} else {
-			return undefined
-		}
-	}
-}
+import { getClientCredentialsFromRequest } from '../../operations/logic/getClientCredentialsFromRequest'
 
 function getMultifactorCredentialsFromRequest(req: NextApiRequest) {
 	if (req.body && req.body.challenge_token && req.body.otp_token) {
@@ -63,16 +45,10 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 	}
 	try {
 		const clientCredentials = getClientCredentialsFromRequest(context.req)
-
-		if (!req.body) {
-			res.status(400).json({ success: false, message: 'Invalid request body' })
-			return
-		}
 		const body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
 
 		if (!body || !body.grant_type || !clientCredentials) {
-			res.statusCode = 400
-			res.status(400).json({ success: false, message: 'Invalid request body' })
+			res.status(400).json(new OauthError('invalid_request', 'No request body was sent'))
 			return
 		}
 
@@ -103,7 +79,6 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				}
 				accessTokenResponse = await getTokensFromPasswordActivity(
 					clientCredentials.client_id,
-					clientCredentials.client_secret,
 					loginCredentials.emailAddress,
 					loginCredentials.password,
 					loginCredentials.scope,
@@ -118,20 +93,45 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				}
 				accessTokenResponse = await getTokensFromMultifactorTokenActivity(
 					clientCredentials.client_id,
-					clientCredentials.client_secret,
 					mfaCredentials.otp_token,
 					mfaCredentials.challenge_token,
 					context
 				)
 				break
 			}
+			case GrantTypes.ClientCredentials.id: {
+				accessTokenResponse = await getTokensFromClientCredentialsActivity(
+					clientCredentials.client_id,
+					clientCredentials.client_secret,
+					context
+				)
+				break
+			}
 			default: {
-				throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid grant_type')
+				res.status(400).json(new OauthError('unsupported_grant_type', `Grant type '${body.grant_type}'`))
+				return
 			}
 		}
 
-		res.json(accessTokenResponse)
+		res.status(200).json(accessTokenResponse)
 	} catch (err) {
-		res.status(400).json({ success: false, message: err.message })
+		if (err instanceof GrayskullError) {
+			switch (err.code) {
+				case GrayskullErrorCode.InvalidClientId: {
+					res.status(400).json(new OauthError('invalid_client', 'Client credentials were not valid'))
+					return
+				}
+				case GrayskullErrorCode.NotAuthorized: {
+					res.status(400).json(new OauthError('unauthorized_client', 'Failed to authorize'))
+					return
+				}
+				case GrayskullErrorCode.InvalidOTP: {
+					res.status(400).json(new OauthError('invalid_request', 'Failed to verify multifactor_token'))
+					break
+				}
+			}
+		}
+		res.status(400).json(new OauthError('invalid_request', err.message))
+		return
 	}
 }

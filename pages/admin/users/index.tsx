@@ -122,7 +122,8 @@ class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
 						</div>
 					</div>
 					<Query query={ALL_USERS_QUERY}>
-						{({ data, error, loading, refetch }) => {
+						{(props) => {
+							const { data, error, loading, refetch } = props
 							if (loading) {
 								return <LoadingIndicator />
 							}

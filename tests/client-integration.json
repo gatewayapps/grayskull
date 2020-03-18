@@ -1,0 +1,163 @@
+{
+	"info": {
+		"_postman_id": "b3fd7cf7-9f49-4a3f-bc81-f577f73a0f33",
+		"name": "Grayskull Client Credentials Integration Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8160bcea-9667-4168-8452-c537090b48f6",
+						"exec": [
+							"pm.test(\"Verify a user was created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.sub).to.be.a('string')",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"family_name\": \"User\",\n\t\"given_name\": \"Integration\",\n\t\"password\": \"password\",\n\t\"email\": \"integration@test.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/client/94623896-a8f5-4e55-b955-9f12b53d0b32/createUserAccount",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"client",
+						"94623896-a8f5-4e55-b955-9f12b53d0b32",
+						"createUserAccount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List authorized users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "28c7799c-9ba0-469e-a32e-5fc1de13c1e9",
+						"exec": [
+							"pm.test(\"It should correctly return a list of authorized users\", function () {",
+							"  var result =   pm.response.json()",
+							"  pm.expect(result.length).to.equal(1)",
+							"  pm.expect(result[0].given_name).to.equal('Integration')",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/client/94623896-a8f5-4e55-b955-9f12b53d0b32/listAuthorizedUsers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"client",
+						"94623896-a8f5-4e55-b955-9f12b53d0b32",
+						"listAuthorizedUsers"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "{{accessToken}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "Bearer",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3bfa5abd-814e-45f8-9cd4-9c9806767bec",
+				"type": "text/javascript",
+				"exec": [
+					"let tokenUrl = 'http://localhost:3000/api/token';",
+					"let clientId = '94623896-a8f5-4e55-b955-9f12b53d0b32';",
+					"let clientSecret = '0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1';",
+					"",
+					"let getTokenRequest = {",
+					"    method: 'POST',",
+					"    url: tokenUrl,",
+					"    auth: {",
+					"        type: \"basic\",",
+					"        basic: [",
+					"            { key: \"username\", value: clientId },",
+					"            { key: \"password\", value: clientSecret }",
+					"        ]",
+					"    },",
+					"    body: {",
+					"        mode: \"raw\",",
+					"        raw: JSON.stringify({grant_type: \"client_credentials\"})",
+					"    }",
+					"}",
+					"",
+					"",
+					"pm.sendRequest(getTokenRequest, (err, response) => {",
+					"    let jsonResponse = response.json(),",
+					"        newAccessToken = jsonResponse.access_token;",
+					"    pm.environment.set('accessToken', newAccessToken);",
+					"    pm.variables.set('accessToken', newAccessToken);",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "3283e855-346f-4e67-bdef-fa8c7d3ae612",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

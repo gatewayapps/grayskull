@@ -23,7 +23,7 @@ const serverComponent: React.FC = () => {
 							setLocalConfiguration(configuration)
 							return <LoadingIndicator message="Loading configuration..." />
 						} else {
-							const serverConfiguration = configuration.Server
+							const serverConfiguration = configuration.Server!
 							return (
 								<div className="card">
 									<div className="card-body">

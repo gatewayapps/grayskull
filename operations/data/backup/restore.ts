@@ -1,5 +1,6 @@
 import { decrypt } from '../../logic/encryption'
 import Knex from 'knex'
+import { enforceDates } from '../../../foundation/context/getDataContext'
 
 async function bulkInsertHelper(record: any, tableName: string, dataContext: Knex) {
 	// When we drop a column from an existing table
@@ -13,7 +14,9 @@ async function bulkInsertHelper(record: any, tableName: string, dataContext: Kne
 		delete record.deletedAt
 	}
 
-	return dataContext(tableName).insert(record)
+	const sanitizedRecord = enforceDates(record)
+
+	return dataContext(tableName).insert(sanitizedRecord)
 }
 
 export const restore = async (encryptedData: string, dataContext: Knex) => {

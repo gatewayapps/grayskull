@@ -10,6 +10,11 @@ export const GrantTypes = {
 		name: 'Authorization Code',
 		hidden: false
 	},
+	ClientCredentials: {
+		id: 'client_credentials',
+		name: 'Client Credentials',
+		hidden: false
+	},
 	RefreshToken: {
 		id: 'refresh_token',
 		name: 'Refresh Token',
