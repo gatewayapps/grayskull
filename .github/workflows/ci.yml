@@ -22,18 +22,6 @@ jobs:
         uses: actions/checkout@v1
       - name: Install Package Dependencies
         run: yarn install
-      - name: Start instance
-        run: yarn debug & # The & starts the process and doesn't wait for it to exit
-        env:
-          GRAYSKULL_DB_CONNECTION_STRING: mysql://root:root@127.0.0.1:3306/grayskull
-          GRAYSKULL_GLOBAL_SECRET: TEST_ENVIRONMENT
-          ENABLE_TEST_ENDPOINTS: 1
-      - name: Wait for startup
-        run: sleep 10
-      # - name: Apply migrations to test environment
-      #   run: curl -d test http://localhost:3000/api/__apply_migrations
-      - name: Restore test environment backup
-        run: curl http://localhost:3000/api/__prepare_test_environment
       - name: Check formatting
         run: yarn format
       - name: Lint
@@ -48,6 +36,20 @@ jobs:
         run: yarn test-resolvers
       - name: Update release notes
         run: yarn update-release-notes
-
       - name: Compile
         run: yarn build
+      - name: Start instance
+        run: yarn start & # The & starts the process and doesn't wait for it to exit
+        env:
+          GRAYSKULL_DB_CONNECTION_STRING: mysql://root:root@127.0.0.1:3306/grayskull
+          GRAYSKULL_GLOBAL_SECRET: TEST_ENVIRONMENT
+          ENABLE_TEST_ENDPOINTS: 1
+      - name: Wait for startup
+        run: sleep 10
+      # - name: Apply migrations to test environment
+      #   run: curl -d test http://localhost:3000/api/__apply_migrations
+      - name: Restore test environment backup
+        run: curl http://localhost:3000/api/__prepare_test_environment
+      - uses: matt-ball/newman-action@master
+        with:
+          collection: ./tests/client-integration.json
