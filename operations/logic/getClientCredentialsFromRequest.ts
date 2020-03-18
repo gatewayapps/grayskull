@@ -11,10 +11,11 @@ export function getClientCredentialsFromRequest(req: NextApiRequest) {
 			client_secret: authParts[1]
 		}
 	} else {
-		if (req.body.client_id) {
+		const body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
+		if (body.client_id) {
 			return {
-				client_id: req.body.client_id,
-				client_secret: req.body.client_secret
+				client_id: body.client_id,
+				client_secret: body.client_secret
 			}
 		} else {
 			return undefined
