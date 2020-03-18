@@ -29,8 +29,10 @@ jobs:
           GRAYSKULL_GLOBAL_SECRET: TEST_ENVIRONMENT
           ENABLE_TEST_ENDPOINTS: 1
       - name: Wait for startup
-        run: sleep 7
-      - name: Prepare for test test
+        run: sleep 10
+      - name: Apply migrations to test environment
+        run: curl http://localhost:3000/api/__apply_migrations
+      - name: Restore test environment backup
         run: curl http://localhost:3000/api/__prepare_test_environment
       - name: Check formatting
         run: yarn format
