@@ -35,8 +35,8 @@ export async function prepareRemoteContext(req, res): Promise<IRequestContext> {
 	}
 	const userClientId = req.headers['x-user-client-id']
 	let userAccount: IUserAccount | undefined
-	let userContext: UserContext | undefined
-	if (userClientId) {
+	let userContext: UserContext | undefined = reqContext.userAccount
+	if (!userContext && userClientId) {
 		userAccount = await getUserAccountByUserClientId(userClientId, dataContext)
 		userContext = await createUserContextForUserId(
 			userAccount?.userAccountId!,
@@ -54,6 +54,7 @@ export async function prepareRemoteContext(req, res): Promise<IRequestContext> {
 		res,
 		accessTokenType,
 		user: userContext,
-		userClient: reqContext?.userClient
+		userClient: reqContext?.userClient,
+		accessToken: reqContext.accessToken
 	}
 }

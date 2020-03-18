@@ -11,3 +11,8 @@ export interface IAuthorizedUser {
 	nickname?: string
 	picture?: string
 }
+
+export type IAuthorizedUserFields = Pick<
+	IAuthorizedUser,
+	'given_name' | 'family_name' | 'gender' | 'nickname' | 'picture' | 'email' | 'birthday'
+>
