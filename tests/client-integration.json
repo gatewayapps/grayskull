@@ -61,8 +61,8 @@
 						"exec": [
 							"pm.test(\"It should correctly return a list of authorized users\", function () {",
 							"  var result =   pm.response.json()",
-							"  expect(result.length).to.equal(2)",
-							"  expect(result[0].given_name).to.equal('Integration')",
+							"  pm.expect(result.length).to.equal(1)",
+							"  pm.expect(result[0].given_name).to.equal('Integration')",
 							"})",
 							""
 						],
@@ -142,9 +142,6 @@
 					"pm.sendRequest(getTokenRequest, (err, response) => {",
 					"    let jsonResponse = response.json(),",
 					"        newAccessToken = jsonResponse.access_token;",
-					"",
-					"    console.log({ err, jsonResponse, newAccessToken })",
-					"",
 					"    pm.environment.set('accessToken', newAccessToken);",
 					"    pm.variables.set('accessToken', newAccessToken);",
 					"});"
