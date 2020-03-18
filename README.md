@@ -14,6 +14,13 @@ An easy to use authentication server that can be deployed to your own server in 
 - Use Sendgrid or a standard SMTP server for sending emails
 - User profile editing and password management
 
+# Supported Oauth Grant Types
+
+- Authorization Code
+- Refresh Token
+- Password
+- Client Credentials
+
 # Required Environment Variables
 
 - **GRAYSKULL_GLOBAL_SECRET** - Secret used for encryption purposes
@@ -84,21 +91,21 @@ _Sample now.json_
 
 ```json
 {
-  "version": 2,
-  "name": "grayskull-authentication",
-  "scope": "grayskull-demo",
-  "builds": [
-    {
-      "src": "./package.json",
-      "use": "@now/next@canary",
-      "config": { "bundle": false }
-    }
-  ],
-  "env": {
-    "GRAYSKULL_GLOBAL_SECRET": "@grayskull_global_secret",
-    "GRAYSKULL_DB_CONNECTION_STRING": "@grayskull_db_connection_string",
-    "NODE_ENV": "production"
-  }
+	"version": 2,
+	"name": "grayskull-authentication",
+	"scope": "grayskull-demo",
+	"builds": [
+		{
+			"src": "./package.json",
+			"use": "@now/next@canary",
+			"config": { "bundle": false }
+		}
+	],
+	"env": {
+		"GRAYSKULL_GLOBAL_SECRET": "@grayskull_global_secret",
+		"GRAYSKULL_DB_CONNECTION_STRING": "@grayskull_db_connection_string",
+		"NODE_ENV": "production"
+	}
 }
 ```
 
@@ -108,7 +115,7 @@ Once you have your secrets configured and are authenticated with the now CLI, ru
 
 # Feature roadmap
 
-- SMS Backup codes
+- ~~SMS Backup codes~~
 - Refresh token management for signing out of devices
 - Webhooks for notifying user signup, login, profile updated
 - Full Oauth 2 support including all flows
