@@ -21,4 +21,3 @@ export async function prepareDatabaseForTests() {
 
 	await restore(BACKUP_CONTENT, dataContext)
 }
-prepareDatabaseForTests()
