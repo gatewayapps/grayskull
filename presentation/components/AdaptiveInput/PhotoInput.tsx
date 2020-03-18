@@ -11,10 +11,13 @@ export const PhotoInput: React.FC<AdaptiveInputProps> = (props) => {
 		return (
 			<ImageDropArea
 				{...finalProps}
+				value={finalProps.value || ''}
 				style={{ height: '150px', maxWidth: '400px', padding: '2px', border: '1px black dashed' }}
 				src={props.value}
 				onUploadComplete={(file) => {
-					props.onChange({ target: { name: props.name, value: file.url } })
+					if (props.onChange) {
+						props.onChange({ target: { name: props.name, value: file.url } })
+					}
 				}}
 			/>
 		)

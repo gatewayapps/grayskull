@@ -22,7 +22,7 @@ const SecurityComponent = () => {
 							setLocalConfiguration(configuration)
 							return <LoadingIndicator message="Loading configuration..." />
 						} else {
-							const SecurityConfiguration = configuration.Security
+							const SecurityConfiguration = configuration.Security!
 							return (
 								<div className="card">
 									<div className="card-body">

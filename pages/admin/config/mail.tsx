@@ -21,7 +21,7 @@ const MailComponent = () => {
 							setLocalConfiguration(configuration)
 							return <LoadingIndicator message="Loading configuration..." />
 						} else {
-							const MailConfiguration = configuration.Mail
+							const MailConfiguration = configuration.Mail!
 							return (
 								<div className="card">
 									<div className="card-body">
@@ -58,7 +58,7 @@ const MailComponent = () => {
 												configuration: {
 													Mail: {
 														...localConfiguration.Mail,
-														port: parseInt(localConfiguration.Mail.port)
+														port: parseInt(localConfiguration.Mail!.port!.toString())
 													}
 												}
 											}}

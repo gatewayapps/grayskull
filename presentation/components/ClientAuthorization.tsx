@@ -41,9 +41,9 @@ const UPDATE_CLIENT_SCOPES_MUTATION = gql`
 
 const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props) => {
 	const [isSaving, setIsSaving] = useState(false)
-	const [pendingScopes, setPendingScopes] = useState([])
-	const [allowedScopes, setAllowedScopes] = useState([])
-	const [deniedScopes, setDeniedScopes] = useState([])
+	const [pendingScopes, setPendingScopes] = useState<string[]>([])
+	const [allowedScopes, setAllowedScopes] = useState<string[]>([])
+	const [deniedScopes, setDeniedScopes] = useState<string[]>([])
 
 	const [authorizeClient, { data: authorizeClientData, loading: authorizeClientLoading }] = useMutation(
 		AUTHORIZE_CLIENT_MUTATION,
@@ -136,7 +136,7 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
 
 	return (
 		<UserContext.Consumer>
-			{({ user }) => (
+			{({ user }: any) => (
 				<form onSubmit={onSubmit}>
 					<div className="card">
 						<div className="card-header">Authorize {props.client.name}</div>

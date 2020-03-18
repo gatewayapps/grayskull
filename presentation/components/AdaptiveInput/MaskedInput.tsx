@@ -11,7 +11,9 @@ export const MaskedInput: React.FC<AdaptiveInputProps> = (props) => {
 			className={`form-control ${props.className || ''}`}
 			value={props.value || ''}
 			onChange={(e) => {
-				props.onChange({ target: { name: props.name, value: e.target.rawValue } })
+				if (props.onChange) {
+					props.onChange({ target: { name: props.name, value: e.target.rawValue } })
+				}
 			}}
 		/>
 	)

@@ -83,7 +83,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Require lowercase"
 							name="passwordRequiresLowercase"
 							type="checkbox"
-							checked={data.passwordRequiresLowercase}
+							checked={data.passwordRequiresLowercase || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 						<ResponsiveValidatingInput
@@ -93,7 +93,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Require uppercase"
 							name="passwordRequiresUppercase"
 							type="checkbox"
-							checked={data.passwordRequiresUppercase}
+							checked={data.passwordRequiresUppercase || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 						<ResponsiveValidatingInput
@@ -103,7 +103,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Require number"
 							name="passwordRequiresNumber"
 							type="checkbox"
-							checked={data.passwordRequiresNumber}
+							checked={data.passwordRequiresNumber || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 						<ResponsiveValidatingInput
@@ -113,7 +113,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Require symbol"
 							name="passwordRequiresSymbol"
 							type="checkbox"
-							checked={data.passwordRequiresSymbol}
+							checked={data.passwordRequiresSymbol || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 
@@ -137,7 +137,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Require Multifactor Authentication"
 							name="multifactorRequired"
 							type="checkbox"
-							checked={data.multifactorRequired}
+							checked={data.multifactorRequired || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 						<ResponsiveValidatingInput
@@ -146,7 +146,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Allow SMS Backup Codes"
 							name="allowSMSBackupCodes"
 							type="checkbox"
-							checked={data.allowSMSBackupCodes}
+							checked={data.allowSMSBackupCodes || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 						<ResponsiveValidatingInput
@@ -189,7 +189,7 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 							label="Allow Registration"
 							name="allowSignup"
 							type="checkbox"
-							checked={data.allowSignup}
+							checked={data.allowSignup || false}
 							onChange={(e) => handleChange(e, validate)}
 						/>
 

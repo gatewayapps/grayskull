@@ -167,9 +167,9 @@ class AccountActivation extends React.PureComponent<AccountActivationProps, Acco
 
 					return (
 						<FormValidation validations={validations} data={this.state.data} onValidated={this.onFormValidated}>
-							{({ validate, validationErrors }) => (
+							{({ validate, validationErrors }: any) => (
 								<Mutation mutation={ACTIVATE_ACCOUNT_MUTATION} variables={{ data: mutationVariables }}>
-									{(activateAccount: any, { loading, error }) => (
+									{(activateAccount: any, { loading, error }: any) => (
 										<form
 											onSubmit={(e) => {
 												e.preventDefault()

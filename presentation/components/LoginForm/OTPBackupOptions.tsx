@@ -23,7 +23,7 @@ export const OTPBackupOptions: React.FC<{
 	options: OTPOption[]
 	setStep: (string) => void
 }> = ({ options, setStep, emailAddress, setOTPSent }) => {
-	const [selectedOption, setSelectedOption] = useState<OTPOption>(undefined)
+	const [selectedOption, setSelectedOption] = useState<OTPOption | undefined>(undefined)
 	const [busy, setBusy] = useState(false)
 	return (
 		<div>

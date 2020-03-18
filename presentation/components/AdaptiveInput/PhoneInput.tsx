@@ -20,13 +20,14 @@ export const PhoneInput: React.FC<AdaptiveInputProps> = ({ className, ...props }
 					const parsed = phoneUtil.parse(parsedNumber, 'US')
 					parsedNumber = parsed.rawInput()
 				} catch {}
-
-				props.onChange({
-					target: {
-						name: props.name,
-						value: parsedNumber
-					}
-				})
+				if (props.onChange) {
+					props.onChange({
+						target: {
+							name: props.name,
+							value: parsedNumber
+						}
+					})
+				}
 			}}
 			value={formattedValue || undefined}
 		/>

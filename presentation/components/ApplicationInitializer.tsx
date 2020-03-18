@@ -9,8 +9,8 @@ import { IConfiguration } from '../../foundation/models/IConfiguration'
 import ActivityMessageContainerComponent from './ActivityMessageContainer'
 
 const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (props) => {
-	const [response, setResponse] = useState(undefined)
-	const [error, setError] = useState(undefined)
+	const [response, setResponse] = useState<any>(undefined)
+	const [error, setError] = useState<any>(undefined)
 	const [busy, setBusy] = useState(false)
 
 	const callInitialize = async () => {
@@ -93,7 +93,7 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 				<UserContext.Provider
 					value={{
 						user: response?.user,
-						refresh: callInitialize,
+						refresh: callInitialize as any,
 						hasInitialized: true
 					}}>
 					{content}

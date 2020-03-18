@@ -58,7 +58,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 			setOtpToken={setOTPToken}
 			extendedSession={extendedSession}
 			setExtendedSession={setExtendedSession}
-			showSignup={configuration.Security.allowSignup}
+			showSignup={configuration.Security!.allowSignup || false}
 			routerQueryString={router.query}
 		/>
 	)
@@ -71,7 +71,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const wrappedBody = (
 		<div className="row">
 			<div className="d-none d-md-block col-md-2 text-center">
-				<img className="body-logo align-self-start w-100 my-2" src={configuration.Server.realmLogo} />
+				<img className="body-logo align-self-start w-100 my-2" src={configuration.Server.realmLogo || ''} />
 			</div>
 			<div className="col-12 col-md-10 ">{body}</div>
 			{emailVerificationRequired && (
@@ -91,7 +91,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 			<ResponsiveForm
 				formHeader={
 					<span>
-						<img className="d-inline d-md-none header-logo mr-2" src={configuration.Server.realmLogo} />
+						<img className="d-inline d-md-none header-logo mr-2" src={configuration.Server.realmLogo || ''} />
 						Login to {configuration.Server.realmName}
 					</span>
 				}

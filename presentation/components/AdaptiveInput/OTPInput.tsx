@@ -4,7 +4,7 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 	const val: string = props.value || ',,,,,'
 	const valParts = val.split(',')
 	const [focusedIndex, setFocusedIndex] = useState(0)
-	const currentInput = useRef(null)
+	const currentInput = useRef<any>(null)
 
 	const onValueChanged = (e: React.KeyboardEvent<HTMLInputElement>, i: number) => {
 		if (/\d/.test(e.key)) {
@@ -35,7 +35,9 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 				}
 			}
 		}
-		props.onChange({ target: { name: props.name, value: valParts.join(',') } })
+		if (props.onChange) {
+			props.onChange({ target: { name: props.name, value: valParts.join(',') } })
+		}
 	}
 
 	useEffect(() => {
@@ -52,14 +54,16 @@ export const OTPInput: React.FC<AdaptiveInputProps> = (props) => {
 		for (let i = 0; i < sanitized.length; i++) {
 			valParts[i] = sanitized[i]
 		}
-
-		props.onChange({ target: { name: props.name, value: valParts.join(',') } })
-
+		if (props.onChange) {
+			props.onChange({ target: { name: props.name, value: valParts.join(',') } })
+		}
 		setFocusedIndex(5)
 	}
 
 	if (!currentInput.current && val !== ',,,,,') {
-		props.onChange({ target: { name: props.name, value: valParts.join(',') } })
+		if (props.onChange) {
+			props.onChange({ target: { name: props.name, value: valParts.join(',') } })
+		}
 	}
 
 	return (

@@ -22,7 +22,7 @@ export interface AdaptiveInputProps {
 }
 
 const AdaptiveInput: React.FC<AdaptiveInputProps> = (props) => {
-	const inertRef = useRef(null)
+	const inertRef = useRef<any>(null)
 	useEffect(() => {
 		if (inertRef.current) {
 			inertRef.current.setAttribute('inert', true)

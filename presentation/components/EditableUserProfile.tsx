@@ -289,7 +289,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 															className="btn btn-danger mr-2"
 															onClick={async () => {
 																const result = await deleteAccount()
-																if (result.success) {
+																if (result.success && this.props.onSave) {
 																	this.props.onSave()
 																} else {
 																	alert(result.message || 'Failed to delete user')
