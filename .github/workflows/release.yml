@@ -23,6 +23,8 @@ jobs:
         run: yarn test
       - name: Update release notes
         run: yarn update-release-notes
+      - name: Remove test endpoints
+        run: rm ./pages/api/__prepare_test_environment.tsx
       - name: Compile
         run: yarn next build
       - name: Publish Docker

@@ -45,7 +45,7 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 	}
 	try {
 		const clientCredentials = getClientCredentialsFromRequest(context.req)
-		const body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
+		const body = context.req.body
 
 		if (!body || !body.grant_type || !clientCredentials) {
 			res.status(400).json(new OauthError('invalid_request', 'No request body was sent'))
@@ -53,6 +53,7 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 		}
 
 		let accessTokenResponse: IAccessTokenResponse | undefined = undefined
+		const scope = body.scope || body.scopes
 		switch (body.grant_type) {
 			case GrantTypes.AuthorizationCode.id: {
 				accessTokenResponse = await getTokensFromAuthorizationCodeActivity(
@@ -73,7 +74,7 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				break
 			}
 			case GrantTypes.Password.id: {
-				const loginCredentials = getLoginCredentialsFromRequest(req)
+				const loginCredentials = getLoginCredentialsFromRequest(context.req)
 				if (!loginCredentials) {
 					throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'Invalid username or password')
 				}
@@ -81,13 +82,13 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 					clientCredentials.client_id,
 					loginCredentials.emailAddress,
 					loginCredentials.password,
-					loginCredentials.scope,
+					scope,
 					context
 				)
 				break
 			}
 			case GrantTypes.MultifactorToken.id: {
-				const mfaCredentials = getMultifactorCredentialsFromRequest(req)
+				const mfaCredentials = getMultifactorCredentialsFromRequest(context.req)
 				if (!mfaCredentials) {
 					throw new GrayskullError(GrayskullErrorCode.InvalidOTP, 'otp_token and challenge_token are required')
 				}

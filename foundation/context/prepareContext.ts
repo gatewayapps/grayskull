@@ -23,7 +23,7 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 
 	res.cookies = cookies
 	req.cookies = cookies
-
+	req.body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
 	const cacheContext = getCacheContext()
 
 	let dataContext = cacheContext.getValue<Knex>('DATA_CONTEXT')
