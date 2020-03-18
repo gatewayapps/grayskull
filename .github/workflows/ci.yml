@@ -50,6 +50,7 @@ jobs:
       #   run: curl -d test http://localhost:3000/api/__apply_migrations
       - name: Restore test environment backup
         run: curl http://localhost:3000/api/__prepare_test_environment
-      - uses: matt-ball/newman-action@master
+      - name: Integration Tests - Client Credentials
+        uses: matt-ball/newman-action@master
         with:
           collection: ./tests/client-integration.json
