@@ -1,4 +1,4 @@
-name: Master CI
+name: Continuous Integration
 
 on:
   push:
@@ -22,18 +22,6 @@ jobs:
         uses: actions/checkout@v1
       - name: Install Package Dependencies
         run: yarn install
-      - name: Check formatting
-        run: yarn format
-      - name: Lint
-        run: yarn lint
-      - name: Foundation tests
-        run: yarn test-foundation
-      - name: Operations tests
-        run: yarn test-operations
-      - name: Activity tests
-        run: yarn test-activities
-      - name: Resolver tests
-        run: yarn test-resolvers
       - name: Update release notes
         run: yarn update-release-notes
       - name: Compile
