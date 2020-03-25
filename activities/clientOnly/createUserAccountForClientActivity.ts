@@ -5,9 +5,9 @@ import { createEmailAddress } from '../../operations/data/emailAddress/createEma
 import { isEmailAddressAvailable } from '../../operations/data/emailAddress/isEmailAddressAvailable'
 import { verifyPasswordStrength } from '../../operations/logic/verifyPasswordStrength'
 import { getClient } from '../../operations/data/client/getClient'
-import { createUserClient } from '../../operations/data/userClient/createUserClient'
-import { getAuthorizedUserForClient } from '../../operations/data/client/getAuthorizedUserForClient'
+
 import { Permissions } from '../../foundation/constants/permissions'
+import { authorizeClientForUserAccountActivity } from './authorizeClientForUserAccountActivity'
 
 export async function createUserAccountForClientActivity(
 	userData: Pick<
@@ -53,16 +53,5 @@ export async function createUserAccountForClientActivity(
 	}
 
 	await createEmailAddress(userData.email, userAccount.userAccountId, context.dataContext, true, true)
-	const userClient = await createUserClient(
-		userAccount.userAccountId,
-		clientId,
-		JSON.parse(client.scopes),
-		[],
-		context.dataContext
-	)
-	if (!userClient) {
-		throw new Error('Failed to create user client')
-	}
-
-	return await getAuthorizedUserForClient(userClient?.userClientId, clientId, context.dataContext)
+	return authorizeClientForUserAccountActivity(userAccount.userAccountId, clientId, context)
 }

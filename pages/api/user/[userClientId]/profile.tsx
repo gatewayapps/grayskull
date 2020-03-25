@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { prepareRemoteContext } from '../../../foundation/context/prepareRemoteContext'
-import { ScopeMap } from '../../../foundation/constants/scopes'
-import { IAuthorizedUserFields } from '../../../foundation/types/shared'
-import { updateUserAccountActivity } from '../../../activities/updateUserAccountActivity'
+import { prepareRemoteContext } from '../../../../foundation/context/prepareRemoteContext'
+import { ScopeMap } from '../../../../foundation/constants/scopes'
+import { IAuthorizedUserFields } from '../../../../foundation/types/shared'
+
+import { updateUserAccountByUserClientIdActivity } from '../../../../activities/clientOnly/updateUserAccountByUserClientIdActivity'
+import { setUserAccountPrimaryEmailByUserClientIdActivity } from '../../../../activities/clientOnly/setUserAccountPrimaryEmailByUserClientIdActivity'
 
 export default async function profile(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== 'POST') {
@@ -21,8 +23,8 @@ export default async function profile(req: NextApiRequest, res: NextApiResponse)
 		}
 
 		const userData = req.body as IAuthorizedUserFields
-		const profile = await updateUserAccountActivity(
-			context.user.userAccountId,
+		const profile = await updateUserAccountByUserClientIdActivity(
+			req.query['userClientId'].toString(),
 			{
 				birthday: userData.birthday || null,
 				firstName: userData.given_name,
@@ -33,6 +35,15 @@ export default async function profile(req: NextApiRequest, res: NextApiResponse)
 			},
 			context
 		)
+
+		if (userData.email && profile) {
+			await setUserAccountPrimaryEmailByUserClientIdActivity(
+				req.query['userClientId'].toString(),
+				userData.email,
+				context
+			)
+			profile.email = userData.email
+		}
 
 		res.json(profile)
 	} catch (err) {

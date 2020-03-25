@@ -9,7 +9,7 @@ import { getUserAccountByUserClientId } from '../../operations/data/userAccount/
 import { IUserAccount } from '../types/types'
 import { createUserContextForUserId, UserContext } from './getUserContext'
 
-export async function prepareRemoteContext(req, res): Promise<IRequestContext> {
+export async function prepareRemoteContext(req, res, allowAnonymous = false): Promise<IRequestContext> {
 	const cacheContext = getCacheContext()
 	let dataContext = cacheContext.getValue<Knex>('DATA_CONTEXT')
 	if (!dataContext) {
@@ -25,18 +25,18 @@ export async function prepareRemoteContext(req, res): Promise<IRequestContext> {
 		configuration,
 		accessTokenType: 'client'
 	})
-	if (!reqContext) {
+	if (!reqContext && !allowAnonymous) {
 		throw new Error('Request not authorized')
 	}
 
 	let accessTokenType: 'user' | 'client' = 'user'
-	if (!reqContext.userAccount && !reqContext.userClient) {
+	if (reqContext && !reqContext.userAccount && !reqContext.userClient) {
 		accessTokenType = 'client'
 	}
 	const userClientId = req.headers['x-user-client-id']
 	let userAccount: IUserAccount | undefined
-	let userContext: UserContext | undefined = reqContext.userAccount
-	if (!userContext && userClientId) {
+	let userContext: UserContext | undefined = reqContext ? reqContext.userAccount : undefined
+	if (!userContext && userClientId && reqContext) {
 		userAccount = await getUserAccountByUserClientId(userClientId, dataContext)
 		userContext = await createUserContextForUserId(
 			userAccount?.userAccountId!,
@@ -55,6 +55,6 @@ export async function prepareRemoteContext(req, res): Promise<IRequestContext> {
 		accessTokenType,
 		user: userContext,
 		userClient: reqContext?.userClient,
-		accessToken: reqContext.accessToken
+		accessToken: reqContext?.accessToken
 	}
 }

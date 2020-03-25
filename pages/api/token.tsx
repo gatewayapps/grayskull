@@ -113,7 +113,6 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				return
 			}
 		}
-
 		res.status(200).json(accessTokenResponse)
 	} catch (err) {
 		if (err instanceof GrayskullError) {
