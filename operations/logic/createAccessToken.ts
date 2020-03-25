@@ -4,7 +4,7 @@ import { addSeconds } from 'date-fns'
 
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 import jwt from 'jsonwebtoken'
-import { IAccessToken, IIDToken } from '../../foundation/types/tokens'
+import { IAccessToken } from '../../foundation/types/tokens'
 
 export async function createAccessToken(
 	client: IClient,
@@ -12,15 +12,16 @@ export async function createAccessToken(
 	refreshToken: IRefreshToken | undefined,
 	configuration: IConfiguration
 ) {
-	const expiration = addSeconds(new Date(), configuration.Security.accessTokenExpirationSeconds || 300).getTime()
+	const expiration = Math.round(
+		addSeconds(new Date(), configuration.Security.accessTokenExpirationSeconds || 3600).getTime() / 1000
+	)
 
 	if (!userClient) {
-		const result: IIDToken = {
+		const result = {
 			sub: `${client.client_id}@clients`,
 			aud: client.client_id,
 			iss: configuration.Server.baseUrl!,
 			exp: expiration,
-			iat: new Date().getTime(),
 			at_hash: undefined
 		}
 

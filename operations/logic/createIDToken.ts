@@ -3,8 +3,6 @@ import { UserContext } from '../../foundation/context/getUserContext'
 
 import { IConfiguration, IClient, IUserClient } from '../../foundation/types/types'
 
-import moment from 'moment'
-
 import { createHmac } from 'crypto'
 import jwt from 'jsonwebtoken'
 import { IIDToken, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
@@ -21,7 +19,8 @@ export async function createIDToken(
 ): Promise<string> {
 	const security = configuration.Security!
 	const serverConfig = configuration.Server!
-
+	const iat = Math.round(new Date().getTime() / 1000)
+	const expiration = Math.round(addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime() / 1000)
 	const profile = getUserProfileForClient(userContext, userClient)
 	let at_hash: string | undefined = undefined
 	if (accessToken) {
@@ -32,9 +31,8 @@ export async function createIDToken(
 		at_hash = finalBytes.toString('base64')
 	}
 
-	const tokenBase: IIDToken = {
-		iat: moment().unix(),
-		exp: addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime(),
+	const tokenBase: any = {
+		exp: expiration,
 		aud: client.client_id,
 		sub: profile.sub,
 		at_hash: at_hash,
