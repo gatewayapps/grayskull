@@ -19,7 +19,7 @@ export async function createIDToken(
 ): Promise<string> {
 	const security = configuration.Security!
 	const serverConfig = configuration.Server!
-	const iat = Math.round(new Date().getTime() / 1000)
+
 	const expiration = Math.round(addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime() / 1000)
 	const profile = getUserProfileForClient(userContext, userClient)
 	let at_hash: string | undefined = undefined
