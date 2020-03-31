@@ -33,7 +33,7 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 	let dataContext = cacheContext.getValue<Knex>('DATA_CONTEXT')
 	if (!dataContext) {
 		dataContext = await getDataContextFromConnectionString(process.env.GRAYSKULL_DB_CONNECTION_STRING!)
-		cacheContext.setValue('DATA_CONTEXT', dataContext, 600)
+		cacheContext.setValue('DATA_CONTEXT', dataContext, 20)
 	}
 
 	const sessionCookie = req.cookies.get(SESSION_ID_COOKIE_NAME)

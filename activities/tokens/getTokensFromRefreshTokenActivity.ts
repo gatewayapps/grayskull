@@ -14,12 +14,12 @@ import { IAccessTokenResponse } from '../../foundation/types/tokens'
 
 export async function getTokensFromRefreshTokenActivity(
 	clientId: string,
-	clientSecret: string,
+	clientSecret: string | undefined,
 	refreshToken: string,
 	context: IRequestContext
 ): Promise<IAccessTokenResponse> {
 	let id_token: string | undefined = undefined
-	if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
+	if (clientSecret !== undefined && !(await validateClientSecretActivity(clientId, clientSecret, context))) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
 	}
 
