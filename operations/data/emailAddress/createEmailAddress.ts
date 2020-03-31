@@ -10,6 +10,13 @@ export async function createEmailAddress(
 	verified
 ) {
 	const emailAddressId = uuidv4()
+
+	if (primary) {
+		await dataContext<IEmailAddress>('EmailAddresses')
+			.where({ userAccountId, primary: true })
+			.update({ primary: false })
+	}
+
 	await dataContext<IEmailAddress>('EmailAddresses').insert({
 		emailAddressId,
 		emailAddress,

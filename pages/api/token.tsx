@@ -1,3 +1,5 @@
+import Cors from 'cors'
+
 import { getTokensFromAuthorizationCodeActivity } from '../../activities/tokens/getTokensFromAuthorizationCodeActivity'
 import { getTokensFromMultifactorTokenActivity } from '../../activities/tokens/getTokensFromMultifactorTokenActivity'
 import { getTokensFromRefreshTokenActivity } from '../../activities/tokens/getTokensFromRefreshTokenActivity'
@@ -36,7 +38,25 @@ function getLoginCredentialsFromRequest(req: NextApiRequest) {
 	return undefined
 }
 
+// Initializing the cors middleware
+const cors = Cors({
+	methods: ['GET', 'HEAD', 'OPTIONS', 'POST']
+})
+
+function runMiddleware(req, res, fn) {
+	return new Promise((resolve, reject) => {
+		fn(req, res, (result) => {
+			if (result instanceof Error) {
+				return reject(result)
+			}
+
+			return resolve(result)
+		})
+	})
+}
+
 export default async function handleTokenRequest(req: NextApiRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	const context = await prepareContext(req, res)
 
 	if (req.method !== 'POST') {
@@ -113,7 +133,6 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				return
 			}
 		}
-
 		res.status(200).json(accessTokenResponse)
 	} catch (err) {
 		if (err instanceof GrayskullError) {

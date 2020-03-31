@@ -5,7 +5,7 @@ import { CacheContext } from '../../../foundation/context/getCacheContext'
 
 export async function updateUserAccount(
 	userAccountId,
-	userAccountDetails: IUserAccount,
+	userAccountDetails: Partial<IUserAccount>,
 	dataContext: Knex,
 	userContext: UserContext,
 	cacheContext: CacheContext
