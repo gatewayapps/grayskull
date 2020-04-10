@@ -55,7 +55,15 @@ export async function getTokensFromRefreshTokenActivity(
 	}
 
 	if (userClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-		id_token = await createIDToken(userContext, client, userClient, undefined, undefined, context.configuration)
+		id_token = await createIDToken(
+			userContext,
+			client,
+			userClient,
+			undefined,
+			undefined,
+			context.configuration,
+			context.dataContext
+		)
 	}
 
 	const access_token = await createAccessToken(client, userClient, finalRefreshToken, context.configuration)

@@ -5,8 +5,9 @@ import { IConfiguration, IClient, IUserClient } from '../../foundation/types/typ
 
 import { createHmac } from 'crypto'
 import jwt from 'jsonwebtoken'
-import { IIDToken, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
+import { IIDToken, IProfileClaim, IEmailClaim, IMetaClaim } from '../../foundation/types/tokens'
 import { addSeconds } from 'date-fns'
+import Knex from 'knex'
 
 export async function createIDToken(
 	userContext: UserContext,
@@ -15,13 +16,14 @@ export async function createIDToken(
 	nonce: string | undefined,
 	accessToken: string | undefined,
 
-	configuration: IConfiguration
+	configuration: IConfiguration,
+	dataContext: Knex
 ): Promise<string> {
 	const security = configuration.Security!
 	const serverConfig = configuration.Server!
 
 	const expiration = Math.round(addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime() / 1000)
-	const profile = getUserProfileForClient(userContext, userClient)
+	const profile = await getUserProfileForClient(userContext, userClient, dataContext)
 	let at_hash: string | undefined = undefined
 	if (accessToken) {
 		const hmac = createHmac('sha256', client.secret)
@@ -40,7 +42,7 @@ export async function createIDToken(
 		nonce: nonce
 	}
 
-	const result: IIDToken & IProfileClaim & IEmailClaim = Object.assign(tokenBase, profile)
+	const result: IIDToken & IProfileClaim & IEmailClaim & IMetaClaim = Object.assign(tokenBase, profile)
 
 	return jwt.sign(result, client.secret)
 }

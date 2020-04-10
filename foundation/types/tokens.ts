@@ -33,6 +33,10 @@ export interface IEmailClaim {
 	email_verified?: boolean
 }
 
+export interface IMetaClaim {
+	meta?: { [key: string]: string }
+}
+
 export interface IChallenge {
 	challenge_type: string
 	challenge_token: string
