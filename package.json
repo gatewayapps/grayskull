@@ -169,7 +169,7 @@
     "merge-graphql-schemas": "^1.7.6",
     "moment": "^2.22.2",
     "mysql2": "^2.1.0",
-    "next": "9.2.2",
+    "next": "9.3.2",
     "next-absolute-url": "^1.2.2",
     "next-dart-sass": "^0.0.2",
     "nodemailer": "^5.1.1",
