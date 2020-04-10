@@ -9,7 +9,7 @@ import { getUserClient } from '../../operations/data/userClient/getUserClient'
 import { createUserClient } from '../../operations/data/userClient/createUserClient'
 import { getClient } from '../../operations/data/client/getClient'
 import { GrantTypes } from '../../foundation/constants/grantTypes'
-import { updateScopesActivity } from '../updateScopesActivity'
+
 import { updateUserClient } from '../../operations/data/userClient/updateUserClient'
 
 export async function getTokensFromPasswordActivity(
