@@ -43,7 +43,15 @@ export async function getTokensActivity(
 	}
 
 	if (scopes.includes(ScopeMap.openid.id) && userClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-		id_token = await createIDToken(userContext, client, userClient, undefined, undefined, context.configuration)
+		id_token = await createIDToken(
+			userContext,
+			client,
+			userClient,
+			undefined,
+			undefined,
+			context.configuration,
+			context.dataContext
+		)
 	}
 
 	if (

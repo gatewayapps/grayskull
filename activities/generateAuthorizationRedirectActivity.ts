@@ -72,7 +72,8 @@ export async function generateAuthorizationRedirectActivity(
 			userClient,
 			nonce,
 			queryParts.token,
-			context.configuration
+			context.configuration,
+			context.dataContext
 		)
 	}
 

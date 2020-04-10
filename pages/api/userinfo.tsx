@@ -16,7 +16,11 @@ async function getUserProfile(clientOptions: IClientRequestOptions, context: IRe
 		return
 	}
 
-	const profile = getUserProfileForClient(clientOptions.userAccount!, clientOptions.userClient!)
+	const profile = await getUserProfileForClient(
+		clientOptions.userAccount!,
+		clientOptions.userClient!,
+		context.dataContext
+	)
 
 	context.res.json(profile)
 }
@@ -44,7 +48,11 @@ async function postUserProfile(clientOptions: IClientRequestOptions, context: IR
 				context
 			)
 
-			const response = getUserProfileForClient(clientOptions.userAccount!, clientOptions.userClient!)
+			const response = await getUserProfileForClient(
+				clientOptions.userAccount!,
+				clientOptions.userClient!,
+				context.dataContext
+			)
 			context.res.json({ success: true, profile: response })
 			return
 		}

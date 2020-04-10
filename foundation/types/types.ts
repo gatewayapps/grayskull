@@ -70,6 +70,12 @@ export interface IMailConfiguration {
 	sendgridApiKey: string | null
 }
 
+export interface IUserClientMetadata {
+	userClientId: string
+	key: string
+	value: string
+}
+
 export interface ISecurityConfiguration {
 	maxLoginAttemptsPerMinute?: number | null
 	maxPasswordAge?: number | null
