@@ -31,7 +31,10 @@ export async function createUserAccount(
   data.userAccountId = uuid()
   if (password) {
     data.passwordHash = await bcrypt.hash(password, 10)
+  } else {
+    data.passwordHash = ''
   }
+
   data.lastPasswordChange = new Date()
   data.lastActive = new Date()
 

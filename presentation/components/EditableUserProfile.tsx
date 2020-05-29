@@ -66,6 +66,8 @@ const CREATE_USER_MUTATION = gql`
         profileImageUrl: $profileImageUrl
         emailAddress: $emailAddress
         permissions: $permissions
+        otpEnabled: false
+        isActive: true
       }
     ) {
       success
