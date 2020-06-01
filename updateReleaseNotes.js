@@ -7,7 +7,7 @@ try {
 	fetch(RELASE_NOTES_URL)
 		.then((response) => {
 			return response.text().then((textData) => {
-				fs.writeFileSync('./public/releaseNotes.txt', textData, { encoding: 'utf8' })
+				fs.writeFileSync('./public/releaseNotes.html', textData, { encoding: 'utf8' })
 			})
 		})
 		.catch((err) => {

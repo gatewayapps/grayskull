@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import uuid from 'uuid/v4'
 
 import bcrypt from 'bcrypt'
 import { encrypt } from '../../logic/encryption'
