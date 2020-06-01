@@ -1,21 +1,13 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IUserAccount } from '../../../foundation/types/types'
 
 export async function setUserAccountOTPSecret(
-  userAccountId: string,
-  otpSecret: string,
-  otpEnabled: boolean,
-  context: DataContext
+	userAccountId: string,
+	otpSecret: string,
+	otpEnabled: boolean,
+	dataContext: Knex
 ) {
-  return await context.UserAccount.update(
-    {
-      otpSecret,
-      otpEnabled
-    },
-    {
-      where: {
-        userAccountId
-      },
-      validate: false
-    }
-  )
+	await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId })
+		.update({ otpSecret, otpEnabled })
 }

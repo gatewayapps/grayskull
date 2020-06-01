@@ -63,7 +63,6 @@ UserAccount:
         emailAddress: string
         password: string
         otpToken: string?
-        fingerprint: string
         extendedSession: boolean default(0)
     # Authorize Client #
     authorizeClient:
@@ -113,11 +112,6 @@ UserAccount:
       returns: boolean
       arguments:
         dryRun: boolean? default(0)
-    # Send Backup Code #
-    sendBackupCode:
-      returns: boolean
-      arguments:
-        emailAddress: string
     # Reset Password #
     resetPassword:
       returns: boolean

@@ -1,4 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
-export async function deleteSession(sessionId: string, dataContext: DataContext) {
-  await dataContext.Session.destroy({ where: { sessionId }, force: true })
+import Knex from 'knex'
+import { ISession } from '../../../foundation/types/types'
+
+export async function deleteSession(sessionId: string, dataContext: Knex) {
+	await dataContext<ISession>('Sessions')
+		.where({ sessionId })
+		.delete()
 }

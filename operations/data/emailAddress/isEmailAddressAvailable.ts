@@ -1,6 +1,11 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IEmailAddress } from '../../../foundation/types/types'
 
-export async function isEmailAddressAvailable(emailAddress: string, context: DataContext) {
-  const emailAddressRecord = await context.EmailAddress.findOne({ where: { emailAddress } })
-  return !!!emailAddressRecord
+export async function isEmailAddressAvailable(emailAddress: string, dataContext: Knex) {
+	const record = await dataContext<IEmailAddress>('EmailAddresses')
+		.where({ emailAddress })
+		.select('*')
+		.first()
+
+	return !!!record
 }

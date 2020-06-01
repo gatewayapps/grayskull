@@ -16,47 +16,47 @@ const verifyEmailHtmlTemplate = require('./templates/verifyEmailTemplate.html.ha
 const verifyEmailTextTemplate = require('./templates/verifyEmailTemplate.text.handlebars').default
 
 const KNOWN_TEMPLATES = {
-  activateAccountTemplate: {
-    html: activateAccountHtmlTemplate,
-    text: activateAccountTextTemplate
-  },
-  backupCodeTemplate: {
-    html: backupCodeHtmlTemplate,
-    text: backupCodeTextTemplate
-  },
-  resetPasswordTemplate: {
-    html: resetPasswordHtmlTemplate,
-    text: resetPasswordTextTemplate
-  },
-  verifyEmailTemplate: {
-    html: verifyEmailHtmlTemplate,
-    text: verifyEmailTextTemplate
-  }
+	activateAccountTemplate: {
+		html: activateAccountHtmlTemplate,
+		text: activateAccountTextTemplate
+	},
+	backupCodeTemplate: {
+		html: backupCodeHtmlTemplate,
+		text: backupCodeTextTemplate
+	},
+	resetPasswordTemplate: {
+		html: resetPasswordHtmlTemplate,
+		text: resetPasswordTextTemplate
+	},
+	verifyEmailTemplate: {
+		html: verifyEmailHtmlTemplate,
+		text: verifyEmailTextTemplate
+	}
 }
 
 export function processTemplateWithContext(templateContents: string, context: object): string {
-  const templateFunction = handlebars.compile(templateContents)
-  return templateFunction(context)
+	const templateFunction = handlebars.compile(templateContents)
+	return templateFunction(context)
 }
 
 export async function sendTemplatedEmail(
-  templateName: string,
-  to: string,
-  subject: string,
-  context: object,
-  config: IConfiguration
+	templateName: string,
+	to: string,
+	subject: string,
+	context: object,
+	config: IConfiguration
 ) {
-  if (!KNOWN_TEMPLATES[templateName]) {
-    throw new Error('Invalid template name: ' + templateName)
-  }
+	if (!KNOWN_TEMPLATES[templateName]) {
+		throw new Error('Invalid template name: ' + templateName)
+	}
 
-  const textBody = processTemplateWithContext(KNOWN_TEMPLATES[templateName].text, context)
+	const textBody = processTemplateWithContext(KNOWN_TEMPLATES[templateName].text, context)
 
-  const htmlBody = processTemplateWithContext(KNOWN_TEMPLATES[templateName].html, context)
+	const htmlBody = processTemplateWithContext(KNOWN_TEMPLATES[templateName].html, context)
 
-  if (config.Mail.sendgridApiKey) {
-    await sendEmailUsingSendgrid(to, subject, textBody, htmlBody, config.Mail)
-  } else {
-    await sendEmailUsingNodemailer(to, subject, textBody, htmlBody, config.Mail)
-  }
+	if (config.Mail.sendgridApiKey) {
+		await sendEmailUsingSendgrid(to, subject, textBody, htmlBody, config.Mail)
+	} else {
+		await sendEmailUsingNodemailer(to, subject, textBody, htmlBody, config.Mail)
+	}
 }

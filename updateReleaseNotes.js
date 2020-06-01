@@ -1,6 +1,16 @@
-const cp = require('child_process')
 const packageInfo = require('./package.json')
+const fetch = require('isomorphic-fetch')
+const fs = require('fs-extra')
 
 const RELASE_NOTES_URL = `https://parcelapp.io/api/projects/5bc65fb88f171e07f26fdd55/notes/format/html?raw=true&version=${packageInfo.version}&scope=major`
-console.log(RELASE_NOTES_URL)
-cp.execSync(`curl '${RELASE_NOTES_URL}' > ./public/releaseNotes.html`, { stdio: 'ignore' })
+try {
+	fetch(RELASE_NOTES_URL)
+		.then((response) => {
+			return response.text().then((textData) => {
+				fs.writeFileSync('./public/releaseNotes.txt', textData, { encoding: 'utf8' })
+			})
+		})
+		.catch((err) => {
+			console.error(err)
+		})
+} catch (err) {}

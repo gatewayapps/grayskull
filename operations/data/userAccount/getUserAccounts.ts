@@ -1,10 +1,14 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IUserAccount } from '../../../foundation/types/types'
 
-export async function getUserAccounts(context: DataContext) {
-  return context.UserAccount.findAll({
-    order: [
-      ['lastName', 'asc'],
-      ['firstName', 'asc']
-    ]
-  })
+export async function getUserAccounts(dataContext: Knex) {
+	const records = await dataContext<IUserAccount>('UserAccounts')
+		.orderBy('lastName', 'asc')
+		.orderBy('firstName', 'asc')
+		.select('*')
+
+	return records.map((r) => {
+		delete r.passwordHash
+		return r
+	})
 }

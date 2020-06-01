@@ -1,19 +1,19 @@
 jest.mock('../../../activities/generateOTPSecretActivity', () => ({
-  generateOtpSecretActivity: () => 'test'
+	generateOtpSecretActivity: () => 'test'
 }))
 import { generateMfaKeyResolver } from './generateMfaKeyResolver'
-import { default as generateOTPSecretActivity } from '../../../activities/generateOTPSecretActivity'
+const generateOTPSecretActivity = require('../../../activities/generateOTPSecretActivity')
 
 describe('verifyEmailAddressResolver', () => {
-  it('should call the verifyEmailAddress activity', async () => {
-    const context: any = {}
-    const args: any = { data: { emailAddress: 'test@test.com', code: 'test' } }
-    const obj: any = {}
+	it('should call the verifyEmailAddress activity', async () => {
+		const context: any = {}
+		const args: any = { data: { emailAddress: 'test@test.com', code: 'test' } }
+		const obj: any = {}
 
-    const resolverSpy = jest.spyOn(generateOTPSecretActivity, 'generateOtpSecretActivity')
+		const resolverSpy = jest.spyOn(generateOTPSecretActivity, 'generateOtpSecretActivity')
 
-    await generateMfaKeyResolver(obj, args, context)
+		await generateMfaKeyResolver(obj, args, context)
 
-    expect(resolverSpy).toBeCalledTimes(1)
-  })
+		expect(resolverSpy).toBeCalledTimes(1)
+	})
 })

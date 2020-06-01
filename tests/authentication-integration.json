@@ -1,0 +1,260 @@
+{
+	"info": {
+		"_postman_id": "b62591ff-9d7e-4215-99b9-0a5fe41a9a94",
+		"name": "Grayskull Password Credentials Integration Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticate user with password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "105e8887-040b-4e24-a594-114c1d5c3351",
+						"exec": [
+							"pm.test(\"It should return an id_token, refresh_token and an access_token\", function () {",
+							"  var result =   pm.response.json()",
+							"  pm.expect(result.access_token).to.be.a(\"string\")",
+							"  pm.expect(result.id_token).to.be.a(\"string\")",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"client_id\": \"94623896-a8f5-4e55-b955-9f12b53d0b32\",\n\t\"client_secret\": \"0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1\",\n\t\"grant_type\": \"password\",\n\t\"username\": \"test@test.com\",\n\t\"password\": \"password\",\n\t\"scopes\": [\"profile\", \"openid\", \"email\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Use refresh_token to get new tokens",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6a73f84c-20f6-4ddd-acf9-0dc048253636",
+						"exec": [
+							"",
+							"let tokenUrl = 'http://localhost:3000/api/token';",
+							"let clientId = '94623896-a8f5-4e55-b955-9f12b53d0b32';",
+							"let clientSecret = '0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1';",
+							"",
+							"let getTokenRequest = {",
+							"    method: 'POST',",
+							"    url: tokenUrl,",
+							"    body: {",
+							"        mode: \"raw\",",
+							"        raw: JSON.stringify({",
+							"\t\"client_id\": \"94623896-a8f5-4e55-b955-9f12b53d0b32\",",
+							"\t\"client_secret\": \"0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1\",",
+							"\t\"grant_type\": \"password\",",
+							"\t\"username\": \"test@test.com\",",
+							"\t\"password\": \"password\",",
+							"\t\"scopes\": [\"profile\", \"openid\", \"email\", \"offline_access\"]",
+							"        })",
+							"    }",
+							"}",
+							"",
+							"",
+							"pm.sendRequest(getTokenRequest, (err, response) => {",
+							"    let jsonResponse = response.json(),",
+							"    refreshToken = jsonResponse.refresh_token;",
+							"    console.log(jsonResponse)",
+							"    console.log(refreshToken)",
+							"    pm.variables.set('refreshToken', refreshToken);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"client_id\": \"94623896-a8f5-4e55-b955-9f12b53d0b32\",\n\t\"client_secret\": \"0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1\",\n\t\"grant_type\": \"refresh_token\",\n\t\"refresh_token\": \"{{refreshToken}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a user profile using an access token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6a73f84c-20f6-4ddd-acf9-0dc048253636",
+						"exec": [
+							"",
+							"let tokenUrl = 'http://localhost:3000/api/token';",
+							"let clientId = '94623896-a8f5-4e55-b955-9f12b53d0b32';",
+							"let clientSecret = '0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1';",
+							"",
+							"let getTokenRequest = {",
+							"    method: 'POST',",
+							"    url: tokenUrl,",
+							"    body: {",
+							"        mode: \"raw\",",
+							"        raw: JSON.stringify({",
+							"\t\"client_id\": \"94623896-a8f5-4e55-b955-9f12b53d0b32\",",
+							"\t\"client_secret\": \"0b2ced047f55fc2e080904b44b704e64114a7605cbf0423fb6ae0a73f4e528c1\",",
+							"\t\"grant_type\": \"password\",",
+							"\t\"username\": \"test@test.com\",",
+							"\t\"password\": \"password\",",
+							"\t\"scopes\": [\"profile\", \"openid\", \"email\", \"offline_access\"]",
+							"        })",
+							"    }",
+							"}",
+							"",
+							"",
+							"pm.sendRequest(getTokenRequest, (err, response) => {",
+							"    let jsonResponse = response.json(),",
+							"    accessToken = jsonResponse.access_token;",
+							"",
+							"    pm.variables.set('accessToken', accessToken);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "66e4f3b1-51f7-48bf-a2dd-e3fd2db049ac",
+						"exec": [
+							"pm.test(\"Should update a users profile succesfully\", function(){",
+							"    var result = pm.response.json()",
+							"    pm.expect(result.given_name).to.equal(\"Postman\")",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "{{accessToken}}",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"given_name\": \"Postman\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/users/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e873f2a7-f7af-41fb-8b44-2041333a8949",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4a9c0da6-aba1-4585-a181-f037d094b88a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "fd987e7d-3ba4-4951-986c-44a46c72eba4",
+			"key": "refreshToken",
+			"value": "\"\"",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

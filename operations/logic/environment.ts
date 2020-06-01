@@ -1,6 +1,6 @@
 import { config } from 'dotenv'
 if (config && typeof config === 'function') {
-  config()
+	config()
 }
 
 export const GRAYSKULL_GLOBAL_SECRET = process.env.GRAYSKULL_GLOBAL_SECRET || 'ABCDEFG1234567'

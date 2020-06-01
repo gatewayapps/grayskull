@@ -1,5 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IUserAccount } from '../../../foundation/types/types'
 
-export async function setUserAccountActive(userAccountId: string, isActive = true, dataContext: DataContext) {
-  await dataContext.UserAccount.update({ isActive }, { where: { userAccountId }, validate: false })
+export async function setUserAccountActive(userAccountId: string, isActive = true, dataContext: Knex) {
+	await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId })
+		.update({ isActive })
 }

@@ -1,0 +1,28 @@
+name: Quality Check
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  qc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v1
+      - name: Install Package Dependencies
+        run: yarn install
+      - name: Check formatting
+        run: yarn format
+      - name: Lint
+        run: yarn lint
+      - name: Foundation tests
+        run: yarn test-foundation
+      - name: Operations tests
+        run: yarn test-operations
+      - name: Activity tests
+        run: yarn test-activities
+      - name: Resolver tests
+        run: yarn test-resolvers

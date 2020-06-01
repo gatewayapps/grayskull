@@ -1,19 +1,19 @@
-jest.mock('../../../activities/sendResetPasswordEmailActivity', () => ({
-  sendResetPasswordEmailActivity: () => true
+jest.mock('../../../activities/authentication/sendResetPasswordEmailActivity', () => ({
+	sendResetPasswordEmailActivity: () => true
 }))
 import { resetPasswordResolver } from './resetPasswordResolver'
-import { default as sendResetPasswordActivity } from '../../../activities/sendResetPasswordEmailActivity'
+const sendResetPasswordActivity = require('../../../activities/authentication/sendResetPasswordEmailActivity')
 
 describe('resetPasswordResolver', () => {
-  it('should call the sendResetPasswordEmail activity', async () => {
-    const context: any = {}
-    const args: any = { data: { emailAddress: 'test@test.com' } }
-    const obj: any = {}
+	it('should call the sendResetPasswordEmail activity', async () => {
+		const context: any = {}
+		const args: any = { data: { emailAddress: 'test@test.com' } }
+		const obj: any = {}
 
-    const resolverSpy = jest.spyOn(sendResetPasswordActivity, 'sendResetPasswordEmailActivity')
+		const resolverSpy = jest.spyOn(sendResetPasswordActivity, 'sendResetPasswordEmailActivity')
 
-    await resetPasswordResolver(obj, args, context)
+		await resetPasswordResolver(obj, args, context)
 
-    expect(resolverSpy).toBeCalledTimes(1)
-  })
+		expect(resolverSpy).toBeCalledTimes(1)
+	})
 })

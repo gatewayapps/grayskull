@@ -1,57 +1,60 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
-import { Session } from '../../../foundation/models/Session'
 
 import { addSeconds } from 'date-fns'
-import { compare } from 'bcrypt'
+
 import { SESSION_EXPIRATION_SECONDS } from './createSession'
+import { ISession, IUserAccount } from '../../../foundation/types/types'
+import Knex from 'knex'
 
 /**
  * @description Attempts to find a matching session in the cache context.  If no session is cached, find it in the data context and cache it
  * @param sessionId
- * @param fingerprint
  * @param dataContext
  * @param cacheContext
  */
 export async function verifyAndUseSession(
-  sessionId: string,
-  fingerprint: string,
-  dataContext: DataContext,
-  cacheContext: CacheContext
-): Promise<Session | null> {
-  if (!sessionId || !fingerprint) {
-    return null
-  }
+	sessionId: string,
+	dataContext: Knex,
+	cacheContext: CacheContext
+): Promise<ISession | null> {
+	if (!sessionId) {
+		return null
+	}
 
-  const cacheKey = `SESSION_${sessionId}`
-  const NOW = new Date()
+	const cacheKey = `SESSION_${sessionId}`
+	const NOW = new Date()
 
-  const cachedSession = cacheContext.getValue<Session>(cacheKey)
-  if (cachedSession && cachedSession.fingerprint === fingerprint && cachedSession.expiresAt > NOW) {
-    return cachedSession
-  }
+	const cachedSession = cacheContext.getValue<ISession>(cacheKey)
+	if (cachedSession && cachedSession.expiresAt > NOW) {
+		return cachedSession
+	}
 
-  const session = await dataContext.Session.findOne({ where: { sessionId } })
-  if (!session) {
-    return null
-  }
+	const session = await dataContext<ISession>('Sessions')
+		.where({ sessionId })
+		.select('*')
+		.first()
+	if (!session) {
+		return null
+	}
 
-  if (session.expiresAt < NOW) {
-    return null
-  }
+	if (session.expiresAt < NOW) {
+		return null
+	}
 
-  if ((await compare(fingerprint, session.fingerprint)) === false) {
-    return null
-  }
+	const HALF_EXPIRATION = SESSION_EXPIRATION_SECONDS / 2
+	if (session.expiresAt < addSeconds(NOW, HALF_EXPIRATION)) {
+		session.expiresAt = addSeconds(NOW, SESSION_EXPIRATION_SECONDS)
+	}
+	session.lastUsedAt = NOW
+	await dataContext<ISession>('Sessions')
+		.where({ sessionId })
+		.update({ lastUsedAt: NOW })
 
-  const HALF_EXPIRATION = SESSION_EXPIRATION_SECONDS / 2
-  if (session.expiresAt < addSeconds(NOW, HALF_EXPIRATION)) {
-    session.expiresAt = addSeconds(NOW, SESSION_EXPIRATION_SECONDS)
-  }
-  session.lastUsedAt = NOW
-  await session.save()
+	await dataContext<IUserAccount>('UserAccounts')
+		.where({ userAccountId: session.userAccountId })
+		.update({ lastActive: NOW })
 
-  cacheContext.setValue(cacheKey, session, 30)
+	await cacheContext.setValue(cacheKey, session, 30)
 
-  return session
+	return session
 }

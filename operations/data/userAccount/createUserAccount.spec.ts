@@ -1,36 +1,39 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
-import { UserAccount } from '../../../foundation/models/UserAccount'
+
 import { createUserAccount } from './createUserAccount'
+import { IUserAccount } from '../../../foundation/types/types'
+import Knex from 'knex'
 
-let dataContext: DataContext
+let dataContext: Knex
 
-export const TEST_USER_DATA: Partial<UserAccount> = {
-  firstName: 'Test',
-  lastName: 'User',
-  permissions: 0,
-  otpEnabled: false,
-  isActive: true
+export const TEST_USER_DATA: Partial<IUserAccount> = {
+	firstName: 'Test',
+	lastName: 'User',
+	permissions: 0,
+	otpEnabled: false,
+	isActive: true
 }
 
-export async function createTestUserAccount(dataContext: DataContext) {
-  return await createUserAccount(TEST_USER_DATA, 'password', dataContext, undefined)
+export async function createTestUserAccount(dataContext: Knex, userDetails?: Partial<IUserAccount>) {
+	const finalUserData = TEST_USER_DATA
+	if (userDetails) {
+		Object.assign(finalUserData, userDetails)
+	}
+	return await createUserAccount(finalUserData, 'password', dataContext, undefined)
 }
 
 describe('createUserAccount', () => {
-  beforeAll(async () => {
-    dataContext = await getInMemoryContext()
-  })
+	beforeAll(async () => {
+		dataContext = await getInMemoryContext()
+	})
 
-  it('Should correctly create a user account', async () => {
-    const createdUser = await createTestUserAccount(dataContext)
-    expect(createdUser).toBeDefined()
-    const userFromData = await dataContext.UserAccount.findOne({ where: { userAccountId: createdUser.userAccountId } })
+	it('Should correctly create a user account', async () => {
+		const createdUser = await createTestUserAccount(dataContext)
+		expect(createdUser).toBeDefined()
 
-    expect(userFromData).toBeDefined()
-    if (userFromData) {
-      expect(userFromData.firstName).toEqual(TEST_USER_DATA.firstName)
-      expect(userFromData.lastName).toEqual(TEST_USER_DATA.lastName)
-    }
-  })
+		if (createdUser) {
+			expect(createdUser.firstName).toEqual(TEST_USER_DATA.firstName)
+			expect(createdUser.lastName).toEqual(TEST_USER_DATA.lastName)
+		}
+	})
 })

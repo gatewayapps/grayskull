@@ -1,18 +1,15 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { compare } from 'bcrypt'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
+import Knex from 'knex'
+import { getUserAccount } from './getUserAccount'
 
-export async function verifyPassword(
-  userAccountId: string,
-  password: string,
-  dataContext: DataContext
-): Promise<boolean> {
-  const userAccount = await dataContext.UserAccount.findOne({ where: { userAccountId } })
-  if (!userAccount) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidUserAccountId,
-      `Attempted to verify a password for user account ${userAccountId}, which does not exist`
-    )
-  }
-  return await compare(password, userAccount.passwordHash)
+export async function verifyPassword(userAccountId: string, password: string, dataContext: Knex): Promise<boolean> {
+	const userAccount = await getUserAccount(userAccountId, dataContext, undefined, true)
+	if (!userAccount) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidUserAccountId,
+			`Attempted to verify a password for user account ${userAccountId}, which does not exist`
+		)
+	}
+	return await compare(password, userAccount.passwordHash)
 }

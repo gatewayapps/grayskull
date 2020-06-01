@@ -1,6 +1,11 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IEmailAddress } from '../../../foundation/types/types'
 
-export async function setPrimaryEmailAddress(emailAddressId: string, userAccountId: string, dataContext: DataContext) {
-  await dataContext.EmailAddress.update({ primary: false }, { where: { primary: true, userAccountId } })
-  await dataContext.EmailAddress.update({ primary: true }, { where: { userAccountId, emailAddressId } })
+export async function setPrimaryEmailAddress(emailAddressId: string, userAccountId: string, dataContext: Knex) {
+	await dataContext<IEmailAddress>('EmailAddresses')
+		.where({ userAccountId, primary: true })
+		.update({ primary: false, updatedAt: new Date() })
+	await dataContext<IEmailAddress>('EmailAddresses')
+		.where({ userAccountId, emailAddressId })
+		.update({ primary: true })
 }

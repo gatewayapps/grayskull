@@ -21,35 +21,35 @@ import { sendTemplatedEmail } from '../operations/services/mail/sendEmailTemplat
  * @param context 
  */
 export async function createUserAccountActivity(
-  userAccountDetails: IUserAccount,
-  emailAddress: string,
-  context: IRequestContext
+	userAccountDetails: IUserAccount,
+	emailAddress: string,
+	context: IRequestContext
 ) {
-  ensureAdministrator(context)
-  if (!(await isEmailAddressAvailable(emailAddress, context.dataContext))) {
-    throw new GrayskullError(
-      GrayskullErrorCode.InvalidEmailAddress,
-      `That email address, ${emailAddress}, is already in use`
-    )
-  }
-  const userAccount = await createUserAccount(userAccountDetails, undefined, context.dataContext, context.user)
-  await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
+	ensureAdministrator(context)
+	if (!(await isEmailAddressAvailable(emailAddress, context.dataContext))) {
+		throw new GrayskullError(
+			GrayskullErrorCode.InvalidEmailAddress,
+			`That email address, ${emailAddress}, is already in use`
+		)
+	}
+	const userAccount = await createUserAccount(userAccountDetails, undefined, context.dataContext, context.user)
+	await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
 
-  const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
-  const activateLink = new URL(
-    `activate?emailAddress=${emailAddress}&token=${activationToken}`,
-    context.configuration.Server.baseUrl as string
-  ).href
-  await sendTemplatedEmail(
-    'activateAccountTemplate',
-    emailAddress,
-    `Activate Your ${context.configuration.Server.realmName} Account`,
-    {
-      activateLink,
-      realmName: context.configuration.Server.realmName,
-      user: userAccount,
-      createdBy: context.user
-    },
-    context.configuration
-  )
+	const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
+	const activateLink = new URL(
+		`activate?emailAddress=${emailAddress}&token=${activationToken}`,
+		context.configuration.Server.baseUrl as string
+	).href
+	await sendTemplatedEmail(
+		'activateAccountTemplate',
+		emailAddress,
+		`Activate Your ${context.configuration.Server.realmName} Account`,
+		{
+			activateLink,
+			realmName: context.configuration.Server.realmName,
+			user: userAccount,
+			createdBy: context.user
+		},
+		context.configuration
+	)
 }

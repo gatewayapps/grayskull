@@ -39,10 +39,8 @@
     "jsx": "preserve"
   },
   "include": [
-    "pages/**/*.ts",
-    "client/**/*.ts",
-    "public/**/*.ts",
-    "server/**/*.ts", "client/utils/useFetch.tsx", "foundation/**/*.ts", "operations/**/*.ts", "communication/**/*.ts", "activities/**/*.ts"
+    "**/*.ts",
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules/**/*.*",

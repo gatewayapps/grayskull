@@ -1,31 +1,50 @@
 import { decrypt } from '../../logic/encryption'
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { enforceDates } from '../../../foundation/context/getDataContext'
 
-export const restore = async (encryptedData: string, dataContext: DataContext) => {
-  const decrypted = decrypt(encryptedData)
-  if (!decrypted || typeof decrypted !== 'string') {
-    throw new Error('Failed to decrypt data')
-  }
+async function bulkInsertHelper(record: any, tableName: string, dataContext: Knex) {
+	// When we drop a column from an existing table
+	// we need to add a delete statement here for the restore process
+	delete record.verificationSecret
+	delete record.fingerprint
 
-  const backup = JSON.parse(decrypted)
+	if (tableName === 'Settings') {
+		delete record.createdAt
+		delete record.updatedAt
+		delete record.deletedAt
+	}
 
-  // Clear out old data
-  await dataContext.EmailAddress.destroy({ force: true, truncate: true })
-  await dataContext.UserClient.destroy({ force: true, truncate: true })
-  await dataContext.Client.destroy({ force: true, truncate: true })
-  await dataContext.PhoneNumber.destroy({ force: true, truncate: true })
-  await dataContext.Session.destroy({ force: true, truncate: true })
-  await dataContext.Setting.destroy({ force: true, truncate: true })
-  await dataContext.UserClient.destroy({ force: true, truncate: true })
-  await dataContext.KeyValueCache.destroy({ force: true, truncate: true })
-  await dataContext.UserAccount.destroy({ force: true, truncate: true })
+	const sanitizedRecord = enforceDates(record)
 
-  await dataContext.UserAccount.bulkCreate(backup.userAccounts)
-  await dataContext.EmailAddress.bulkCreate(backup.emailAddresses)
-  await dataContext.Setting.bulkCreate(backup.settings)
-  await dataContext.Client.bulkCreate(backup.clients)
-  await dataContext.PhoneNumber.bulkCreate(backup.phoneNumbers)
-  await dataContext.UserClient.bulkCreate(backup.userClients)
-  await dataContext.RefreshToken.bulkCreate(backup.refreshTokens)
-  await dataContext.Session.bulkCreate(backup.sessions)
+	return dataContext(tableName).insert(sanitizedRecord)
+}
+
+export const restore = async (encryptedData: string, dataContext: Knex) => {
+	const decrypted = decrypt(encryptedData)
+	if (!decrypted || typeof decrypted !== 'string') {
+		throw new Error('Failed to decrypt data')
+	}
+
+	const backup = JSON.parse(decrypted)
+
+	// Clear out old data
+
+	await dataContext('EmailAddresses').delete()
+	await dataContext('UserClients').delete()
+	await dataContext('Clients').delete()
+	await dataContext('PhoneNumbers').delete()
+	await dataContext('Sessions').delete()
+	await dataContext('Settings').delete()
+	await dataContext('KeyValueCache').delete()
+	await dataContext('UserAccounts').delete()
+	await dataContext('RefreshTokens').delete()
+
+	await Promise.all(backup.userAccounts.map((ua) => bulkInsertHelper(ua, 'UserAccounts', dataContext)))
+	await Promise.all(backup.emailAddresses.map((ua) => bulkInsertHelper(ua, 'EmailAddresses', dataContext)))
+	await Promise.all(backup.settings.map((ua) => bulkInsertHelper(ua, 'Settings', dataContext)))
+	await Promise.all(backup.clients.map((ua) => bulkInsertHelper(ua, 'Clients', dataContext)))
+	await Promise.all(backup.phoneNumbers.map((ua) => bulkInsertHelper(ua, 'PhoneNumbers', dataContext)))
+	await Promise.all(backup.userClients.map((ua) => bulkInsertHelper(ua, 'UserClients', dataContext)))
+	await Promise.all(backup.refreshTokens.map((ua) => bulkInsertHelper(ua, 'RefreshTokens', dataContext)))
+	await Promise.all(backup.sessions.map((ua) => bulkInsertHelper(ua, 'Sessions', dataContext)))
 }

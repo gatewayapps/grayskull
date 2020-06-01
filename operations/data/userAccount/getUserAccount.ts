@@ -1,37 +1,37 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
 import { CacheContext } from '../../../foundation/context/getCacheContext'
-import { UserAccount } from '../../../foundation/models/UserAccount'
+import { IUserAccount } from '../../../foundation/types/types'
+import Knex from 'knex'
 
 export async function getUserAccount(
-  userAccountId: string,
-  dataContext: DataContext,
-  cacheContext?: CacheContext,
-  includeSensitive = false
+	userAccountId: string,
+	dataContext: Knex,
+	cacheContext?: CacheContext,
+	includeSensitive = false
 ) {
-  const cacheKey = `USER_${userAccountId}`
-  if (cacheContext) {
-    const cachedUser = cacheContext.getValue<UserAccount>(cacheKey)
-    if (cachedUser && !includeSensitive) {
-      delete cachedUser.otpSecret
-      delete cachedUser.passwordHash
+	const cacheKey = `USER_${userAccountId}`
+	if (cacheContext) {
+		const cachedUser = cacheContext.getValue<IUserAccount>(cacheKey)
+		if (cachedUser && !includeSensitive) {
+			delete cachedUser.otpSecret
+			delete cachedUser.passwordHash
 
-      return cachedUser
-    }
-  }
-  const user = await dataContext.UserAccount.findOne({
-    where: {
-      userAccountId
-    },
-    attributes: {
-      exclude: includeSensitive
-        ? []
-        : ['passwordHash', 'otpSecret', 'resetPasswordToken', 'resetPasswordTokenExpiresAt']
-    }
-  })
+			return cachedUser
+		}
+	}
+	const user = await dataContext<IUserAccount>('UserAccounts')
+		.where({
+			userAccountId
+		})
+		.select('*')
+		.first()
+	if (user && !includeSensitive) {
+		delete user.passwordHash
+		delete user.otpSecret
+	}
 
-  if (user && cacheContext) {
-    cacheContext.setValue(cacheKey, user, 30)
-  }
+	if (user && cacheContext) {
+		cacheContext.setValue(cacheKey, user, 30)
+	}
 
-  return user
+	return user
 }

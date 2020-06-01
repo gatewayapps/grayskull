@@ -1,9 +1,10 @@
 import { IAccessToken } from '../types/tokens'
 import { UserContext } from '../context/getUserContext'
-import { IUserClient } from '../types/types'
+import { IUserClient, IClient } from '../types/types'
 
 export interface IClientRequestOptions {
-  userAccount: UserContext
-  client: IUserClient
-  accessToken: IAccessToken
+	userAccount?: UserContext
+	userClient?: IUserClient
+	client?: IClient
+	accessToken: IAccessToken
 }

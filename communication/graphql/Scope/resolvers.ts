@@ -1,7 +1,7 @@
 import { getScopes } from '../../../foundation/constants/scopes'
 
 export default {
-  Query: {
-    scopes: () => getScopes()
-  }
+	Query: {
+		scopes: () => getScopes()
+	}
 }

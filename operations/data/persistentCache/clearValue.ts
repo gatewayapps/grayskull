@@ -1,5 +1,8 @@
-import { DataContext } from '../../../foundation/context/getDataContext'
+import Knex from 'knex'
+import { IKeyValueCache } from '../../../foundation/types/types'
 
-export async function clearValue(key: string, dataContext: DataContext) {
-  await dataContext.KeyValueCache.destroy({ where: { key } })
+export async function clearValue(key: string, dataContext: Knex) {
+	await dataContext<IKeyValueCache>('KeyValueCache')
+		.where({ key })
+		.delete()
 }
