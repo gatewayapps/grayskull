@@ -5,6 +5,9 @@ const packageInfo = require('./package.json')
 
 module.exports = withSass(
   withCss({
+    typescript: {
+      ignoreDevErrors: true
+    },
     webpack(config) {
       config.module.rules.push({
         test: /\.(graphql|gql)$/,
@@ -12,7 +15,7 @@ module.exports = withSass(
         loader: 'graphql-tag/loader'
       })
       config.module.rules.push({
-        test: /\.handlebars$/i,
+        test: /\.(handlebars|txt)$/i,
         use: 'raw-loader'
       })
 
