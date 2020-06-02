@@ -236,7 +236,7 @@ export interface IUserAccount {
 	permissions: number
 	otpSecret: string | null
 	otpEnabled: boolean
-	isActive: boolean
+	isActive: boolean | number
 	createdBy: string | null
 	createdAt: Date
 	updatedBy: string | null

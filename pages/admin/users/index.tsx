@@ -26,7 +26,7 @@ const RESEND_VERIFICATION_MUTATION = gql`
 
 const ALL_USERS_QUERY = gql`
 	query ALL_USERS_QUERY {
-		userAccounts(filter: { isActive_equals: true }) {
+		userAccounts {
 			userAccountId
 			firstName
 			lastName
