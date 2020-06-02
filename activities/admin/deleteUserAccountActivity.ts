@@ -5,9 +5,11 @@ import { deleteUserAccount } from '../../operations/data/userAccount/deleteUserA
 
 export async function deleteUserAccountActivity(userAccountId: string, context: IRequestContext) {
 	ensureAdministrator(context)
-	if (userAccountId === context.user!.userAccountId) {
+	if (userAccountId === context?.user?.userAccountId) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, 'You cannot delete yourself')
 	}
 
-	await deleteUserAccount(userAccountId, context.user!, context.dataContext)
+	if (context?.user) {
+		await deleteUserAccount(userAccountId, context.user, context.dataContext)
+	}
 }
