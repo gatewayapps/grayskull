@@ -38,7 +38,7 @@ export async function createUserAccountActivity(
 	const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
 	const activateLink = new URL(
 		`activate?emailAddress=${emailAddress}&token=${activationToken}`,
-		context.configuration.Server.baseUrl!
+		context.configuration.Server.baseUrl as string
 	).href
 	await sendTemplatedEmail(
 		'activateAccountTemplate',
