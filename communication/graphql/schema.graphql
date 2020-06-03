@@ -725,6 +725,8 @@ input CreateUserArgs {
 	gender: String
 	birthday: Date
 	profileImageUrl: String
+	otpEnabled: Boolean
+	isActive: Boolean
 }
 
 input UpdateArgs {
