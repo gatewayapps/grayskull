@@ -6,10 +6,12 @@ import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/Gray
 
 import { updateUserAccount } from '../../operations/data/userAccount/updateUserAccount'
 import { getAuthorizedUserForClient } from '../../operations/data/client/getAuthorizedUserForClient'
+import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
 
 export async function updateUserAccountByUserClientIdActivity(
 	userClientId: string,
 	userData: Partial<IUserAccount>,
+
 	context: IRequestContext
 ) {
 	const userClient = await getUserClientByUserClientId(userClientId, context.dataContext)
@@ -17,6 +19,12 @@ export async function updateUserAccountByUserClientIdActivity(
 		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `User has not authorized this client`)
 	}
 
-	await updateUserAccount(userClient.userAccountId, userData, context.dataContext, context.user, context.cacheContext)
-	return getAuthorizedUserForClient(userClient.userClientId, userClient.client_id, context.dataContext)
+	const existingUser = await getUserAccount(userClient.userAccountId, context.dataContext)
+	if (existingUser) {
+		await updateUserAccount(userClient.userAccountId, userData, context.dataContext, context.user, context.cacheContext)
+
+		return getAuthorizedUserForClient(userClient.userClientId, userClient.client_id, context.dataContext)
+	} else {
+		throw new GrayskullError(GrayskullErrorCode.InvalidUserAccountId, `No user found for sub: ${userClientId}`)
+	}
 }
