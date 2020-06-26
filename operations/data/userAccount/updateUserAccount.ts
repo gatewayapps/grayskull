@@ -7,11 +7,13 @@ export async function updateUserAccount(
 	userAccountId,
 	userAccountDetails: Partial<IUserAccount>,
 	dataContext: Knex,
-	userContext: UserContext,
+	userContext: UserContext | undefined,
 	cacheContext: CacheContext
 ) {
 	userAccountDetails.updatedAt = new Date()
-	userAccountDetails.updatedBy = userContext.userAccountId
+	if (userContext) {
+		userAccountDetails.updatedBy = userContext.userAccountId
+	}
 
 	await dataContext<IUserAccount>('UserAccounts')
 		.where({ userAccountId })

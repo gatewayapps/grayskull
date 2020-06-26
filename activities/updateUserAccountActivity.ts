@@ -15,7 +15,7 @@ export async function updateUserAccountActivity(
 		ensureAdministrator(context)
 	}
 
-	await updateUserAccount(userAccountId, userDetails, context.dataContext, context.user!, context.cacheContext)
+	await updateUserAccount(userAccountId, userDetails, context.dataContext, context.user, context.cacheContext)
 	return getAuthorizedUserForClient(
 		context.userClient!.userClientId,
 		context.userClient!.client_id,
