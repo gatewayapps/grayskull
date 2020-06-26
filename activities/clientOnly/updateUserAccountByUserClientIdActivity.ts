@@ -3,7 +3,9 @@ import { IRequestContext } from '../../foundation/context/prepareContext'
 
 import { getUserClientByUserClientId } from '../../operations/data/userClient/getUserClientByUserClientId'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-import { updateUserAccountActivity } from '../updateUserAccountActivity'
+
+import { updateUserAccount } from '../../operations/data/userAccount/updateUserAccount'
+import { getAuthorizedUserForClient } from '../../operations/data/client/getAuthorizedUserForClient'
 
 export async function updateUserAccountByUserClientIdActivity(
 	userClientId: string,
@@ -15,5 +17,6 @@ export async function updateUserAccountByUserClientIdActivity(
 		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `User has not authorized this client`)
 	}
 
-	return await updateUserAccountActivity(userClient.userAccountId, userData, context)
+	await updateUserAccount(userClient.userAccountId, userData, context.dataContext, context.user, context.cacheContext)
+	return getAuthorizedUserForClient(userClient.userClientId, userClient.client_id, context.dataContext)
 }
