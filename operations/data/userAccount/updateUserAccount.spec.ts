@@ -37,4 +37,25 @@ describe('updateUserAccount', () => {
 			expect(savedUser.firstName).toEqual('updatedFirstName')
 		}
 	})
+	it('Should correctly update a users account without a user context', async () => {
+		const createdUser = await createUserAccount(
+			{ firstName: 'test', lastName: 'user', otpEnabled: false, isActive: true, permissions: 1 },
+			'password1',
+			dataContext,
+			undefined
+		)
+
+		await updateUserAccount(
+			createdUser.userAccountId,
+			{ firstName: 'updatedFirstName' },
+			dataContext,
+			undefined,
+			cacheContext
+		)
+		const savedUser = await getUserAccount(createdUser.userAccountId, dataContext, cacheContext, false)
+		expect(savedUser).toBeDefined()
+		if (savedUser) {
+			expect(savedUser.firstName).toEqual('updatedFirstName')
+		}
+	})
 })
