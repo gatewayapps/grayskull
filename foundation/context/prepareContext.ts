@@ -7,6 +7,7 @@ import { getCurrentConfiguration } from '../../operations/data/configuration/get
 import { IConfiguration, IUserClient } from '../types/types'
 import Knex from 'knex'
 import { IAccessToken } from '../types/tokens'
+import { applyMigrations } from '../../operations/data/migrations/applyMigrations'
 
 export interface IRequestContext {
 	req: any
@@ -30,11 +31,8 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 	}
 	const cacheContext = getCacheContext()
 
-	let dataContext = cacheContext.getValue<Knex>('DATA_CONTEXT')
-	if (!dataContext) {
-		dataContext = await getDataContextFromConnectionString(process.env.GRAYSKULL_DB_CONNECTION_STRING!)
-		cacheContext.setValue('DATA_CONTEXT', dataContext, 20)
-	}
+	const dataContext = await getDataContextFromConnectionString(process.env.GRAYSKULL_DB_CONNECTION_STRING!)
+	await applyMigrations(dataContext)
 
 	const sessionCookie = req.cookies.get(SESSION_ID_COOKIE_NAME)
 
