@@ -8,6 +8,9 @@ import jwt from 'jsonwebtoken'
 import { IIDToken, IProfileClaim, IEmailClaim, IMetaClaim } from '../../foundation/types/tokens'
 import { addSeconds } from 'date-fns'
 import Knex from 'knex'
+import { getRSAPrivateKey } from '../data/configuration/getRSAPrivateKey'
+import { generateRSAKeyPair } from '../data/configuration/generateRSAKeyPair'
+import { getRSAKeyId } from '../data/configuration/getRSAKeyId'
 
 export async function createIDToken(
 	userContext: UserContext,
@@ -44,5 +47,17 @@ export async function createIDToken(
 
 	const result: IIDToken & IProfileClaim & IEmailClaim & IMetaClaim = Object.assign(tokenBase, profile)
 
-	return jwt.sign(result, client.secret)
+	let rsaPrivateKey = await getRSAPrivateKey(dataContext)
+
+	if (!rsaPrivateKey && client.TokenSigningMethod === 'RS256') {
+		const result = await generateRSAKeyPair(dataContext)
+		rsaPrivateKey = result.privateKey
+	}
+	const rsaKeyId = await getRSAKeyId(dataContext)
+	const signingKey = client.TokenSigningMethod === 'HS256' ? client.secret : rsaPrivateKey
+	if (!signingKey) {
+		throw new Error('Failed to sign, signing key is undefined')
+	}
+
+	return jwt.sign(result, signingKey, { algorithm: client.TokenSigningMethod as 'HS256' | 'RS256', keyid: rsaKeyId })
 }

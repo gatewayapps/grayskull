@@ -83,6 +83,7 @@ type Client {
 	deletedBy: ID
 	deletedAt: Date
 	AuthorizationFlows: String!
+	TokenSigningMethod: String!
 }
 
 input CreateClientArgs {
@@ -99,6 +100,7 @@ input CreateClientArgs {
 	scopes: String!
 	isActive: Boolean!
 	AuthorizationFlows: String!
+	TokenSigningMethod: String!
 }
 
 input UpdateClientArgs {
@@ -114,6 +116,7 @@ input UpdateClientArgs {
 	scopes: String
 	isActive: Boolean
 	AuthorizationFlows: String
+	TokenSigningMethod: String
 }
 
 type ClientMeta {

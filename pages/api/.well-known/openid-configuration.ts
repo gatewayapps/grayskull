@@ -13,7 +13,7 @@ export default async (req, res) => {
 	const response_types_supported = ['code', 'token', 'id_token']
 	const subject_types_supported = ['public']
 
-	const id_token_signing_alg_values_supported = ['RS256', 'HMAC256']
+	const id_token_signing_alg_values_supported = ['RS256', 'HS256']
 	const scopes_supported = Scopes.map((s) => s.id)
 
 	res.json({

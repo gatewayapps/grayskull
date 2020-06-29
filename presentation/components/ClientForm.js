@@ -5,6 +5,7 @@ import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import FormValidationMessage from './FormValidationMessage'
 import ImageDropArea from './ImageDropArea'
+import Select from 'react-select/lib/Select'
 
 class ClientForm extends PureComponent {
 	handleChange = (e, validate) => {
@@ -28,6 +29,10 @@ class ClientForm extends PureComponent {
 		if (validate) {
 			validate()
 		}
+	}
+
+	handleTokenSigningMethodChange = (e) => {
+		this.props.onChange('TokenSigningMethod', e.target.value)
 	}
 
 	handleGrantTypeChange = (e) => {
@@ -269,6 +274,22 @@ class ClientForm extends PureComponent {
 								<small id="grantTypeHelpBlock" className="form-text text-muted">
 									Grant types determine the authorization flows clients can use to authorize users.
 								</small>
+							</div>
+						</div>
+						<div className="form-group row">
+							<label className="col-sm-12 col-md-3 col-form-label">Token Signing Algorithm</label>
+							<div className="col-sm-12 col-md-9">
+								<select
+									className="form-control"
+									value={this.props.client.TokenSigningMethod}
+									onChange={this.handleTokenSigningMethodChange}>
+									<option value="HS256" selected={this.props.client.TokenSigningMethod === 'HS256'}>
+										HS256
+									</option>
+									<option value="RS256" selected={this.props.client.TokenSigningMethod === 'RS256'}>
+										RS256
+									</option>
+								</select>
 							</div>
 						</div>
 						<div className="form-group row">

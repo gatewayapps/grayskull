@@ -23,6 +23,7 @@ export interface IClient {
 	updatedAt: Date
 	deletedBy: string | null
 	deletedAt: Date | null
+	TokenSigningMethod: string
 }
 export interface CreateClientOperationArgs {
 	client_id: string
@@ -37,6 +38,7 @@ export interface CreateClientOperationArgs {
 	redirectUris: string
 	scopes: string
 	isActive: boolean
+	TokenSigningMethod: string
 }
 export interface UpdateClientOperationArgs {
 	client_id: string
@@ -50,6 +52,7 @@ export interface UpdateClientOperationArgs {
 	redirectUris: string | null
 	scopes: string | null
 	isActive: boolean | null
+	TokenSigningMethod: string
 }
 
 export interface IServerConfiguration {
