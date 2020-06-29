@@ -1,6 +1,6 @@
 {
   "name": "grayskull",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "engines": {

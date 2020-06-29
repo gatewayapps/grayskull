@@ -7,6 +7,7 @@ import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/Gray
 import { updateUserAccount } from '../../operations/data/userAccount/updateUserAccount'
 import { getAuthorizedUserForClient } from '../../operations/data/client/getAuthorizedUserForClient'
 import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
+import { userClientHasAllowedScope } from '../../operations/logic/userClientHasAllowedScope'
 
 export async function updateUserAccountByUserClientIdActivity(
 	userClientId: string,
@@ -17,6 +18,13 @@ export async function updateUserAccountByUserClientIdActivity(
 	const userClient = await getUserClientByUserClientId(userClientId, context.dataContext)
 	if (!userClient) {
 		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `User has not authorized this client`)
+	}
+
+	if (!userClientHasAllowedScope(userClient, 'admin-profile:write')) {
+		throw new GrayskullError(
+			GrayskullErrorCode.NotAuthorized,
+			'User has not allowed this client to update their profile'
+		)
 	}
 
 	const existingUser = await getUserAccount(userClient.userAccountId, context.dataContext)
