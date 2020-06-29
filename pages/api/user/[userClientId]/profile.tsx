@@ -13,11 +13,7 @@ export default async function profile(req: NextApiRequest, res: NextApiResponse)
 	}
 	try {
 		const context = await prepareRemoteContext(req, res)
-		if (!context.accessToken || context.accessTokenType !== 'user') {
-			res.status(403).end()
-			return
-		}
-		if (!context.user || !context.accessToken.scopes.includes(ScopeMap['profile:write'].id)) {
+		if (!context.accessToken) {
 			res.status(403).end()
 			return
 		}
