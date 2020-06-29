@@ -5,7 +5,6 @@ import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
 import FormValidation, { FormValidationRule } from './FormValidation'
 import FormValidationMessage from './FormValidationMessage'
 import ImageDropArea from './ImageDropArea'
-import Select from 'react-select/lib/Select'
 
 class ClientForm extends PureComponent {
 	handleChange = (e, validate) => {
