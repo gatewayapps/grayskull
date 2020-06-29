@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareRemoteContext } from '../../../../foundation/context/prepareRemoteContext'
-import { ScopeMap } from '../../../../foundation/constants/scopes'
 import { IAuthorizedUserFields } from '../../../../foundation/types/shared'
 
 import { updateUserAccountByUserClientIdActivity } from '../../../../activities/clientOnly/updateUserAccountByUserClientIdActivity'
