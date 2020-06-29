@@ -6,6 +6,9 @@ import { createEmailAddress } from '../../operations/data/emailAddress/createEma
 import { ensureAuthenticated } from '../../operations/logic/ensureAuthenticated'
 import { ensureAdministrator } from '../../operations/logic/ensureAdministrator'
 
+import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
+import { modifyEmailAddress } from '../../operations/data/emailAddress/modifyEmailAddress'
+
 export async function setUserAccountPrimaryEmailByUserClientIdActivity(
 	userClientId: string,
 	emailAddress: string,
@@ -27,5 +30,14 @@ export async function setUserAccountPrimaryEmailByUserClientIdActivity(
 		throw new GrayskullError(GrayskullErrorCode.EmailAlreadyRegistered, `That email address is already in use`)
 	}
 
-	await createEmailAddress(emailAddress, userClient.userAccountId, context.dataContext, true, true)
+	const primaryEmailAddress = await getPrimaryEmailAddress(
+		userClient.userAccountId,
+		context.dataContext,
+		context.cacheContext
+	)
+	if (primaryEmailAddress) {
+		await modifyEmailAddress(primaryEmailAddress.emailAddressId, emailAddress, context.dataContext)
+	} else {
+		await createEmailAddress(emailAddress, userClient.userAccountId, context.dataContext, true, true)
+	}
 }
