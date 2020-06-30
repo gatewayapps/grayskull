@@ -59,7 +59,8 @@ class ClientAddPage extends PureComponent {
 			redirectUris: [{ key: uuid(), value: '' }],
 			scopes: [],
 			isActive: true,
-			AuthorizationFlows: [GrantTypes.AuthorizationCode, GrantTypes.RefreshToken]
+			AuthorizationFlows: [GrantTypes.AuthorizationCode, GrantTypes.RefreshToken],
+			TokenSigningMethod: 'RS256'
 		},
 		customizeClientId: false,
 		clientIdValid: true,
