@@ -28,7 +28,8 @@ describe('createIDToken', () => {
 
 		const client: any = {
 			client_id: 'xyz',
-			secret: 'abcdefg'
+			secret: 'abcdefg',
+			TokenSigningMethod: 'HS256'
 		}
 		const dataContext = await getInMemoryContext()
 		const config: any = { Security: { accessTokenExpirationSeconds: 300 }, Server: { baseUrl: 'http://localhost' } }

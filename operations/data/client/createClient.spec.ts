@@ -16,7 +16,8 @@ export const TestClientDetails: IClient = {
 	public: true,
 	pinToHeader: true,
 	isActive: true,
-	client_id: uuidv4()
+	client_id: uuidv4(),
+	TokenSigningMethod: 'HS256'
 } as any
 
 export async function createTestClient(dataContext: Knex) {
