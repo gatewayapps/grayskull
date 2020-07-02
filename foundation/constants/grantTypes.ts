@@ -31,3 +31,11 @@ export const GrantTypes = {
 		hidden: true
 	}
 }
+
+export const GrantTypeIds = [
+	GrantTypes.AuthorizationCode.id,
+	GrantTypes.ClientCredentials.id,
+	GrantTypes.RefreshToken.id,
+	GrantTypes.Password.id,
+	GrantTypes.MultifactorToken.id
+]
