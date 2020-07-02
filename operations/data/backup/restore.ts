@@ -16,7 +16,9 @@ async function bulkInsertHelper(record: any, tableName: string, dataContext: Kne
 	}
 
 	if (tableName === 'Clients') {
-		;(record as IClient).TokenSigningMethod = 'HS256'
+		if (!record.TokenSigningMethod) {
+			record.TokenSigningMethod = 'HS256'
+		}
 	}
 
 	const sanitizedRecord = enforceDates(record)
