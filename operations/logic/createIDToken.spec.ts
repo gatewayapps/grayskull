@@ -38,6 +38,7 @@ describe('createIDToken', () => {
 		if (idToken) {
 			const decoded: any = await verifyTokenForClient(idToken, client, dataContext)
 			expect(decoded).toBeDefined()
+			expect(decoded).toHaveProperty('aud')
 			expect(decoded).toHaveProperty('email')
 			if (decoded && typeof decoded === 'object') {
 				expect(decoded.email).toEqual('test@test.com')

@@ -1,12 +1,9 @@
 import { IUserClient, IConfiguration, IClient, IRefreshToken } from '../../foundation/types/types'
-
 import { addSeconds } from 'date-fns'
-
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-
-import { IAccessToken } from '../../foundation/types/tokens'
 import { signTokenForClient } from './signTokenForClient'
 import Knex from 'knex'
+import { IAccessToken } from '../../foundation/types/tokens'
 
 export async function createAccessToken(
 	client: IClient,
@@ -21,7 +18,7 @@ export async function createAccessToken(
 
 	if (!userClient) {
 		const result = {
-			sub: `${client.client_id}@clients`,
+			sub: `${client.client_id}`,
 			aud: client.client_id,
 			iss: configuration.Server.baseUrl!,
 			exp: expiration,
@@ -31,6 +28,7 @@ export async function createAccessToken(
 	} else if (userClient.allowedScopes && userClient.allowedScopes.length > 0) {
 		const allowedScopes = JSON.parse(userClient.allowedScopes)
 		const result: IAccessToken = {
+			aud: client.client_id,
 			sub: userClient.userClientId,
 			scopes: allowedScopes,
 			exp: expiration
