@@ -4,7 +4,6 @@ import { addSeconds } from 'date-fns'
 
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
 
-import { IAccessToken } from '../../foundation/types/tokens'
 import { signTokenForClient } from './signTokenForClient'
 import Knex from 'knex'
 
