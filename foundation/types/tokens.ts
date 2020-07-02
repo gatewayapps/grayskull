@@ -1,6 +1,7 @@
 export interface IAccessToken {
 	id?: string
 	sub: string
+	aud: string
 	scopes: string[]
 	exp: number
 }

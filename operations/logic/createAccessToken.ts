@@ -21,7 +21,7 @@ export async function createAccessToken(
 
 	if (!userClient) {
 		const result = {
-			sub: `${client.client_id}@clients`,
+			sub: `${client.client_id}`,
 			aud: client.client_id,
 			iss: configuration.Server.baseUrl!,
 			exp: expiration,
@@ -30,7 +30,8 @@ export async function createAccessToken(
 		return signTokenForClient(result, client, dataContext)
 	} else if (userClient.allowedScopes && userClient.allowedScopes.length > 0) {
 		const allowedScopes = JSON.parse(userClient.allowedScopes)
-		const result: IAccessToken = {
+		const result = {
+			aud: client.client_id,
 			sub: userClient.userClientId,
 			scopes: allowedScopes,
 			exp: expiration

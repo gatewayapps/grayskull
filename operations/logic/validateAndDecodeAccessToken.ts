@@ -22,9 +22,10 @@ export async function validateAndDecodeAccessToken(
 	let clientId: string
 	let userAccount: UserContext | undefined = undefined
 	let userClient: IUserClient | undefined = undefined
-	//This is a client access token
-	if (decoded.sub.endsWith('@clients')) {
-		clientId = decoded.sub.replace('@clients', '')
+
+	if (decoded.sub === decoded.aud) {
+		//This is a client access token
+		clientId = decoded.sub
 	} else {
 		userClient = await getUserClientByUserClientId(decoded.sub, context.dataContext)
 		if (!userClient) {
