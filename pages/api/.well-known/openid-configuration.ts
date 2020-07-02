@@ -1,5 +1,6 @@
 import { prepareContext } from '../../../foundation/context/prepareContext'
 import { Scopes } from '../../../foundation/constants/scopes'
+import { GrantTypeIds } from '../../../foundation/constants/grantTypes'
 export default async (req, res) => {
 	const context = await prepareContext(req, res)
 
@@ -15,6 +16,7 @@ export default async (req, res) => {
 
 	const id_token_signing_alg_values_supported = ['RS256', 'HS256']
 	const scopes_supported = Scopes.map((s) => s.id)
+	const grant_types_supported = GrantTypeIds
 
 	res.json({
 		issuer,
@@ -23,6 +25,7 @@ export default async (req, res) => {
 		userinfo_endpoint,
 		jwks_uri,
 		response_types_supported,
+		grant_types_supported,
 		subject_types_supported,
 		id_token_signing_alg_values_supported,
 		scopes_supported
