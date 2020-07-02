@@ -8,6 +8,8 @@ import { createUserContextForUserId, UserContext } from '../../foundation/contex
 import { IClientRequestOptions } from '../../foundation/models/IClientRequestOptions'
 import { IUserClient } from '../../foundation/types/types'
 
+import { verifyTokenForClient } from './verifyTokenForClient'
+
 export async function validateAndDecodeAccessToken(
 	accessToken: string,
 	context: IRequestContext
@@ -49,7 +51,8 @@ export async function validateAndDecodeAccessToken(
 		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Invalid userClientId ${clientId}`)
 	}
 
-	if (!jwt.verify(accessToken, client.secret)) {
+	const verified = await verifyTokenForClient(accessToken, client, context.dataContext)
+	if (verified === false) {
 		throw new GrayskullError(
 			GrayskullErrorCode.NotAuthorized,
 			`Access token did not verify: ${accessToken} for client ${clientId}`

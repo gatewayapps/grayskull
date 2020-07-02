@@ -1,4 +1,5 @@
 import Knex from 'knex'
+import { applyMigrations } from '../../operations/data/migrations/applyMigrations'
 
 export function enforceDates(record) {
 	const KNOWN_DATE_COLUMNS = [
@@ -55,6 +56,8 @@ export async function getDataContext(options: Knex.Config): Promise<Knex> {
 			console.debug(queryText)
 		})
 	}
+
+	await applyMigrations(knex)
 
 	return knex
 }

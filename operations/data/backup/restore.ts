@@ -14,6 +14,12 @@ async function bulkInsertHelper(record: any, tableName: string, dataContext: Kne
 		delete record.deletedAt
 	}
 
+	if (tableName === 'Clients') {
+		if (!record.TokenSigningMethod) {
+			record.TokenSigningMethod = 'HS256'
+		}
+	}
+
 	const sanitizedRecord = enforceDates(record)
 
 	return dataContext(tableName).insert(sanitizedRecord)

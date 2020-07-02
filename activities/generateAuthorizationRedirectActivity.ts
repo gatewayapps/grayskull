@@ -61,7 +61,13 @@ export async function generateAuthorizationRedirectActivity(
 	if (responseTypes.includes('token')) {
 		const config = context.configuration
 
-		queryParts.token = await createAccessToken(client, userClient, undefined, context.configuration)
+		queryParts.token = await createAccessToken(
+			client,
+			userClient,
+			undefined,
+			context.configuration,
+			context.dataContext
+		)
 		queryParts.token_type = 'Bearer'
 		queryParts.expires_in = config.Security.accessTokenExpirationSeconds
 	}
