@@ -1,7 +1,6 @@
 import { decrypt } from '../../logic/encryption'
 import Knex from 'knex'
 import { enforceDates } from '../../../foundation/context/getDataContext'
-import { IClient } from '../../../foundation/types/types'
 
 async function bulkInsertHelper(record: any, tableName: string, dataContext: Knex) {
 	// When we drop a column from an existing table
