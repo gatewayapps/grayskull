@@ -1,11 +1,14 @@
-import jwt from 'jsonwebtoken'
 import { IChallengeToken } from '../../foundation/types/tokens'
+import { signTokenForClient } from './signTokenForClient'
+import Knex from 'knex'
+import { IClient } from '../../foundation/types/types'
 
 export async function createChallengeToken(
 	emailAddress: string,
 	userClientId: string,
 	scopes: string[],
-	clientSecret: string
+	client: IClient,
+	dataContext: Knex
 ) {
 	const challengeToken: IChallengeToken = {
 		emailAddress,
@@ -14,5 +17,5 @@ export async function createChallengeToken(
 		iat: new Date().getTime()
 	}
 
-	return jwt.sign(challengeToken, clientSecret)
+	return signTokenForClient(challengeToken, client, dataContext)
 }

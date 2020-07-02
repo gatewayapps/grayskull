@@ -66,7 +66,13 @@ export async function getTokensFromRefreshTokenActivity(
 		)
 	}
 
-	const access_token = await createAccessToken(client, userClient, finalRefreshToken, context.configuration)
+	const access_token = await createAccessToken(
+		client,
+		userClient,
+		finalRefreshToken,
+		context.configuration,
+		context.dataContext
+	)
 	await updateRefreshTokenActiveAt(refreshToken, client, context.dataContext)
 
 	return {

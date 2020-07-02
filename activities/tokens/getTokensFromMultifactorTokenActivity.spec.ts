@@ -84,7 +84,8 @@ describe('getTokensFromMultifactorTokenActivity', () => {
 			'otpUser@test.com',
 			otpUserClient!.userClientId,
 			['openid'],
-			testClient.secret
+			testClient,
+			dataContext
 		)
 
 		const otpToken = await generateBackupMultifactorCode('otpUser@test.com', otpUser.otpSecret!, dataContext)

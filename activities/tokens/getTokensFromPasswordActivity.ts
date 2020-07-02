@@ -55,7 +55,8 @@ export async function getTokensFromPasswordActivity(
 			emailAddress,
 			userClient.userClientId,
 			JSON.parse(client.scopes),
-			client.secret
+			client,
+			context.dataContext
 		)
 		return {
 			challenge: {

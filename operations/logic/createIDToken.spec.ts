@@ -1,6 +1,6 @@
 import { createIDToken } from './createIDToken'
-import jwt from 'jsonwebtoken'
 import { getInMemoryContext } from '../../foundation/context/getDataContext.spec'
+import { verifyTokenForClient } from './verifyTokenForClient'
 
 describe('createIDToken', () => {
 	it('should correcetly return an IDToken', async () => {
@@ -36,7 +36,7 @@ describe('createIDToken', () => {
 		const idToken = await createIDToken(userContext, client, userClient, 'nonce', undefined, config, dataContext)
 		expect(idToken).toBeDefined()
 		if (idToken) {
-			const decoded: any = jwt.verify(idToken, client.secret)
+			const decoded: any = await verifyTokenForClient(idToken, client, dataContext)
 			expect(decoded).toBeDefined()
 			expect(decoded).toHaveProperty('email')
 			if (decoded && typeof decoded === 'object') {
