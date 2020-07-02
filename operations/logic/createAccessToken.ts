@@ -1,11 +1,9 @@
 import { IUserClient, IConfiguration, IClient, IRefreshToken } from '../../foundation/types/types'
-
 import { addSeconds } from 'date-fns'
-
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-
 import { signTokenForClient } from './signTokenForClient'
 import Knex from 'knex'
+import { IAccessToken } from '../../foundation/types/tokens'
 
 export async function createAccessToken(
 	client: IClient,
