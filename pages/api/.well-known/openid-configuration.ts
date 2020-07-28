@@ -1,7 +1,26 @@
+import Cors from 'cors'
 import { prepareContext } from '../../../foundation/context/prepareContext'
 import { Scopes } from '../../../foundation/constants/scopes'
 import { GrantTypeIds } from '../../../foundation/constants/grantTypes'
+
+const cors = Cors({
+	methods: ['GET', 'HEAD', 'OPTIONS', 'POST']
+})
+
+function runMiddleware(req, res, fn) {
+	return new Promise((resolve, reject) => {
+		fn(req, res, (result) => {
+			if (result instanceof Error) {
+				return reject(result)
+			}
+
+			return resolve(result)
+		})
+	})
+}
+
 export default async (req, res) => {
+	await runMiddleware(req, res, cors)
 	const context = await prepareContext(req, res)
 
 	const issuer = context.configuration.Server.baseUrl
