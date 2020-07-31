@@ -41,20 +41,28 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 			<ResponsiveInput
 				autoComplete="nope"
 				name="emailAddress"
+				readOnly={step === 'otp'}
+				disabled={step === 'otp'}
 				type={step === 'credentials' ? 'email' : 'hidden'}
 				label="E-mail Address"
 				value={emailAddress}
 				onChange={(e) => {
-					setEmailAddress(e.target.value)
+					if (step === 'credentials') {
+						setEmailAddress(e.target.value)
+					}
 				}}
 				autoFocus
 			/>
 			<ResponsiveInput
 				type={step === 'credentials' ? 'password' : 'hidden'}
+				readOnly={step === 'otp'}
+				disabled={step === 'otp'}
 				name="password"
 				value={password}
 				onChange={(e) => {
-					setPassword(e.target.value)
+					if (step === 'credentials') {
+						setPassword(e.target.value)
+					}
 				}}
 				label="Password"
 			/>
