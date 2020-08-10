@@ -53,6 +53,18 @@ const AuthorizePage = (props: AuthorizePageProps) => {
 		variables: { client_id: props.router.query.client_id }
 	})
 
+	const { response_type, redirect_uri, scope, scopes } = props.router.query
+
+	if (!response_type) {
+		throw new Error('response_type is required')
+	}
+	if (!redirect_uri) {
+		throw new Error('redirect_uri is required')
+	}
+	if (!scope || !scopes) {
+		throw new Error('scopes are required')
+	}
+	const finalScope: string = (scope || scopes).toString()
 	let content
 	useEffect(() => {
 		verifyAuthorizationRequest()
@@ -100,11 +112,11 @@ const AuthorizePage = (props: AuthorizePageProps) => {
 								<div className="col col-md-8 offset-md-2">
 									<ClientAuthorization
 										client={data.client}
-										responseType={props.router.query.response_type?.toString()}
-										redirectUri={props.router.query.redirect_uri?.toString()}
+										responseType={response_type.toString()}
+										redirectUri={redirect_uri.toString()}
 										//TODO: This needs to be fixed to be only scope in the future
 
-										scope={(props.router.query.scope || props.router.query.scopes)?.toString()}
+										scope={finalScope}
 										scopes={data.scopes}
 										state={props.router.query.state?.toString()}
 										nonce={props.router.query.nonce?.toString()}

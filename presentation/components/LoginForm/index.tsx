@@ -39,7 +39,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const [otpToken, setOTPToken] = useState('')
 	const [otpOptions, setOTPOptions] = useState<OTPOption[]>([])
 	const [extendedSession, setExtendedSession] = useState(false)
-	const [emailVerificationRequired, setEmailVerificationRequired] = useState(false)
+	const [message, setMessage] = useState('')
 
 	const [otpSent, setOTPSent] = useState(false)
 	const [step, setStep] = useState<'credentials' | 'otp' | 'otpChoices' | 'emailVerification'>('credentials')
@@ -51,6 +51,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 			password={password}
 			otpToken={otpToken}
 			step={step}
+			message={message}
 			setStep={setStep}
 			otpSent={otpSent}
 			setEmailAddress={setEmailAddress}
@@ -64,7 +65,13 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	)
 	if (step === 'otpChoices') {
 		body = (
-			<OTPBackupOptions setStep={setStep} setOTPSent={setOTPSent} emailAddress={emailAddress} options={otpOptions} />
+			<OTPBackupOptions
+				message={message}
+				setStep={setStep}
+				setOTPSent={setOTPSent}
+				emailAddress={emailAddress}
+				options={otpOptions}
+			/>
 		)
 	}
 
@@ -74,11 +81,6 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 				<img className="body-logo align-self-start w-100 my-2" src={configuration.Server.realmLogo || ''} />
 			</div>
 			<div className="col-12 col-md-10 ">{body}</div>
-			{emailVerificationRequired && (
-				<div className="col-12 col-md-10">
-					<div className="alert alert-danger">You must verify your e-mail address before signing in.</div>
-				</div>
-			)}
 		</div>
 	)
 
@@ -125,7 +127,9 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 									setOTPOptions(data.login.otpOptions)
 									setStep('otp')
 								} else if (data.login.emailVerificationRequired) {
-									setEmailVerificationRequired(true)
+									setMessage('You must verify your e-mail address before signing in.')
+								} else {
+									setMessage(data.login.message)
 								}
 							}}
 							className="btn btn-outline-success"

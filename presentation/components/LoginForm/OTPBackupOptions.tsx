@@ -20,6 +20,7 @@ const SEND_OTP_MUTATION = gql`
 export const OTPBackupOptions: React.FC<{
 	setOTPSent: (val) => void
 	emailAddress: string
+	message: string
 	options: OTPOption[]
 	setStep: (string) => void
 }> = ({ options, setStep, emailAddress, setOTPSent }) => {

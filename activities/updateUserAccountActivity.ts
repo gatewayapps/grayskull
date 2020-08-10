@@ -4,6 +4,7 @@ import { ensureAuthenticated } from '../operations/logic/ensureAuthenticated'
 import { ensureAdministrator } from '../operations/logic/ensureAdministrator'
 import { updateUserAccount } from '../operations/data/userAccount/updateUserAccount'
 import { getAuthorizedUserForClient } from '../operations/data/client/getAuthorizedUserForClient'
+import { createUserContextForUserId } from '../foundation/context/getUserContext'
 
 export async function updateUserAccountActivity(
 	userAccountId: string,
@@ -16,9 +17,20 @@ export async function updateUserAccountActivity(
 	}
 
 	await updateUserAccount(userAccountId, userDetails, context.dataContext, context.user, context.cacheContext)
-	return getAuthorizedUserForClient(
-		context.userClient!.userClientId,
-		context.userClient!.client_id,
-		context.dataContext
-	)
+
+	//
+	if (context.userClient) {
+		return getAuthorizedUserForClient(
+			context.userClient!.userClientId,
+			context.userClient!.client_id,
+			context.dataContext
+		)
+	} else {
+		return createUserContextForUserId(
+			context.user!.userAccountId,
+			context.dataContext,
+			context.cacheContext,
+			context.configuration
+		)
+	}
 }
