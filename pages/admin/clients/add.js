@@ -51,7 +51,7 @@ class ClientAddPage extends PureComponent {
 		client: {
 			client_id: uuid(),
 			name: '',
-			logoImageUrl: '',
+			logoImageUrl: '/grayskull.png',
 			description: '',
 			baseUrl: '',
 			homePageUrl: '',
