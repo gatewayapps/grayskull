@@ -104,6 +104,7 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 					)}
 				</div>
 			)}
+			{message && <div className="alert alert-danger">{message}</div>}
 			{step === 'credentials' && (
 				<div className="form-check mb-3">
 					<input

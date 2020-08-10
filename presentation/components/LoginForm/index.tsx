@@ -81,11 +81,6 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 				<img className="body-logo align-self-start w-100 my-2" src={configuration.Server.realmLogo || ''} />
 			</div>
 			<div className="col-12 col-md-10 ">{body}</div>
-			{message && (
-				<div className="col-12 col-md-10">
-					<div className="alert alert-danger">{message}</div>
-				</div>
-			)}
 		</div>
 	)
 
