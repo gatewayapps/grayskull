@@ -58,7 +58,8 @@ export default function createApolloClient() {
 
 	const uploadLink = createUploadLink({
 		uri: '/api/graphql',
-		fetch: fetch
+		fetch: fetch,
+		credentials: 'include'
 	})
 
 	return new ApolloClient({

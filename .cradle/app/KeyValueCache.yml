@@ -1,5 +1,0 @@
-KeyValueCache:
-  properties:
-    key: string primary
-    value: string @encrypted
-    expires: datetime?

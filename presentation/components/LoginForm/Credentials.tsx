@@ -7,6 +7,7 @@ export interface LoginCredentialsProps {
 	emailAddress: string
 	password: string
 	otpToken: string
+	message: string
 	extendedSession: boolean
 	step: 'credentials' | 'otp' | 'otpChoices' | 'emailVerification'
 	setEmailAddress: (value: string) => void
@@ -27,6 +28,7 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 	otpToken,
 	setOtpToken,
 	step,
+	message,
 	setStep,
 	extendedSession,
 	setExtendedSession,

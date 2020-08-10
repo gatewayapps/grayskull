@@ -19,9 +19,10 @@ const ApplicationInitializer: React.FC<{ configuration: IConfiguration }> = (pro
 				return
 			}
 			setBusy(true)
-			const finalUrl = process.env.GRAYSKULL_BASE_URL
-				? new URL('/api/initialize', process.env.GRAYSKULL_BASE_URL).href
-				: '/api/initialize'
+			const finalUrl = [null, 'null', undefined].includes(process.env.GRAYSKULL_BASE_URL)
+				? '/api/initialize'
+				: new URL('/api/initialize', process.env.GRAYSKULL_BASE_URL).href
+
 			const response = await fetch(finalUrl, { method: 'GET' })
 			const json = await response.json()
 			setResponse(json)
