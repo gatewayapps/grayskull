@@ -9,6 +9,9 @@ export class MigrationSource {
 	}
 	public getMigration(migrationName) {
 		const migration = migrations.find((m) => m.name === migrationName)
+		if (!migration) {
+			throw new Error('Migration not found: ' + migrationName)
+		}
 		return migration
 	}
 }
