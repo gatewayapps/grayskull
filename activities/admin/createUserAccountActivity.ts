@@ -38,23 +38,27 @@ export async function createUserAccountActivity(
 		delete userAccountDetails.password
 	}
 	const userAccount = await createUserAccount(userAccountDetails, password, context.dataContext, context.user)
-	await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
 
-	const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
-	const activateLink = new URL(
-		`activate?emailAddress=${emailAddress}&token=${activationToken}`,
-		context.configuration.Server.baseUrl as string
-	).href
-	await sendTemplatedEmail(
-		'activateAccountTemplate',
-		emailAddress,
-		`Activate Your ${context.configuration.Server.realmName} Account`,
-		{
-			activateLink,
-			realmName: context.configuration.Server.realmName,
-			user: userAccount,
-			createdBy: context.user
-		},
-		context.configuration
-	)
+	if (password) {
+		await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, true)
+	} else {
+		await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
+		const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
+		const activateLink = new URL(
+			`activate?emailAddress=${emailAddress}&token=${activationToken}`,
+			context.configuration.Server.baseUrl as string
+		).href
+		await sendTemplatedEmail(
+			'activateAccountTemplate',
+			emailAddress,
+			`Activate Your ${context.configuration.Server.realmName} Account`,
+			{
+				activateLink,
+				realmName: context.configuration.Server.realmName,
+				user: userAccount,
+				createdBy: context.user
+			},
+			context.configuration
+		)
+	}
 }
