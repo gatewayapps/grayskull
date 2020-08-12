@@ -32,7 +32,12 @@ export async function createUserAccountActivity(
 			`That email address, ${emailAddress}, is already in use`
 		)
 	}
-	const userAccount = await createUserAccount(userAccountDetails, undefined, context.dataContext, context.user)
+	let password: string | undefined = undefined
+	if (userAccountDetails.password) {
+		password = userAccountDetails.password
+		delete userAccountDetails.password
+	}
+	const userAccount = await createUserAccount(userAccountDetails, password, context.dataContext, context.user)
 	await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
 
 	const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
