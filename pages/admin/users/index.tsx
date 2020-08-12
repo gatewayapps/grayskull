@@ -253,6 +253,7 @@ class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
 													isEditing
 													showPermissionSelector
 													user={this.state.editingUser}
+													admin={true}
 												/>
 											</ModalBody>
 										</Modal>
