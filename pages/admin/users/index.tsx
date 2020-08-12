@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 
 import React from 'react'
 import { Query, Mutation } from 'react-apollo'
-import { Modal, ModalBody } from 'reactstrap'
+import { Modal, ModalBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import moment from 'moment'
 import ErrorMessage from '../../../presentation/components/ErrorMessage'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
@@ -21,6 +21,12 @@ const RESEND_ALL_VERIFICATIONS_MUTATION = gql`
 const RESEND_VERIFICATION_MUTATION = gql`
 	mutation RESEND_VERIFICATION_MUTATION($emailAddress: String!) {
 		resendVerification(data: { emailAddress: $emailAddress })
+	}
+`
+
+const MANUAL_VERIFICATION_MUTATION = gql`
+	mutation MANUAL_VERIFICATION_MUTATION($emailAddress: String!) {
+		manualVerification(data: { emailAddress: $emailAddress })
 	}
 `
 
@@ -51,6 +57,10 @@ const ALL_USERS_QUERY = gql`
 export interface UsersIndexPageState {
 	editingUser: any
 	importingUser: any
+	dropdownOpen: {
+		index: number
+		open: boolean
+	}
 }
 
 class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
@@ -59,8 +69,16 @@ class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
 
 		this.state = {
 			editingUser: undefined,
-			importingUser: undefined
+			importingUser: undefined,
+			dropdownOpen: {
+				index: 0,
+				open: false
+			}
 		}
+	}
+
+	toggle = (i) => {
+		this.setState({ dropdownOpen: { index: i, open: !this.state.dropdownOpen.open } })
 	}
 
 	public render() {
@@ -148,7 +166,7 @@ class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
 											</tr>
 										</thead>
 										<tbody>
-											{data.userAccounts.map((user) => {
+											{data.userAccounts.map((user, i) => {
 												const emailAddress = user.emailAddresses.find((e) => e.primary)
 												return (
 													<tr key={user.userAccountId}>
@@ -159,15 +177,42 @@ class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
 														<td>{moment(user.lastActive).fromNow()}</td>
 														<td>
 															{!emailAddress.verified && (
-																<Mutation
-																	mutation={RESEND_VERIFICATION_MUTATION}
-																	variables={{ emailAddress: emailAddress.emailAddress }}>
-																	{(resendVerification) => (
-																		<button className="btn btn-sm btn-outline-info" onClick={resendVerification}>
-																			Resend Activation
-																		</button>
-																	)}
-																</Mutation>
+																<Dropdown
+																	key={i}
+																	nav
+																	inNavbar
+																	className="nav-item"
+																	isOpen={this.state.dropdownOpen.index === i && this.state.dropdownOpen.open}
+																	toggle={() => this.toggle(i)}
+																	style={{ listStyle: 'none' }}>
+																	<DropdownToggle nav caret>
+																		Activation
+																	</DropdownToggle>
+																	<DropdownMenu>
+																		<Mutation
+																			mutation={RESEND_VERIFICATION_MUTATION}
+																			variables={{ emailAddress: emailAddress.emailAddress }}>
+																			{(resendVerification) => (
+																				<DropdownItem className="py-2" onClick={resendVerification}>
+																					Resend Activation Email
+																				</DropdownItem>
+																			)}
+																		</Mutation>
+																		<Mutation
+																			mutation={MANUAL_VERIFICATION_MUTATION}
+																			variables={{ emailAddress: emailAddress.emailAddress }}>
+																			{(manualVerification) => (
+																				<DropdownItem
+																					className="py-2"
+																					onClick={async () => {
+																						await manualVerification(), refetch()
+																					}}>
+																					Manual Activation
+																				</DropdownItem>
+																			)}
+																		</Mutation>
+																	</DropdownMenu>
+																</Dropdown>
 															)}
 														</td>
 														<td>
