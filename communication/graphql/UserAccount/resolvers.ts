@@ -31,6 +31,7 @@ import { deleteUserAccountActivity } from '../../../activities/admin/deleteUserA
 import { updateUserAccountActivity } from '../../../activities/updateUserAccountActivity'
 import { getPrimaryEmailAddressForLoggedInUserActivity } from '../../../activities/getPrimaryEmailAddressForLoggedInUserActivity'
 import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
+import { manualUserEmailVerificationActivity } from '../../../activities/admin/manualUserEmailVerificationActivity'
 
 function isValidDate(d: any) {
 	try {
@@ -107,6 +108,10 @@ export default {
 		},
 		resendAllVerificationEmails: async (obj, args, context: IRequestContext) => {
 			await resendAllVerificationEmailsActivity(context)
+			return true
+		},
+		manualVerification: async (obj, args, context: IRequestContext) => {
+			await manualUserEmailVerificationActivity(args.data.emailAddress, context)
 			return true
 		},
 		deleteAccount: async (obj, args, context: IRequestContext) => {
