@@ -9,6 +9,7 @@ import { verifyOtpTokenActivity } from '../verifyOtpTokenActivity'
 import { getClient } from '../../operations/data/client/getClient'
 import { verifyTokenForClient } from '../../operations/logic/verifyTokenForClient'
 import { IChallengeToken } from '../../foundation/types/tokens'
+import { decrypt } from '../../operations/logic/encryption'
 
 export async function getTokensFromMultifactorTokenActivity(
 	clientId: string,
@@ -47,15 +48,20 @@ export async function getTokensFromMultifactorTokenActivity(
 		)
 	}
 
-	if (
-		!verifyOtpTokenActivity(otpToken, userAccount.otpSecret) &&
-		!(await verifyBackupMultifactorCode(
-			(challengeTokenObject as IChallengeToken).emailAddress,
-			otpToken,
-			context.dataContext
-		))
-	) {
-		throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
+	const otpSecret = decrypt(userAccount.otpSecret)
+	if (!otpSecret) {
+		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Failed to decrypt otp secret`)
+	} else {
+		if (
+			!verifyOtpTokenActivity(otpSecret, otpToken) &&
+			!(await verifyBackupMultifactorCode(
+				(challengeTokenObject as IChallengeToken).emailAddress,
+				otpToken,
+				context.dataContext
+			))
+		) {
+			throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
+		}
 	}
 
 	return getTokensActivity(
