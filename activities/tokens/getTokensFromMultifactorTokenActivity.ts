@@ -51,17 +51,17 @@ export async function getTokensFromMultifactorTokenActivity(
 	const otpSecret = decrypt(userAccount.otpSecret)
 	if (!otpSecret) {
 		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Failed to decrypt otp secret`)
-	} else {
-		if (
-			!verifyOtpTokenActivity(otpSecret, otpToken) &&
-			!(await verifyBackupMultifactorCode(
-				(challengeTokenObject as IChallengeToken).emailAddress,
-				otpToken,
-				context.dataContext
-			))
-		) {
-			throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
-		}
+	}
+
+	if (
+		!verifyOtpTokenActivity(otpSecret, otpToken) &&
+		!(await verifyBackupMultifactorCode(
+			(challengeTokenObject as IChallengeToken).emailAddress,
+			otpToken,
+			context.dataContext
+		))
+	) {
+		throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
 	}
 
 	return getTokensActivity(
