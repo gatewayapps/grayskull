@@ -730,6 +730,7 @@ input CreateUserArgs {
 	profileImageUrl: String
 	otpEnabled: Boolean
 	isActive: Boolean
+	password: String
 }
 
 input UpdateArgs {

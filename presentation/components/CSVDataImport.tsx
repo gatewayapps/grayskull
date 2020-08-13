@@ -17,6 +17,7 @@ const CREATE_USER_MUTATION = gql`
 		$profileImageUrl: String
 		$permissions: Int!
 		$emailAddress: String!
+		$password: String
 	) {
 		createUser(
 			data: {
@@ -28,6 +29,9 @@ const CREATE_USER_MUTATION = gql`
 				profileImageUrl: $profileImageUrl
 				emailAddress: $emailAddress
 				permissions: $permissions
+				password: $password
+				otpEnabled: false
+				isActive: true
 			}
 		) {
 			success
@@ -146,7 +150,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 				<form>
 					<div className="form-group" style={{ padding: '20px' }}>
 						Please upload your CSV file in the following format: <br /> Email, First Name, Last Name, Permissions,
-						Gender (optional), Display Name (optional), Birthday (optional) (mm/dd/yyyy)
+						Password (optional), Gender (optional), Display Name (optional), Birthday (optional) (mm/dd/yyyy)
 					</div>
 					{this.state.importedCSVData && (
 						<div style={{ padding: '20px', maxHeight: '350px', overflowY: 'auto' }}>
@@ -221,7 +225,7 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 														const failedImportToStateArray: any[] = []
 														if (this.state.importedCSVData) {
 															const CSVData = this.state.importedCSVData.data
-															totalUsersToImport = CSVData.length - 1
+															totalUsersToImport = CSVData.length
 															this.setState({
 																loadingMessage: `Please wait while we import your users. ${successCount.length} of ${totalUsersToImport} users imported`
 															})
@@ -236,9 +240,10 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 																		lastName: item[2],
 																		permissions:
 																			item[3] === 'User' ? permissionOptions[0].value : permissionOptions[1].value,
-																		gender: item[4],
-																		displayName: item[5],
-																		birthday: item[6]
+																		password: item[4],
+																		gender: item[5],
+																		displayName: item[6],
+																		birthday: item[7]
 																	}
 																	try {
 																		const result = await createUser({ variables: payload })
