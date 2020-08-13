@@ -747,6 +747,7 @@ input UpdateArgs {
 	gender: String
 	birthday: Date
 	profileImageUrl: String
+	password: String
 }
 
 input LoginArgs {

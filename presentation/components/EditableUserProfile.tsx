@@ -26,6 +26,7 @@ const UPDATE_USER_MUTATION = gql`
 		$profileImageUrl: String
 		$userAccountId: String
 		$permissions: Int
+		$password: String
 	) {
 		update(
 			data: {
@@ -37,6 +38,7 @@ const UPDATE_USER_MUTATION = gql`
 				profileImageUrl: $profileImageUrl
 				userAccountId: $userAccountId
 				permissions: $permissions
+				password: $password
 			}
 		) {
 			success
@@ -91,6 +93,7 @@ export interface EditableUserProfileProps {
 		gender: string | null | undefined
 		permissions: number
 	}
+	admin?: boolean
 }
 
 export interface EditableUserProfileState {
@@ -98,6 +101,8 @@ export interface EditableUserProfileState {
 	editing: boolean
 	message: string
 	valid: boolean
+	allowPasswordChange: boolean
+	fromAdmin: boolean
 }
 
 export default class EditableUserProfile extends React.Component<EditableUserProfileProps, EditableUserProfileState> {
@@ -108,7 +113,9 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 			modifiedState: { permissions: props.user.permissions },
 			editing: props.isEditing || false,
 			message: '',
-			valid: false
+			valid: false,
+			allowPasswordChange: false,
+			fromAdmin: this.props.admin || false
 		}
 	}
 
@@ -272,6 +279,28 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 										options={permissionOptions}
 										name="permissions"
 										value={this.state.editing ? selectedPermission : selectedPermission.label}
+										readOnly={!this.state.editing}
+									/>
+								)}
+								{!this.state.allowPasswordChange && this.state.fromAdmin && (
+									<button
+										style={{ margin: '10px 0 0', paddingLeft: '0' }}
+										className="btn btn-link"
+										onClick={() => this.setState({ allowPasswordChange: true })}>
+										Change Password?
+									</button>
+								)}
+
+								{this.state.allowPasswordChange && (
+									<ResponsiveValidatingInput
+										validationErrors={validationErrors}
+										onChange={(e) => {
+											this.handleChange(e, validate)
+										}}
+										label="Password"
+										type="password"
+										name="password"
+										value={finalUser.password}
 										readOnly={!this.state.editing}
 									/>
 								)}
