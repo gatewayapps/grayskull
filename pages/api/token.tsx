@@ -147,7 +147,7 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				}
 				case GrayskullErrorCode.InvalidOTP: {
 					res.status(400).json(new OauthError('invalid_request', 'Failed to verify multifactor_token'))
-					break
+					return
 				}
 			}
 		}
