@@ -61,10 +61,10 @@ const AuthorizePage = (props: AuthorizePageProps) => {
 	if (!redirect_uri) {
 		throw new Error('redirect_uri is required')
 	}
-	if (!scope && !scopes) {
+	const finalScope: string = (scope || scopes || '').toString()
+	if (!finalScope) {
 		throw new Error('scopes are required')
 	}
-	const finalScope: string = (scope || scopes).toString()
 	let content
 	useEffect(() => {
 		verifyAuthorizationRequest()
