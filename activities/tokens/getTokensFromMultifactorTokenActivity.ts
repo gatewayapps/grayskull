@@ -54,7 +54,7 @@ export async function getTokensFromMultifactorTokenActivity(
 	}
 
 	if (
-		!verifyOtpTokenActivity(otpSecret, otpToken) &&
+		!(await verifyOtpTokenActivity(otpSecret, otpToken)) &&
 		!(await verifyBackupMultifactorCode(
 			(challengeTokenObject as IChallengeToken).emailAddress,
 			otpToken,
