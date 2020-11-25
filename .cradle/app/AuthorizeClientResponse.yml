@@ -1,6 +1,0 @@
-AuthorizeClientResponse:
-  meta:
-    noRootQuery: true
-  properties:
-    pendingScopes: string[]?
-    redirectUri: string?

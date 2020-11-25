@@ -43,6 +43,7 @@ type Mutation {
 	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean @anonymous
 	resendVerification(data: ResendVerificationArgs!): Boolean @anonymous
 	resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
+	manualVerification(data: ManualVerificationArgs!): Boolean
 	resetPassword(data: ResetPasswordArgs!): Boolean @anonymous
 	validatePassword(data: ValidatePasswordArgs!): Boolean @anonymous
 	createUser(data: CreateUserArgs!): OperationResponse
@@ -83,6 +84,7 @@ type Client {
 	deletedBy: ID
 	deletedAt: Date
 	AuthorizationFlows: String!
+	TokenSigningMethod: String!
 }
 
 input CreateClientArgs {
@@ -99,6 +101,7 @@ input CreateClientArgs {
 	scopes: String!
 	isActive: Boolean!
 	AuthorizationFlows: String!
+	TokenSigningMethod: String!
 }
 
 input UpdateClientArgs {
@@ -114,6 +117,7 @@ input UpdateClientArgs {
 	scopes: String
 	isActive: Boolean
 	AuthorizationFlows: String
+	TokenSigningMethod: String
 }
 
 type ClientMeta {
@@ -707,6 +711,10 @@ input ResendAllVerificationEmailsArgs {
 	dryRun: Boolean
 }
 
+input ManualVerificationArgs {
+	emailAddress: String!
+}
+
 input ResetPasswordArgs {
 	emailAddress: String!
 }
@@ -725,6 +733,9 @@ input CreateUserArgs {
 	gender: String
 	birthday: Date
 	profileImageUrl: String
+	otpEnabled: Boolean
+	isActive: Boolean
+	password: String
 }
 
 input UpdateArgs {
@@ -736,6 +747,7 @@ input UpdateArgs {
 	gender: String
 	birthday: Date
 	profileImageUrl: String
+	password: String
 }
 
 input LoginArgs {

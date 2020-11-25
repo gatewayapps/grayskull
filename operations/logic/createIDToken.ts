@@ -3,12 +3,12 @@ import { UserContext } from '../../foundation/context/getUserContext'
 
 import { IConfiguration, IClient, IUserClient } from '../../foundation/types/types'
 
-import moment from 'moment'
-
 import { createHmac } from 'crypto'
-import jwt from 'jsonwebtoken'
-import { IIDToken, IProfileClaim, IEmailClaim } from '../../foundation/types/tokens'
+import { IIDToken, IProfileClaim, IEmailClaim, IMetaClaim } from '../../foundation/types/tokens'
 import { addSeconds } from 'date-fns'
+import Knex from 'knex'
+
+import { signTokenForClient } from './signTokenForClient'
 
 export async function createIDToken(
 	userContext: UserContext,
@@ -17,12 +17,14 @@ export async function createIDToken(
 	nonce: string | undefined,
 	accessToken: string | undefined,
 
-	configuration: IConfiguration
+	configuration: IConfiguration,
+	dataContext: Knex
 ): Promise<string> {
 	const security = configuration.Security!
 	const serverConfig = configuration.Server!
 
-	const profile = getUserProfileForClient(userContext, userClient)
+	const expiration = Math.round(addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime() / 1000)
+	const profile = await getUserProfileForClient(userContext, userClient, dataContext)
 	let at_hash: string | undefined = undefined
 	if (accessToken) {
 		const hmac = createHmac('sha256', client.secret)
@@ -32,9 +34,8 @@ export async function createIDToken(
 		at_hash = finalBytes.toString('base64')
 	}
 
-	const tokenBase: IIDToken = {
-		iat: moment().unix(),
-		exp: addSeconds(new Date(), security.accessTokenExpirationSeconds || 300).getTime(),
+	const tokenBase: any = {
+		exp: expiration,
 		aud: client.client_id,
 		sub: profile.sub,
 		at_hash: at_hash,
@@ -42,7 +43,7 @@ export async function createIDToken(
 		nonce: nonce
 	}
 
-	const result: IIDToken & IProfileClaim & IEmailClaim = Object.assign(tokenBase, profile)
+	const result: IIDToken & IProfileClaim & IEmailClaim & IMetaClaim = Object.assign(tokenBase, profile)
 
-	return jwt.sign(result, client.secret)
+	return signTokenForClient(result, client, dataContext)
 }

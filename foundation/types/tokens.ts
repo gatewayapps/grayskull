@@ -1,6 +1,7 @@
 export interface IAccessToken {
 	id?: string
 	sub: string
+	aud: string
 	scopes: string[]
 	exp: number
 }
@@ -31,6 +32,10 @@ export interface IProfileClaim {
 export interface IEmailClaim {
 	email?: string
 	email_verified?: boolean
+}
+
+export interface IMetaClaim {
+	meta?: { [key: string]: string }
 }
 
 export interface IChallenge {

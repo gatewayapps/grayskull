@@ -1,12 +1,15 @@
 import { IRequestContext } from '../../foundation/context/prepareContext'
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-import { verifyChallengeToken } from '../../operations/logic/verifyChallengeToken'
+
 import { getUserAccountByUserClientId } from '../../operations/data/userAccount/getUserAccountByUserClientId'
 import { GrantTypes } from '../../foundation/constants/grantTypes'
 import { verifyBackupMultifactorCode } from '../../operations/data/userAccount/verifyBackupMultifactorCode'
 import { getTokensActivity } from './getTokensActivity'
 import { verifyOtpTokenActivity } from '../verifyOtpTokenActivity'
 import { getClient } from '../../operations/data/client/getClient'
+import { verifyTokenForClient } from '../../operations/logic/verifyTokenForClient'
+import { IChallengeToken } from '../../foundation/types/tokens'
+import { decrypt } from '../../operations/logic/encryption'
 
 export async function getTokensFromMultifactorTokenActivity(
 	clientId: string,
@@ -20,7 +23,7 @@ export async function getTokensFromMultifactorTokenActivity(
 		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, 'No client found with that id')
 	}
 
-	const challengeTokenObject = await verifyChallengeToken(challengeToken, client.secret)
+	const challengeTokenObject = await verifyTokenForClient(challengeToken, client, context.dataContext)
 	if (!challengeTokenObject) {
 		return {
 			challenge: {
@@ -30,7 +33,10 @@ export async function getTokensFromMultifactorTokenActivity(
 		}
 	}
 
-	const userAccount = await getUserAccountByUserClientId(challengeTokenObject.userClientId, context.dataContext)
+	const userAccount = await getUserAccountByUserClientId(
+		(challengeTokenObject as IChallengeToken).userClientId,
+		context.dataContext
+	)
 	if (!userAccount) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidAuthorizeRequest, 'No user found for challenge token')
 	}
@@ -42,12 +48,26 @@ export async function getTokensFromMultifactorTokenActivity(
 		)
 	}
 
+	const otpSecret = decrypt(userAccount.otpSecret)
+	if (!otpSecret) {
+		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, `Failed to decrypt otp secret`)
+	}
+
 	if (
-		!verifyOtpTokenActivity(otpToken, userAccount.otpSecret) &&
-		!(await verifyBackupMultifactorCode(challengeTokenObject.emailAddress, otpToken, context.dataContext))
+		!verifyOtpTokenActivity(otpSecret, otpToken) &&
+		!(await verifyBackupMultifactorCode(
+			(challengeTokenObject as IChallengeToken).emailAddress,
+			otpToken,
+			context.dataContext
+		))
 	) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidOTP, `Token is incorrect`)
 	}
 
-	return getTokensActivity(userAccount.userAccountId, clientId, challengeTokenObject.scopes, context)
+	return getTokensActivity(
+		userAccount.userAccountId,
+		clientId,
+		(challengeTokenObject as IChallengeToken).scopes,
+		context
+	)
 }

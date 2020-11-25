@@ -10,4 +10,10 @@ export interface IAuthorizedUser {
 	email_verified: boolean
 	nickname?: string
 	picture?: string
+	meta?: { [key: string]: string }
 }
+
+export type IAuthorizedUserFields = Pick<
+	IAuthorizedUser,
+	'given_name' | 'family_name' | 'gender' | 'nickname' | 'picture' | 'email' | 'birthday'
+>

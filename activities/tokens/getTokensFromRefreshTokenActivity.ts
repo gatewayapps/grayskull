@@ -14,12 +14,12 @@ import { IAccessTokenResponse } from '../../foundation/types/tokens'
 
 export async function getTokensFromRefreshTokenActivity(
 	clientId: string,
-	clientSecret: string,
+	clientSecret: string | undefined,
 	refreshToken: string,
 	context: IRequestContext
 ): Promise<IAccessTokenResponse> {
 	let id_token: string | undefined = undefined
-	if (!(await validateClientSecretActivity(clientId, clientSecret, context))) {
+	if (clientSecret !== undefined && !(await validateClientSecretActivity(clientId, clientSecret, context))) {
 		throw new GrayskullError(GrayskullErrorCode.InvalidClientId, `Failed to validate client`)
 	}
 
@@ -55,10 +55,24 @@ export async function getTokensFromRefreshTokenActivity(
 	}
 
 	if (userClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-		id_token = await createIDToken(userContext, client, userClient, undefined, undefined, context.configuration)
+		id_token = await createIDToken(
+			userContext,
+			client,
+			userClient,
+			undefined,
+			undefined,
+			context.configuration,
+			context.dataContext
+		)
 	}
 
-	const access_token = await createAccessToken(client, userClient, finalRefreshToken, context.configuration)
+	const access_token = await createAccessToken(
+		client,
+		userClient,
+		finalRefreshToken,
+		context.configuration,
+		context.dataContext
+	)
 	await updateRefreshTokenActiveAt(refreshToken, client, context.dataContext)
 
 	return {

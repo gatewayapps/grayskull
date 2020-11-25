@@ -7,6 +7,7 @@ export interface LoginCredentialsProps {
 	emailAddress: string
 	password: string
 	otpToken: string
+	message: string
 	extendedSession: boolean
 	step: 'credentials' | 'otp' | 'otpChoices' | 'emailVerification'
 	setEmailAddress: (value: string) => void
@@ -27,6 +28,7 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 	otpToken,
 	setOtpToken,
 	step,
+	message,
 	setStep,
 	extendedSession,
 	setExtendedSession,
@@ -41,20 +43,28 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 			<ResponsiveInput
 				autoComplete="nope"
 				name="emailAddress"
+				readOnly={step === 'otp'}
+				disabled={step === 'otp'}
 				type={step === 'credentials' ? 'email' : 'hidden'}
 				label="E-mail Address"
 				value={emailAddress}
 				onChange={(e) => {
-					setEmailAddress(e.target.value)
+					if (step === 'credentials') {
+						setEmailAddress(e.target.value)
+					}
 				}}
 				autoFocus
 			/>
 			<ResponsiveInput
 				type={step === 'credentials' ? 'password' : 'hidden'}
+				readOnly={step === 'otp'}
+				disabled={step === 'otp'}
 				name="password"
 				value={password}
 				onChange={(e) => {
-					setPassword(e.target.value)
+					if (step === 'credentials') {
+						setPassword(e.target.value)
+					}
 				}}
 				label="Password"
 			/>
@@ -94,6 +104,7 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 					)}
 				</div>
 			)}
+			{message && <div className="alert alert-danger">{message}</div>}
 			{step === 'credentials' && (
 				<div className="form-check mb-3">
 					<input

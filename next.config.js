@@ -26,6 +26,8 @@ module.exports = withSass(
 		experimental: {
 			async rewrites() {
 				return [
+					{ source: '/.well-known/jwks.json', destination: '/api/.well-known/jwks.json' },
+					{ source: '/.well-known/openid-configuration', destination: '/api/.well-known/openid-configuration' },
 					{ source: '/token', destination: '/api/token' },
 					{ source: '/userinfo', destination: '/api/userinfo' },
 					{ source: '/users/:userAccountId/userinfo', destination: '/api/users/:userAccountId/userinfo' }

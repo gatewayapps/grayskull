@@ -32,24 +32,33 @@ export async function createUserAccountActivity(
 			`That email address, ${emailAddress}, is already in use`
 		)
 	}
-	const userAccount = await createUserAccount(userAccountDetails, undefined, context.dataContext, context.user)
-	await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
+	let password: string | undefined = undefined
+	if (userAccountDetails.password) {
+		password = userAccountDetails.password
+		delete userAccountDetails.password
+	}
+	const userAccount = await createUserAccount(userAccountDetails, password, context.dataContext, context.user)
 
-	const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
-	const activateLink = new URL(
-		`activate?emailAddress=${emailAddress}&token=${activationToken}`,
-		context.configuration.Server.baseUrl!
-	).href
-	await sendTemplatedEmail(
-		'activateAccountTemplate',
-		emailAddress,
-		`Activate Your ${context.configuration.Server.realmName} Account`,
-		{
-			activateLink,
-			realmName: context.configuration.Server.realmName,
-			user: userAccount,
-			createdBy: context.user
-		},
-		context.configuration
-	)
+	if (password) {
+		await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, true)
+	} else {
+		await createEmailAddress(emailAddress, userAccount.userAccountId, context.dataContext, true, false)
+		const activationToken = await generateUserAccountActivationToken(emailAddress, context.dataContext)
+		const activateLink = new URL(
+			`activate?emailAddress=${emailAddress}&token=${activationToken}`,
+			context.configuration.Server.baseUrl as string
+		).href
+		await sendTemplatedEmail(
+			'activateAccountTemplate',
+			emailAddress,
+			`Activate Your ${context.configuration.Server.realmName} Account`,
+			{
+				activateLink,
+				realmName: context.configuration.Server.realmName,
+				user: userAccount,
+				createdBy: context.user
+			},
+			context.configuration
+		)
+	}
 }

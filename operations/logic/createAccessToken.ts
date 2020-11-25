@@ -1,33 +1,34 @@
 import { IUserClient, IConfiguration, IClient, IRefreshToken } from '../../foundation/types/types'
-
 import { addSeconds } from 'date-fns'
-
 import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/GrayskullError'
-import jwt from 'jsonwebtoken'
-import { IAccessToken, IIDToken } from '../../foundation/types/tokens'
+import { signTokenForClient } from './signTokenForClient'
+import Knex from 'knex'
+import { IAccessToken } from '../../foundation/types/tokens'
 
 export async function createAccessToken(
 	client: IClient,
 	userClient: IUserClient | undefined,
 	refreshToken: IRefreshToken | undefined,
-	configuration: IConfiguration
+	configuration: IConfiguration,
+	dataContext: Knex
 ) {
-	const expiration = addSeconds(new Date(), configuration.Security.accessTokenExpirationSeconds || 300).getTime()
+	const expiration = Math.round(
+		addSeconds(new Date(), configuration.Security.accessTokenExpirationSeconds || 3600).getTime() / 1000
+	)
 
 	if (!userClient) {
-		const result: IIDToken = {
-			sub: `${client.client_id}@clients`,
+		const result = {
+			sub: `${client.client_id}`,
 			aud: client.client_id,
 			iss: configuration.Server.baseUrl!,
 			exp: expiration,
-			iat: new Date().getTime(),
 			at_hash: undefined
 		}
-
-		return jwt.sign(result, client.secret)
+		return signTokenForClient(result, client, dataContext)
 	} else if (userClient.allowedScopes && userClient.allowedScopes.length > 0) {
 		const allowedScopes = JSON.parse(userClient.allowedScopes)
 		const result: IAccessToken = {
+			aud: client.client_id,
 			sub: userClient.userClientId,
 			scopes: allowedScopes,
 			exp: expiration
@@ -36,7 +37,7 @@ export async function createAccessToken(
 			result.id = refreshToken.id
 		}
 
-		return jwt.sign(result, client.secret)
+		return signTokenForClient(result, client, dataContext)
 	} else {
 		throw new GrayskullError(GrayskullErrorCode.NotAuthorized, 'User has not authorized client')
 	}

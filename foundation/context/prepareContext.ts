@@ -6,6 +6,9 @@ import { getUserContext, UserContext } from './getUserContext'
 import { getCurrentConfiguration } from '../../operations/data/configuration/getCurrentConfiguration'
 import { IConfiguration, IUserClient } from '../types/types'
 import Knex from 'knex'
+import { IAccessToken } from '../types/tokens'
+
+let dataContext: Knex
 
 export interface IRequestContext {
 	req: any
@@ -16,6 +19,7 @@ export interface IRequestContext {
 	dataContext: Knex
 	accessTokenType: 'user' | 'client'
 	userClient?: IUserClient // Used for client_credentials flow
+	accessToken?: IAccessToken
 }
 
 export async function prepareContext(req, res): Promise<IRequestContext> {
@@ -23,20 +27,22 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 
 	res.cookies = cookies
 	req.cookies = cookies
-	req.body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
+	if (req.body) {
+		req.body = typeof req.body === 'object' ? req.body : JSON.parse(req.body)
+	}
 	const cacheContext = getCacheContext()
 
-	let dataContext = cacheContext.getValue<Knex>('DATA_CONTEXT')
 	if (!dataContext) {
 		dataContext = await getDataContextFromConnectionString(process.env.GRAYSKULL_DB_CONNECTION_STRING!)
-		cacheContext.setValue('DATA_CONTEXT', dataContext, 600)
 	}
 
 	const sessionCookie = req.cookies.get(SESSION_ID_COOKIE_NAME)
 
 	const configuration = await getCurrentConfiguration(dataContext, cacheContext)
 
-	const userContext = await getUserContext(sessionCookie, dataContext, cacheContext, configuration)
+	const userContext = sessionCookie
+		? await getUserContext(sessionCookie, dataContext, cacheContext, configuration)
+		: undefined
 
 	return {
 		req,

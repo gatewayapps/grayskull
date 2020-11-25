@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
 
-const MAX_FILE_SIZE = 2000000 // 10MB <-- Thats some neat math.  2000000 = 10MB?
+const MAX_FILE_SIZE = 20000000 // 10MB <-- Thats some neat math.  2000000 = 10MB?
 
 export interface IFileDropAreaProps {
 	'aria-describedby': string
@@ -42,20 +42,21 @@ const FileDropArea: React.FC<IFileDropAreaProps> = (props) => {
 	const [message, setMessage] = useState('')
 	const onDrop = (acceptedFiles: File[], rejectedFiles: File[]) => {
 		rejectedFiles.forEach((file) => {
-			if (!/^File\//.test(file.type)) {
-				setMessage(`The file type for "${file.name}" is not supported. Please choose an File and try again.`)
-			} else if (file.size > MAX_FILE_SIZE) {
+			if (file.size > MAX_FILE_SIZE) {
 				setMessage(
 					`The file "${file.name}" with a size of ${prettyBytes(
 						file.size
 					)} is too large to upload. The maximum upload file size is ${prettyBytes(MAX_FILE_SIZE)}.`
 				)
+				return
 			} else {
 				setMessage(`The file "${file.name}" could not be uploaded.`)
+				return
 			}
 		})
 		if (props.maxNumberFiles !== undefined && acceptedFiles.length > props.maxNumberFiles) {
 			setMessage(`Only ${props.maxNumberFiles} file(s) are allowed.`)
+			return
 		}
 
 		if (props.onFilesChanged) {

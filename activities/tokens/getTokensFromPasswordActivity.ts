@@ -10,6 +10,8 @@ import { createUserClient } from '../../operations/data/userClient/createUserCli
 import { getClient } from '../../operations/data/client/getClient'
 import { GrantTypes } from '../../foundation/constants/grantTypes'
 
+import { updateUserClient } from '../../operations/data/userClient/updateUserClient'
+
 export async function getTokensFromPasswordActivity(
 	clientId: string,
 	emailAddress: string,
@@ -35,12 +37,11 @@ export async function getTokensFromPasswordActivity(
 	let userClient = await getUserClient(userAccount.userAccountId, clientId, context.dataContext)
 	if (!userClient) {
 		// User has never authorized this client, we should manually authorize all scopes
-		const client = await getClient(clientId, context.dataContext, false)
 
 		userClient = await createUserClient(
 			userAccount.userAccountId,
 			clientId,
-			JSON.parse(client!.scopes),
+			JSON.parse(client.scopes),
 			[],
 			context.dataContext
 		)
@@ -53,8 +54,9 @@ export async function getTokensFromPasswordActivity(
 		const token = await createChallengeToken(
 			emailAddress,
 			userClient.userClientId,
-			JSON.parse(userClient.allowedScopes),
-			client.secret
+			JSON.parse(client.scopes),
+			client,
+			context.dataContext
 		)
 		return {
 			challenge: {
@@ -63,6 +65,14 @@ export async function getTokensFromPasswordActivity(
 			}
 		}
 	} else {
-		return getTokensActivity(userAccount.userAccountId, clientId, scopes, context)
+		await updateUserClient(
+			userClient.userClientId,
+			userClient.userAccountId,
+			JSON.parse(client.scopes),
+			[],
+			context.dataContext
+		)
+
+		return getTokensActivity(userAccount.userAccountId, clientId, JSON.parse(client.scopes), context)
 	}
 }

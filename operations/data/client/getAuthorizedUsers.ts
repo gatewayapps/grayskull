@@ -1,8 +1,9 @@
 import Knex from 'knex'
 import { IAuthorizedUser } from '../../../foundation/types/shared'
+import { IUserClientMetadata } from '../../../foundation/types/types'
 
 export async function getAuthorizedUsers(clientId: string, limit: number, offset: number, dataContext: Knex) {
-	return await dataContext
+	const results = await dataContext
 		.from('UserClients AS uc')
 		.join('UserAccounts AS ua', { 'uc.userAccountId': 'ua.userAccountId' })
 		.join('EmailAddresses AS ea', { 'ua.userAccountId': 'ea.userAccountId' })
@@ -22,6 +23,21 @@ export async function getAuthorizedUsers(clientId: string, limit: number, offset
 		})
 		.offset(offset)
 		.limit(limit)
+
+	const userClientIds = results.map((u) => u.sub)
+	const metadata = await dataContext<IUserClientMetadata>('UserClientMetadata')
+		.whereIn('userClientId', userClientIds)
+		.select('*')
+
+	return results.map((uc) => {
+		uc.meta = metadata
+			.filter((m) => m.userClientId === uc.sub)
+			.reduce((p, c) => {
+				p[c.key] = c.value
+				return p
+			}, {})
+		return uc
+	})
 }
 
 /*'uc.userClientId as sub',

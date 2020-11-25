@@ -1,6 +1,7 @@
 import Knex from 'knex'
 import { getDataContext } from './getDataContext'
-import { MigrationSource } from '../../operations/services/migrations/migrationSource'
+
+import { applyMigrations } from '../../operations/data/migrations/applyMigrations'
 
 export async function getInMemoryContext() {
 	const options: Knex.Config = {
@@ -14,7 +15,9 @@ export async function getInMemoryContext() {
 	}
 
 	const context = await getDataContext(options)
-	await context.migrate.up({ migrationSource: new MigrationSource(), disableMigrationsListValidation: true })
+
+	await applyMigrations(context)
+	//await context.migrate.up({ migrationSource: new MigrationSource(), disableMigrationsListValidation: true })
 	return context
 }
 

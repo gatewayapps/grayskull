@@ -68,7 +68,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 							context
 						)
 
-						const response = getUserProfileForClient(clientOptions.userAccount, clientOptions.userClient)
+						const response = await getUserProfileForClient(
+							clientOptions.userAccount,
+							clientOptions.userClient,
+							context.dataContext
+						)
 						res.json({ success: true, profile: response })
 						return
 					} else {

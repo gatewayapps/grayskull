@@ -28,6 +28,7 @@ const UPDATE_CLIENT_QUERY = gql`
 			public
 			pinToHeader
 			AuthorizationFlows
+			TokenSigningMethod
 		}
 
 		grantTypes {

@@ -30,6 +30,10 @@ class ClientForm extends PureComponent {
 		}
 	}
 
+	handleTokenSigningMethodChange = (e) => {
+		this.props.onChange('TokenSigningMethod', e.target.value)
+	}
+
 	handleGrantTypeChange = (e) => {
 		const { name, checked } = e.target
 		if (checked) {
@@ -269,6 +273,22 @@ class ClientForm extends PureComponent {
 								<small id="grantTypeHelpBlock" className="form-text text-muted">
 									Grant types determine the authorization flows clients can use to authorize users.
 								</small>
+							</div>
+						</div>
+						<div className="form-group row">
+							<label className="col-sm-12 col-md-3 col-form-label">Token Signing Algorithm</label>
+							<div className="col-sm-12 col-md-9">
+								<select
+									className="form-control"
+									value={this.props.client.TokenSigningMethod}
+									onChange={this.handleTokenSigningMethodChange}>
+									<option value="HS256" selected={this.props.client.TokenSigningMethod === 'HS256'}>
+										HS256
+									</option>
+									<option value="RS256" selected={this.props.client.TokenSigningMethod === 'RS256'}>
+										RS256
+									</option>
+								</select>
 							</div>
 						</div>
 						<div className="form-group row">

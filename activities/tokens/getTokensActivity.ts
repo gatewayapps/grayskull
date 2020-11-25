@@ -43,7 +43,15 @@ export async function getTokensActivity(
 	}
 
 	if (scopes.includes(ScopeMap.openid.id) && userClientHasAllowedScope(userClient, ScopeMap.openid.id)) {
-		id_token = await createIDToken(userContext, client, userClient, undefined, undefined, context.configuration)
+		id_token = await createIDToken(
+			userContext,
+			client,
+			userClient,
+			undefined,
+			undefined,
+			context.configuration,
+			context.dataContext
+		)
 	}
 
 	if (
@@ -53,7 +61,13 @@ export async function getTokensActivity(
 		refresh_token = await createRefreshToken(client.secret, userClient.userClientId, undefined, context.dataContext)
 	}
 
-	const access_token = await createAccessToken(client, userClient, refresh_token, context.configuration)
+	const access_token = await createAccessToken(
+		client,
+		userClient,
+		refresh_token,
+		context.configuration,
+		context.dataContext
+	)
 	return {
 		access_token,
 		id_token,

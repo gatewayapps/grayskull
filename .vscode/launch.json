@@ -17,7 +17,7 @@
       "request": "launch",
       "name": "Next: Node",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/next",
-      "runtimeArgs": ["dev", "-H", "0.0.0.0"],
+      "runtimeArgs": ["dev", "-H", "0.0.0.0", "-p", "80"],
       "env": {
         "NODE_OPTIONS": "--inspect=0.0.0.0:9221"
       },
