@@ -158,7 +158,8 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 				value: Permissions.ADMIN
 			}
 		]
-		const selectedPermission = finalUser.permissions === Permissions.ADMIN ? permissionOptions[1] : permissionOptions[0]
+		const selectedPermission =
+			finalUser.permissions.value === Permissions.ADMIN ? permissionOptions[1] : permissionOptions[0]
 
 		const genderOptions = ['Male', 'Female']
 		if (finalUser.gender && genderOptions.includes(finalUser.gender) === false) {
