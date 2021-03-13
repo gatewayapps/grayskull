@@ -116,7 +116,6 @@ export async function getDataContextFromConnectionString(connectionString: strin
 			user: user,
 			password: password,
 			host: server,
-			server: server,
 			typeCast: null,
 			port: port,
 			database: databaseName
@@ -124,10 +123,11 @@ export async function getDataContextFromConnectionString(connectionString: strin
 	}
 
 	if (dialect === 'mssql') {
+		const encrypt = connectionUrl.searchParams.get('encrypt') || undefined
 		;(options.connection as any).options = {
-			encrypt: false,
 			enableArithAbort: false,
-			port: 1433
+			port: 1433,
+			encrypt
 		}
 	}
 
