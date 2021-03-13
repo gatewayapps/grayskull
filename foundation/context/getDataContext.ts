@@ -124,7 +124,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
 	}
 
 	if (dialect === 'mssql') {
-		options.connection.options = {
+		;(options.connection as any).options = {
 			encrypt: false,
 			enableArithAbort: false,
 			port: 1433
