@@ -102,6 +102,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
 
 	const hostParts = connectionUrl.host.split(':')
 	const server = hostParts[0]
+
 	let port: number | undefined = undefined
 	if (hostParts.length > 0) {
 		port = parseInt(hostParts[1])
@@ -115,11 +116,21 @@ export async function getDataContextFromConnectionString(connectionString: strin
 			user: user,
 			password: password,
 			host: server,
+			server: server,
 			typeCast: null,
 			port: port,
 			database: databaseName
 		}
 	}
+
+	if (dialect === 'mssql') {
+		;(options.connection as any).options = {
+			encrypt: false,
+			enableArithAbort: false,
+			port: 1433
+		}
+	}
+
 	if (storage) {
 		options.connection!['filename'] = storage
 	}

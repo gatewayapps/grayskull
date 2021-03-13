@@ -13,6 +13,7 @@ export async function applyMigrations(dataContext: Knex, tryTimes = 1) {
 
 			return
 		} catch (err) {
+			console.error(err)
 			console.error(`Migration attempt ${attempt} failed.  Trying ${tryTimes - attempt} more times`)
 		}
 	}
