@@ -26,6 +26,9 @@ An easy to use authentication server that can be deployed to your own server in 
 - **GRAYSKULL_GLOBAL_SECRET** - Secret used for encryption purposes
 - **GRAYSKULL_DB_CONNECTION_STRING** - Sequelize connection string
 
+- **DB_ADMIN_USERNAME** - Admin username to use if not in the connection string
+- **DB_ADMIN_PASSWORD** - Admin password to use if not in the connection string
+
 # Optional Environment Variables
 
 - **CLOUDINARY_URL** - Cloudinary URL. See https://cloudinary.com/documentation/node_integration#node_getting_started_guide for instructions
