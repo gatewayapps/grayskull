@@ -95,8 +95,8 @@ export async function getDataContextFromConnectionString(connectionString: strin
 		throw new Error('Unsupported dialect: ' + dialect)
 	}
 
-	const user = connectionUrl.username
-	const password = connectionUrl.password
+	const user = process.env.DB_ADMIN_USERNAME || connectionUrl.username || ''
+	const password = process.env.DB_ADMIN_PASSWORD || connectionUrl.password || ''
 
 	const databaseName = connectionUrl.pathname.substr(1)
 
