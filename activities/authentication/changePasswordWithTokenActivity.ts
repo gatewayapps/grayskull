@@ -5,6 +5,7 @@ import { getValue } from '../../operations/data/persistentCache/getValue'
 import { verifyPasswordStrength } from '../../operations/logic/verifyPasswordStrength'
 import { setUserAccountPassword } from '../../operations/data/userAccount/setUserAccountPassword'
 import { clearValue } from '../../operations/data/persistentCache/clearValue'
+import { setEmailAddressVerified } from '../../operations/data/emailAddress/setEmailAddressVerified'
 
 /*
  *  Changing a password with a token should involve the following steps:
@@ -58,6 +59,8 @@ export async function changePasswordWithTokenActivity(
 						context.dataContext,
 						context.cacheContext
 					)
+
+					await setEmailAddressVerified(emailAddress, context.dataContext)
 
 					await clearValue(cacheKey, context.dataContext)
 
