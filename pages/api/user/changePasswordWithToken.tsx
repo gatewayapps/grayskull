@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareRemoteContext } from '../../../foundation/context/prepareRemoteContext'
 import { changePasswordWithTokenActivity } from '../../../activities/authentication/changePasswordWithTokenActivity'
+import { cors, runMiddleware } from '../../../operations/middleware/cors'
 
 export default async function changePasswordWithToken(req: NextApiRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	if (req.method !== 'POST') {
 		res.status(405)
 		return

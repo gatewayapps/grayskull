@@ -4,8 +4,10 @@ import { IAuthorizedUserFields } from '../../../../foundation/types/shared'
 
 import { updateUserAccountByUserClientIdActivity } from '../../../../activities/clientOnly/updateUserAccountByUserClientIdActivity'
 import { setUserAccountPrimaryEmailByUserClientIdActivity } from '../../../../activities/clientOnly/setUserAccountPrimaryEmailByUserClientIdActivity'
+import { cors, runMiddleware } from '../../../../operations/middleware/cors'
 
 export default async function profile(req: NextApiRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	if (req.method !== 'POST') {
 		res.status(405)
 		return
