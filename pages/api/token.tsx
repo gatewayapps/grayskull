@@ -1,5 +1,3 @@
-import Cors from 'cors'
-
 import { getTokensFromAuthorizationCodeActivity } from '../../activities/tokens/getTokensFromAuthorizationCodeActivity'
 import { getTokensFromMultifactorTokenActivity } from '../../activities/tokens/getTokensFromMultifactorTokenActivity'
 import { getTokensFromRefreshTokenActivity } from '../../activities/tokens/getTokensFromRefreshTokenActivity'
@@ -12,6 +10,7 @@ import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/Gray
 import { OauthError } from '../../foundation/errors/OauthError'
 import { GrantTypes } from '../../foundation/constants/grantTypes'
 import { getClientCredentialsFromRequest } from '../../operations/logic/getClientCredentialsFromRequest'
+import { cors, runMiddleware } from '../../operations/middleware/cors'
 
 function getMultifactorCredentialsFromRequest(req: NextApiRequest) {
 	if (req.body && req.body.challenge_token && req.body.otp_token) {
@@ -36,23 +35,6 @@ function getLoginCredentialsFromRequest(req: NextApiRequest) {
 		}
 	}
 	return undefined
-}
-
-// Initializing the cors middleware
-const cors = Cors({
-	methods: ['GET', 'HEAD', 'OPTIONS', 'POST']
-})
-
-function runMiddleware(req, res, fn) {
-	return new Promise((resolve, reject) => {
-		fn(req, res, (result) => {
-			if (result instanceof Error) {
-				return reject(result)
-			}
-
-			return resolve(result)
-		})
-	})
 }
 
 export default async function handleTokenRequest(req: NextApiRequest, res: NextApiResponse) {

@@ -1,7 +1,9 @@
 import { NextApiResponse, NextApiRequest } from 'next'
 import { prepareRemoteContext } from '../../../../foundation/context/prepareRemoteContext'
 import { listAuthorizedUsersActivity } from '../../../../activities/clientOnly/listAuthorizedUsersActivity'
+import { cors, runMiddleware } from '../../../../operations/middleware/cors'
 async function listAuthorizedUsers(req: NextApiRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	try {
 		const context = await prepareRemoteContext(req, res)
 		if (context.accessTokenType !== 'client') {
