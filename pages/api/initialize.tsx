@@ -12,7 +12,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	const configuration = sanitizeConfiguration(context.configuration)
 
-
 	const pinnedClients = context.user ? await getPinnedClientsActivity(context) : []
 
 	configuration.HeaderItems = pinnedClients
