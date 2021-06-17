@@ -189,7 +189,7 @@
     "tedious": "^6.6.5",
     "titatoggle": "^2.1.2",
     "twilio": "^3.40.0",
-    "ua-parser-js": "^0.7.21",
+    "ua-parser-js": "^0.7.24",
     "url-loader": "^1.1.2",
     "url-parse": "^1.4.4",
     "uuid": "^7.0.2",
