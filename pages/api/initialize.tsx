@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getPinnedClientsActivity } from '../../activities/getPinnedClientsActivity'
 import { countUserAccounts } from '../../operations/data/userAccount/countUserAccounts'
 import { prepareContext } from '../../foundation/context/prepareContext'
-import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
+
 import { maskPhoneNumber } from '../../operations/logic/maskPhoneNumber'
 import { sanitizeConfiguration } from '../../operations/logic/sanitizeConfiguration'
 
