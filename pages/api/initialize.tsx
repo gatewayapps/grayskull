@@ -5,16 +5,13 @@ import { countUserAccounts } from '../../operations/data/userAccount/countUserAc
 import { prepareContext } from '../../foundation/context/prepareContext'
 import { PASSWORD_PLACEHOLDER } from '../../foundation/constants'
 import { maskPhoneNumber } from '../../operations/logic/maskPhoneNumber'
+import { sanitizeConfiguration } from '../../operations/logic/sanitizeConfiguration'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const context = await prepareContext(req, res)
 
-	const configuration = context.configuration
+	const configuration = sanitizeConfiguration(context.configuration)
 
-	configuration.Mail.password = PASSWORD_PLACEHOLDER
-	configuration.Mail.sendgridApiKey = PASSWORD_PLACEHOLDER
-	configuration.Security.twilioApiKey = PASSWORD_PLACEHOLDER
-	configuration.Security.twilioSID = PASSWORD_PLACEHOLDER
 
 	const pinnedClients = context.user ? await getPinnedClientsActivity(context) : []
 
