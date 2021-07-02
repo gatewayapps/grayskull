@@ -63,7 +63,7 @@ describe('createUserAccountActivity', () => {
 		expect(failed).toBeTruthy()
 	})
 
-	it('Should create user with verified email adress -password passed', async () => {
+	it('Should create user with verified email address -password passed', async () => {
 		const userAccountDetails = getUserAccount('password')
 		let isVerified: boolean | undefined = false
 		try {
@@ -79,7 +79,7 @@ describe('createUserAccountActivity', () => {
 		expect(isVerified).toBe(1)
 	})
 
-	it('Should create user with unverified email adress -no password passed', async () => {
+	it('Should create user with unverified email address -no password passed', async () => {
 		const getTemplatedEmail = require('../../operations/services/mail/sendEmailTemplate')
 		const userAccountDetails = getUserAccount()
 		const getEmailSpy = jest.spyOn(getTemplatedEmail, 'sendTemplatedEmail')
