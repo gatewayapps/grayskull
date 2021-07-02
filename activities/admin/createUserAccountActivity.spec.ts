@@ -7,19 +7,13 @@ import Knex from 'knex'
 import { Permissions } from '../../foundation/constants/permissions'
 import { getInMemoryContext } from '../../foundation/context/getDataContext.spec'
 import { IRequestContext } from '../../foundation/context/prepareContext'
-import { IClient, IUserAccount } from '../../foundation/types/types'
-import { createTestClient } from '../../operations/data/client/createClient.spec'
-import { createTestUserAccount } from '../../operations/data/userAccount/createUserAccount.spec'
-import { createUserClient } from '../../operations/data/userClient/createUserClient'
-import { listUserAccountEmailAddressesActivity } from '../listUserAccountEmailAddressesActivity'
+import { IUserAccount } from '../../foundation/types/types'
+import { getEmailAddressByEmailAddress } from '../../operations/data/emailAddress/getEmailAddressByEmailAddress'
 import { createUserAccountActivity } from './createUserAccountActivity'
 
 let dataContext: Knex
-let authorizedUser: IUserAccount
-let restrictedUser: IUserAccount
-let testClient: IClient
 
-function getUserAccount(getPassword = false): IUserAccount {
+function getUserAccount(password?: string): IUserAccount {
 	const userAccount: IUserAccount = {
 		userAccountId: '12345',
 		firstName: 'john',
@@ -42,37 +36,17 @@ function getUserAccount(getPassword = false): IUserAccount {
 		lastPasswordChange: new Date(),
 		passwordHash: ''
 	}
-	if (getPassword) userAccount.password = 'password'
+	if (password) userAccount.password = password
 	return userAccount
 }
 
 describe('createUserAccountActivity', () => {
 	beforeAll(async () => {
 		dataContext = await getInMemoryContext()
-
-		authorizedUser = await createTestUserAccount(dataContext)
-		restrictedUser = await createTestUserAccount(dataContext)
-		testClient = await createTestClient(dataContext)
-
-		await createUserClient(
-			authorizedUser.userAccountId,
-			testClient.client_id,
-			['openid', 'offline_access'],
-			[],
-			dataContext
-		)
-
-		await createUserClient(
-			restrictedUser.userAccountId,
-			testClient.client_id,
-			[],
-			['openid', 'offline_access'],
-			dataContext
-		)
 	})
 
 	it('Should receive email address is unavailable', async () => {
-		const userAccountDetails = getUserAccount(true)
+		const userAccountDetails = getUserAccount('password')
 		let failed = false
 		try {
 			await createUserAccountActivity(userAccountDetails, 'email@testemail.com', {
@@ -90,18 +64,15 @@ describe('createUserAccountActivity', () => {
 	})
 
 	it('Should create user with verified email adress -password passed', async () => {
-		const userAccountDetails = getUserAccount(true)
-		let isVerified = false
+		const userAccountDetails = getUserAccount('password')
+		let isVerified: boolean | undefined = false
 		try {
-			await createUserAccountActivity(userAccountDetails, 'test14624646w36@testemail.com', {
+			await createUserAccountActivity(userAccountDetails, 'test1@testemail.com', {
 				dataContext,
 				user: { permissions: Permissions.Admin }
 			} as IRequestContext)
-			const emails = await listUserAccountEmailAddressesActivity(userAccountDetails.userAccountId, {
-				dataContext,
-				user: { permissions: Permissions.Admin }
-			} as IRequestContext)
-			isVerified = emails[0].verified
+			const email = await getEmailAddressByEmailAddress('test1@testemail.com', dataContext)
+			isVerified = email?.verified
 		} catch (error) {
 			isVerified = false
 		}
@@ -112,18 +83,15 @@ describe('createUserAccountActivity', () => {
 		const getTemplatedEmail = require('../../operations/services/mail/sendEmailTemplate')
 		const userAccountDetails = getUserAccount()
 		const getEmailSpy = jest.spyOn(getTemplatedEmail, 'sendTemplatedEmail')
-		let isVerified = false
+		let isVerified: boolean | undefined = false
 		try {
 			await createUserAccountActivity(userAccountDetails, 'testnopassword@exmaple.com', {
 				dataContext,
 				user: { permissions: Permissions.Admin },
 				configuration: { Server: { baseUrl: 'http://localhost:5000' } }
 			} as IRequestContext)
-			const emails = await listUserAccountEmailAddressesActivity(userAccountDetails.userAccountId, {
-				dataContext,
-				user: { permissions: Permissions.Admin }
-			} as IRequestContext)
-			isVerified = emails[0].verified
+			const email = await getEmailAddressByEmailAddress('testnopassword@exmaple.com', dataContext)
+			isVerified = email?.verified
 		} catch (error) {
 			isVerified = false
 		}
