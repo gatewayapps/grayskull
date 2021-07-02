@@ -34,10 +34,11 @@ function getUserAccount(password?: string): IUserAccount {
 		deletedAt: null,
 		lastActive: new Date(),
 		lastPasswordChange: new Date(),
-		passwordHash: '',
-		password
+		passwordHash: ''
 	}
-	if (password) userAccount.password = password
+	if (password) {
+		userAccount.password = password
+	}
 	return userAccount
 }
 
