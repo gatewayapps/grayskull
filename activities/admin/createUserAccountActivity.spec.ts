@@ -77,7 +77,7 @@ describe('createUserAccountActivity', () => {
 		} catch (error) {
 			isVerified = false
 		}
-		expect(isVerified).toBe(1)
+		expect(isVerified).toBeTruthy()
 	})
 
 	it('Should create user with unverified email address -no password passed', async () => {
