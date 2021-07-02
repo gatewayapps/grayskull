@@ -97,7 +97,7 @@ describe('createUserAccountActivity', () => {
 			isVerified = false
 		}
 
-		expect(isVerified).toBe(0)
+		expect(isVerified).toBeFalsy()
 		expect(getEmailSpy).toBeCalledTimes(1)
 	})
 })
