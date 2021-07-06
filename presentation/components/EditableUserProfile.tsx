@@ -57,6 +57,7 @@ const CREATE_USER_MUTATION = gql`
 		$profileImageUrl: String
 		$permissions: Int!
 		$emailAddress: String!
+		$password: String
 	) {
 		createUser(
 			data: {
@@ -70,6 +71,7 @@ const CREATE_USER_MUTATION = gql`
 				permissions: $permissions
 				otpEnabled: false
 				isActive: true
+				password: $password
 			}
 		) {
 			success
