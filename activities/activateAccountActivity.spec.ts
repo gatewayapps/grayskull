@@ -75,8 +75,6 @@ describe('activateAccountActivity', () => {
 		).rejects.toThrowError('Attempted to activate user with email address fakeemail@email.com, which does not exist')
 	})
 
-	/*Does call setUserAccountActive, setUseraccountPassword, and clearValue from cache*/
-
 	it('Should error on expired token', async () => {
 		;(getValue as any).mockImplementation(async () => {
 			return null
@@ -107,22 +105,20 @@ describe('activateAccountActivity', () => {
 		)
 	})
 
-	it('Should call setUserAccountActive', async () => {
+	it('Should call setUserAccountActive, setUserAccountPassword, clearValue', async () => {
 		const userAccountActive = require('../operations/data/userAccount/setUserAccountActive')
 		const userActiveSpy = jest.spyOn(userAccountActive, 'setUserAccountActive')
-		await activateAccountActivity('fakeemail@email.com', 'Th!sP455w0rdGood', 'completelyrealtoken', context)
-		expect(userActiveSpy).toBeCalledTimes(1)
-	})
-	it('Should call setUserAccountActive', async () => {
+
 		const userAccountPassword = require('../operations/data/userAccount/setUserAccountPassword')
 		const userPasswordSpy = jest.spyOn(userAccountPassword, 'setUserAccountPassword')
-		await activateAccountActivity('fakeemail@email.com', 'Th!sP455w0rdGood', 'completelyrealtoken', context)
-		expect(userPasswordSpy).toBeCalledTimes(1)
-	})
-	it('Should call setUserAccountActive', async () => {
+
 		const clearValue = require('../operations/data/persistentCache/clearValue')
 		const clearValueSpy = jest.spyOn(clearValue, 'clearValue')
+
 		await activateAccountActivity('fakeemail@email.com', 'Th!sP455w0rdGood', 'completelyrealtoken', context)
+
+		expect(userActiveSpy).toBeCalledTimes(1)
+		expect(userPasswordSpy).toBeCalledTimes(1)
 		expect(clearValueSpy).toBeCalledTimes(1)
 	})
 })
