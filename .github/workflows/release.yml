@@ -28,9 +28,9 @@ jobs:
       - name: Compile
         run: yarn next build
       - name: Publish Docker
-        uses: elgohr/Publish-Docker-Github-Action@2.11
+        uses: elgohr/Publish-Docker-Github-Action@master
         with:
           name: gatewayapps/grayskull
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWORD}}
-          tagging: true
+          tag_semver: true

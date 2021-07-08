@@ -9,6 +9,7 @@ import React from 'react'
 import createApolloClient from '../presentation/utils/createApolloClient'
 
 import ApplicationInitializer from '../presentation/components/ApplicationInitializer'
+import { sanitizeConfiguration } from '../operations/logic/sanitizeConfiguration'
 
 const apolloClient = createApolloClient()
 
@@ -25,7 +26,7 @@ class MyApp extends App<any> {
 		if (ctx.req && ctx.res) {
 			const prepareContext = (await import('../foundation/context/prepareContext')).prepareContext
 			const context = await prepareContext(ctx.req, ctx.res)
-			configuration = context.configuration
+			configuration = sanitizeConfiguration(context.configuration)
 			process.env.GRAYSKULL_BASE_URL =
 				configuration && configuration.Server && configuration.Server.baseUrl ? configuration.Server.baseUrl : null
 		}

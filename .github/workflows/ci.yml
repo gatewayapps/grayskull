@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v1
+    - name: Validate Pull Request
+      uses: fabiankoestring/body-regex-validator-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PULL_REQUEST_PATTERN: 'resolves #[0-9]+'
+        PULL_REQUEST_COMMENT: 'Pull requests must include ```resolves #ISSUE_NUMBER```'
       - name: Install Package Dependencies
         run: yarn install
       - name: Update release notes

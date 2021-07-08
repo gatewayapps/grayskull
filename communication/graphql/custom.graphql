@@ -54,7 +54,7 @@ type Query {
 }
 
 type Mutation {
-	uploadFile(file: Upload!): UploadFileResponse
+	uploadFile(file: Upload!): UploadFileResponse @anonymous
 	logout: OperationResponse @anonymous
 	saveConfiguration(data: SaveConfigurationArgs!): OperationResponse @anonymous
 	restoreConfiguration(file: Upload!): OperationResponse

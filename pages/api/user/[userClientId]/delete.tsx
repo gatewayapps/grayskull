@@ -2,8 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareRemoteContext } from '../../../../foundation/context/prepareRemoteContext'
 
 import { deactivateUserAccountByUserClientIdActivity } from '../../../../activities/clientOnly/deactivateUserAccountByUserClientIdActivity'
+import { cors, runMiddleware } from '../../../../operations/middleware/cors'
 
 export default async function profile(req: NextApiRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	if (req.method !== 'POST') {
 		res.status(405)
 		return

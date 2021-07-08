@@ -102,6 +102,7 @@ export async function getDataContextFromConnectionString(connectionString: strin
 
 	const hostParts = connectionUrl.host.split(':')
 	const server = hostParts[0]
+
 	let port: number | undefined = undefined
 	if (hostParts.length > 0) {
 		port = parseInt(hostParts[1])
@@ -120,6 +121,16 @@ export async function getDataContextFromConnectionString(connectionString: strin
 			database: databaseName
 		}
 	}
+
+	if (dialect === 'mssql') {
+		const encrypt = connectionUrl.searchParams.get('encrypt') || undefined
+		;(options.connection as any).options = {
+			enableArithAbort: false,
+			port: 1433,
+			encrypt
+		}
+	}
+
 	if (storage) {
 		options.connection!['filename'] = storage
 	}

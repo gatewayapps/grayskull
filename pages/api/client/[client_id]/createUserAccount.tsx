@@ -2,8 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { prepareRemoteContext } from '../../../../foundation/context/prepareRemoteContext'
 import { OauthError } from '../../../../foundation/errors/OauthError'
 import { createUserAccountForClientActivity } from '../../../../activities/clientOnly/createUserAccountForClientActivity'
+import { cors, runMiddleware } from '../../../../operations/middleware/cors'
 
 export default async function createUserAccount(req: NextApiRequest, res: NextApiResponse) {
+	await runMiddleware(req, res, cors)
 	if (req.method !== 'POST') {
 		res.status(405)
 		return
