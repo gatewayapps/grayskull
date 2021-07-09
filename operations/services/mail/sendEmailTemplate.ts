@@ -15,6 +15,9 @@ const resetPasswordTextTemplate = require('./templates/resetPasswordTemplate.tex
 const verifyEmailHtmlTemplate = require('./templates/verifyEmailTemplate.html.handlebars').default
 const verifyEmailTextTemplate = require('./templates/verifyEmailTemplate.text.handlebars').default
 
+const passwordEmailChangeHtmlTemplate = require('./templates/passwordEmailChangeTemplate.html.handlebars').default
+const passwordEmailChangeTextTemplate = require('./templates/passwordEmailChangeTemplate.text.handlebars').default
+
 const KNOWN_TEMPLATES = {
 	activateAccountTemplate: {
 		html: activateAccountHtmlTemplate,
@@ -31,6 +34,10 @@ const KNOWN_TEMPLATES = {
 	verifyEmailTemplate: {
 		html: verifyEmailHtmlTemplate,
 		text: verifyEmailTextTemplate
+	},
+	passwordEmailChangeTemplate: {
+		html: passwordEmailChangeHtmlTemplate,
+		text: passwordEmailChangeTextTemplate
 	}
 }
 
