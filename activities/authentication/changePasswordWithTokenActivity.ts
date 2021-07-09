@@ -7,6 +7,7 @@ import { setUserAccountPassword } from '../../operations/data/userAccount/setUse
 import { clearValue } from '../../operations/data/persistentCache/clearValue'
 import { setEmailAddressVerified } from '../../operations/data/emailAddress/setEmailAddressVerified'
 import { getEmailAddressByEmailAddress } from '../../operations/data/emailAddress/getEmailAddressByEmailAddress'
+import { sendTemplatedEmail } from '../../operations/services/mail/sendEmailTemplate'
 
 /*
  *  Changing a password with a token should involve the following steps:
@@ -59,6 +60,17 @@ export async function changePasswordWithTokenActivity(
 						newPassword,
 						context.dataContext,
 						context.cacheContext
+					)
+					await sendTemplatedEmail(
+						`passwordEmailChangeTemplate`,
+						emailAddress,
+						'Account Information Changed',
+						{
+							realmName: context.configuration.Server.realmName,
+							user: context.user,
+							change: 'Password'
+						},
+						context.configuration
 					)
 					const emailRecord = await getEmailAddressByEmailAddress(emailAddress, context.dataContext)
 					if (emailRecord && emailRecord.verified === false) {
