@@ -4,6 +4,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { onError } from 'apollo-link-error'
 import { ApolloLink, Observable } from 'apollo-link'
 import { createUploadLink } from 'apollo-upload-client'
+import btoa from 'btoa'
 
 export default function createApolloClient() {
 	const onErrorHandler = onError(({ graphQLErrors, networkError }) => {
@@ -17,14 +18,22 @@ export default function createApolloClient() {
 					window.location.pathname !== '/login' &&
 					window.location.pathname !== '/register'
 				) {
-					window.location.replace('/login')
+					const query = new URLSearchParams(window.location.search).toString()
+					const pathname = window.location.pathname
+					const state = btoa(
+						JSON.stringify({
+							pathname,
+							query
+						})
+					)
+					const loginUrl = `/login?state=${state}`
+					window.location.replace(loginUrl)
 				}
 				if (err.extensions && err.extensions.code === 'FORBIDDEN' && window.location.pathname !== '/oobe') {
 					window.location.replace('/oobe')
 					return
 				}
 			})
-
 			graphQLErrors.map(({ message, locations, path }) => {
 				console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
 			})
