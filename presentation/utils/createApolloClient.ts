@@ -34,6 +34,7 @@ export default function createApolloClient() {
 					return
 				}
 			})
+
 			graphQLErrors.map(({ message, locations, path }) => {
 				console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
 			})
