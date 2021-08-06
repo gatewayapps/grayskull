@@ -17,7 +17,7 @@ class RequireAuthentication extends Component {
 				{({ user, hasInitialized }) => {
 					if (!user && hasInitialized) {
 						const state = generateRoutingState(this.props.router)
-						Router.push(`/login?state=${state}`)
+						Router.push(`/login?state=${state}`, `/login?state=${state}`)
 					} else {
 						if (!hasInitialized) {
 							return <LoadingIndicator message="Loading..." />
