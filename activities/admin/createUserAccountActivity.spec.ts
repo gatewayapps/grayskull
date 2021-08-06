@@ -74,7 +74,7 @@ describe('createUserAccountActivity', () => {
 				user: { permissions: Permissions.Admin }
 			} as IRequestContext)
 			const email = await getEmailAddressByEmailAddress('test1@testemail.com', dataContext)
-			isVerified = email?.verified
+			isVerified = email && email.verified
 		} catch (error) {
 			isVerified = false
 		}
@@ -93,7 +93,7 @@ describe('createUserAccountActivity', () => {
 				configuration: { Server: { baseUrl: 'http://localhost:5000' } }
 			} as IRequestContext)
 			const email = await getEmailAddressByEmailAddress('testnopassword@exmaple.com', dataContext)
-			isVerified = email?.verified
+			isVerified = email && email.verified
 		} catch (error) {
 			isVerified = false
 		}
