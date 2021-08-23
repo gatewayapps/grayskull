@@ -18,7 +18,8 @@ class LoginPage extends React.PureComponent {
 		if (this.props.router.query.state) {
 			const parsedState = parseRoutingState(this.props.router.query.state)
 			if (parsedState) {
-				this.props.router.push(parsedState)
+				const authUrl = `${parsedState.pathname}?${parsedState.query}`
+				this.props.router.push(authUrl, authUrl)
 				return
 			}
 		}
