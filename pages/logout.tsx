@@ -1,7 +1,6 @@
 import React from 'react'
-import Router from 'next/router'
+import { Router, useRouter, withRouter } from 'next/router'
 import LoadingIndicator from '../presentation/components/LoadingIndicator'
-import { NextPage } from 'next'
 import { useMutation } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 
@@ -24,19 +23,29 @@ const LOGOUT_MUTATION = gql`
 	}
 `
 
-const Logout: NextPage = () => {
+export interface LogoutPageProps {
+	router: Router
+}
+
+const Logout = (props: LogoutPageProps) => {
+	const router = useRouter()
 	const [logout, { loading, data, error }] = useMutation(LOGOUT_MUTATION)
 	if (!loading && !data) {
 		logout()
 	}
+
+	const { redirect_uri } = props.router.query
 
 	const completeLogout = async (refresh) => {
 		deleteCookie('sid')
 		if (refresh) {
 			await refresh()
 		}
-		Router.push('/')
-		Router.replace('/')
+		if (redirect_uri && !Array.isArray(redirect_uri)) {
+			window.location.replace(redirect_uri)
+		}
+		router.push('/')
+		router.replace('/')
 	}
 
 	if (error) {
@@ -64,4 +73,9 @@ const Logout: NextPage = () => {
 	)
 }
 
-export default Logout
+Logout.getInitialProps = ({ query, res }) => {
+	const locals = res ? res.locals : {}
+	return { query, ...locals }
+}
+
+export default withRouter(Logout)
