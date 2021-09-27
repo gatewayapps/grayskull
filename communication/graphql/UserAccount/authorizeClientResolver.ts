@@ -27,7 +27,7 @@ export async function authorizeClientResolver(obj, args, context: IRequestContex
 			pendingScopes
 		}
 	}
-	const responseTypes: string[] = responseType.split(' ')
+	const responseTypes: string[] = responseType.indexOf(',') > -1 ? responseType.split(',') : responseType.split(' ')
 
 	const authorizationUrl = await generateAuthorizationRedirectActivity(
 		client_id,
