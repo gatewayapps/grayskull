@@ -107,6 +107,11 @@ export interface EditableUserProfileState {
 	fromAdmin: boolean
 }
 
+interface PermissionOptions {
+	label: string
+	value: number
+}
+
 export default class EditableUserProfile extends React.Component<EditableUserProfileProps, EditableUserProfileState> {
 	constructor(props: EditableUserProfileProps) {
 		super(props)
@@ -122,8 +127,10 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 	}
 
 	public handleChange = (e: React.ChangeEvent<HTMLInputElement>, validate: any) => {
+		const permissionValue =
+			e.target.name === 'permissions' ? ((e.target.value as unknown) as PermissionOptions).value : undefined
 		const currentState = this.state.modifiedState
-		currentState[e.target.name] = e.target.value
+		currentState[e.target.name] = permissionValue ? permissionValue : e.target.value
 		this.setState({ modifiedState: currentState })
 		validate()
 	}
@@ -150,7 +157,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 			validations.push(new FormValidationRule('emailAddress', 'isEmpty', false, 'Email Address is required'))
 		}
 
-		const permissionOptions = [
+		const permissionOptions: PermissionOptions[] = [
 			{
 				label: 'User',
 				value: Permissions.USER
@@ -160,8 +167,8 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 				value: Permissions.ADMIN
 			}
 		]
-		const selectedPermission =
-			finalUser.permissions.value === Permissions.ADMIN ? permissionOptions[1] : permissionOptions[0]
+		const finalUserPermissions = this.state.editing ? finalUser.permissions : finalUser.permissions.value
+		const selectedPermission = finalUserPermissions === Permissions.ADMIN ? permissionOptions[1] : permissionOptions[0]
 
 		const genderOptions = ['Male', 'Female']
 		if (finalUser.gender && genderOptions.includes(finalUser.gender) === false) {
