@@ -35,11 +35,11 @@ const BackupPage = () => {
 		window.location.replace(data.backupConfiguration.downloadUrl)
 	}
 	if (restoredData && restoredData.restoreConfiguration && restoredData.restoreConfiguration.success) {
-		window.location.reload(true)
+		window.location.reload()
 	}
 
 	return (
-		<AuthenticatedRoute permission={Permissions.Admin}>
+		<AuthenticatedRoute permission={Permissions.ADMIN}>
 			<div className="container">
 				<div className="card">
 					<div className="card-header">
