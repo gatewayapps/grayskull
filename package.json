@@ -87,6 +87,7 @@
     "@types/reactstrap": "^8.7.2",
     "@types/styled-components": "^4.4.3",
     "@types/uuid": "^3.4.7",
+    "@types/validator": "^13.6.3",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "chai": "^4.3.4",
