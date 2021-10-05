@@ -7,7 +7,11 @@ export default async (req, res) => {
 			await applyMigrations(dataContext)
 			res.json({ success: true })
 		} catch (err) {
-			res.json({ success: false, reason: err.message })
+			if (err instanceof Error) {
+				res.json({ success: false, reason: err.message })
+			} else {
+				res.json({ success: false, reason: 'Unknown error' })
+			}
 		}
 	} else {
 		res.json({ success: false, reason: 'Invalid method' })

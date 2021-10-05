@@ -53,7 +53,7 @@ export async function authenticateUserActivity(
 		)
 	}
 
-	const passwordMatch = await compare(password, userAccount.passwordHash)
+	const passwordMatch = await compare(password, userAccount.passwordHash!)
 	if (!passwordMatch) {
 		throw new GrayskullError(GrayskullErrorCode.IncorrectPassword, `Password was not correct`)
 	}

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 export const useFetch = (url, options) => {
 	const [response, setResponse] = React.useState(null)
-	const [error, setError] = React.useState(null)
+	const [error, setError] = React.useState<Error>()
 	const [isLoading, setIsLoading] = React.useState(true)
 
 	const makeRequest = async () => {
@@ -13,7 +13,9 @@ export const useFetch = (url, options) => {
 			setResponse(json)
 			setIsLoading(false)
 		} catch (error) {
-			setError(error)
+			if (error instanceof Error) {
+				setError(error)
+			}
 		}
 	}
 

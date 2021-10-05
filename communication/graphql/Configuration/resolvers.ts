@@ -250,9 +250,16 @@ export default {
 					success: true
 				}
 			} catch (err) {
-				return {
-					success: false,
-					error: err.message
+				if (err instanceof Error) {
+					return {
+						success: false,
+						error: err.message
+					}
+				} else {
+					return {
+						success: false,
+						error: 'Unknown'
+					}
 				}
 			}
 		}

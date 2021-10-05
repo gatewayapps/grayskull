@@ -9,7 +9,7 @@ export interface IClient {
 	pinToHeader: boolean | null
 	logoImageUrl: string | null
 	description: string | null
-	secret: string
+	secret?: string
 	baseUrl: string
 	homePageUrl: string | null
 	redirectUris: string
@@ -232,12 +232,12 @@ export interface IUserAccount {
 	displayName: string | null
 	lastActive: Date
 	lastPasswordChange: Date
-	passwordHash: string
+	passwordHash?: string
 	gender: string | null
-	birthday: Date | null
+	birthday?: Date | null
 	profileImageUrl: string | null
 	permissions: number
-	otpSecret: string | null
+	otpSecret?: string | null
 	otpEnabled: boolean
 	isActive: boolean
 	createdBy: string | null

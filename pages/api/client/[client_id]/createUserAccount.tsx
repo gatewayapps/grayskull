@@ -28,7 +28,10 @@ export default async function createUserAccount(req: NextApiRequest, res: NextAp
 
 		res.status(201).json(result)
 	} catch (err) {
-		console.error(err)
-		res.status(403).json({ success: false, message: err.message })
+		if (err instanceof Error) {
+			res.status(403).json({ success: false, reason: err.message })
+		} else {
+			res.status(403).json({ success: false, reason: 'Unknown error' })
+		}
 	}
 }

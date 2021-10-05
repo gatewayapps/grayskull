@@ -12,7 +12,7 @@ export default async function prepareTestEnvironment(req, res: NextApiResponse) 
 		if (err instanceof Error) {
 			res.status(400).json({ success: false, message: err.message, location: err.stack })
 		} else {
-			res.status(400).json({ success: false, message: err.message })
+			res.status(400).json({ success: false, reason: 'Unknown error' })
 		}
 	}
 }

@@ -89,11 +89,13 @@ export default {
 				await restoreConfigurationActivity(contents, context)
 				return { success: true }
 			} catch (err) {
-				console.error(err)
-				return {
-					success: false,
-					error: err.message,
-					message: err.message
+				if (err instanceof Error) {
+					return { success: false, message: err.message }
+				} else {
+					return {
+						success: false,
+						message: 'Unknown error'
+					}
 				}
 			}
 		}

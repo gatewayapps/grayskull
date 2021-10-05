@@ -271,15 +271,17 @@ export default class CSVDataImport extends React.Component<CSVDataImportProps, C
 																		if (err) {
 																			failedImportToStateArray.push(false)
 																		}
-																		const errMessage = err.message.substring(err.message.indexOf(':') + 1)
-																		this.setState({
-																			errorMessage: `${errMessage}`,
-																			loadingMessage: '',
-																			failedImportArray: failedImportToStateArray,
-																			currentlyImportingUsers: false
-																		})
-																		if (this.props.refetch) {
-																			this.props.refetch()
+																		if (err instanceof Error) {
+																			const errMessage = err.message.substring(err.message.indexOf(':') + 1)
+																			this.setState({
+																				errorMessage: `${errMessage}`,
+																				loadingMessage: '',
+																				failedImportArray: failedImportToStateArray,
+																				currentlyImportingUsers: false
+																			})
+																			if (this.props.refetch) {
+																				this.props.refetch()
+																			}
 																		}
 																	}
 																}

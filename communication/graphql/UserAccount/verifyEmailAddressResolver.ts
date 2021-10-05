@@ -10,9 +10,13 @@ export async function verifyEmailAddressResolver(obj, args, context: IRequestCon
 			success: true
 		}
 	} catch (err) {
-		return {
-			success: false,
-			message: err.message
+		if (err instanceof Error) {
+			return { success: false, message: err.message }
+		} else {
+			return {
+				success: false,
+				message: 'Unknown error'
+			}
 		}
 	}
 }

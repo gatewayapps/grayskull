@@ -39,6 +39,10 @@ export default async function handleRequest(req: NextApiRequest, res: NextApiRes
 		}
 	} catch (err) {
 		console.error(err)
-		res.status(403).json({ success: false, message: err.message })
+		if (err instanceof Error) {
+			res.status(403).json({ success: false, reason: err.message })
+		} else {
+			res.status(403).json({ success: false, reason: 'Unknown error' })
+		}
 	}
 }

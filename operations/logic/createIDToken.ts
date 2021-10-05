@@ -27,7 +27,7 @@ export async function createIDToken(
 	const profile = await getUserProfileForClient(userContext, userClient, dataContext)
 	let at_hash: string | undefined = undefined
 	if (accessToken) {
-		const hmac = createHmac('sha256', client.secret)
+		const hmac = createHmac('sha256', client.secret!)
 		const digest = hmac.update(accessToken).digest()
 
 		const finalBytes = digest.slice(0, 15)

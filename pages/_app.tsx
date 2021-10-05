@@ -13,6 +13,10 @@ import { sanitizeConfiguration } from '../operations/logic/sanitizeConfiguration
 
 const apolloClient = createApolloClient()
 
+import 'bootswatch/dist/materia/bootstrap.css'
+import 'titatoggle/dist/titatoggle-dist-min.css'
+import '../public/global.css'
+
 class MyApp extends App<any> {
 	state = {
 		configuration: this.props.configuration,

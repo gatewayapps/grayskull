@@ -11,5 +11,5 @@ export async function verifyPassword(userAccountId: string, password: string, da
 			`Attempted to verify a password for user account ${userAccountId}, which does not exist`
 		)
 	}
-	return await compare(password, userAccount.passwordHash)
+	return await compare(password, userAccount.passwordHash!)
 }
