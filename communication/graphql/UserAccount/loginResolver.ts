@@ -1,7 +1,7 @@
 import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { authenticateUserActivity } from '../../../activities/authentication/authenticateUserActivity'
 import { setAuthCookies } from '../../../operations/logic/authentication'
-import { GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
+import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 import { getOTPBackupOptionsForEmailAddressActivity } from '../../../activities/getOTPBackupOptionsForEmailAddressActivity'
 
 export async function loginResolver(obj, args, context: IRequestContext) {
@@ -14,7 +14,7 @@ export async function loginResolver(obj, args, context: IRequestContext) {
 			success: true
 		}
 	} catch (err) {
-		if (err && err.code) {
+		if (err instanceof GrayskullError) {
 			switch (err.code) {
 				case GrayskullErrorCode.InvalidOTP:
 				case GrayskullErrorCode.RequiresOTP: {
@@ -42,7 +42,6 @@ export async function loginResolver(obj, args, context: IRequestContext) {
 				}
 			}
 		} else {
-			console.error(err)
 			return {
 				success: false,
 				message: 'Invalid username or password'

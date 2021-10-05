@@ -93,7 +93,7 @@ const ClientAuthorizationComponent: React.FC<IClientAuthorizationProps> = (props
 	}, [authorizeClient, updateScopesData])
 
 	const onDenyClicked = async () => {
-		const query = ['error=consent_required']
+		const query: string[] = ['error=consent_required']
 		if (props.state) {
 			query.push(`state=${encodeURIComponent(props.state)}`)
 		}
@@ -209,7 +209,7 @@ export interface IClientAuthorizationProps {
 	responseType: string
 	redirectUri: string
 	scope: string
-	scopes: [{ id: string; userDescription: string; permissionLevel: number; required: boolean }]
+	scopes: Array<{ id: string; userDescription: string; permissionLevel: number; required: boolean }>
 	state?: string
 	nonce?: string
 }

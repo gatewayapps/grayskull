@@ -85,7 +85,7 @@ export default class ImageDropArea extends React.PureComponent<IImageDropAreaPro
 			}
 		} catch (err) {
 			console.error(err)
-			if (this.props.onUploadFailed) {
+			if (this.props.onUploadFailed && err instanceof Error) {
 				this.props.onUploadFailed(err)
 			}
 		}

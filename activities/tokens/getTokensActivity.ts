@@ -58,7 +58,7 @@ export async function getTokensActivity(
 		scopes.includes(ScopeMap.offline_access.id) &&
 		userClientHasAllowedScope(userClient, ScopeMap.offline_access.id)
 	) {
-		refresh_token = await createRefreshToken(client.secret, userClient.userClientId, undefined, context.dataContext)
+		refresh_token = await createRefreshToken(client.secret!, userClient.userClientId, undefined, context.dataContext)
 	}
 
 	const access_token = await createAccessToken(

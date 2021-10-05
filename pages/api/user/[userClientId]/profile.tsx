@@ -44,6 +44,10 @@ export default async function profile(req: NextApiRequest, res: NextApiResponse)
 
 		res.json(profile)
 	} catch (err) {
-		res.status(400).json({ success: false, error: err.message })
+		if (err instanceof Error) {
+			res.status(400).json({ success: false, reason: err.message })
+		} else {
+			res.status(400).json({ success: false, reason: 'Unknown error' })
+		}
 	}
 }

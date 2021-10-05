@@ -16,7 +16,13 @@ export async function registerUserResolver(obj, args, context: IRequestContext):
 	} catch (err) {
 		if (err instanceof GrayskullError) {
 			return { success: false, error: err.code, message: err.message }
+		} else if (err instanceof Error) {
+			return { success: false, message: err.message }
+		} else {
+			return {
+				success: false,
+				message: 'Unknown error'
+			}
 		}
-		return { success: false, message: err.message }
 	}
 }

@@ -133,7 +133,12 @@ export default async function handleTokenRequest(req: NextApiRequest, res: NextA
 				}
 			}
 		}
-		res.status(400).json(new OauthError('invalid_request', err.message))
+		if (err instanceof Error) {
+			res.status(400).json({ success: false, reason: err.message })
+		} else {
+			res.status(400).json({ success: false, reason: 'Unknown error' })
+		}
+
 		return
 	}
 }

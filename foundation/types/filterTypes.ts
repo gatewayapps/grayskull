@@ -3,8 +3,8 @@ export interface IClientMeta {
 }
 
 export interface IClientFilter {
-	or?: [IClientFilter]
-	and?: [IClientFilter]
+	or?: IClientFilter[]
+	and?: IClientFilter[]
 	client_id_contains?: string
 	client_id_startsWith?: string
 	client_id_endsWith?: string
@@ -52,21 +52,21 @@ export interface IClientFilter {
 	isActive_notEquals?: boolean
 	pinToHeader_equals?: boolean
 	pinToHeader_notEquals?: boolean
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
 	createdAt_lessThan?: Date
 	createdAt_greaterThan?: Date
 	createdAt_equals?: Date
 	createdAt_notEquals?: Date
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
 	updatedAt_lessThan?: Date
 	updatedAt_greaterThan?: Date
 	updatedAt_equals?: Date
 	updatedAt_notEquals?: Date
-	deletedBy_in?: [string]
+	deletedBy_in?: string[]
 	deletedBy_equals?: string
 	deletedBy_notEquals?: string
 	deletedAt_lessThan?: Date
@@ -84,8 +84,8 @@ export interface IConfigurationMeta {
 }
 
 export interface IConfigurationFilter {
-	or?: [IConfigurationFilter]
-	and?: [IConfigurationFilter]
+	or?: IConfigurationFilter[]
+	and?: IConfigurationFilter[]
 }
 
 export interface IEmailAddressMeta {
@@ -93,12 +93,12 @@ export interface IEmailAddressMeta {
 }
 
 export interface IEmailAddressFilter {
-	or?: [IEmailAddressFilter]
-	and?: [IEmailAddressFilter]
-	emailAddressId_in?: [string]
+	or?: IEmailAddressFilter[]
+	and?: IEmailAddressFilter[]
+	emailAddressId_in?: string[]
 	emailAddressId_equals?: string
 	emailAddressId_notEquals?: string
-	userAccountId_in?: [string]
+	userAccountId_in?: string[]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string
 	emailAddress_contains?: string
@@ -110,21 +110,21 @@ export interface IEmailAddressFilter {
 	verified_notEquals?: boolean
 	primary_equals?: boolean
 	primary_notEquals?: boolean
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
 	createdAt_lessThan?: Date
 	createdAt_greaterThan?: Date
 	createdAt_equals?: Date
 	createdAt_notEquals?: Date
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
 	updatedAt_lessThan?: Date
 	updatedAt_greaterThan?: Date
 	updatedAt_equals?: Date
 	updatedAt_notEquals?: Date
-	deletedBy_in?: [string]
+	deletedBy_in?: string[]
 	deletedBy_equals?: string
 	deletedBy_notEquals?: string
 	deletedAt_lessThan?: Date
@@ -143,12 +143,12 @@ export interface IPhoneNumberMeta {
 }
 
 export interface IPhoneNumberFilter {
-	or?: [IPhoneNumberFilter]
-	and?: [IPhoneNumberFilter]
-	phoneNumberId_in?: [string]
+	or?: IPhoneNumberFilter[]
+	and?: IPhoneNumberFilter[]
+	phoneNumberId_in?: string[]
 	phoneNumberId_equals?: string
 	phoneNumberId_notEquals?: string
-	userAccountId_in?: [string]
+	userAccountId_in?: string[]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string
 	phoneNumber_contains?: string
@@ -160,21 +160,21 @@ export interface IPhoneNumberFilter {
 	verified_notEquals?: boolean
 	primary_equals?: boolean
 	primary_notEquals?: boolean
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
 	createdAt_lessThan?: Date
 	createdAt_greaterThan?: Date
 	createdAt_equals?: Date
 	createdAt_notEquals?: Date
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
 	updatedAt_lessThan?: Date
 	updatedAt_greaterThan?: Date
 	updatedAt_equals?: Date
 	updatedAt_notEquals?: Date
-	deletedBy_in?: [string]
+	deletedBy_in?: string[]
 	deletedBy_equals?: string
 	deletedBy_notEquals?: string
 	deletedAt_lessThan?: Date
@@ -193,12 +193,12 @@ export interface IRefreshTokenMeta {
 }
 
 export interface IRefreshTokenFilter {
-	or?: [IRefreshTokenFilter]
-	and?: [IRefreshTokenFilter]
-	id_in?: [string]
+	or?: IRefreshTokenFilter[]
+	and?: IRefreshTokenFilter[]
+	id_in?: string[]
 	id_equals?: string
 	id_notEquals?: string
-	userClientId_in?: [string]
+	userClientId_in?: string[]
 	userClientId_equals?: string
 	userClientId_notEquals?: string
 	token_contains?: string
@@ -222,16 +222,16 @@ export interface IRefreshTokenFilter {
 	revokedAt_greaterThan?: Date
 	revokedAt_equals?: Date
 	revokedAt_notEquals?: Date
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
-	revokedBy_in?: [string]
+	revokedBy_in?: string[]
 	revokedBy_equals?: string
 	revokedBy_notEquals?: string
-	deletedBy_in?: [string]
+	deletedBy_in?: string[]
 	deletedBy_equals?: string
 	deletedBy_notEquals?: string
 	deletedAt_lessThan?: Date
@@ -250,12 +250,12 @@ export interface SessionMeta {
 }
 
 export interface SessionFilter {
-	or?: [SessionFilter]
-	and?: [SessionFilter]
-	sessionId_in?: [string]
+	or?: SessionFilter[]
+	and?: SessionFilter[]
+	sessionId_in?: string[]
 	sessionId_equals?: string
 	sessionId_notEquals?: string
-	userAccountId_in?: [string]
+	userAccountId_in?: string[]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string
 	name_contains?: string
@@ -276,14 +276,14 @@ export interface SessionFilter {
 	expiresAt_greaterThan?: Date
 	expiresAt_equals?: Date
 	expiresAt_notEquals?: Date
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
 	createdAt_lessThan?: Date
 	createdAt_greaterThan?: Date
 	createdAt_equals?: Date
 	createdAt_notEquals?: Date
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
 	updatedAt_lessThan?: Date
@@ -301,8 +301,8 @@ export interface ISettingMeta {
 }
 
 export interface ISettingFilter {
-	or?: [ISettingFilter]
-	and?: [ISettingFilter]
+	or?: ISettingFilter[]
+	and?: ISettingFilter[]
 	key_contains?: string
 	key_startsWith?: string
 	key_endsWith?: string
@@ -334,9 +334,9 @@ export interface UserAccountMeta {
 }
 
 export interface UserAccountFilter {
-	or?: [UserAccountFilter]
-	and?: [UserAccountFilter]
-	userAccountId_in?: [string]
+	or?: UserAccountFilter[]
+	and?: UserAccountFilter[]
+	userAccountId_in?: string[]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string
 	firstName_contains?: string
@@ -384,21 +384,21 @@ export interface UserAccountFilter {
 	otpEnabled_notEquals?: boolean
 	isActive_equals?: boolean
 	isActive_notEquals?: boolean
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
 	createdAt_lessThan?: Date
 	createdAt_greaterThan?: Date
 	createdAt_equals?: Date
 	createdAt_notEquals?: Date
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
 	updatedAt_lessThan?: Date
 	updatedAt_greaterThan?: Date
 	updatedAt_equals?: Date
 	updatedAt_notEquals?: Date
-	deletedBy_in?: [string]
+	deletedBy_in?: string[]
 	deletedBy_equals?: string
 	deletedBy_notEquals?: string
 	deletedAt_lessThan?: Date
@@ -416,12 +416,12 @@ export interface IUserClientMeta {
 }
 
 export interface IUserClientFilter {
-	or?: [IUserClientFilter]
-	and?: [IUserClientFilter]
-	userClientId_in?: [string]
+	or?: IUserClientFilter[]
+	and?: IUserClientFilter[]
+	userClientId_in?: string[]
 	userClientId_equals?: string
 	userClientId_notEquals?: string
-	userAccountId_in?: [string]
+	userAccountId_in?: string[]
 	userAccountId_equals?: string
 	userAccountId_notEquals?: string
 	client_id_contains?: string
@@ -441,28 +441,28 @@ export interface IUserClientFilter {
 	deniedScopes_notEquals?: string
 	revoked_equals?: boolean
 	revoked_notEquals?: boolean
-	revokedBy_in?: [string]
+	revokedBy_in?: string[]
 	revokedBy_equals?: string
 	revokedBy_notEquals?: string
 	RevokedAt_lessThan?: Date
 	RevokedAt_greaterThan?: Date
 	RevokedAt_equals?: Date
 	RevokedAt_notEquals?: Date
-	createdBy_in?: [string]
+	createdBy_in?: string[]
 	createdBy_equals?: string
 	createdBy_notEquals?: string
 	createdAt_lessThan?: Date
 	createdAt_greaterThan?: Date
 	createdAt_equals?: Date
 	createdAt_notEquals?: Date
-	updatedBy_in?: [string]
+	updatedBy_in?: string[]
 	updatedBy_equals?: string
 	updatedBy_notEquals?: string
 	updatedAt_lessThan?: Date
 	updatedAt_greaterThan?: Date
 	updatedAt_equals?: Date
 	updatedAt_notEquals?: Date
-	deletedBy_in?: [string]
+	deletedBy_in?: string[]
 	deletedBy_equals?: string
 	deletedBy_notEquals?: string
 	deletedAt_lessThan?: Date

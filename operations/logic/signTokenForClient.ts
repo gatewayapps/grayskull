@@ -23,7 +23,7 @@ export async function signTokenForClient(token: string | object | Buffer, client
 			keyid: rsaKeyId
 		})
 	} else {
-		return jwt.sign(token, client.secret, {
+		return jwt.sign(token, client.secret!, {
 			algorithm: client.TokenSigningMethod as 'HS256' | 'RS256'
 		})
 	}

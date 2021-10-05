@@ -1,7 +1,5 @@
 import React from 'react'
-import 'bootswatch/dist/materia/bootstrap.css'
-import 'titatoggle/dist/titatoggle-dist-min.css'
-import '../../public/global.css'
+
 import PropTypes from 'prop-types'
 import RequireAuthentication from '../components/RequireAuthentication'
 import { RequirePermission } from '../components/RequirePermission'

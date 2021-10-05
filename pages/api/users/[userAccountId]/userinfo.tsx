@@ -83,7 +83,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 				res.json({ success: false, message: 'Not authorized' })
 			}
 		} catch (err) {
-			res.json({ success: false, message: err.message })
+			if (err instanceof Error) {
+				res.json({ success: false, reason: err.message })
+			} else {
+				res.json({ success: false, reason: 'Unknown error' })
+			}
 		}
 	} else {
 		res.json({ succes: false, message: 'You must be an administrator to do that' })

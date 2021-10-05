@@ -2,7 +2,7 @@ import { setEmailAddressVerified } from './setEmailAddressVerified'
 
 import { getInMemoryContext } from '../../../foundation/context/getDataContext.spec'
 import { createEmailAddress } from './createEmailAddress'
-import { GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
+import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
 import Knex from 'knex'
 
 let dataContext: Knex
@@ -29,8 +29,10 @@ describe('setEmailAddressVerified', () => {
 				await setEmailAddressVerified('unverified2@test.com', dataContext)
 			} catch (err) {
 				failed = true
-
-				expect(err.code).toEqual(GrayskullErrorCode.InvalidEmailVerificationCode)
+				expect(err).toBeInstanceOf(GrayskullError)
+				if (err instanceof GrayskullError) {
+					expect(err.code).toEqual(GrayskullErrorCode.InvalidEmailVerificationCode)
+				}
 			}
 			expect(failed).toEqual(true)
 		}

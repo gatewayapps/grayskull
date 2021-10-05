@@ -16,6 +16,10 @@ export default async function changePasswordWithToken(req: NextApiRequest, res: 
 		res.status(200).json({ success: true })
 	} catch (err) {
 		console.error(err)
-		res.status(400).json({ success: false, message: err.message })
+		if (err instanceof Error) {
+			res.status(400).json({ success: false, reason: err.message })
+		} else {
+			res.status(400).json({ success: false, reason: 'Unknown error' })
+		}
 	}
 }

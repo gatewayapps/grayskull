@@ -45,9 +45,16 @@ export default {
 					success: true
 				}
 			} catch (err) {
-				return {
-					success: false,
-					message: err.message
+				if (err instanceof Error) {
+					return {
+						success: false,
+						error: err.message
+					}
+				} else {
+					return {
+						success: false,
+						error: 'Unknown'
+					}
 				}
 			}
 		},
@@ -62,10 +69,16 @@ export default {
 					success: true
 				}
 			} catch (err) {
-				return {
-					success: false,
-					message: err.message,
-					error: err.message
+				if (err instanceof Error) {
+					return {
+						success: false,
+						error: err.message
+					}
+				} else {
+					return {
+						success: false,
+						error: 'Unknown'
+					}
 				}
 			}
 		},

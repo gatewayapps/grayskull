@@ -16,11 +16,16 @@ export async function changePasswordResolver(obj, args, context: IRequestContext
 			success: true
 		}
 	} catch (err) {
-		console.error(err)
-		return {
-			success: false,
-			error: err.message,
-			message: err.message
+		if (err instanceof Error) {
+			return {
+				success: false,
+				error: err.message
+			}
+		} else {
+			return {
+				success: false,
+				error: 'Unknown'
+			}
 		}
 	}
 }

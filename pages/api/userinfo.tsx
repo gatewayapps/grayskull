@@ -57,7 +57,11 @@ async function postUserProfile(clientOptions: IClientRequestOptions, context: IR
 			return
 		}
 	} catch (err) {
-		context.res.json({ success: false, message: err.message })
+		if (err instanceof Error) {
+			context.res.json({ success: false, reason: err.message })
+		} else {
+			context.res.json({ success: false, reason: 'Unknown error' })
+		}
 	}
 }
 
