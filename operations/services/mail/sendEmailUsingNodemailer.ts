@@ -34,6 +34,9 @@ export async function sendEmailUsingNodemailer(
 		}
 	}
 
+	if (process.env.NODE_ENV !== 'production') {
+		options.ignoreTLS = true
+	}
 	const transport = nodemailer.createTransport(options)
 
 	const messageOptions: SendMailOptions = {

@@ -4,6 +4,7 @@ import { GrayskullError, GrayskullErrorCode } from '../../foundation/errors/Gray
 import { verifyPasswordStrength } from '../../operations/logic/verifyPasswordStrength'
 import { setUserAccountPassword } from '../../operations/data/userAccount/setUserAccountPassword'
 import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
+import { sendTemplatedEmail } from '../../operations/services/mail/sendEmailTemplate'
 
 /*
  * 1.  Does the old password validate
@@ -51,6 +52,17 @@ export async function changePasswordWithOldPasswordActivity(
 						newPassword,
 						context.dataContext,
 						context.cacheContext
+					)
+					await sendTemplatedEmail(
+						`passwordEmailChangeTemplate`,
+						context.user.emailAddress,
+						'Account Information Changed',
+						{
+							realmName: context.configuration.Server.realmName,
+							user: context.user,
+							change: 'Password'
+						},
+						context.configuration
 					)
 					return true
 				}
