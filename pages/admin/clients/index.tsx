@@ -1,13 +1,14 @@
 import gql from 'graphql-tag'
 import Link from 'next/link'
 import React from 'react'
-import { Query } from 'react-apollo'
+import { useQuery } from 'react-apollo'
 
 import ErrorMessage from '../../../presentation/components/ErrorMessage'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
 import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import Permissions from '../../../presentation/utils/permissions'
 import { RequirePermission, RequirePermissionModes } from '../../../presentation/components/RequirePermission'
+import { IClient } from '../../../foundation/types/types'
 
 const ALL_CLIENTS_QUERY = gql`
 	query ALL_CLIENTS_QUERY {
@@ -20,7 +21,9 @@ const ALL_CLIENTS_QUERY = gql`
 	}
 `
 
-const ClientsIndexPage = () => {
+const ClientsIndexPage: React.FC = () => {
+	const { data, error, loading } = useQuery<{ clients: IClient[] }>(ALL_CLIENTS_QUERY)
+
 	return (
 		<AuthenticatedRoute permission={Permissions.ADMIN}>
 			<div className="container pt-4">
@@ -38,44 +41,38 @@ const ClientsIndexPage = () => {
 						</RequirePermission>
 					</div>
 				</div>
-				<Query query={ALL_CLIENTS_QUERY}>
-					{({ data, error, loading }) => {
-						if (loading) return <LoadingIndicator />
-						if (error) return <ErrorMessage error={error} />
-						if (!data || !data.clients) {
-							return <p>No Clients found</p>
-						}
-						return (
-							<table className="table table-hover">
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th>Url</th>
-										<th />
-									</tr>
-								</thead>
-								<tbody>
-									{data.clients.map((client) => (
-										<tr key={client.client_id}>
-											<td>{client.name}</td>
-											<td>
-												<a href={client.homePageUrl || client.baseUrl}>{client.homePageUrl || client.baseUrl}</a>
-											</td>
-											<td>
-												<Link href={{ pathname: '/admin/clients/edit', query: { id: client.client_id } }}>
-													<a className="mr-3">Edit</a>
-												</Link>
-												<Link href={{ pathname: '/admin/clients/view', query: { id: client.client_id } }}>
-													<a>View</a>
-												</Link>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						)
-					}}
-				</Query>
+				{loading && <LoadingIndicator />}
+				{error && <ErrorMessage error={error} />}
+				{!data || (!data.clients && <p>No Clients found</p>)}
+				{data && (
+					<table className="table table-hover">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Url</th>
+								<th />
+							</tr>
+						</thead>
+						<tbody>
+							{data.clients.map((client) => (
+								<tr key={client.client_id}>
+									<td>{client.name}</td>
+									<td>
+										<a href={client.homePageUrl || client.baseUrl}>{client.homePageUrl || client.baseUrl}</a>
+									</td>
+									<td>
+										<Link href={{ pathname: '/admin/clients/edit', query: { id: client.client_id } }}>
+											<a className="mr-3">Edit</a>
+										</Link>
+										<Link href={{ pathname: '/admin/clients/view', query: { id: client.client_id } }}>
+											<a>View</a>
+										</Link>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				)}
 			</div>
 		</AuthenticatedRoute>
 	)
