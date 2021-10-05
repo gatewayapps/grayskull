@@ -54,10 +54,7 @@
     "busboy": false,
     "apollo-server": false
   },
-  "resolutions": {
-    "**/@typescript-eslint/eslint-plugin": "^4.1.1",
-    "**/@typescript-eslint/parser": "^4.1.1"
-  },
+
   "homepage": "https://github.com/gatewayapps/grayskull#readme",
   "devDependencies": {
     "@babel/core": "7.15.5",
