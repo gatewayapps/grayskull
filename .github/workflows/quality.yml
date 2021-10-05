@@ -26,3 +26,5 @@ jobs:
         run: yarn test-activities
       - name: Resolver tests
         run: yarn test-resolvers
+      - name: Utilities tests
+        run: yarn test-utilities

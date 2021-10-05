@@ -18,7 +18,8 @@
     "test-operations": "jest --testPathPattern operations",
     "test-foundation": "jest --testPathPattern foundation",
     "test-activities": "jest --testPathPattern activity.spec.ts",
-    "ci": "yarn format && yarn lint && yarn test-resolvers && yarn test-activities && yarn test-operations && yarn test-foundation"
+    "test-utilities": "jest --testPathPattern presentation/utils",
+    "ci": "yarn format && yarn lint && yarn test-resolvers && yarn test-activities && yarn test-operations && yarn test-foundation && yarn test-utilities"
   },
   "repository": {
     "type": "git",
