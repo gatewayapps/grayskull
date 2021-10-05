@@ -18,7 +18,8 @@
     "test-operations": "jest --testPathPattern operations",
     "test-foundation": "jest --testPathPattern foundation",
     "test-activities": "jest --testPathPattern activity.spec.ts",
-    "ci": "yarn format && yarn lint && yarn test-resolvers && yarn test-activities && yarn test-operations && yarn test-foundation"
+    "test-utilities": "jest --testPathPattern presentation/utils",
+    "ci": "yarn format && yarn lint && yarn test-resolvers && yarn test-activities && yarn test-operations && yarn test-foundation && yarn test-utilities"
   },
   "repository": {
     "type": "git",
@@ -61,8 +62,10 @@
     "@babel/plugin-proposal-decorators": "^7.14.5",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@types/apollo-upload-client": "^8.1.1",
+    "@types/atob": "^2.1.2",
     "@types/bcrypt": "^3.0.0",
     "@types/bluebird": "^3.5.35",
+    "@types/btoa": "^1.2.3",
     "@types/classnames": "^2.3.1",
     "@types/config": "0.0.36",
     "@types/cookie-parser": "^1.4.1",
@@ -85,6 +88,7 @@
     "@types/reactstrap": "^8.7.2",
     "@types/styled-components": "^4.4.3",
     "@types/uuid": "^3.4.7",
+    "@types/validator": "^13.6.3",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
     "chai": "^4.3.4",
