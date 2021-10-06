@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { hasLowercase, hasMinLength, hasNumber, hasSymbol, hasUppercase } from '../utils/passwordComplexity'
@@ -10,7 +9,12 @@ const PasswordComplexityList = styled.ul`
 	font-size: 0.85rem;
 `
 
-const CheckListItem = (props) => {
+interface CheckListItemProps {
+	checked: boolean
+	label: string
+}
+
+const CheckListItem = (props: CheckListItemProps) => {
 	const classes = `far fa-fw ${props.checked ? 'fa-check text-success' : 'fa-times text-danger'}`
 
 	return (
@@ -20,12 +24,18 @@ const CheckListItem = (props) => {
 	)
 }
 
-CheckListItem.propTypes = {
-	checked: PropTypes.bool.isRequired,
-	label: PropTypes.string.isRequired
+export interface PasswordComplexityProps {
+	configuration: {
+		passwordMinimumLength: number
+		passwordRequiresNumber: boolean
+		passwordRequiresSymbol: boolean
+		passwordRequiresLowercase: boolean
+		passwordRequiresUppercase: boolean
+	}
+	password: string
 }
 
-const PasswordComplexity = (props) => {
+const PasswordComplexity = (props: PasswordComplexityProps) => {
 	const { configuration, password } = props
 
 	return (
@@ -48,17 +58,6 @@ const PasswordComplexity = (props) => {
 			)}
 		</PasswordComplexityList>
 	)
-}
-
-PasswordComplexity.propTypes = {
-	configuration: PropTypes.shape({
-		passwordMinimumLength: PropTypes.number.isRequired,
-		passwordRequiresNumber: PropTypes.bool.isRequired,
-		passwordRequiresSymbol: PropTypes.bool.isRequired,
-		passwordRequiresLowercase: PropTypes.bool.isRequired,
-		passwordRequiresUppercase: PropTypes.bool.isRequired
-	}).isRequired,
-	password: PropTypes.string.isRequired
 }
 
 export default PasswordComplexity
