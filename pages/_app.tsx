@@ -55,7 +55,7 @@ class MyApp extends App<any> {
 				<ApplicationInitializer configuration={this.state.configuration}>
 					<div>
 						<Head>
-							<meta name="viewport" content="width=device-width, initial-scale=1" />
+							<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
 							<title>
 								{title} {pageProps.pageTitle && '| ' + pageProps.pageTitle}
 							</title>

@@ -1,4 +1,4 @@
-import Document, { DocumentContext, Head, Main, NextScript } from 'next/document'
+import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
 import React from 'react'
 import { ServerStyleSheet } from 'styled-components'
 
@@ -21,7 +21,7 @@ export default class MyDocument extends Document<{
 
 	render() {
 		return (
-			<html>
+			<Html>
 				<Head>
 					<script type="text/javascript" src="/__fp2.js" />
 					<script type="text/javascript" src="/scripts/jquery.min.js" />
@@ -31,7 +31,6 @@ export default class MyDocument extends Document<{
 					<style>{`body { margin: 0 } /* custom! */`}</style>
 					<link rel="stylesheet" href="/fontawesome-pro/css/all.min.css" />
 
-					<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
 					{this.props.styleTags}
 				</Head>
 				<body className="custom_class">
@@ -39,7 +38,7 @@ export default class MyDocument extends Document<{
 					<NextScript />
 				</body>
 				<script type="text/javascript" src="/scripts/inert.js" />
-			</html>
+			</Html>
 		)
 	}
 }
