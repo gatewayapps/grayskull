@@ -9,10 +9,12 @@ import { SelectInput } from './SelectInput'
 import { PhoneInput } from './PhoneInput'
 import { OTPInput } from './OTPInput'
 
+export type AdaptiveInputOnChangeFunc = ({ target: { name: string, value: any } }) => void
+
 export interface AdaptiveInputProps {
 	type: string
 	className?: string
-	onChange?: ({ target: { name: string, value: any } }) => void
+	onChange?: AdaptiveInputOnChangeFunc
 	value?: any
 	name: string
 	readOnly?: boolean
