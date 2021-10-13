@@ -32,6 +32,7 @@ import { updateUserAccountActivity } from '../../../activities/updateUserAccount
 import { getPrimaryEmailAddressForLoggedInUserActivity } from '../../../activities/getPrimaryEmailAddressForLoggedInUserActivity'
 import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
 import { manualUserEmailVerificationActivity } from '../../../activities/admin/manualUserEmailVerificationActivity'
+import { getOtpSecretActivity } from '../../../activities/getOtpSecretActivity'
 
 function isValidDate(d: any) {
 	try {
@@ -43,6 +44,9 @@ function isValidDate(d: any) {
 
 export default {
 	Query: {
+		getOtpSecret: async (obj, args, context: IRequestContext) => {
+			return getOtpSecretActivity(args, context)
+		},
 		userAccounts: async (obj, args, context: IRequestContext) => {
 			return getUserAccountsActivity(context)
 		},

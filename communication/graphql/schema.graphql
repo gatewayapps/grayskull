@@ -8,6 +8,7 @@ type Query {
 	emailAddresses(offset: Int, limit: Int, filter: EmailAddressFilter): [EmailAddress!]!
 	emailAddressesMeta(filter: EmailAddressFilter): EmailAddressMeta!
 	emailAddress(where: EmailAddressUniqueFilter): EmailAddress
+	getOtpSecret(data: GetOtpSecretArgs!): String @anonymous
 	phoneNumbers(offset: Int, limit: Int, filter: PhoneNumberFilter): [PhoneNumber!]!
 	phoneNumbersMeta(filter: PhoneNumberFilter): PhoneNumberMeta!
 	phoneNumber(where: PhoneNumberUniqueFilter): PhoneNumber
@@ -779,6 +780,10 @@ input ValidateResetPasswordTokenArgs {
 input VerifyAuthorizationRequestArgs {
 	client_id: String!
 	redirect_uri: String!
+}
+
+input GetOtpSecretArgs {
+	emailAddress: String!
 }
 
 input SetOtpSecretArgs {
