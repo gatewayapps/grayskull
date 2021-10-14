@@ -35,15 +35,16 @@ const ClientView = (props) => {
 	const [scopes, setScopes] = React.useState<IScope[]>([])
 	const [client, setClient] = React.useState<IClient>()
 	const [clientScopes, setClientScopes] = React.useState<string[]>([])
+	const [redirectUris, setRedirectUris] = React.useState<string[]>([])
 	React.useEffect(() => {
 		if (data) {
 			const { client, scopes } = data
 			setScopes(scopes)
 			setClient(client)
 			setClientScopes(JSON.parse(client.scopes))
+			setRedirectUris(JSON.parse(client.redirectUris).map((r) => r.value))
 		}
 	}, [setScopes, setClient, setClientScopes, data])
-
 	return (
 		<AuthenticatedRoute permission={Permissions.ADMIN}>
 			<div className="container pt-4">
@@ -58,7 +59,7 @@ const ClientView = (props) => {
 							<p>{client.description}</p>
 							<p>Base Url: {client.baseUrl}</p>
 							<p>Home Page Url: {client.homePageUrl || client.baseUrl}</p>
-							<p>Redirect Uri: {JSON.parse(client.redirectUris).join(', ')}</p>
+							<p>Redirect Uri: {redirectUris.join(', ')}</p>
 							<div>
 								Scopes:
 								<ul>

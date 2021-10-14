@@ -25,6 +25,22 @@ export interface IClient {
 	deletedAt: Date | null
 	TokenSigningMethod: string
 }
+
+export interface IClientBase {
+	client_id: string
+	name: string
+	logoImageUrl: string
+	description: string
+	baseUrl: string
+	homePageUrl: string
+	public: true
+	redirectUris: [{ key: string; value: string }]
+	scopes: string[]
+	isActive: true
+	AuthorizationFlows: string[]
+	TokenSigningMethod: string
+}
+
 export interface CreateClientOperationArgs {
 	client_id: string
 	name: string
@@ -40,6 +56,7 @@ export interface CreateClientOperationArgs {
 	isActive: boolean
 	TokenSigningMethod: string
 }
+
 export interface UpdateClientOperationArgs {
 	client_id: string
 	pinToHeader: boolean | null
@@ -107,6 +124,7 @@ export interface IConfiguration {
 	Server: IServerConfiguration
 	HeaderItems?: any
 }
+
 export interface SaveConfigurationOperationArgs {
 	Security: ISecurityConfiguration
 	Mail: IMailConfiguration
