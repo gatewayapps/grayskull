@@ -32,7 +32,6 @@ import { updateUserAccountActivity } from '../../../activities/updateUserAccount
 import { getPrimaryEmailAddressForLoggedInUserActivity } from '../../../activities/getPrimaryEmailAddressForLoggedInUserActivity'
 import { getPrimaryEmailAddressForUserActivity } from '../../../activities/getPrimaryEmailAddressForUserActivity'
 import { manualUserEmailVerificationActivity } from '../../../activities/admin/manualUserEmailVerificationActivity'
-import { getOtpSecretActivity } from '../../../activities/getOtpSecretActivity'
 
 function isValidDate(d: any) {
 	try {
@@ -44,9 +43,6 @@ function isValidDate(d: any) {
 
 export default {
 	Query: {
-		getOtpSecret: async (obj, args, context: IRequestContext) => {
-			return getOtpSecretActivity(args, context)
-		},
 		userAccounts: async (obj, args, context: IRequestContext) => {
 			return getUserAccountsActivity(context)
 		},
@@ -103,8 +99,8 @@ export default {
 			}
 		},
 		generateMfaKey: generateMfaKeyResolver,
-		verifyMfaKey: async (obj, args) => {
-			return await verifyOtpTokenActivity(args.data.secret, args.data.token)
+		verifyOtpToken: async (obj, args, context: IRequestContext) => {
+			return verifyOtpTokenActivity(args.data, context)
 		},
 		resendVerification: async (obj, args, context: IRequestContext) => {
 			await sendEmailVerificationActivity(args.data.emailAddress, context)
