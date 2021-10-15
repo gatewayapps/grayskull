@@ -8,18 +8,12 @@ import { BackupPhoneNumberSetup } from './BackupPhoneNumberSetup'
 
 import { CardFooter } from './CardFooter'
 import { FormRow } from './FormRow'
-import { useMutation, useLazyQuery } from 'react-apollo'
+import { useMutation } from 'react-apollo'
 import AdaptiveInput, { AdaptiveInputOnChangeFunc } from './AdaptiveInput'
 
-const GET_OTP_SECRET = gql`
-	query GET_OTP_SECRET($emailAddress: String!) {
-		getOtpSecret(data: { emailAddress: $emailAddress })
-	}
-`
-
-const VERIFY_MFA_KEY = gql`
-	mutation VERIFY_MFA_KEY($secret: String!, $token: String!) {
-		verifyMfaKey(data: { secret: $secret, token: $token })
+const VERIFY_OTP_TOKEN = gql`
+	mutation VERIFY_OTP_TOKEN($emailAddress: String!, $token: String!) {
+		verifyOtpToken(data: { emailAddress: $emailAddress, token: $token })
 	}
 `
 
@@ -32,14 +26,6 @@ const SET_OTP_SECRET = gql`
 		}
 	}
 `
-
-interface GetOtpSecretData {
-	getOtpSecret: string | null
-}
-
-interface GetOtpSecretVariables {
-	emailAddress: string
-}
 
 export interface SecurityMutifactorStatusProps {
 	user: any
@@ -58,12 +44,12 @@ export interface SecurityMutifactorStatusState {
 	otpUpdated: boolean
 }
 
-interface VerifyMfaKeyData {
-	verifyMfaKey: boolean | null
+interface VerifyOtpTokenData {
+	verifyOtpToken: boolean | null
 }
 
-interface VerifyMfaKeyVariables {
-	secret: string
+interface VerifyOtpTokenVariables {
+	emailAddress: string
 	token: string
 }
 
@@ -72,31 +58,22 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 	const [promptForChange, setPromptForChange] = useState(false)
 	const [promptForDisable, setPromptForDisable] = useState(false)
 	const [password, setPassword] = useState('')
-	const [existingOtpSecret, setExistingOtpSecret] = useState('')
 	const [isVerified, setIsVerified] = useState(false)
 	const [mfaToVerify, setMfaToVerify] = useState('')
 
 	const [message, setMessage] = useState('')
 	const [otpSecret, setOtpSecret] = useState('')
 	const [otpUpdated, setOtpUpdated] = useState(false)
-	const [getOtpSecret, { data }] = useLazyQuery<GetOtpSecretData, GetOtpSecretVariables>(GET_OTP_SECRET)
-	const [verifyMfaKey] = useMutation<VerifyMfaKeyData, VerifyMfaKeyVariables>(VERIFY_MFA_KEY)
-
-	useEffect(() => {
-		if (data && data.getOtpSecret) {
-			setExistingOtpSecret(data.getOtpSecret)
-			setIsVerified(false)
-		}
-	}, [data])
+	const [verifyOtpToken] = useMutation<VerifyOtpTokenData, VerifyOtpTokenVariables>(VERIFY_OTP_TOKEN)
 
 	const verifyToken = React.useCallback(async () => {
-		const { data } = await verifyMfaKey({
-			variables: { secret: existingOtpSecret, token: mfaToVerify.split(',').join('') }
+		const { data } = await verifyOtpToken({
+			variables: { emailAddress: props.user.emailAddress, token: mfaToVerify.split(',').join('') }
 		})
-		if (data?.verifyMfaKey === true) {
+		if (data?.verifyOtpToken) {
 			setIsVerified(true)
 		}
-	}, [verifyMfaKey, existingOtpSecret, mfaToVerify])
+	}, [verifyOtpToken, props.user.emailAddress, mfaToVerify])
 
 	const handleTokenChanged: AdaptiveInputOnChangeFunc = React.useCallback((evt) => {
 		setMfaToVerify(evt.target.value)
@@ -104,9 +81,9 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 
 	useEffect(() => {
 		const mfaToken = mfaToVerify.split(',').join('')
-		if (!existingOtpSecret || mfaToken.length < 6) return
+		if (mfaToken.length < 6) return
 		verifyToken()
-	}, [existingOtpSecret, mfaToVerify, verifyToken])
+	}, [mfaToVerify, verifyToken])
 
 	let body = <div />
 	let footer = <div />
@@ -249,7 +226,6 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 					onClick={() => {
 						setMessage('')
 						setPassword('')
-						setExistingOtpSecret('')
 						setIsVerified(false)
 						setMfaToVerify('')
 						setPromptForDisable(false)
@@ -299,9 +275,6 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 					<button
 						className="btn btn-danger mr-2"
 						onClick={async () => {
-							await getOtpSecret({
-								variables: { emailAddress: props.user.emailAddress }
-							})
 							setPromptForDisable(true)
 						}}>
 						<i className="fa fa-fw fa-skull-crossbones" /> Disable

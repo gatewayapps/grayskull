@@ -21,18 +21,18 @@ const GENERATE_MFA_KEY = gql`
 	}
 `
 
-interface VerifyMfaKeyData {
-	verifyMfaKey: boolean | null
+interface VerifyOtpTokenData {
+	verifyOtpToken: boolean | null
 }
 
-interface VerifyMfaKeyVariables {
+interface VerifyOtpTokenVariables {
 	secret: string
 	token: string
 }
 
 const VERIFY_MFA_KEY = gql`
 	mutation VERIFY_MFA_KEY($secret: String!, $token: String!) {
-		verifyMfaKey(data: { secret: $secret, token: $token })
+		verifyOtpToken(data: { secret: $secret, token: $token })
 	}
 `
 
@@ -61,7 +61,7 @@ const MultiFactorSetup = ({ emailAddress, onCancel, onVerified, required }: Mult
 	const [isVerified, setIsVerified] = React.useState(false)
 	const [showSecret, setShowSecret] = React.useState(false)
 	const [generateMfaKey] = useMutation<GenerateMfaKeyData, GenerateMfaKeyVariables>(GENERATE_MFA_KEY)
-	const [verifyMfaKey] = useMutation<VerifyMfaKeyData, VerifyMfaKeyVariables>(VERIFY_MFA_KEY)
+	const [verifyOtpToken] = useMutation<VerifyOtpTokenData, VerifyOtpTokenVariables>(VERIFY_MFA_KEY)
 
 	const generateQrCodeImage = React.useCallback((mfaKey: string): Promise<string> => {
 		return new Promise<string>((resolve, reject) => {
@@ -102,14 +102,14 @@ const MultiFactorSetup = ({ emailAddress, onCancel, onVerified, required }: Mult
 	}, [emailAddress, generateSecret])
 
 	const verifyToken = React.useCallback(async () => {
-		const { data } = await verifyMfaKey({
+		const { data } = await verifyOtpToken({
 			variables: { secret: mfaState.otpSecret, token: token.split(',').join('') }
 		})
-		if (data?.verifyMfaKey === true) {
+		if (data?.verifyOtpToken === true) {
 			setIsVerified(true)
 			onVerified(mfaState.otpSecret)
 		}
-	}, [verifyMfaKey, mfaState.otpSecret, token, onVerified])
+	}, [verifyOtpToken, mfaState.otpSecret, token, onVerified])
 
 	const cancelSetup = React.useCallback(() => {
 		if (required) {
