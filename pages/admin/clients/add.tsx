@@ -15,6 +15,10 @@ import { GrantType, GrantTypes } from '../../../foundation/constants/grantTypes'
 
 import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import { Permissions } from '../../../foundation/constants/permissions'
+import { useMutation } from 'react-apollo'
+import { useQuery } from 'react-apollo'
+import { ApolloError } from 'apollo-client'
+import { getClient } from '../../../operations/data/client/getClient'
 
 const CREATE_CLIENT_MUTATION = gql`
 	mutation CREATE_CLIENT_MUTATION($data: CreateClientArgs!) {
@@ -54,7 +58,7 @@ interface ClientTemplate {
 	baseUrl: string
 	homePageUrl: string
 	public: boolean
-	redirectUris: string[]
+	redirectUris: [{ key: string; value: string }]
 	scopes: string
 	AuthorizationFlows: string
 	isActive: boolean
@@ -71,7 +75,7 @@ const ClientAddPage = () => {
 		baseUrl: '',
 		homePageUrl: '',
 		public: true,
-		redirectUris: [],
+		redirectUris: [{ key: uuid(), value: '' }],
 		scopes: '',
 		AuthorizationFlows: '',
 		isActive: true,
@@ -82,12 +86,15 @@ const ClientAddPage = () => {
 	const [clientIdValid, setClientIdValid] = React.useState(true)
 	const [clientFormValid, setClientFormValid] = React.useState(true)
 	const [result, setResult] = React.useState<any>()
-	const [scopes, setScopes] = React.useState<string[]>([])
-	const [AuthorizationFlows, setAuthorizationFlows] = React.useState<GrantType[]>([
-		GrantTypes.AuthorizationCode,
-		GrantTypes.RefreshToken
-	])
-	const [redirectUris, setRedirectUris] = React.useState<Array<{ key: string; value: '' }>>([])
+	const [clients, setClients] = React.useState<
+		Array<{
+			client_id: string
+			name: string
+			baseUrl: string
+			homePageUrl: string
+		}>
+	>([])
+	const [error, setError] = React.useState<Error>()
 
 	const checkClientId = debounce(async (apolloClient) => {
 		if (client.client_id) {
@@ -119,11 +126,11 @@ const ClientAddPage = () => {
 	const handleChange = (evt) => {
 		const { name, value } = evt.target
 		if (name === 'redirectUris') {
-			setRedirectUris(value)
+			setClient({ ...client, redirectUris: value })
 		} else if (name === 'scopes') {
-			setScopes(value)
+			setClient({ ...client, scopes: value })
 		} else if (name === 'AuthorizationFlows') {
-			setAuthorizationFlows(value)
+			setClient({ ...client, AuthorizationFlows: value })
 		} else {
 			setClient((prevState) => ({
 				...prevState,
@@ -150,19 +157,20 @@ const ClientAddPage = () => {
 		}
 		const secret = generateSecret()
 
-		if (redirectUris) {
-			client.redirectUris = redirectUris.map((r) => r.value)
+		let redirectUris: string[] = []
+		if (client.redirectUris) {
+			const redirectUris = client.redirectUris.map((r) => r.value)
 		}
-		if (scopes) {
-			client.scopes = JSON.stringify(scopes)
+		if (client.scopes) {
+			client.scopes = JSON.stringify(client.scopes)
 		}
-		if (AuthorizationFlows) {
-			client.AuthorizationFlows = JSON.stringify(AuthorizationFlows)
+		if (client.AuthorizationFlows) {
+			client.AuthorizationFlows = JSON.stringify(client.AuthorizationFlows)
 		}
 
 		client.secret = secret
 
-		const res = await createClient({ variables: { client } })
+		const res = await createClient({ variables: { client, redirectUris } })
 
 		if (res.data && res.data.createClient) {
 			setResult({
@@ -176,112 +184,117 @@ const ClientAddPage = () => {
 		setCustomizeClientId(!customizeClientId)
 	}
 
+	const [
+		createClient,
+		{ data: refetchData, loading: loadingCreate, error: createError }
+	] = useMutation(CREATE_CLIENT_MUTATION, { refetchQueries: ['ALL_CLIENTS_QUERY'] })
+
+	const { error: scopesError, data: clientScopes, loading: loadingClients } = useQuery(GET_SCOPES_FOR_CLIENT_QUERY)
+	const { error: getClientsError, data: allClients, loading: loadingScopes } = useQuery(ALL_CLIENTS_QUERY)
+
+	React.useEffect(() => {
+		setError(scopesError ? scopesError : getClientsError ? getClientsError : undefined)
+	}, [setError, getClientsError, scopesError])
+
+	React.useEffect(() => {
+		setClients(allClients || refetchData)
+	}, [setClients, allClients, refetchData])
+
 	return (
 		<AuthenticatedRoute permission={Permissions.Admin}>
-			<Query query={GET_SCOPES_FOR_CLIENT_QUERY}>
-				{(results) => {
-					if (results.loadingScopes) {
-						return <LoadingIndicator />
-					}
-
-					if (results.error) {
-						return <ErrorMessage error={results.error} />
-					}
-					return (
-						<Mutation mutation={CREATE_CLIENT_MUTATION} refetchQueries={[{ query: ALL_CLIENTS_QUERY }]}>
-							{(createClient, data) => (
-								<div className="container pt-4">
-									<form onSubmit={(e) => submitClient(e, createClient)}>
-										<div className="card">
-											<div className="card-header">Create Client</div>
-											<div className="card-body">
-												<ErrorMessage error={data.error} />
-												<div className="form-group row">
-													<label className="col-sm-12 col-md-3 col-form-label" htmlFor="client_id">
-														Client ID
-													</label>
-													<div className="col-sm-12 col-md-9">
-														{!customizeClientId && (
-															<>
-																<span className="py-2" style={{ verticalAlign: 'middle' }}>
-																	{client.client_id}
-																</span>
-																<button type="button" className="btn btn-link btn-sm" onClick={toggleCustomize}>
-																	Customize
-																</button>
-															</>
-														)}
-														{customizeClientId && (
-															<ApolloConsumer>
-																{(apolloClient) => (
-																	<input
-																		type="text"
-																		className={`form-control ${clientIdValid ? 'is-valid' : 'is-invalid'}`}
-																		name="client_id"
-																		value={client.client_id}
-																		onChange={(e) => handleClientIdChange(e, apolloClient)}
-																		required
-																		readOnly={result !== undefined}
-																		aria-describedby="clientIdHelpBlock"
-																		autoFocus
-																	/>
-																)}
-															</ApolloConsumer>
-														)}
-														<div id="clientIdHelpBlock" className="small form-text text-muted">
-															We recommend using the generated Client ID but you can customize it as long as the value
-															is unique.
-														</div>
-													</div>
-												</div>
-												<ClientForm
-													client={client}
-													onChange={handleClientFormChange}
-													onValidated={onClientFormValidated}
-													scopes={scopes}
-													grantTypes={data.grantTypes}
-												/>
-												{result && (
-													<div className="alert alert-success">
-														<p>
-															Success! Your client_id and client_secret that your application will use to authenticate
-															users are listed below. Please note these values down as this is the only time the
-															client_secret will be visible.
-														</p>
-														<div>
-															<strong>Client Id:</strong> {result.client_id}
-														</div>
-														<div>
-															<strong>Secret:</strong> {result.secret}
-														</div>
-													</div>
-												)}
-											</div>
-											{result && (
-												<div className="card-footer clearfix">
-													<div className="btn-toolbar float-right">
-														<Link href="/admin/clients">
-															<a className="btn btn-outline-secondary mr-3">
-																<i className="fal fa-times" /> Cancel
-															</a>
-														</Link>
-														<button
-															className="btn btn-success"
-															type="submit"
-															disabled={!clientIdValid || !clientFormValid}>
-															<i className="fal fa-save" /> Create
-														</button>
-													</div>
-												</div>
+			{(loadingClients || loadingScopes) && <LoadingIndicator />}
+			{(scopesError || getClientsError || createError) && <ErrorMessage />}
+			{clients.map((client) => {
+				return (
+					<div key={client.name} className="container pt-4">
+						<form onSubmit={(e) => submitClient(e, createClient)}>
+							<div className="card">
+								<div className="card-header">Create Client</div>
+								<div className="card-body">
+									<ErrorMessage error={error} />
+									<div className="form-group row">
+										<label className="col-sm-12 col-md-3 col-form-label" htmlFor="client_id">
+											Client ID
+										</label>
+										<div className="col-sm-12 col-md-9">
+											{!customizeClientId && (
+												<>
+													<span className="py-2" style={{ verticalAlign: 'middle' }}>
+														{client.client_id}
+													</span>
+													<button type="button" className="btn btn-link btn-sm" onClick={toggleCustomize}>
+														Customize
+													</button>
+												</>
 											)}
+											{customizeClientId && (
+												<ApolloConsumer>
+													{(apolloClient) => (
+														<input
+															type="text"
+															className={`form-control ${clientIdValid ? 'is-valid' : 'is-invalid'}`}
+															name="client_id"
+															value={client.client_id}
+															onChange={(e) => handleClientIdChange(e, apolloClient)}
+															required
+															readOnly={result !== undefined}
+															aria-describedby="clientIdHelpBlock"
+															autoFocus
+														/>
+													)}
+												</ApolloConsumer>
+											)}
+											<div id="clientIdHelpBlock" className="small form-text text-muted">
+												We recommend using the generated Client ID but you can customize it as long as the value is
+												unique.
+											</div>
 										</div>
-									</form>
+									</div>
+									<ClientForm
+										client={client}
+										onChange={handleClientFormChange}
+										onValidated={onClientFormValidated}
+										scopes={clientScopes}
+										grantTypes={clientScopes.AuthorizationFlows}
+									/>
+									{result && (
+										<div className="alert alert-success">
+											<p>
+												Success! Your client_id and client_secret that your application will use to authenticate users
+												are listed below. Please note these values down as this is the only time the client_secret will
+												be visible.
+											</p>
+											<div>
+												<strong>Client Id:</strong> {result.client_id}
+											</div>
+											<div>
+												<strong>Secret:</strong> {result.secret}
+											</div>
+										</div>
+									)}
 								</div>
-							)}
-						</Mutation>
-					)
-				}}
-			</Query>
+								{result && (
+									<div className="card-footer clearfix">
+										<div className="btn-toolbar float-right">
+											<Link href="/admin/clients">
+												<a className="btn btn-outline-secondary mr-3">
+													<i className="fal fa-times" /> Cancel
+												</a>
+											</Link>
+											<button
+												className="btn btn-success"
+												type="submit"
+												disabled={!clientIdValid || !clientFormValid || loadingCreate}>
+												<i className="fal fa-save" /> Create
+											</button>
+										</div>
+									</div>
+								)}
+							</div>
+						</form>
+					</div>
+				)
+			})}
 		</AuthenticatedRoute>
 	)
 }

@@ -9,7 +9,6 @@ import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute
 import Permissions from '../../../presentation/utils/permissions'
 import { RequirePermission, RequirePermissionModes } from '../../../presentation/components/RequirePermission'
 import { IClient } from '../../../foundation/types/types'
-
 const ALL_CLIENTS_QUERY = gql`
 	query ALL_CLIENTS_QUERY {
 		clients {
