@@ -8,5 +8,12 @@ module.exports = {
 	testPathIgnorePatterns: ['node_modules'],
 	transform: {
 		'^.+\\.tsx?$': 'ts-jest'
+	},
+	globals: {
+		'ts-jest': {
+			tsConfig: {
+				target: 'ES2019'
+			}
+		}
 	}
 }
