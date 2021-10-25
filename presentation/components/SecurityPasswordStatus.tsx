@@ -1,7 +1,7 @@
 import moment from 'moment'
 import React from 'react'
 import RequireConfiguration from './RequireConfiguration'
-import FormValidation, { FormValidationRule } from './FormValidation'
+import { FormValidation, FormValidationRule } from '@gatewayapps/react-form-validation'
 import { validatePassword } from '../utils/passwordComplexity'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import ResponsiveInput from './ResponsiveInput'

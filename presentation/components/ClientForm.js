@@ -2,8 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import uuid from 'uuid/v4'
 import { isUrl, isUrlOrEmpty } from '../utils/validationHelpers'
-import FormValidation, { FormValidationRule } from './FormValidation'
-import FormValidationMessage from './FormValidationMessage'
+import { FormValidation, FormValidationMessage, FormValidationRule } from '@gatewayapps/react-form-validation'
 import ImageDropArea from './ImageDropArea'
 
 class ClientForm extends PureComponent {

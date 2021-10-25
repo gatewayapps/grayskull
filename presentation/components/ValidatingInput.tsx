@@ -1,10 +1,10 @@
-import FormValidationMessage from './FormValidationMessage'
+import { FormValidationMessage } from '@gatewayapps/react-form-validation'
 import React from 'react'
 import AdaptiveInput from './AdaptiveInput'
 
 export interface IValidatingInputProps {
 	name: string
-	validationErrors?: any[]
+	validationErrors?: Record<string, string[]>
 	autoComplete?: string
 	autoFocus?: boolean
 	allowCustom?: boolean
