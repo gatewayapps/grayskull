@@ -13,7 +13,7 @@ const ResponsiveValidatingInput: React.FC<ResponsiveValidatingInputProps> = ({
 	label,
 	labelColumnWidth = 3,
 	helpText,
-	validationErrors = [],
+	validationErrors = {},
 	...props
 }) => {
 	const labelMediumColumnClass = `col-md-${labelColumnWidth}`
