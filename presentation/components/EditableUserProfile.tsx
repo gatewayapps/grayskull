@@ -3,7 +3,7 @@ import React from 'react'
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-import FormValidation, { FormValidationRule } from './FormValidation'
+import { FormValidation, FormValidationRule } from '@gatewayapps/react-form-validation'
 import moment from 'moment'
 import Permissions from '../utils/permissions'
 

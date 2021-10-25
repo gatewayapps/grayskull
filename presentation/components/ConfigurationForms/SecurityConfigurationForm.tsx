@@ -1,5 +1,5 @@
 import React from 'react'
-import FormValidation, { FormValidationRule } from '../FormValidation'
+import { FormValidation, FormValidationRule } from '@gatewayapps/react-form-validation'
 import ResponsiveValidatingInput from '../ResponsiveValidatingInput'
 import { ISecurityConfiguration } from '../../../foundation/models/ISecurityConfiguration'
 
