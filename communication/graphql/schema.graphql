@@ -40,7 +40,7 @@ type Mutation {
 	sendVerification(data: SendVerificationArgs!): OperationResponse
 	updateClientScopes(data: UpdateClientScopesArgs!): Boolean
 	generateMfaKey(data: GenerateMfaKeyArgs!): String @anonymous
-	verifyMfaKey(data: VerifyMfaKeyArgs!): Boolean @anonymous
+	verifyOtpToken(data: VerifyOtpTokenArgs!): Boolean
 	resendVerification(data: ResendVerificationArgs!): Boolean @anonymous
 	resendAllVerificationEmails(data: ResendAllVerificationEmailsArgs!): Boolean
 	manualVerification(data: ManualVerificationArgs!): Boolean
@@ -698,8 +698,9 @@ input GenerateMfaKeyArgs {
 	emailAddress: String!
 }
 
-input VerifyMfaKeyArgs {
-	secret: String!
+input VerifyOtpTokenArgs {
+	emailAddress: String
+	secret: String
 	token: String!
 }
 

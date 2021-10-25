@@ -5,7 +5,7 @@ import { getUserAccountByUserClientId } from '../../operations/data/userAccount/
 import { GrantTypes } from '../../foundation/constants/grantTypes'
 import { verifyBackupMultifactorCode } from '../../operations/data/userAccount/verifyBackupMultifactorCode'
 import { getTokensActivity } from './getTokensActivity'
-import { verifyOtpTokenActivity } from '../verifyOtpTokenActivity'
+import { verifyOtpToken } from '../../operations/logic/verifyOtpToken'
 import { getClient } from '../../operations/data/client/getClient'
 import { verifyTokenForClient } from '../../operations/logic/verifyTokenForClient'
 import { IChallengeToken } from '../../foundation/types/tokens'
@@ -54,7 +54,7 @@ export async function getTokensFromMultifactorTokenActivity(
 	}
 
 	if (
-		!(await verifyOtpTokenActivity(otpSecret, otpToken)) &&
+		!(await verifyOtpToken(otpToken, otpSecret)) &&
 		!(await verifyBackupMultifactorCode(
 			(challengeTokenObject as IChallengeToken).emailAddress,
 			otpToken,
