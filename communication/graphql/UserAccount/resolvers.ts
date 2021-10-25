@@ -99,8 +99,8 @@ export default {
 			}
 		},
 		generateMfaKey: generateMfaKeyResolver,
-		verifyMfaKey: async (obj, args) => {
-			return await verifyOtpTokenActivity(args.data.secret, args.data.token)
+		verifyOtpToken: async (obj, args, context: IRequestContext) => {
+			return verifyOtpTokenActivity(args.data, context)
 		},
 		resendVerification: async (obj, args, context: IRequestContext) => {
 			await sendEmailVerificationActivity(args.data.emailAddress, context)

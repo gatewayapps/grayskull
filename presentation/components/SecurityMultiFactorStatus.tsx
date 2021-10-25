@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MutationButton from './MutationButton'
 import MultiFactorSetup from './MultiFactorSetup'
 import ResponsiveInput from './ResponsiveInput'
@@ -8,6 +8,14 @@ import { BackupPhoneNumberSetup } from './BackupPhoneNumberSetup'
 
 import { CardFooter } from './CardFooter'
 import { FormRow } from './FormRow'
+import { useMutation } from 'react-apollo'
+import AdaptiveInput, { AdaptiveInputOnChangeFunc } from './AdaptiveInput'
+
+const VERIFY_OTP_TOKEN = gql`
+	mutation VERIFY_OTP_TOKEN($emailAddress: String!, $token: String!) {
+		verifyOtpToken(data: { emailAddress: $emailAddress, token: $token })
+	}
+`
 
 const SET_OTP_SECRET = gql`
 	mutation SET_OTP_SECRET($otpSecret: String!, $password: String!) {
@@ -36,15 +44,46 @@ export interface SecurityMutifactorStatusState {
 	otpUpdated: boolean
 }
 
+interface VerifyOtpTokenData {
+	verifyOtpToken: boolean | null
+}
+
+interface VerifyOtpTokenVariables {
+	emailAddress: string
+	token: string
+}
+
 const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps> = (props) => {
 	const [changing, setChanging] = useState(false)
 	const [promptForChange, setPromptForChange] = useState(false)
 	const [promptForDisable, setPromptForDisable] = useState(false)
 	const [password, setPassword] = useState('')
+	const [isVerified, setIsVerified] = useState(false)
+	const [mfaToVerify, setMfaToVerify] = useState('')
 
 	const [message, setMessage] = useState('')
 	const [otpSecret, setOtpSecret] = useState('')
 	const [otpUpdated, setOtpUpdated] = useState(false)
+	const [verifyOtpToken] = useMutation<VerifyOtpTokenData, VerifyOtpTokenVariables>(VERIFY_OTP_TOKEN)
+
+	const verifyToken = React.useCallback(async () => {
+		const { data } = await verifyOtpToken({
+			variables: { emailAddress: props.user.emailAddress, token: mfaToVerify.split(',').join('') }
+		})
+		if (data?.verifyOtpToken) {
+			setIsVerified(true)
+		}
+	}, [verifyOtpToken, props.user.emailAddress, mfaToVerify])
+
+	const handleTokenChanged: AdaptiveInputOnChangeFunc = React.useCallback((evt) => {
+		setMfaToVerify(evt.target.value)
+	}, [])
+
+	useEffect(() => {
+		const mfaToken = mfaToVerify.split(',').join('')
+		if (mfaToken.length < 6) return
+		verifyToken()
+	}, [mfaToVerify, verifyToken])
 
 	let body = <div />
 	let footer = <div />
@@ -151,16 +190,45 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 			</div>
 		)
 	} else if (promptForDisable) {
+		body = (
+			<>
+				<div className="alert alert-danger">
+					You are about to disable your authenticator app. If you proceed, your existing authenticator app will no
+					longer work.
+				</div>
+				<p>Enter your authentication code below to continue.</p>
+				<AdaptiveInput
+					type="otp"
+					className="form-control"
+					name="mfaToken"
+					placeholder="Enter code here"
+					value={mfaToVerify}
+					onChange={handleTokenChanged}
+				/>
+				<div className="mx-4 px-4 mt-4">
+					<ResponsiveInput
+						label="Enter your password"
+						value={password}
+						onChange={(e) => {
+							setPassword(e.target.value)
+						}}
+						type="password"
+					/>
+
+					{message && <div className="alert alert-danger">{message}</div>}
+				</div>
+			</>
+		)
 		footer = (
 			<div className="btn-toolbar ml-auto">
 				<button
 					className="btn btn-secondary mr-2"
 					onClick={() => {
-						setChanging(false)
-						setPromptForChange(false)
 						setMessage('')
 						setPassword('')
-						setOtpUpdated(false)
+						setIsVerified(false)
+						setMfaToVerify('')
+						setPromptForDisable(false)
 					}}>
 					<i className="fa fa-fw fa-times" /> Never Mind!
 				</button>
@@ -169,7 +237,7 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 					mutation={SET_OTP_SECRET}
 					variables={{ password: password, otpSecret: '' }}
 					className="btn btn-danger"
-					disabled={!password}
+					disabled={!isVerified || !password}
 					onFail={(err) => {
 						alert(err)
 					}}
@@ -206,8 +274,8 @@ const SecurityMultifactorStatusComponent: React.FC<SecurityMutifactorStatusProps
 				{showDisable ? (
 					<button
 						className="btn btn-danger mr-2"
-						onClick={() => {
-							setPromptForDisable(false)
+						onClick={async () => {
+							setPromptForDisable(true)
 						}}>
 						<i className="fa fa-fw fa-skull-crossbones" /> Disable
 					</button>
