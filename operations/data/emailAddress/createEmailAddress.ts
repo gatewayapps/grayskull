@@ -2,6 +2,8 @@ import Knex from 'knex'
 import { v4 as uuidv4 } from 'uuid'
 import { IEmailAddress } from '../../../foundation/types/types'
 
+const isDev = process.env.NODE_ENV === 'development'
+
 export async function createEmailAddress(
 	emailAddress: string,
 	userAccountId: string,
@@ -21,7 +23,7 @@ export async function createEmailAddress(
 		emailAddressId,
 		emailAddress,
 		userAccountId,
-		verified,
+		verified: verified || isDev,
 		primary,
 		createdAt: new Date(),
 		updatedAt: new Date()
