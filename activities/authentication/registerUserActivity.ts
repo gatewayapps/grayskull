@@ -41,6 +41,7 @@ export async function registerUserActivity(
 
 	const userCount = await dataContext<IUserAccount>('UserAccounts').count('*', { as: 'userCount' })
 	const isFirstUser = userCount[0]['userCount'] === 0
+	const shouldAutoVerify = isFirstUser || isDev
 	if (isFirstUser) {
 		data.permissions = Permissions.Admin
 	} else {
@@ -61,8 +62,8 @@ export async function registerUserActivity(
 	}
 
 	const userAccount = await createUserAccount(data, password, dataContext)
-	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, isFirstUser)
-	if (!isFirstUser && !isDev) {
+	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, shouldAutoVerify)
+	if (!shouldAutoVerify) {
 		await sendEmailVerificationActivity(emailAddress, context)
 	}
 
@@ -77,5 +78,5 @@ export async function registerUserActivity(
 
 	// setAuthCookies(context.res, session)
 
-	return { userAccount, isFirstUser }
+	return { userAccount, shouldAutoVerify }
 }
