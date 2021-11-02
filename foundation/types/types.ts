@@ -187,6 +187,7 @@ export interface IRefreshToken {
 
 export interface IRegisterUserResponse {
 	success: boolean
+	autoVerified?: boolean
 	error?: string
 	message?: string
 }
