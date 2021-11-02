@@ -10,6 +10,7 @@ import { createEmailAddress } from '../../operations/data/emailAddress/createEma
 import { sendEmailVerificationActivity } from '../sendEmailVerificationActivity'
 import { createSession } from '../../operations/data/session/createSession'
 
+const isDev = process.env.NODE_ENV === 'development'
 /*
     1.  Is the email address allowed
     2.  Is the email address already taken
@@ -40,6 +41,7 @@ export async function registerUserActivity(
 
 	const userCount = await dataContext<IUserAccount>('UserAccounts').count('*', { as: 'userCount' })
 	const isFirstUser = userCount[0]['userCount'] === 0
+	const shouldAutoVerify = isFirstUser || isDev
 	if (isFirstUser) {
 		data.permissions = Permissions.Admin
 	} else {
@@ -60,8 +62,8 @@ export async function registerUserActivity(
 	}
 
 	const userAccount = await createUserAccount(data, password, dataContext)
-	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, isFirstUser)
-	if (!isFirstUser) {
+	await createEmailAddress(emailAddress, userAccount.userAccountId, dataContext, true, shouldAutoVerify)
+	if (!shouldAutoVerify) {
 		await sendEmailVerificationActivity(emailAddress, context)
 	}
 
@@ -76,5 +78,5 @@ export async function registerUserActivity(
 
 	// setAuthCookies(context.res, session)
 
-	return userAccount
+	return { userAccount, shouldAutoVerify }
 }

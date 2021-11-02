@@ -498,6 +498,7 @@ input RefreshTokenUniqueFilter {
 
 type RegisterUserResponse {
 	success: Boolean!
+	autoVerified: Boolean
 	error: String
 	message: String
 }

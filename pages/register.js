@@ -37,6 +37,7 @@ const REGISTER_USER_MUTATION = gql`
 			}
 		) {
 			success
+			autoVerified
 			message
 			error
 		}
@@ -56,13 +57,15 @@ class RegisterPage extends PureComponent {
 				confirm: '',
 				otpSecret: undefined
 			},
+			autoVerified: false,
 			creatingAccount: false,
 			accountCreated: false,
 			message: '',
 			userDataValid: false,
 			showMfaForm: false,
 			requireMfaVerification: false,
-			step: RegistrationSteps.UserData
+			step: RegistrationSteps.UserData,
+			redirectSeconds: 15
 		}
 	}
 
@@ -121,10 +124,12 @@ class RegisterPage extends PureComponent {
 				if (data && data.registerUser) {
 					if (data.registerUser.success) {
 						this.setState({
+							autoVerified: data.registerUser.autoVerified,
 							creatingAccount: false,
 							accountCreated: true,
 							message: data.registerUser.message
 						})
+						this.handleLoginRedirect()
 					} else {
 						this.setState({ error: data.registerUser.error, creatingAccount: false })
 					}
@@ -137,6 +142,31 @@ class RegisterPage extends PureComponent {
 
 	setRequireMfaVerification = (enabled) => {
 		this.setState({ requireMfaVerification: enabled, showMfaForm: enabled })
+	}
+
+	handleLoginRedirect = () => {
+		let redirectSeconds = 15
+		const interval = setInterval(() => {
+			if (redirectSeconds === 0) {
+				clearInterval(interval)
+				window.location.href = '/login'
+			} else {
+				redirectSeconds--
+				this.setState({ redirectSeconds })
+			}
+		}, 1000)
+	}
+
+	renderSuccessMessage = () => {
+		if (this.state.autoVerified) {
+			return (
+				<div className="alert alert-success">
+					{this.state.message} Redirecting to <a href="/login">Login page</a> in {this.state.redirectSeconds} seconds...
+				</div>
+			)
+		} else {
+			return <div className="alert alert-success">{this.state.message}</div>
+		}
 	}
 
 	render() {
@@ -160,7 +190,7 @@ class RegisterPage extends PureComponent {
 														<div>
 															{error && <div className="alert alert-danger">{error.message}</div>}
 															{this.state.error && <div className="alert alert-danger">{this.state.error}</div>}
-															{this.state.message && <div className="alert alert-success">{this.state.message}</div>}
+															{this.state.message && this.renderSuccessMessage()}
 															{!this.state.accountCreated && (
 																<div>
 																	{this.state.step === RegistrationSteps.UserData && (
@@ -185,7 +215,7 @@ class RegisterPage extends PureComponent {
 																					<button
 																						className="btn btn-primary"
 																						onClick={() => this.setRequireMfaVerification(true)}>
-																						Enable Mulit-Factor Authentication
+																						Enable Multi-Factor Authentication
 																					</button>
 																				</div>
 																			)}
