@@ -1,11 +1,14 @@
-import React from 'react'
-
-import ResponsiveValidatingInput from './ResponsiveValidatingInput'
-import gql from 'graphql-tag'
-import { Mutation } from 'react-apollo'
+/* eslint-disable indent */
+/* eslint-disable no-console */
 import { FormValidation, FormValidationRule } from '@gatewayapps/react-form-validation'
-import moment from 'moment'
+
+import { Mutation } from 'react-apollo'
 import Permissions from '../utils/permissions'
+import React from 'react'
+import ResponsiveValidatingInput from './ResponsiveValidatingInput'
+import { UserProperties } from './UserProperties'
+import gql from 'graphql-tag'
+import moment from 'moment'
 
 const DELETE_USER_MUTATION = gql`
 	mutation DELETE_USER_MUTATION($userAccountId: String!) {
@@ -27,6 +30,7 @@ const UPDATE_USER_MUTATION = gql`
 		$userAccountId: String
 		$permissions: Int
 		$password: String
+		$properties: String!
 	) {
 		update(
 			data: {
@@ -39,6 +43,7 @@ const UPDATE_USER_MUTATION = gql`
 				userAccountId: $userAccountId
 				permissions: $permissions
 				password: $password
+				properties: $properties
 			}
 		) {
 			success
@@ -58,6 +63,7 @@ const CREATE_USER_MUTATION = gql`
 		$permissions: Int!
 		$emailAddress: String!
 		$password: String
+		$properties: String!
 	) {
 		createUser(
 			data: {
@@ -72,6 +78,7 @@ const CREATE_USER_MUTATION = gql`
 				otpEnabled: false
 				isActive: true
 				password: $password
+				properties: $properties
 			}
 		) {
 			success
@@ -82,6 +89,7 @@ const CREATE_USER_MUTATION = gql`
 
 export interface EditableUserProfileProps {
 	showPermissionSelector?: boolean
+	showProperties?: boolean
 	onSave?: () => void
 	onCancel?: () => void
 	isEditing?: boolean
@@ -94,6 +102,7 @@ export interface EditableUserProfileProps {
 		birthday: Date | null | undefined
 		gender: string | null | undefined
 		permissions: number
+		properties: string
 	}
 	admin?: boolean
 }
@@ -104,6 +113,7 @@ export interface EditableUserProfileState {
 	message: string
 	valid: boolean
 	allowPasswordChange: boolean
+	properties: object[]
 	fromAdmin: boolean
 }
 
@@ -116,12 +126,18 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 	constructor(props: EditableUserProfileProps) {
 		super(props)
 
+		console.log(props.user)
 		this.state = {
 			modifiedState: { permissions: props.user.permissions },
 			editing: props.isEditing || false,
 			message: '',
 			valid: false,
 			allowPasswordChange: false,
+			properties: props.user.properties
+				? Object.entries(JSON.parse(props.user.properties)).map((p, i) => {
+						return { key: p[0], value: p[1], index: i }
+				  })
+				: [{}],
 			fromAdmin: this.props.admin || false
 		}
 	}
@@ -292,13 +308,28 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 										readOnly={!this.state.editing}
 									/>
 								)}
+
+								<UserProperties
+									userProperties={this.state.properties}
+									isEditing={this.state.editing && (this.props.showProperties as boolean)}
+									updateState={(properties) => {
+										this.setState({ properties: properties })
+									}}
+									isKeyValueValid={(isValid) => {
+										console.log(isValid)
+										this.setState({ valid: isValid })
+									}}
+								/>
+
 								{!this.state.allowPasswordChange && this.state.fromAdmin && (
-									<button
-										style={{ margin: '10px 0 0', paddingLeft: '0' }}
-										className="btn btn-link"
-										onClick={() => this.setState({ allowPasswordChange: true })}>
-										Change Password?
-									</button>
+									<div className="d-flex flex-row justify-content-between">
+										<button
+											style={{ margin: '10px 0 0', paddingLeft: '0' }}
+											className="btn btn-link"
+											onClick={() => this.setState({ allowPasswordChange: true })}>
+											Change Password?
+										</button>
+									</div>
 								)}
 
 								{this.state.allowPasswordChange && (
@@ -363,6 +394,13 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 																if (payload.birthday) {
 																	payload.birthday = moment(payload.birthday, 'L').toDate()
 																}
+
+																payload.properties = JSON.stringify(
+																	this.state.properties.reduce(
+																		(obj, item) => Object.assign(obj, { [item['key']]: item['value'] }),
+																		{}
+																	)
+																)
 
 																const result = await updateUser({ variables: payload })
 																const opResponse = result.data.update || result.data.createUser

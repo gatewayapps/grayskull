@@ -686,6 +686,7 @@ type UserAccount {
 	updatedAt: Date!
 	deletedBy: ID
 	deletedAt: Date
+	properties: String!
 	emailAddresses: [EmailAddress!]!
 }
 
@@ -738,6 +739,7 @@ input CreateUserArgs {
 	otpEnabled: Boolean
 	isActive: Boolean
 	password: String
+	properties: String!
 }
 
 input UpdateArgs {
@@ -750,6 +752,7 @@ input UpdateArgs {
 	birthday: Date
 	profileImageUrl: String
 	password: String
+	properties: String!
 }
 
 input LoginArgs {

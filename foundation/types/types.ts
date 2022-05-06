@@ -249,6 +249,7 @@ export interface IUserAccount {
 	deletedAt: Date | null
 	emailAddresses?: IEmailAddress[]
 	password?: string
+	properties: string
 }
 export interface UpdateClientScopesOperationArgs {
 	client_id: string

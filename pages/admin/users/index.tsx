@@ -1,16 +1,16 @@
-import gql from 'graphql-tag'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody } from 'reactstrap'
+import { Mutation, Query } from 'react-apollo'
+import { RequirePermission, RequirePermissionModes } from '../../../presentation/components/RequirePermission'
 
-import React from 'react'
-import { Query, Mutation } from 'react-apollo'
-import { Modal, ModalBody, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
-import moment from 'moment'
+import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
+import CSVDataImport from '../../../presentation/components/CSVDataImport'
+import EditableUserProfile from '../../../presentation/components/EditableUserProfile'
 import ErrorMessage from '../../../presentation/components/ErrorMessage'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
-import AuthenticatedRoute from '../../../presentation/layouts/authenticatedRoute'
 import Permissions from '../../../presentation/utils/permissions'
-import { RequirePermission, RequirePermissionModes } from '../../../presentation/components/RequirePermission'
-import EditableUserProfile from '../../../presentation/components/EditableUserProfile'
-import CSVDataImport from '../../../presentation/components/CSVDataImport'
+import React from 'react'
+import gql from 'graphql-tag'
+import moment from 'moment'
 
 const RESEND_ALL_VERIFICATIONS_MUTATION = gql`
 	mutation RESEND_ALL_VERIFICATIONS_MUTATION {
@@ -45,6 +45,7 @@ const ALL_USERS_QUERY = gql`
 			otpEnabled
 			isActive
 			lastActive
+			properties
 			emailAddresses {
 				primary
 				verified
@@ -252,6 +253,7 @@ class UsersIndexPage extends React.Component<{}, UsersIndexPageState> {
 													}}
 													isEditing
 													showPermissionSelector
+													showProperties={true}
 													user={this.state.editingUser}
 													admin={true}
 												/>

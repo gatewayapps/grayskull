@@ -1,12 +1,11 @@
-import { CacheContext } from './getCacheContext'
+import { IConfiguration, IUserAccount } from '../types/types'
 
+import { CacheContext } from './getCacheContext'
+import Knex from 'knex'
+import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
+import { getPrimaryPhoneNumberForUserAccount } from '../../operations/data/phoneNumber/getPrimaryPhoneNumberForUserAccount'
 import { getUserAccount } from '../../operations/data/userAccount/getUserAccount'
 import { verifyAndUseSession } from '../../operations/data/session/verifyAndUseSession'
-
-import { getPrimaryEmailAddress } from '../../operations/data/emailAddress/getPrimaryEmailAddress'
-import { IUserAccount, IConfiguration } from '../types/types'
-import Knex from 'knex'
-import { getPrimaryPhoneNumberForUserAccount } from '../../operations/data/phoneNumber/getPrimaryPhoneNumberForUserAccount'
 
 export type UserContext = IUserAccount & { emailAddress: string; emailAddressVerified: boolean; phoneNumber?: string }
 
@@ -54,7 +53,8 @@ export async function createUserContextForUserId(
 		deletedAt: userAccount.deletedAt,
 		emailAddress: primaryEmailAddress ? primaryEmailAddress.emailAddress : '',
 		emailAddressVerified: primaryEmailAddress && primaryEmailAddress.verified ? true : false,
-		phoneNumber: primaryPhoneNumber ? primaryPhoneNumber.phoneNumber : undefined
+		phoneNumber: primaryPhoneNumber ? primaryPhoneNumber.phoneNumber : undefined,
+		properties: userAccount.properties
 	}
 }
 

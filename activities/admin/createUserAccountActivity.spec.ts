@@ -3,13 +3,14 @@ jest.mock('../../operations/services/mail/sendEmailTemplate', () => ({
 	sendTemplatedEmail: () => {},
 	activateLink: undefined
 }))
-import Knex from 'knex'
-import { Permissions } from '../../foundation/constants/permissions'
-import { getInMemoryContext } from '../../foundation/context/getDataContext.spec'
+
 import { IRequestContext } from '../../foundation/context/prepareContext'
 import { IUserAccount } from '../../foundation/types/types'
-import { getEmailAddressByEmailAddress } from '../../operations/data/emailAddress/getEmailAddressByEmailAddress'
+import Knex from 'knex'
+import { Permissions } from '../../foundation/constants/permissions'
 import { createUserAccountActivity } from './createUserAccountActivity'
+import { getEmailAddressByEmailAddress } from '../../operations/data/emailAddress/getEmailAddressByEmailAddress'
+import { getInMemoryContext } from '../../foundation/context/getDataContext.spec'
 
 let dataContext: Knex
 
@@ -34,7 +35,8 @@ function getUserAccount(password?: string): IUserAccount {
 		deletedAt: null,
 		lastActive: new Date(),
 		lastPasswordChange: new Date(),
-		passwordHash: ''
+		passwordHash: '',
+		properties: ''
 	}
 	if (password) {
 		userAccount.password = password
