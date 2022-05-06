@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable no-console */
 import { FormValidation, FormValidationRule } from '@gatewayapps/react-form-validation'
 
