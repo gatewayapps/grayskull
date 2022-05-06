@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useCallback, useEffect, useReducer } from 'react'
+import React, { useCallback, useEffect, useMemo, useReducer } from 'react'
 
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import { updatePropertyReducer } from '../utils/updateProperty'
@@ -20,12 +20,17 @@ export const UserProperties: React.FC<UserPropertiesProps> = ({
 	const initialState = [...userProperties]
 	const [state, dispatch] = useReducer(updatePropertyReducer, initialState)
 
-	const hasOriginalKeys = useCallback(() => {
-		return state.some((s, i) => {
-			for (const st of state) {
-				if (s.index !== i) return st.key?.toLowerCase() === s.key?.toLowerCase()
+	const hasDuplicateKeys = useCallback(() => {
+		let hasDupes = false
+		for (const st of state) {
+			const foundMatch = state.find((s) => s.key.toLowerCase() === st.key.toLowerCase() && s.index !== st.index)
+			if (foundMatch) {
+				hasDupes = true
+				break
 			}
-		})
+		}
+
+		return hasDupes
 	}, [state])
 
 	const showInvalidKeyError = useCallback(() => {
@@ -38,10 +43,12 @@ export const UserProperties: React.FC<UserPropertiesProps> = ({
 
 	useEffect(() => {
 		updateState(state)
-		isKeyValueValid(!showInvalidKeyError() && !showInvalidValueError() && !hasOriginalKeys())
-	}, [state, showInvalidValueError, showInvalidKeyError, hasOriginalKeys])
+		isKeyValueValid(!showInvalidKeyError() && !showInvalidValueError() && !hasDuplicateKeys())
+	}, [state, showInvalidValueError, showInvalidKeyError, hasDuplicateKeys])
 
-	const showMatchKeyError = hasOriginalKeys()
+	const showMatchKeyError = useMemo(() => {
+		return hasDuplicateKeys()
+	}, [hasDuplicateKeys])
 
 	return (
 		<>
