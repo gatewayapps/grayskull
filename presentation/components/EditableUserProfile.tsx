@@ -310,7 +310,13 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 								{this.props.showProperties && (
 									<UserProperties
 										userProperties={this.state.properties}
-										updateState={(properties) => this.setState({ properties: properties })}
+										updateState={(properties) => {
+											this.setState({ properties: properties })
+										}}
+										isKeyValueValid={(isValid) => {
+											console.log(isValid)
+											this.setState({ valid: isValid })
+										}}
 									/>
 								)}
 
@@ -394,9 +400,6 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 																		{}
 																	)
 																)
-
-																// eslint-disable-next-line no-console
-																console.log(payload.properties)
 
 																const result = await updateUser({ variables: payload })
 																const opResponse = result.data.update || result.data.createUser

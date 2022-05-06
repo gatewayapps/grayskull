@@ -6,22 +6,21 @@ export const updatePropertyReducer = (state, action) => {
 		}
 
 		case 'remove': {
-			if (state.length === 1) {
-				return []
-			}
-
-			return state.filter((item, index) => index !== action.index)
+			const filtered = state.filter((item, index) => index !== action.index)
+			return [...filtered] || []
 		}
 
 		case 'updateKey': {
 			state[action.index].key = action.key
 
-			return [...state]
+			return [...state] || []
 		}
 		case 'updateValue': {
 			state[action.index].value = action.value
 
-			return [...state]
+			return [...state] || []
 		}
 	}
+
+	return state
 }

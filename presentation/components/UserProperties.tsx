@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useReducer } from 'react'
+import React, { useCallback, useEffect, useReducer } from 'react'
 
 import ResponsiveValidatingInput from './ResponsiveValidatingInput'
 import { updatePropertyReducer } from '../utils/updateProperty'
@@ -7,18 +7,43 @@ import { updatePropertyReducer } from '../utils/updateProperty'
 type UserPropertiesProps = {
 	userProperties: object[]
 	updateState: (properties: object[]) => void
+	isKeyValueValid: (value: boolean) => void
 }
 
-export const UserProperties: React.FC<UserPropertiesProps> = ({ userProperties, updateState }) => {
-	const [state, dispatch] = useReducer(updatePropertyReducer, userProperties)
+export const UserProperties: React.FC<UserPropertiesProps> = ({ userProperties, updateState, isKeyValueValid }) => {
+	const initialState = [...userProperties]
+	const [state, dispatch] = useReducer(updatePropertyReducer, initialState)
+
+	const hasOriginalKeys = useCallback(() => {
+		return state.some((s, i) => {
+			for (const st of state) {
+				if (s.index !== i) return st.key.toLowerCase() === s.key.toLowerCase()
+			}
+		})
+	}, [state])
+
+	const showInvalidKeyError = useCallback(() => {
+		return state.some((s) => s.key.trim() === '' || s.key === null || s.key === undefined)
+	}, [state])
+
+	const showInvalidValueError = useCallback(() => {
+		return state.some((s) => s.value.trim() === '' || s.value === null || s.value === undefined)
+	}, [state])
+
+	useEffect(() => {
+		updateState(state)
+		isKeyValueValid(!showInvalidKeyError() && !showInvalidValueError() && !hasOriginalKeys())
+	}, [state, showInvalidValueError, showInvalidKeyError, hasOriginalKeys])
+
+	const showMatchKeyError = hasOriginalKeys()
 
 	return (
 		<>
 			{state && (
-				<div className="overflow-auto" style={{ maxHeight: '300px' }}>
+				<div className="overflow-auto" style={{ maxHeight: '200px' }}>
 					{state.map((p, i) => {
 						return (
-							<>
+							<React.Fragment key={i}>
 								<div
 									key={`${p.index}-${i}`}
 									className="d-flex flex-row justify-content-between justify-content-center items-content-center">
@@ -44,25 +69,30 @@ export const UserProperties: React.FC<UserPropertiesProps> = ({ userProperties, 
 										className="d-flex justify-content-center flex-column"
 										onClick={() => {
 											dispatch({ type: 'remove', index: i })
-											updateState(state)
 										}}>
 										<i className="fa fa-fw fa-times text-danger" />
 									</div>
 								</div>
-							</>
+							</React.Fragment>
 						)
 					})}
 				</div>
 			)}
-			<button
-				style={{ margin: '10px 0 0', paddingLeft: '0' }}
-				className="btn btn-link"
-				onClick={() => {
-					dispatch({ type: 'add' })
-					updateState(state)
-				}}>
-				Add Properties
-			</button>
+			<div className="d-flex flex-column">
+				<div className="d-flex justify-content-around">
+					{showInvalidKeyError() && <span className="alert alert-warning">Keys are required</span>}
+					{showInvalidValueError() && <span className="alert alert-warning">Values are required</span>}
+				</div>
+				{showMatchKeyError && <span className="alert alert-warning">Key names must be unique</span>}
+				<button
+					style={{ margin: '10px 0 0', paddingLeft: '0' }}
+					className="btn btn-link justify-start"
+					onClick={() => {
+						dispatch({ type: 'add' })
+					}}>
+					Add Properties
+				</button>
+			</div>
 		</>
 	)
 }
