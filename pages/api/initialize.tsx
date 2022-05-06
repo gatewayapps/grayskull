@@ -1,10 +1,10 @@
 /* eslint-disable indent */
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getPinnedClientsActivity } from '../../activities/getPinnedClientsActivity'
-import { countUserAccounts } from '../../operations/data/userAccount/countUserAccounts'
-import { prepareContext } from '../../foundation/context/prepareContext'
 
+import { countUserAccounts } from '../../operations/data/userAccount/countUserAccounts'
+import { getPinnedClientsActivity } from '../../activities/getPinnedClientsActivity'
 import { maskPhoneNumber } from '../../operations/logic/maskPhoneNumber'
+import { prepareContext } from '../../foundation/context/prepareContext'
 import { sanitizeConfiguration } from '../../operations/logic/sanitizeConfiguration'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -31,7 +31,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 			profileImageUrl: context.user.profileImageUrl,
 			emailAddress: context.user.emailAddress,
 			permissions: context.user.permissions,
-			otpEnabled: context.user.otpEnabled
+			otpEnabled: context.user.otpEnabled,
+			properties: context.user.properties
 		}
 
 		if (context.user.phoneNumber) {

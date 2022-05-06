@@ -125,6 +125,7 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 	constructor(props: EditableUserProfileProps) {
 		super(props)
 
+		console.log(props.user)
 		this.state = {
 			modifiedState: { permissions: props.user.permissions },
 			editing: props.isEditing || false,
@@ -307,18 +308,17 @@ export default class EditableUserProfile extends React.Component<EditableUserPro
 									/>
 								)}
 
-								{this.props.showProperties && (
-									<UserProperties
-										userProperties={this.state.properties}
-										updateState={(properties) => {
-											this.setState({ properties: properties })
-										}}
-										isKeyValueValid={(isValid) => {
-											console.log(isValid)
-											this.setState({ valid: isValid })
-										}}
-									/>
-								)}
+								<UserProperties
+									userProperties={this.state.properties}
+									isEditing={this.state.editing && (this.props.showProperties as boolean)}
+									updateState={(properties) => {
+										this.setState({ properties: properties })
+									}}
+									isKeyValueValid={(isValid) => {
+										console.log(isValid)
+										this.setState({ valid: isValid })
+									}}
+								/>
 
 								{!this.state.allowPasswordChange && this.state.fromAdmin && (
 									<div className="d-flex flex-row justify-content-between">

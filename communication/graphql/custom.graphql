@@ -18,6 +18,7 @@ type UserProfile {
 	lastPasswordChange: Date
 	emailAddress: String
 	otpEnabled: Boolean
+	properties: String!
 }
 
 type GrantType {
