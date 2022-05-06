@@ -2,7 +2,7 @@
 export const updatePropertyReducer = (state, action) => {
 	switch (action.type) {
 		case 'add': {
-			return [...state, { key: '', value: '', index: state.length - 1 }]
+			return [...state, { key: '', value: '', index: state.length }]
 		}
 
 		case 'remove': {

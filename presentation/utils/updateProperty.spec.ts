@@ -6,7 +6,7 @@ describe('updatePropertyReducer', () => {
 		const action = { type: 'add' }
 		const newState = updatePropertyReducer(state, action)
 
-		expect(newState).toEqual([{ key: '', value: '' }])
+		expect(newState).toEqual([{ key: '', value: '', index: 0 }])
 	})
 
 	it('should correctly remove a property from the state', () => {
