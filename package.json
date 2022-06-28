@@ -163,7 +163,7 @@
     "moment": "^2.29.1",
     "mssql": "^6.3.1",
     "mysql2": "^2.3.0",
-    "next": "11.1.2",
+    "next": "12.1.0",
     "next-absolute-url": "^1.2.2",
     "next-dart-sass": "^0.0.2",
     "nodemailer": "^6.6.5",
