@@ -45,6 +45,15 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 	const [step, setStep] = useState<'credentials' | 'otp' | 'otpChoices' | 'emailVerification'>('credentials')
 	const [busy, setBusy] = useState(false)
 
+	const buttonRef = React.useRef<HTMLButtonElement>()
+	React.useEffect(() => {
+		if (otpToken.match(/\d,\d,\d,\d,\d,\d/)) {
+			if (buttonRef && buttonRef.current) {
+				buttonRef.current?.click()
+			}
+		}
+	}, [otpToken])
+
 	let body: React.ReactNode = (
 		<LoginCredentials
 			emailAddress={emailAddress}
@@ -101,6 +110,7 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 				formFooter={
 					<div className="btn-toolbar float-right">
 						<MutationButton
+							buttonRef={buttonRef}
 							disabled={busy}
 							content={
 								<>
@@ -125,6 +135,8 @@ const LoginForm: React.FC<LoginProps> = ({ configuration, onAuthenticated, route
 									onAuthenticated()
 								} else if (data.login.otpRequired) {
 									setOTPOptions(data.login.otpOptions)
+									setMessage(data.login.message)
+									setOTPToken('')
 									setStep('otp')
 								} else if (data.login.emailVerificationRequired) {
 									setMessage('You must verify your e-mail address before signing in.')
