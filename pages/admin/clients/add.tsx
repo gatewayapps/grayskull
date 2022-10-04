@@ -69,26 +69,6 @@ export const ClientAddPage: React.FC = () => {
 	const [clientIdValid, setClientIdValid] = React.useState(true)
 	const [clientFormValid, setClientFormValid] = React.useState(false)
 	const [result, setResult] = React.useState<any>()
-	// state = {
-	// 	client: {
-	// 		client_id: uuid(),
-	// 		name: '',
-	// 		logoImageUrl: '/grayskull.png',
-	// 		description: '',
-	// 		baseUrl: '',
-	// 		homePageUrl: '',
-	// 		public: true,
-	// 		redirectUris: [{ key: uuid(), value: '' }],
-	// 		scopes: [],
-	// 		isActive: true,
-	// 		AuthorizationFlows: [GrantTypes.AuthorizationCode, GrantTypes.RefreshToken],
-	// 		TokenSigningMethod: 'RS256'
-	// 	},
-	// 	customizeClientId: false,
-	// 	clientIdValid: true,
-	// 	clientFormValid: false,
-	// 	result: undefined
-	// }
 
 	const checkClientId = debounce(async (apolloClient) => {
 		if (!client.client_id) {
