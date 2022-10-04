@@ -76,7 +76,7 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 					step === 'otp'
 						? (e) => {
 								setOtpAutofill('')
-								setOtpToken(e.target.value)
+								setOtpToken(e.target.value.toString())
 						  }
 						: (e) => {
 								const parts: string[] = []
@@ -87,12 +87,12 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 										parts[i] = ''
 									}
 								}
-
 								setOtpAutofill(parts.join(','))
 						  }
 				}
 				label="OTP Token"
 			/>
+			{message && <div className="alert alert-danger mt-3">{message}</div>}
 			{step === 'otp' && (
 				<div>
 					{otpSent ? (
@@ -104,7 +104,6 @@ export const LoginCredentials: React.FC<LoginCredentialsProps> = ({
 					)}
 				</div>
 			)}
-			{message && <div className="alert alert-danger">{message}</div>}
 			{step === 'credentials' && (
 				<div className="form-check mb-3">
 					<input
