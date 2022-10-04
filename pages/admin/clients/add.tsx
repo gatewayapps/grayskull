@@ -70,14 +70,14 @@ export const ClientAddPage: React.FC = () => {
 	const [clientFormValid, setClientFormValid] = React.useState(false)
 	const [result, setResult] = React.useState<any>()
 
-	const checkClientId = debounce(async (apolloClient) => {
-		if (!client.client_id) {
+	const checkClientId = debounce(async (clientId, apolloClient) => {
+		if (!clientId) {
 			setClientIdValid(false)
 			return
 		}
 		const { data } = await apolloClient.query({
 			query: CHECK_CLIENT_ID_QUERY,
-			variables: { client_id: client.client_id },
+			variables: { client_id: clientId },
 			fetchPolicy: 'network-only'
 		})
 		if (data && data.client) {
@@ -88,8 +88,8 @@ export const ClientAddPage: React.FC = () => {
 	}, 300)
 
 	const onClientIdChange = (e: string, apollo: ApolloClient<object>) => {
+		checkClientId(e, apollo)
 		setClient({ ...client, client_id: e })
-		checkClientId(apollo)
 	}
 
 	const submitClient = async (evt, createClient) => {
