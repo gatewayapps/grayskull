@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 import Link from 'next/link'
 import React from 'react'
-import { Query } from 'react-apollo'
+import { Query, QueryResult } from 'react-apollo'
 
 import ErrorMessage from '../../../presentation/components/ErrorMessage'
 import LoadingIndicator from '../../../presentation/components/LoadingIndicator'
@@ -20,7 +20,7 @@ const ALL_CLIENTS_QUERY = gql`
 	}
 `
 
-const ClientsIndexPage = () => {
+const ClientsIndexPage: React.FC = () => {
 	return (
 		<AuthenticatedRoute permission={Permissions.ADMIN}>
 			<div className="container pt-4">
@@ -39,7 +39,7 @@ const ClientsIndexPage = () => {
 					</div>
 				</div>
 				<Query query={ALL_CLIENTS_QUERY}>
-					{({ data, error, loading }) => {
+					{({ data, error, loading }: QueryResult) => {
 						if (loading) return <LoadingIndicator />
 						if (error) return <ErrorMessage error={error} />
 						if (!data || !data.clients) {
