@@ -3,12 +3,14 @@ import { addClientAuthorizationFlowTypes } from './addClientAuthorizationFlowTyp
 import { userClientMetadata } from './userClientMetadata'
 import { Migration } from '../types/Migration'
 import { addTokenSigningMethodToClient } from './addTokenSigningMethodToClient'
+import { settingsValueColumnLength } from './settingsValueColumnLength'
 
 const migrations: Migration[] = [
 	initialMigration,
 	addClientAuthorizationFlowTypes,
 	userClientMetadata,
-	addTokenSigningMethodToClient
+	addTokenSigningMethodToClient,
+	settingsValueColumnLength
 ]
 
 export default migrations

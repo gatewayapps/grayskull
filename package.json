@@ -1,10 +1,10 @@
 {
   "name": "grayskull",
-  "version": "0.28.2",
+  "version": "0.28.3",
   "description": "A federated user authentication (not authorization) application",
   "main": "index.js",
   "engines": {
-    "node": ">=12.x"
+    "node": ">=16.x"
   },
   "scripts": {
     "build": "next build",
@@ -112,9 +112,9 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/react-fontawesome": "^0.1.15",
+    "@fortawesome/react-fontawesome": "^0.1.18",
     "@gatewayapps/react-form-validation": "^1.1.0",
-    "@sendgrid/mail": "^7.4.7",
+    "@sendgrid/mail": "^7.6.2",
     "@trust/keyto": "^1.0.1",
     "@zeit/next-css": "^1.0.1",
     "apollo-cache": "^1.3.4",
@@ -146,10 +146,10 @@
     "date-fns": "^2.25.0",
     "dotenv": "^8.2.0",
     "fs-extra": "^9.0.1",
-    "google-libphonenumber": "^3.2.24",
+    "google-libphonenumber": "^3.2.27",
     "graphql": "^14.6.0",
     "graphql-add-middleware": "^0.3.7",
-    "graphql-tag": "^2.12.5",
+    "graphql-tag": "^2.12.6",
     "graphql-tools": "^4.0.7",
     "graphql-upload": "^10.0.0",
     "handlebars": "^4.7.7",
@@ -190,7 +190,7 @@
     "reactstrap": "^8.10.0",
     "rsa-pem-to-jwk": "^1.1.3",
     "sass": "^1.42.1",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^5.0.6",
     "styled-components": "^4.4.1",
     "tedious": "^6.6.5",
     "titatoggle": "^2.1.2",

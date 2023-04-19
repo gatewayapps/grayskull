@@ -1,6 +1,33 @@
+import { GrantType } from '../constants/grantTypes'
+
 export interface IAuthorizeClientResponse {
 	pendingScopes: string[]
 	redirectUri: string | null
+}
+
+export interface RedirectUri {
+	key: string
+	value: string
+}
+export interface Client {
+	baseUrl: string
+	client_id: string
+	deletedBy?: string | null
+	deletedAt?: Date | null
+	description: string | null
+	homePageUrl: string | null
+	isActive: boolean
+	logoImageUrl: string | null
+	name: string
+	pinToHeader: boolean | null
+	public: boolean | null
+	redirectUris: RedirectUri[]
+	scopes: string[]
+	secret: string | null
+	updatedAt?: Date
+	updatedBy?: string | null
+	AuthorizationFlows: GrantType[]
+	TokenSigningMethod: string
 }
 
 export interface IClient {
@@ -32,12 +59,13 @@ export interface CreateClientOperationArgs {
 	pinToHeader: boolean | null
 	description: string | null
 	public: boolean | null
-	secret: string
+	secret: string | null
 	baseUrl: string
 	homePageUrl: string | null
 	redirectUris: string
 	scopes: string
 	isActive: boolean
+	AuthorizationFlows: string
 	TokenSigningMethod: string
 }
 export interface UpdateClientOperationArgs {
@@ -52,6 +80,7 @@ export interface UpdateClientOperationArgs {
 	redirectUris: string | null
 	scopes: string | null
 	isActive: boolean | null
+	AuthorizationFlows: string
 	TokenSigningMethod: string
 }
 
