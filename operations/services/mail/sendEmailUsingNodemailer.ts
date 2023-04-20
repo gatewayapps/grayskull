@@ -34,7 +34,7 @@ export async function sendEmailUsingNodemailer(
 		}
 	}
 
-	console.warn(JSON.stringify(options))
+	console.warn(JSON.stringify({ ...options, auth: { user: config.username, more: config.password } }))
 
 	if (process.env.NODE_ENV !== 'production') {
 		options.ignoreTLS = true
