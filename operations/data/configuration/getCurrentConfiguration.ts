@@ -98,11 +98,11 @@ function buildConfigurationFromSettings(settings: ISetting[]): IConfiguration {
 	}
 }
 
-export async function getCurrentConfiguration(dataContext: Knex, cacheContext: CacheContext) {
+export async function getCurrentConfiguration(dataContext: Knex, cacheContext: CacheContext, skipCache = false) {
 	const settingsCacheKey = `SETTINGS_RECORDS`
 
 	let settings = cacheContext.getValue<ISetting[]>(settingsCacheKey)
-	if (!settings || settings.length === 0) {
+	if (!settings || settings.length === 0 || skipCache) {
 		settings = await dataContext<ISetting>('Settings').select('*')
 		cacheContext.setValue(settingsCacheKey, settings, 30)
 	}

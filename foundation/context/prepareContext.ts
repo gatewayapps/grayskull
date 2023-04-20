@@ -38,7 +38,7 @@ export async function prepareContext(req, res): Promise<IRequestContext> {
 
 	const sessionCookie = req.cookies.get(SESSION_ID_COOKIE_NAME)
 
-	const configuration = await getCurrentConfiguration(dataContext, cacheContext)
+	const configuration = await getCurrentConfiguration(dataContext, cacheContext, true)
 
 	const userContext = sessionCookie
 		? await getUserContext(sessionCookie, dataContext, cacheContext, configuration)
