@@ -6,7 +6,10 @@ const IV_LENGTH = 16
 const KEY_LENGTH = 32
 
 function getKey(): string {
-	return GRAYSKULL_GLOBAL_SECRET.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')
+	const key = GRAYSKULL_GLOBAL_SECRET.substring(0, KEY_LENGTH).padEnd(KEY_LENGTH, 'x')
+	// eslint-disable-next-line no-console
+	console.log({ key })
+	return key
 }
 
 function doEncrypt(value: string, key: string) {
