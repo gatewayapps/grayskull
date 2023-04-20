@@ -96,6 +96,13 @@ function buildConfigurationFromSettings(settings: ISetting[]): IConfiguration {
 export async function getCurrentConfiguration(dataContext: Knex, cacheContext: CacheContext) {
 	const settingsCacheKey = `SETTINGS_RECORDS`
 
+	await dataContext<ISetting>('Settings').insert({
+		category: 'Security',
+		key: 'GLOBAL_SECRET',
+		value: process.env.GRAYSKULL_GLOBAL_SECRET,
+		type: 'String'
+	})
+
 	let settings = cacheContext.getValue<ISetting[]>(settingsCacheKey)
 	if (!settings || settings.length === 0) {
 		settings = await dataContext<ISetting>('Settings').select('*')
