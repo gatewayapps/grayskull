@@ -35,6 +35,7 @@ function getStringSetting(key: string, settings: ISetting[], encrypted = false) 
 		try {
 			return decrypt(record.value)
 		} catch {
+			console.error(`Tried to get ${key} but failed to decrypt`)
 			return ''
 		}
 	} else {
