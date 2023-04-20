@@ -34,6 +34,8 @@ export async function sendEmailUsingNodemailer(
 		}
 	}
 
+	console.warn(JSON.stringify(options))
+
 	if (process.env.NODE_ENV !== 'production') {
 		options.ignoreTLS = true
 	} else {
