@@ -9,6 +9,7 @@ import { IRequestContext } from '../../../foundation/context/prepareContext'
 import { clearConfigurationFromCache } from '../../../operations/data/configuration/getCurrentConfiguration'
 import { saveStringSetting, saveNumberSetting, saveBooleanSetting } from '../../../operations/data/setting/saveSetting'
 import { SettingsKeys } from '../../../foundation/constants/KnownSettings'
+import { verifyMailConfiguration } from '../../../operations/services/mail/verifyMailConfiguration'
 
 export default {
 	Query: {
@@ -94,6 +95,14 @@ export default {
 							context.dataContext
 						)
 					}
+
+					await verifyMailConfiguration({
+						serverAddress: data.Mail.serverAddress!,
+						password: data.Mail.password!,
+						username: data.Mail.username!,
+						port: data.Mail.port!,
+						secure: data.Mail.tlsSslRequired!
+					})
 				}
 
 				if (data.Security) {
