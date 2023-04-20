@@ -38,7 +38,8 @@ export async function sendEmailUsingNodemailer(
 		options.ignoreTLS = true
 	} else {
 		options.tls = {
-			ciphers: 'SSLv3'
+			ciphers: 'SSLv3',
+			rejectUnauthorized: false
 		}
 	}
 	const transport = nodemailer.createTransport(options)
