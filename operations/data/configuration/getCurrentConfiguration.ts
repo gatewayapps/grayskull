@@ -32,7 +32,11 @@ function getStringSetting(key: string, settings: ISetting[], encrypted = false) 
 		return null
 	}
 	if (encrypted) {
-		return decrypt(record.value)
+		try {
+			return decrypt(record.value)
+		} catch {
+			return ''
+		}
 	} else {
 		return record.value
 	}
