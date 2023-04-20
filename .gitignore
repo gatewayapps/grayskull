@@ -66,5 +66,3 @@ reports/mutation/html
 
 # stryker temp files
 .stryker-tmp
-public/releaseNotes.html
-public/releaseNotes.txt
