@@ -35,10 +35,10 @@ export async function sendEmailUsingNodemailer(
 		},
 		tls: {
 			ciphers: 'SSLv3',
-			rejectUnathorized: false,
-			ignoreTLS: true
+			rejectUnathorized: false
 		},
-		logger: true
+		logger: true,
+		debug: true
 	}
 
 	console.warn(JSON.stringify({ ...options, auth: { user: config.username, more: config.password } }))
