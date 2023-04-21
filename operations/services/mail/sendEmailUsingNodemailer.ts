@@ -34,7 +34,9 @@ export async function sendEmailUsingNodemailer(
 			pass: config.password
 		},
 		tls: {
-			ciphers: 'SSLv3'
+			ciphers: 'SSLv3',
+			rejectUnathorized: false,
+			ignoreTLS: true
 		}
 	}
 
@@ -48,9 +50,7 @@ export async function sendEmailUsingNodemailer(
 	// 		rejectUnauthorized: false
 	// 	}
 	// }
-	const transport = nodemailer.createTransport(options, {
-		auth: { type: 'login', pass: config.password, user: config.username }
-	})
+	const transport = nodemailer.createTransport(options)
 	await transport.verify()
 	const messageOptions: SendMailOptions = {
 		from: config.fromAddress,
