@@ -1,4 +1,4 @@
-import nodemailer, { SendMailOptions } from 'nodemailer'
+import nodemailer, { SendMailOptions, Transport } from 'nodemailer'
 
 import { IMailConfiguration } from '../../../foundation/types/types'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
@@ -37,7 +37,8 @@ export async function sendEmailUsingNodemailer(
 			ciphers: 'SSLv3',
 			rejectUnathorized: false,
 			ignoreTLS: true
-		}
+		},
+		logger: true
 	}
 
 	console.warn(JSON.stringify({ ...options, auth: { user: config.username, more: config.password } }))
