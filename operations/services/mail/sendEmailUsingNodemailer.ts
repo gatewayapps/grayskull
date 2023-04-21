@@ -2,6 +2,7 @@ import nodemailer, { SendMailOptions } from 'nodemailer'
 
 import { IMailConfiguration } from '../../../foundation/types/types'
 import { GrayskullError, GrayskullErrorCode } from '../../../foundation/errors/GrayskullError'
+import { userClientHasAllowedScope } from '../../logic/userClientHasAllowedScope'
 
 export async function sendEmailUsingNodemailer(
 	to: string,
@@ -47,8 +48,10 @@ export async function sendEmailUsingNodemailer(
 	// 		rejectUnauthorized: false
 	// 	}
 	// }
-	const transport = nodemailer.createTransport(options)
-
+	const transport = nodemailer.createTransport(options, {
+		auth: { type: 'login', pass: config.password, user: config.username }
+	})
+	await transport.verify()
 	const messageOptions: SendMailOptions = {
 		from: config.fromAddress,
 		to,
