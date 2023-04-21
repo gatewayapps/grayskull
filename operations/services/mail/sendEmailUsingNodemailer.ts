@@ -23,7 +23,7 @@ export async function sendEmailUsingNodemailer(
 	}
 
 	const client = new ServerClient(process.env.POSTMARK_API_KEY!)
-	client.sendEmail({
+	await client.sendEmail({
 		From: config.fromAddress,
 		Subject: subject,
 		To: to,
