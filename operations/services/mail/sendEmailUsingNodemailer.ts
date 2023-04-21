@@ -52,6 +52,8 @@ export async function sendEmailUsingNodemailer(
 	// }
 	const transport = nodemailer.createTransport(options)
 	await transport.verify()
+
+	console.warn('Transport verified')
 	const messageOptions: SendMailOptions = {
 		from: config.fromAddress,
 		to,
