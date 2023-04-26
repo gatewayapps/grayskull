@@ -96,7 +96,7 @@ export default {
 						)
 					}
 
-					if (process.env.NODE_ENV === 'development') {
+					if (process.env.NODE_ENV === 'production') {
 						await verifyMailConfiguration({
 							serverAddress: data.Mail.serverAddress!,
 							password: data.Mail.password!,
