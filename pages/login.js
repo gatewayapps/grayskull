@@ -24,7 +24,7 @@ class LoginPage extends React.PureComponent {
 			}
 		}
 		if (redirectUrl && redirectUrl !== '/?') {
-			window.location.href = redirectUrl
+			window.location.replace(redirectUrl)
 		}
 	}
 
