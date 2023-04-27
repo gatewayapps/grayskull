@@ -1,5 +1,5 @@
 import React from 'react'
-import { withRouter, default as Router } from 'next/router'
+import { withRouter } from 'next/router'
 import BackgroundCover from '../presentation/components/BackgroundCover'
 import RequireConfiguration from '../presentation/components/RequireConfiguration'
 import LoginForm from '../presentation/components/LoginForm'
@@ -15,16 +15,17 @@ class LoginPage extends React.PureComponent {
 
 	onAuthenticated = async () => {
 		await this.refresh()
+		let redirectUrl = ''
 		if (this.props.router.query.state) {
 			const parsedState = parseRoutingState(this.props.router.query.state)
 			const queryString = parseQueryParams(parsedState.query)
 			if (parsedState) {
-				const authUrl = `${parsedState.pathname}?${queryString}`
-				this.props.router.push(authUrl, authUrl)
-				return
+				redirectUrl = `${parsedState.pathname}?${queryString}`
 			}
 		}
-		Router.push('/')
+		if (redirectUrl && redirectUrl !== '/?') {
+			window.location.href = redirectUrl
+		}
 	}
 
 	render() {
