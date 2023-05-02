@@ -14,18 +14,18 @@ class LoginPage extends React.PureComponent {
 	}
 
 	onAuthenticated = async () => {
-		await this.refresh()
-		let redirectUrl = ''
+		let redirectUri = ''
 		if (this.props.router.query.state) {
 			const parsedState = parseRoutingState(this.props.router.query.state)
 			const queryString = parseQueryParams(parsedState.query)
-			if (parsedState) {
-				redirectUrl = `${parsedState.pathname}?${queryString}`
+
+			if (parsedState && parsedState.pathname !== '/') {
+				const path = parsedState.pathname
+				redirectUri = queryString ? `${path}?${queryString}` : path
 			}
 		}
-		if (redirectUrl && redirectUrl !== '/?') {
-			window.location.href = redirectUrl
-		}
+
+		await this.refresh(redirectUri)
 	}
 
 	render() {
