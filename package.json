@@ -200,7 +200,7 @@
     "url-loader": "^1.1.2",
     "url-parse": "^1.5.3",
     "uuid": "^7.0.2",
-    "validator": "^10.10.0",
+    "validator": "^13.7.0",
     "webpack": "4.42.0"
   }
 }
