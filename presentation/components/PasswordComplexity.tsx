@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { ISecurityConfiguration } from '../../foundation/types/types'
 import { hasLowercase, hasMinLength, hasNumber, hasSymbol, hasUppercase } from '../utils/passwordComplexity'
 
 const PasswordComplexityList = styled.ul`
@@ -25,13 +26,7 @@ const CheckListItem = (props: CheckListItemProps) => {
 }
 
 export interface PasswordComplexityProps {
-	configuration: {
-		passwordMinimumLength: number
-		passwordRequiresNumber: boolean
-		passwordRequiresSymbol: boolean
-		passwordRequiresLowercase: boolean
-		passwordRequiresUppercase: boolean
-	}
+	configuration: ISecurityConfiguration
 	password: string
 }
 
@@ -40,10 +35,12 @@ const PasswordComplexity = (props: PasswordComplexityProps) => {
 
 	return (
 		<PasswordComplexityList>
-			<CheckListItem
-				checked={hasMinLength(password, configuration.passwordMinimumLength)}
-				label={`Minimum length of ${configuration.passwordMinimumLength} characters`}
-			/>
+			{configuration.passwordMinimumLength && (
+				<CheckListItem
+					checked={hasMinLength(password, configuration.passwordMinimumLength)}
+					label={`Minimum length of ${configuration.passwordMinimumLength} characters`}
+				/>
+			)}
 			{configuration.passwordRequiresLowercase && (
 				<CheckListItem checked={hasLowercase(password)} label="Contains lowercase letters (a-z)" />
 			)}
