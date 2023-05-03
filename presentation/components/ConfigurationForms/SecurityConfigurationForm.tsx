@@ -34,10 +34,18 @@ const SecurityConfigurationForm = ({ data, onValidated, onConfigurationChanged }
 	const validations = [
 		new FormValidationRule(
 			'passwordMinimumLength',
-			'isInt',
+			(val, currentData) => {
+				const range = { low: 6, high: 64 }
+
+				return (
+					typeof currentData.passwordMinimumLength === 'number' &&
+					currentData.passwordMinimumLength >= range.low &&
+					currentData.passwordMinimumLength <= range.high
+				)
+			},
 			true,
 			'Min Password Length is required and must be between 6 and 64',
-			[{ gt: 5, lt: 65 }]
+			[data]
 		),
 		new FormValidationRule(
 			'twilioApiKey',

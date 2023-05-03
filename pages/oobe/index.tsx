@@ -64,7 +64,7 @@ class OobeIndex extends React.Component<any, any> {
 					passwordRequiresUppercase: false,
 					passwordRequiresNumber: false,
 					passwordRequiresSymbol: false,
-					passwordMinimumLength: '8',
+					passwordMinimumLength: 8,
 					multifactorRequired: false,
 					accessTokenExpirationSeconds: '1800',
 					domainWhitelist: '',

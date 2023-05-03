@@ -96,13 +96,15 @@ export default {
 						)
 					}
 
-					await verifyMailConfiguration({
-						serverAddress: data.Mail.serverAddress!,
-						password: data.Mail.password!,
-						username: data.Mail.username!,
-						port: data.Mail.port!,
-						secure: data.Mail.tlsSslRequired!
-					})
+					if (process.env.NODE_ENV === 'production') {
+						await verifyMailConfiguration({
+							serverAddress: data.Mail.serverAddress!,
+							password: data.Mail.password!,
+							username: data.Mail.username!,
+							port: data.Mail.port!,
+							secure: data.Mail.tlsSslRequired!
+						})
+					}
 				}
 
 				if (data.Security) {
